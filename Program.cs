@@ -24,6 +24,14 @@ namespace HyoutaTools {
 					// case "GraceNote.VVoicesGenerate":
 					// case "Tales.Xillia.TldatExtract":
 					// case "Tales.Vesperia.MapList":
+					// case "Other.NisPakEx":
+					//
+					//
+					//
+					//
+					//
+					//
+					//
 				}
 
 			}
