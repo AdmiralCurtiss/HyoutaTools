@@ -86,7 +86,7 @@ namespace HyoutaTools.Tales.Vesperia.To8chtx {
 
 					try {
 						SQLText = r.GetString( 0 ).Replace( "''", "'" );
-					} catch ( System.InvalidCastException ex ) {
+					} catch ( System.InvalidCastException ) {
 						SQLText = null;
 					}
 

@@ -39,7 +39,8 @@ namespace HyoutaTools {
 					// case "GraceNote.Trophy.TropSfmExport":
 					// case "Other.InvokeGimConv";
 					// case "Tales.Vesperia.ItemDat.Viewer";
-					//
+					// case "GraceNote.To8chtxExport";
+					// case "GraceNote.To8chtxImport";
 					//
 					//
 					//

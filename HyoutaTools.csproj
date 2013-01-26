@@ -68,6 +68,8 @@
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\To8chtxExport\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemDat.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemDatSingle.cs" />
