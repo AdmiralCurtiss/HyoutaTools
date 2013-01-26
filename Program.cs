@@ -35,8 +35,8 @@ namespace HyoutaTools {
 					// case "GraceNote.FindEarliestGracesJapaneseEntry":
 					// case "DanganRonpa.Nonstop.Viewer":
 					// case "GraceNote.DumpDatabase":
-					// case "GraceNote.TropSfmImport":
-					//
+					// case "GraceNote.Trophy.TropSfmImport":
+					// case "GraceNote.Trophy.TropSfmExport":
 					//
 					//
 					//
