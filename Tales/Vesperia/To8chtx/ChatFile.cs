@@ -73,6 +73,85 @@ namespace HyoutaTools.Tales.Vesperia.To8chtx {
 			}
 		}
 
+		public void GetSQL( String ConnectionString ) {
+			SQLiteConnection Connection = new SQLiteConnection( ConnectionString );
+			Connection.Open();
+
+			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
+			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
+				Command.CommandText = "SELECT english, PointerRef FROM Text ORDER BY PointerRef";
+				SQLiteDataReader r = Command.ExecuteReader();
+				while ( r.Read() ) {
+					String SQLText;
+
+					try {
+						SQLText = r.GetString( 0 ).Replace( "''", "'" );
+					} catch ( System.InvalidCastException ex ) {
+						SQLText = null;
+					}
+
+					int PointerRef = r.GetInt32( 1 );
+
+					if ( !String.IsNullOrEmpty( SQLText ) ) {
+						if ( PointerRef % 16 == 0 ) {
+							int i = ( PointerRef / 16 ) - 2;
+							Lines[i].SName = SQLText;
+						} else if ( PointerRef % 16 == 4 ) {
+							int i = ( ( PointerRef - 4 ) / 16 ) - 2;
+							Lines[i].SENG = SQLText;
+						}
+					}
+				}
+
+				Transaction.Rollback();
+			}
+			return;
+		}
+
+		public byte[] Serialize() {
+			List<byte> Serialized = new List<byte>( (int)Header.Filesize );
+
+			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Identify ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Filesize ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Lines ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Unknown ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.TextStart ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Empty ) ) );
+
+			foreach ( ChatFileLine Line in Lines ) {
+				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Line.Name ) ) );
+				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Line.ENG ) ) );
+				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Line.ENG ) ) );
+				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Line.Unknown ) ) );
+			}
+
+			byte ByteNull = 0x00;
+
+			foreach ( ChatFileLine Line in Lines ) {
+				Serialized.AddRange( Util.StringToBytes( Line.SName ) );
+				Serialized.Add( ByteNull );
+				Serialized.AddRange( Util.StringToBytes( Line.SENG ) );
+				Serialized.Add( ByteNull );
+			}
+
+			return Serialized.ToArray();
+		}
+
+		public void RecalculatePointers() {
+			uint Size = Header.TextStart;
+			for ( int i = 0; i < Lines.Length; i++ ) {
+				Lines[i].Name = Size - Header.TextStart;
+				Size += (uint)Util.StringToBytes( Lines[i].SName ).Length;
+				Size++;
+				Lines[i].JPN = Size - Header.TextStart;
+				Lines[i].ENG = Size - Header.TextStart;
+				Size += (uint)Util.StringToBytes( Lines[i].SENG ).Length;
+				Size++;
+			}
+
+			Header.Filesize = Size;
+		}
+
 		public bool InsertSQL( String ConnectionString, String ConnectionStringGracesJapanese ) {
 			SQLiteConnection Connection = new SQLiteConnection( ConnectionString );
 			SQLiteConnection ConnectionGracesJapanese = new SQLiteConnection( ConnectionStringGracesJapanese );
