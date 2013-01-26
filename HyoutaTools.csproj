@@ -68,12 +68,14 @@
     <Compile Include="DanganRonpa\Nonstop\Nonstop.cs" />
     <Compile Include="DanganRonpa\Nonstop\NonstopSingle.cs" />
     <Compile Include="DanganRonpa\Nonstop\RunNonstopForm.cs" />
+    <Compile Include="DanganRonpa\PakText\PakText.cs" />
     <Compile Include="DanganRonpa\Pak\Program.cs" />
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
     <Compile Include="DanganRonpa\umdimagedat\Util.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinImport\Program.cs" />
+    <Compile Include="GraceNote\DanganRonpa\PakTextImport\Program.cs" />
     <Compile Include="GraceNote\DumpDatabase\Program.cs" />
     <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
     <Compile Include="GraceNote\DumpDatabase\Util.cs" />
@@ -195,10 +197,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DanganRonpa\PakText\" />
     <Folder Include="GraceNote\DanganRonpa\LinExport\" />
     <Folder Include="GraceNote\DanganRonpa\PakTextExport\" />
-    <Folder Include="GraceNote\DanganRonpa\PakTextImport\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
