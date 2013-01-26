@@ -19,6 +19,7 @@ namespace HyoutaTools {
 					case "Generic.ByteHotfix": return Generic.ByteHotfix.ByteHotfix.Execute( ProgramArguments.ToArray() );
 					case "Tales.tlzc": return Tales.tlzc.tlzcmain.Execute( ProgramArguments.ToArray() );
 					// case "GraceNote.LuxPainDump":
+					// case "GraceNote.XilliaScriptFileDump":
 				}
 
 			}

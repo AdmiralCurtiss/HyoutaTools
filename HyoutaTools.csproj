@@ -72,10 +72,12 @@
     <Compile Include="Tales\tlzc\7zip\ICoder.cs" />
     <Compile Include="Tales\tlzc\TLZC.cs" />
     <Compile Include="Tales\tlzc\tlzcmain.cs" />
+    <Compile Include="GraceNote\XilliaScriptFileDump\Program.cs" />
+    <Compile Include="Tales\Xillia\Util.cs" />
+    <Compile Include="Tales\Xillia\XilliaScriptFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tales\Vesperia\" />
-    <Folder Include="Tales\Xillia\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
