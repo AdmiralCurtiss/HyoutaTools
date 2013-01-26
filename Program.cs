@@ -33,8 +33,8 @@ namespace HyoutaTools {
 					// case "DanganRonpa.Pak.Pack":
 					// case "Other.AutoExtract":
 					// case "GraceNote.FindEarliestGracesJapaneseEntry":
-					//
-					//
+					// case "DanganRonpa.Nonstop.Viewer":
+					// case "GraceNote.DumpDatabase":
 					//
 					//
 					//

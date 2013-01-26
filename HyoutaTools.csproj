@@ -62,6 +62,9 @@
     <Compile Include="DanganRonpa\umdimagedat\Util.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
+    <Compile Include="GraceNote\DumpDatabase\Program.cs" />
+    <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
+    <Compile Include="GraceNote\DumpDatabase\Util.cs" />
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
     <Compile Include="GraceNote\Vesperia\StringDic-from-GraceNote\Program.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicNpcCompare360\Program.cs" />
@@ -115,6 +118,7 @@
       <DependentUpon>NonstopForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
