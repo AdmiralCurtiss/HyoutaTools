@@ -37,15 +37,15 @@ namespace HyoutaTools.Tales.Xillia {
 			}
 
 
-			uint Amount = Util.SwapEndian( BitConverter.ToUInt32( Bytes, Offset + 4 ) );
+			uint Amount = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( Bytes, Offset + 4 ) );
 			TextList = new List<XS>( (int)Amount );
 
 			Amount *= 2;
 
 			for ( uint i = 0; i < Amount; i += 2 ) {
 				XS x = new XS();
-				x.PointerIDString = ( Offset + ( (int)i * 4 + 8 ) ) + (int)Util.SwapEndian( BitConverter.ToUInt32( Bytes, Offset + ( (int)i * 4 + 8 ) ) );
-				x.PointerText = ( Offset + ( (int)( i + 1 ) * 4 + 8 ) ) + (int)Util.SwapEndian( BitConverter.ToUInt32( Bytes, Offset + ( (int)( i + 1 ) * 4 + 8 ) ) );
+				x.PointerIDString = ( Offset + ( (int)i * 4 + 8 ) ) + (int)HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( Bytes, Offset + ( (int)i * 4 + 8 ) ) );
+				x.PointerText = ( Offset + ( (int)( i + 1 ) * 4 + 8 ) ) + (int)HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( Bytes, Offset + ( (int)( i + 1 ) * 4 + 8 ) ) );
 				x.IDString = Util.GetTextUTF8( x.PointerIDString, Bytes );
 				x.Text = Util.GetTextUTF8( x.PointerText, Bytes );
 				TextList.Add( x );

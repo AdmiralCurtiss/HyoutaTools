@@ -16,11 +16,11 @@ namespace HyoutaTools.Trophy.Viewer {
 		/* 0x28 */
 		public UInt64 Timestamp2; // in microseconds
 		public TropUsrSingleTrophy( byte[] File, uint Offset ) {
-			TrophyID = Util.SwapEndian( BitConverter.ToUInt32( File, (int)( Offset + 0x08 ) ) );
-			TrophyIDDuplicate = Util.SwapEndian( BitConverter.ToUInt32( File, (int)( Offset + 0x10 ) ) );
-			Unlocked = Util.SwapEndian( BitConverter.ToUInt32( File, (int)( Offset + 0x14 ) ) );
-			Timestamp1 = Util.SwapEndian( BitConverter.ToUInt64( File, (int)( Offset + 0x20 ) ) );
-			Timestamp2 = Util.SwapEndian( BitConverter.ToUInt64( File, (int)( Offset + 0x28 ) ) );
+			TrophyID = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( File, (int)( Offset + 0x08 ) ) );
+			TrophyIDDuplicate = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( File, (int)( Offset + 0x10 ) ) );
+			Unlocked = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( File, (int)( Offset + 0x14 ) ) );
+			Timestamp1 = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt64( File, (int)( Offset + 0x20 ) ) );
+			Timestamp2 = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt64( File, (int)( Offset + 0x28 ) ) );
 		}
 
 		public static int SortByTimestamp( TropUsrSingleTrophy t1, TropUsrSingleTrophy t2 ) {

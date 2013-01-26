@@ -28,7 +28,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 
 			while ( CurrentLocation < EntriesEnd ) {
 				uint Instruction = BitConverter.ToUInt32( File, CurrentLocation );
-				EntryUIntList.Add( Util.SwapEndian( Instruction ) );
+				EntryUIntList.Add( HyoutaTools.Util.SwapEndian( Instruction ) );
 				CurrentLocation += 4;
 			}
 
@@ -88,33 +88,12 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 					}
 				}
 
-				EntryList.Add( new TSSEntry( OneEntry, GetText( JPNPointer ), GetText( ENGPointer ), JPNIndex, ENGIndex ) );
+				EntryList.Add( new TSSEntry( OneEntry, HyoutaTools.Util.GetTextShiftJis( File, JPNPointer ), HyoutaTools.Util.GetTextShiftJis( File, ENGPointer ), JPNIndex, ENGIndex ) );
 				//CurrentLocation += OneEntry.Length;
 				CurrentLocation++;
 			}
 			Entries = EntryList.ToArray();
 		}
-
-
-
-
-		public String GetText( int Pointer ) {
-			if ( Pointer == -1 ) return null;
-
-			try {
-				int i = Pointer;
-				while ( File[i] != 0x00 ) {
-					i++;
-				}
-				String Text = Util.ShiftJISEncoding.GetString( File, Pointer, i - Pointer );
-				//String Text = Util.ShiftJISEncoding.GetString(File, Pointer, 0x400);
-				return Text;
-			} catch ( Exception ) {
-				return null;
-			}
-		}
-
-
 
 		public byte[] ExportText() {
 			List<string> Lines = new List<string>( Entries.Length * 3 );

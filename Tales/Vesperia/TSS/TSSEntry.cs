@@ -34,7 +34,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public byte[] SerializeScript() {
 			List<byte> bytes = new List<byte>( Entry.Length );
 			foreach ( uint e in Entry ) {
-				bytes.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( e ) ) );
+				bytes.AddRange( System.BitConverter.GetBytes( HyoutaTools.Util.SwapEndian( e ) ) );
 			}
 			return bytes.ToArray();
 		}

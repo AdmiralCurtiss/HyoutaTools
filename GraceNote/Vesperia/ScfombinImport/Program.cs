@@ -18,8 +18,6 @@ namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 	}
 
 	class Program {
-		private static Encoding ShiftJISEncoding = Encoding.GetEncoding( "shift-jis" );
-
 		static void Execute( string[] args ) {
 			if ( args.Length != 5 ) {
 				Console.WriteLine( "Usage: btlpack_GraceNote btlpackexFile NewDBFile TemplateDBFile GracesJapanese StartOfTextpointersInHex" );
@@ -176,8 +174,8 @@ namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 						break;
 					}
 
-					ScenarioString Name = new ScenarioString( Pointer, GetText( File, Pointer1 + PointerDifference ), GetText( File, Pointer3 + PointerDifference ) );
-					ScenarioString Text = new ScenarioString( Pointer + 4, GetText( File, Pointer2 + PointerDifference ), GetText( File, Pointer4 + PointerDifference ) );
+					ScenarioString Name = new ScenarioString( Pointer, Util.GetTextShiftJis( File, Pointer1 + PointerDifference ), Util.GetTextShiftJis( File, Pointer3 + PointerDifference ) );
+					ScenarioString Text = new ScenarioString( Pointer + 4, Util.GetTextShiftJis( File, Pointer2 + PointerDifference ), Util.GetTextShiftJis( File, Pointer4 + PointerDifference ) );
 
 					AllStrings.Add( Name );
 					AllStrings.Add( Text );
@@ -191,21 +189,5 @@ namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 
 			return AllStrings.ToArray();
 		}
-
-		public static String GetText( byte[] File, int Pointer ) {
-			try {
-				int i = Pointer;
-
-				while ( File[i] != 0x00 ) {
-					i++;
-				}
-				String Text = ShiftJISEncoding.GetString( File, Pointer, i - Pointer );
-
-				return Text;
-			} catch ( Exception ) {
-				return null;
-			}
-		}
-
 	}
 }

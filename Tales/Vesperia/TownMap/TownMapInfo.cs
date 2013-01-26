@@ -15,12 +15,12 @@ namespace HyoutaTools.Tales.Vesperia.TownMap {
 		public int InfoLocation;
 
 		public TownMapInfo( byte[] File, int TilesLocationJPN, int TilesLocationENG, int InfoLocation ) {
-			Filename = Util.GetText( File, InfoLocation );
+			Filename = HyoutaTools.Util.GetTextAscii( File, InfoLocation );
 
 			this.InfoLocation = InfoLocation;
 
-			TileAmountJPN = Util.SwapEndian( BitConverter.ToInt32( File, InfoLocation + 0xA4 ) );
-			TileAmountENG = Util.SwapEndian( BitConverter.ToInt32( File, InfoLocation + 0xA8 ) );
+			TileAmountJPN = HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, InfoLocation + 0xA4 ) );
+			TileAmountENG = HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, InfoLocation + 0xA8 ) );
 
 			TownMapTilesJPN = new TownMapTile[TileAmountJPN];
 			TownMapTilesENG = new TownMapTile[TileAmountENG];

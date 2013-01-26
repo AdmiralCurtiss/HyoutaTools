@@ -32,20 +32,20 @@ namespace HyoutaTools.Tales.Xillia.TldatExtract {
 		}
 
 		private bool Load( Byte[] Bytes ) {
-			FileAmount = Util.SwapEndian( BitConverter.ToUInt32( Bytes, 0xC ) );
+			FileAmount = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( Bytes, 0xC ) );
 
-			UInt32 FileListStart = 0x10 + Util.SwapEndian( BitConverter.ToUInt32( Bytes, 0x10 ) );
+			UInt32 FileListStart = 0x10 + HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( Bytes, 0x10 ) );
 
 			EntryList = new List<TOFHDBEntry>( (int)FileAmount );
 
 			for ( UInt32 i = 0; i < FileAmount; i++ ) {
 				TOFHDBEntry e = new TOFHDBEntry();
-				e.Filesize = Util.SwapEndian( BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x00 ) ) );
-				e.CompressedSize = Util.SwapEndian( BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x08 ) ) );
-				e.Offset = Util.SwapEndian( BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x10 ) ) );
-				e.Hash = Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x18 ) ) );
+				e.Filesize = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x00 ) ) );
+				e.CompressedSize = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x08 ) ) );
+				e.Offset = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x10 ) ) );
+				e.Hash = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x18 ) ) );
 				e.Extension = Util.TrimNull( Encoding.ASCII.GetString( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x1C ), 0x0A ) );
-				e.Unknown = Util.SwapEndian( BitConverter.ToUInt16( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x26 ) ) );
+				e.Unknown = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt16( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x26 ) ) );
 				EntryList.Add( e );
 			}
 

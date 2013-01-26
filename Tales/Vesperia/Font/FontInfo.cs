@@ -13,7 +13,7 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			CharacterLengths = new int[0x220];
 
 			for ( int i = 0; i < 0x220; i++ ) {
-				CharacterLengths[i] = Util.SwapEndian( BitConverter.ToInt32( File, Offset + i * 4 ) );
+				CharacterLengths[i] = HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, Offset + i * 4 ) );
 			}
 
 			BuildCharacterMap();
@@ -23,7 +23,7 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			byte[] File = System.IO.File.ReadAllBytes( Filename );
 
 			for ( int i = 0; i < CharacterLengths.Length; i++ ) {
-				int c = Util.SwapEndian( CharacterLengths[i] );
+				int c = HyoutaTools.Util.SwapEndian( CharacterLengths[i] );
 				byte[] b = BitConverter.GetBytes( c );
 				b.CopyTo( File, Offset + i * 4 );
 			}

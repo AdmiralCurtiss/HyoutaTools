@@ -206,7 +206,7 @@ namespace HyoutaTools.DanganRonpa.umdimagedat {
 					OffsetEnd = File.Length;
 				}
 
-				String filename = Util.GetText( FilenameOffset, Eboot );
+				String filename = HyoutaTools.Util.GetTextAscii( Eboot, FilenameOffset );
 
 				System.IO.FileStream stream = System.IO.File.Create( dir.FullName + "/" + i.ToString( "D4" ) + ( nofilenames ? "" : "_" + filename ) );
 				stream.Write( File, OffsetStart, ( OffsetEnd - OffsetStart ) );

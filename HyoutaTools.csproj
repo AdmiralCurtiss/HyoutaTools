@@ -71,7 +71,6 @@
     <Compile Include="DanganRonpa\PakText\PakText.cs" />
     <Compile Include="DanganRonpa\Pak\Program.cs" />
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
-    <Compile Include="DanganRonpa\umdimagedat\Util.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinImport\Program.cs" />
@@ -79,7 +78,6 @@
     <Compile Include="GraceNote\DanganRonpa\PakTextImport\Program.cs" />
     <Compile Include="GraceNote\DumpDatabase\Program.cs" />
     <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
-    <Compile Include="GraceNote\DumpDatabase\Util.cs" />
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
     <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
@@ -105,7 +103,6 @@
       <DependentUpon>ItemForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Tales\Vesperia\ItemDat\RunItemViewer.cs" />
-    <Compile Include="Tales\Vesperia\ItemDat\Util.cs" />
     <Compile Include="Tales\Vesperia\To8chtx\ChatFile.cs" />
     <Compile Include="Tales\Vesperia\To8chtx\Util.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
@@ -156,10 +153,8 @@
     <Compile Include="Tales\Vesperia\MapList\MapList.cs" />
     <Compile Include="Tales\Vesperia\MapList\MapName.cs" />
     <Compile Include="Tales\Vesperia\MapList\Program.cs" />
-    <Compile Include="Tales\Vesperia\MapList\Util.cs" />
     <Compile Include="GraceNote\Vesperia\ScfombinImport\Program.cs" />
     <Compile Include="Tales\Vesperia\SpkdUnpack\Program.cs" />
-    <Compile Include="Tales\Vesperia\SpkdUnpack\Util.cs" />
     <Compile Include="Tales\Vesperia\TSS\TSSEntry.cs" />
     <Compile Include="Tales\Vesperia\TSS\TSSFile.cs" />
     <Compile Include="Tales\Vesperia\TSS\TSSHeader.cs" />
