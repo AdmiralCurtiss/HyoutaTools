@@ -40,7 +40,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 					//case 0x06: entry.Arguments = new byte[8]; break;
 					case 0x08:
 						sb.Append( "Voice: " );
-						sb.Append( '[' ).Append( Util.CharacterIdToName( Arguments[0] ) ).Append( ']' );
+						sb.Append( '[' ).Append( DanganUtil.CharacterIdToName( Arguments[0] ) ).Append( ']' );
 						for ( int i = 1; i < Arguments.Length; ++i ) { sb.Append( " " ).Append( Arguments[i].ToString() ); }
 						break;
 					case 0x09:
@@ -70,14 +70,14 @@ namespace HyoutaTools.DanganRonpa.Lin {
 					case 0x1E:
 						sb.Append( "Sprite: " );
 						sb.Append( "0x" ).Append( Arguments[0].ToString( "X2" ) ).Append( ' ' );
-						sb.Append( '[' ).Append( Util.CharacterIdToName( Arguments[1] ) ).Append( ']' );
+						sb.Append( '[' ).Append( DanganUtil.CharacterIdToName( Arguments[1] ) ).Append( ']' );
 						for ( int i = 2; i < Arguments.Length; ++i ) { sb.Append( " " ).Append( Arguments[i].ToString() ); }
 						break;
 					//case 0x1F: entry.Arguments = new byte[7]; break;
 					//case 0x20: entry.Arguments = new byte[5]; break;
 					case 0x21:
 						sb.Append( "Speaker: " );
-						sb.Append( '[' ).Append( Util.CharacterIdToName( Arguments[0] ) ).Append( ']' );
+						sb.Append( '[' ).Append( DanganUtil.CharacterIdToName( Arguments[0] ) ).Append( ']' );
 						for ( int i = 1; i < Arguments.Length; ++i ) { sb.Append( " " ).Append( Arguments[i].ToString() ); }
 						break;
 					//case 0x22: entry.Arguments = new byte[3]; break;
@@ -293,10 +293,10 @@ namespace HyoutaTools.DanganRonpa.Lin {
 			foreach ( ScriptEntry s in ScriptData ) {
 				switch ( s.Type ) {
 					case 0x21:
-						CurrentName = Util.CharacterIdToName( s.Arguments[0] );
+						CurrentName = DanganUtil.CharacterIdToName( s.Arguments[0] );
 						break;
 					case 0x1E:
-						CurrentName = Util.CharacterIdToName( s.Arguments[1] );
+						CurrentName = DanganUtil.CharacterIdToName( s.Arguments[1] );
 						break;
 					case 0x02:
 						s.IdentifyString = CurrentName;
@@ -517,7 +517,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 								List<byte> args = new List<byte>();
 								for ( int i = 1; i < bytestrs.Length; ++i ) {
 									if ( bytestrs[i].Contains( '[' ) && bytestrs[i].Contains( ']' ) ) {
-										args.Add( Util.NameToCharacterId( bytestrs[i].Replace( "[", "" ).Replace( "]", "" ) ) );
+										args.Add( DanganUtil.NameToCharacterId( bytestrs[i].Replace( "[", "" ).Replace( "]", "" ) ) );
 									} else {
 										args.Add( Util.ParseDecOrHexToByte( bytestrs[i] ) );
 									}

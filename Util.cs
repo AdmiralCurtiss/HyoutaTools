@@ -41,6 +41,44 @@ namespace HyoutaTools {
 		}
 		#endregion
 
+		#region NumberUtils
+		public static byte ParseDecOrHexToByte( string s ) {
+			s = s.Trim();
+
+			if ( s.StartsWith( "0x" ) ) {
+				s = s.Substring( 2 );
+				return Byte.Parse( s, System.Globalization.NumberStyles.HexNumber );
+			} else {
+				return Byte.Parse( s );
+			}
+		}
+
+		public static byte[] HexStringToByteArray( string hex ) {
+			if ( hex.Length % 2 == 1 )
+				throw new Exception( "The binary key cannot have an odd number of digits" );
+
+			byte[] arr = new byte[hex.Length >> 1];
+
+			for ( int i = 0; i < hex.Length >> 1; ++i ) {
+				arr[i] = (byte)( ( GetHexVal( hex[i << 1] ) << 4 ) + ( GetHexVal( hex[( i << 1 ) + 1] ) ) );
+			}
+
+			return arr;
+		}
+
+		public static int GetHexVal( char hex ) {
+			int val = (int)hex;
+			//For uppercase A-F letters:
+			//return val - (val < 58 ? 48 : 55);
+			//For lowercase a-f letters:
+			//return val - (val < 58 ? 48 : 87);
+			//Or the two combined, but a bit slower:
+			return val - ( val < 58 ? 48 : ( val < 97 ? 55 : 87 ) );
+		}
+
+
+		#endregion
+
 		public static void DisplayException( Exception e ) {
 			Console.WriteLine( "Exception occurred:" );
 			Console.WriteLine( e.Message );

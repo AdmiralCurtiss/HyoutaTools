@@ -5,9 +5,7 @@ using System.Text;
 using System.Xml;
 
 namespace HyoutaTools.Other.LuxPain {
-	static class Util {
-		public static Encoding ShiftJISEncoding = Encoding.GetEncoding( "shift-jis" );
-
+	static class LuxPainUtil {
 		public static String GetTextLuxPain( int Pointer, byte[] File ) {
 			if ( Pointer == -1 ) return null;
 
@@ -42,7 +40,7 @@ namespace HyoutaTools.Other.LuxPain {
 					if ( File[i] < 0x80 || File[i] >= 0xF0 ) {
 						tmp = string.Format( "<{0:x2}{1:x2}>", File[i], File[i + 1] );
 					} else {
-						tmp = Util.ShiftJISEncoding.GetString( File, i, 2 );
+						tmp = HyoutaTools.Util.ShiftJISEncoding.GetString( File, i, 2 );
 					}
 					Text.Append( tmp );
 					i += 2;
@@ -52,29 +50,6 @@ namespace HyoutaTools.Other.LuxPain {
 				Console.WriteLine( ex.ToString() );
 				return null;
 			}
-		}
-
-		public static byte[] HexStringToByteArray( string hex ) {
-			if ( hex.Length % 2 == 1 )
-				throw new Exception( "The binary key cannot have an odd number of digits" );
-
-			byte[] arr = new byte[hex.Length >> 1];
-
-			for ( int i = 0; i < hex.Length >> 1; ++i ) {
-				arr[i] = (byte)( ( GetHexVal( hex[i << 1] ) << 4 ) + ( GetHexVal( hex[( i << 1 ) + 1] ) ) );
-			}
-
-			return arr;
-		}
-
-		public static int GetHexVal( char hex ) {
-			int val = (int)hex;
-			//For uppercase A-F letters:
-			//return val - (val < 58 ? 48 : 55);
-			//For lowercase a-f letters:
-			//return val - (val < 58 ? 48 : 87);
-			//Or the two combined, but a bit slower:
-			return val - ( val < 58 ? 48 : ( val < 97 ? 55 : 87 ) );
 		}
 
 		public static String FormatForEditing( String Text ) {
@@ -113,12 +88,12 @@ namespace HyoutaTools.Other.LuxPain {
 					String s = tmp.Substring( 1, cnt - 1 );
 					tmp = tmp.Substring( cnt + 1 );
 
-					byte[] b = HexStringToByteArray( FormatForEditing( s ) );
+					byte[] b = HyoutaTools.Util.HexStringToByteArray( FormatForEditing( s ) );
 					bytes.AddRange( b );
 				} else {
 					String s = tmp.Substring( 0, 1 );
 					tmp = tmp.Substring( 1 );
-					byte[] b = ShiftJISEncoding.GetBytes( s );
+					byte[] b = HyoutaTools.Util.ShiftJISEncoding.GetBytes( s );
 					bytes.AddRange( b );
 				}
 			}

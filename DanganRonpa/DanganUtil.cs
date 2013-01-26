@@ -3,19 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HyoutaTools.DanganRonpa.Lin {
-	static class Util {
-		public static byte ParseDecOrHexToByte( string s ) {
-			s = s.Trim();
-
-			if ( s.StartsWith( "0x" ) ) {
-				s = s.Substring( 2 );
-				return Byte.Parse( s, System.Globalization.NumberStyles.HexNumber );
-			} else {
-				return Byte.Parse( s );
-			}
-		}
-
+namespace HyoutaTools.DanganRonpa {
+	class DanganUtil {
 		public static String CharacterIdToName( byte id ) {
 			switch ( id ) {
 				case 0x00: return "Naegi";

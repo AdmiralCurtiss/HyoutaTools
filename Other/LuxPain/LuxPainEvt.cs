@@ -22,7 +22,7 @@ namespace HyoutaTools.Other.LuxPain
 		public UInt16 Offset;
 
 		internal void FormatForEditing() {
-			Text = Util.FormatForEditing( Text );
+			Text = LuxPainUtil.FormatForEditing( Text );
 			return;
 		}
 
@@ -99,7 +99,7 @@ namespace HyoutaTools.Other.LuxPain
 				txt.OffsetLocation = loc;
 				txt.Offset = BitConverter.ToUInt16( Bytes, (int)loc );
 
-				txt.Text = Util.GetTextLuxPain( (int)( Header.TextLocation + ( txt.Offset * 2 ) ), Bytes );
+				txt.Text = LuxPainUtil.GetTextLuxPain( (int)( Header.TextLocation + ( txt.Offset * 2 ) ), Bytes );
 
 				TextEntries.Add( txt );
 			}
@@ -182,7 +182,7 @@ namespace HyoutaTools.Other.LuxPain
 				byte[] CurrentTextOffsetBytes = BitConverter.GetBytes( (UInt16)( CurrentTextOffset ) );
 				CurrentTextOffsetBytes.CopyTo( bytes, t.OffsetLocation - Header.TextOffsetsLocation );
 
-				byte[] text = Util.BackConvertLuxPainText( t.Text );
+				byte[] text = LuxPainUtil.BackConvertLuxPainText( t.Text );
 				text.CopyTo( bytes, TextLocationRelative );
 
 				TextLocationRelative += (uint)text.Length;

@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DanganRonpa\DanganUtil.cs" />
     <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
     <Compile Include="DanganRonpa\Font\Viewer\FontViewer.cs">
       <SubType>Form</SubType>
@@ -57,7 +58,6 @@
     </Compile>
     <Compile Include="DanganRonpa\Font\Viewer\Program.cs" />
     <Compile Include="DanganRonpa\Lin\LIN.cs" />
-    <Compile Include="DanganRonpa\Lin\Util.cs" />
     <Compile Include="DanganRonpa\Nonstop\NonstopForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,7 +115,6 @@
     <Compile Include="Tales\Vesperia\VesperiaUtil.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />
     <Compile Include="Trophy\TrophyNode.cs" />
-    <Compile Include="Trophy\Util.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicExport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicNpcCompare360\Program.cs" />
     <Compile Include="GraceNote\Vesperia\VVoicesGenerate\Program.cs" />
@@ -123,7 +122,7 @@
     <Compile Include="Other\GoldenSunDarkDawnMsgExtract\Program.cs" />
     <Compile Include="Other\LuxPain\LuxPainEvt.cs" />
     <Compile Include="GraceNote\LuxPainEvtImport\Program.cs" />
-    <Compile Include="Other\LuxPain\Util.cs" />
+    <Compile Include="Other\LuxPain\LuxPainUtil.cs" />
     <Compile Include="Other\NisPakEx\Program.cs" />
     <Compile Include="Other\NitroidDataBinEx\DataBinFileInfo.cs" />
     <Compile Include="Other\NitroidDataBinEx\Program.cs" />
