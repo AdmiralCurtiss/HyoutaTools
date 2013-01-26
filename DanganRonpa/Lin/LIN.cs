@@ -511,7 +511,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 									case "LoadScript": e.Type = 0x19; break;
 									case "Sprite": e.Type = 0x1E; break;
 									case "Speaker": e.Type = 0x21; break;
-									default: e.Type = Util.ParseDecOrHex( typestr ); break;
+									default: e.Type = Util.ParseDecOrHexToByte( typestr ); break;
 								}
 
 								List<byte> args = new List<byte>();
@@ -519,7 +519,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 									if ( bytestrs[i].Contains( '[' ) && bytestrs[i].Contains( ']' ) ) {
 										args.Add( Util.NameToCharacterId( bytestrs[i].Replace( "[", "" ).Replace( "]", "" ) ) );
 									} else {
-										args.Add( Util.ParseDecOrHex( bytestrs[i] ) );
+										args.Add( Util.ParseDecOrHexToByte( bytestrs[i] ) );
 									}
 								}
 								e.Arguments = args.ToArray();
@@ -531,7 +531,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 								} else if ( cmd == "WaitFrame" ) {
 									e.Type = 0x3B;
 								} else {
-									e.Type = Util.ParseDecOrHex( cmd );
+									e.Type = Util.ParseDecOrHexToByte( cmd );
 								}
 								e.Arguments = new byte[0];
 							}

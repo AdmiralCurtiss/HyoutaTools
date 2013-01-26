@@ -177,9 +177,7 @@ namespace HyoutaTools.Tales.Vesperia.TownMap.Viewer
 
         private void button1_Click(object sender, EventArgs e)
         {
-            byte[] File = System.IO.File.ReadAllBytes(Util.Path);
-
-            Table = new TownMapTable(File);
+            Table = new TownMapTable( Table.Filepath );
             UpdateFields();
         }
     }

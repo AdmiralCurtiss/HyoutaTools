@@ -54,7 +54,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 			}
 
 			String Text = sb.ToString();
-			Text = Util.RemoveTags( Text );
+			Text = VesperiaUtil.RemoveTags( Text );
 
 			if ( BoxByBox ) {
 				List<string> lst = new List<string>();
@@ -155,7 +155,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 		}
 
 		public void UpdateText( string Text ) {
-			Text = Util.RemoveTags( Text );
+			Text = VesperiaUtil.RemoveTags( Text );
 			if ( LastText == Text ) return;
 			LastText = Text;
 

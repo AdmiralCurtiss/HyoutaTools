@@ -16,8 +16,19 @@ namespace HyoutaTools.Tales.Vesperia.TownMap {
 		public int InfoAmount;
 
 		public TownMapInfo[] TownMapInfos;
+		public string Filepath;
 
 		public TownMapTable( byte[] File ) {
+			Initialize( File );
+		}
+
+		public TownMapTable( string Filepath ) {
+			this.Filepath = Filepath;
+			byte[] File = System.IO.File.ReadAllBytes( Filepath );
+			Initialize( File );
+		}
+
+		private void Initialize( byte[] File ) {
 			PointerOffset = HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, 0x0C ) );
 
 			LocationTileTableJPN = PointerOffset + HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, 0x156DC ) );

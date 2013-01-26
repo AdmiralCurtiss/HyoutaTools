@@ -107,7 +107,6 @@
     <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTile.cs" />
-    <Compile Include="Tales\Vesperia\TownMap\Util.cs" />
     <Compile Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,6 +114,7 @@
       <DependentUpon>TownMapDisplay.cs</DependentUpon>
     </Compile>
     <Compile Include="Tales\Vesperia\TownMap\Viewer\Program.cs" />
+    <Compile Include="Tales\Vesperia\VesperiaUtil.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />
     <Compile Include="Trophy\TrophyNode.cs" />
     <Compile Include="Trophy\Util.cs" />

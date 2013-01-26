@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HyoutaTools.DanganRonpa.Lin {
 	static class Util {
-		public static byte ParseDecOrHex( string s ) {
+		public static byte ParseDecOrHexToByte( string s ) {
 			s = s.Trim();
 
 			if ( s.StartsWith( "0x" ) ) {
