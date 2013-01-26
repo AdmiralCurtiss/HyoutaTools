@@ -47,7 +47,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmImport {
 			//*/
 
 
-			TrophyConfNode TROPSFM = HyoutaTools.Trophy.Util.ReadTropSfmWithTropConf( Filename, FilenameTropConf );
+			TrophyConfNode TROPSFM = TrophyConfNode.ReadTropSfmWithTropConf( Filename, FilenameTropConf );
 			System.IO.File.Copy( TemplateDB, NewDB );
 			InsertSQL( TROPSFM, "Data Source=" + NewDB, "Data Source=" + GracesDB );
 			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophyConf.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(true)));

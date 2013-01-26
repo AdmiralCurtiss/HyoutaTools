@@ -16,7 +16,7 @@ namespace HyoutaTools.Trophy.Viewer {
 				String TropConf = Game + "/TROPCONF.SFM";
 				String TropUsr = Game + "/TROPUSR.DAT";
 				if ( System.IO.File.Exists( TropConf ) && System.IO.File.Exists( TropUsr ) ) {
-					TrophyConfNode TROPSFM = Util.ReadTropSfmWithFolder( Game, "TROPCONF.SFM" );
+					TrophyConfNode TROPSFM = TrophyConfNode.ReadTropSfmWithFolder( Game, "TROPCONF.SFM" );
 					TrophyLists.Add( TROPSFM );
 				}
 			}
