@@ -44,7 +44,7 @@ namespace HyoutaTools.Tales.Xillia.TldatExtract {
 				e.CompressedSize = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x08 ) ) );
 				e.Offset = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x10 ) ) );
 				e.Hash = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x18 ) ) );
-				e.Extension = Util.TrimNull( Encoding.ASCII.GetString( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x1C ), 0x0A ) );
+				e.Extension = HyoutaTools.Util.TrimNull( Encoding.ASCII.GetString( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x1C ), 0x0A ) );
 				e.Unknown = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt16( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x26 ) ) );
 				EntryList.Add( e );
 			}
