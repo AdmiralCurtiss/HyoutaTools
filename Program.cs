@@ -5,7 +5,21 @@ using System.Text;
 
 namespace HyoutaTools {
 	class Program {
-		static void Main( string[] args ) {
+		static int Main( string[] args ) {
+			if ( args.Length > 0 ) {
+				string ProgramName = args[0];
+				List<string> ProgramArguments = new List<string>( args.Length - 1 );
+				for ( int i = 1; i < args.Length; ++i ) {
+					ProgramArguments.Add( args[i] );
+				}
+
+				switch ( ProgramName ) {
+					case "Generic.BlockCopy": return Generic.BlockCopy.BlockCopy.Execute( ProgramArguments.ToArray() );
+
+				}
+
+			}
+			return -1;
 		}
 	}
 }
