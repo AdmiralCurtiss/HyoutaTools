@@ -29,15 +29,15 @@ namespace HyoutaTools.Tales.Vesperia.TownMap {
 		}
 
 		private void Initialize( byte[] File ) {
-			PointerOffset = HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, 0x0C ) );
+			PointerOffset = Util.SwapEndian( BitConverter.ToInt32( File, 0x0C ) );
 
-			LocationTileTableJPN = PointerOffset + HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, 0x156DC ) );
-			LocationTileTableENG = PointerOffset + HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, 0x15710 ) );
+			LocationTileTableJPN = PointerOffset + Util.SwapEndian( BitConverter.ToInt32( File, 0x156DC ) );
+			LocationTileTableENG = PointerOffset + Util.SwapEndian( BitConverter.ToInt32( File, 0x15710 ) );
 
-			LocationOffsetTableJPN = PointerOffset + HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, 0x156E4 ) );
-			LocationOffsetTableENG = 0x04 + PointerOffset + HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, 0x15718 ) ); // increment by 4 so we don't have to check if we're on JPN or ENG later, those two originally point to the exact same location
+			LocationOffsetTableJPN = PointerOffset + Util.SwapEndian( BitConverter.ToInt32( File, 0x156E4 ) );
+			LocationOffsetTableENG = 0x04 + PointerOffset + Util.SwapEndian( BitConverter.ToInt32( File, 0x15718 ) ); // increment by 4 so we don't have to check if we're on JPN or ENG later, those two originally point to the exact same location
 
-			LocationInfoTable = PointerOffset + HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, 0x156BC ) );
+			LocationInfoTable = PointerOffset + Util.SwapEndian( BitConverter.ToInt32( File, 0x156BC ) );
 
 			// 0x188 / 8 -> 0x31, not sure where in file it's set but whatever
 			InfoAmount = 0x31;
@@ -46,10 +46,10 @@ namespace HyoutaTools.Tales.Vesperia.TownMap {
 
 			for ( int i = 0; i < InfoAmount; i++ ) {
 				int OffsetLocation = LocationOffsetTableJPN + ( i * 0x08 );
-				int TilesToSkip = HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, OffsetLocation ) );
+				int TilesToSkip = Util.SwapEndian( BitConverter.ToInt32( File, OffsetLocation ) );
 				int TilesLocationJPN = LocationTileTableJPN + ( TilesToSkip * 0x20 );
 				OffsetLocation = LocationOffsetTableENG + ( i * 0x08 );
-				TilesToSkip = HyoutaTools.Util.SwapEndian( BitConverter.ToInt32( File, OffsetLocation ) );
+				TilesToSkip = Util.SwapEndian( BitConverter.ToInt32( File, OffsetLocation ) );
 				int TilesLocationENG = LocationTileTableENG + ( TilesToSkip * 0x20 );
 
 				int InfoLocation = LocationInfoTable + ( i * 0xAC );

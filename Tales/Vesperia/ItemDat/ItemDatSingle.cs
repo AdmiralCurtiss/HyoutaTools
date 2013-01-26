@@ -82,14 +82,14 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		public UInt32[] UnknownRest;
 
 		public ItemDatSingle( int offset, byte[] file ) {
-			NamePointer = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( file, offset + 0x04 ) );
+			NamePointer = Util.SwapEndian( BitConverter.ToUInt32( file, offset + 0x04 ) );
 			ItemString = Encoding.ASCII.GetString( file, offset + 0x20, 0x20 );
-			DescriptionPointer = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( file, offset + 0x44 ) );
+			DescriptionPointer = Util.SwapEndian( BitConverter.ToUInt32( file, offset + 0x44 ) );
 
 			int startRest = 0x0;
 			UnknownRest = new UInt32[0x2E4 / 4];
 			for ( int i = 0; i < 0x2E4 / 4; ++i ) {
-				UnknownRest[i] = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( file, offset + startRest + i * 0x04 ) );
+				UnknownRest[i] = Util.SwapEndian( BitConverter.ToUInt32( file, offset + startRest + i * 0x04 ) );
 			}
 
 			return;

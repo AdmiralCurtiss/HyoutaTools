@@ -263,7 +263,7 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 		}
 
 		private static int[] GetLocation( byte[] File, int Max, int Pointer ) {
-			byte[] PointerBytes = System.BitConverter.GetBytes( HyoutaTools.Util.SwapEndian( (uint)Pointer ) );
+			byte[] PointerBytes = System.BitConverter.GetBytes( Util.SwapEndian( (uint)Pointer ) );
 			byte[] SearchBytes = new byte[] { 0x04, 0x0C, 0x00, 0x18, PointerBytes[0], PointerBytes[1], PointerBytes[2], PointerBytes[3] };
 
 			List<int> PointerArrayList = new List<int>();

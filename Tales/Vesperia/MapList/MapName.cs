@@ -14,11 +14,11 @@ namespace HyoutaTools.Tales.Vesperia.MapList {
 		public String Name3 = null;
 
 		public MapName( byte[] Bytes, uint Offset, uint Textstart ) {
-			Pointer1 = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)Offset ) );
+			Pointer1 = Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)Offset ) );
 			Pointer1 += Textstart;
-			Pointer2 = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)( Offset + 4 ) ) );
+			Pointer2 = Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)( Offset + 4 ) ) );
 			Pointer2 += Textstart;
-			Pointer3 = HyoutaTools.Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)( Offset + 8 ) ) );
+			Pointer3 = Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)( Offset + 8 ) ) );
 			Pointer3 += Textstart;
 		}
 

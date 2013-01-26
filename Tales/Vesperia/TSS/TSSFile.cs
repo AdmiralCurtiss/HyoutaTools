@@ -28,7 +28,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 
 			while ( CurrentLocation < EntriesEnd ) {
 				uint Instruction = BitConverter.ToUInt32( File, CurrentLocation );
-				EntryUIntList.Add( HyoutaTools.Util.SwapEndian( Instruction ) );
+				EntryUIntList.Add( Util.SwapEndian( Instruction ) );
 				CurrentLocation += 4;
 			}
 
@@ -88,7 +88,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 					}
 				}
 
-				EntryList.Add( new TSSEntry( OneEntry, HyoutaTools.Util.GetTextShiftJis( File, JPNPointer ), HyoutaTools.Util.GetTextShiftJis( File, ENGPointer ), JPNIndex, ENGIndex ) );
+				EntryList.Add( new TSSEntry( OneEntry, Util.GetTextShiftJis( File, JPNPointer ), Util.GetTextShiftJis( File, ENGPointer ), JPNIndex, ENGIndex ) );
 				//CurrentLocation += OneEntry.Length;
 				CurrentLocation++;
 			}
@@ -219,7 +219,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 
 				if ( e.StringJPN != null ) {
 					e.SetJPNPointer( ptr );
-					uint StringLength = (uint)HyoutaTools.Util.StringToBytesShiftJis( e.StringJPN ).Length;
+					uint StringLength = (uint)Util.StringToBytesShiftJis( e.StringJPN ).Length;
 					CurrentPointer += StringLength + 1;
 					if ( e.StringENG != null ) {
 						e.SetENGPointer( ptr + StringLength );
@@ -252,7 +252,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			}
 			foreach ( TSSEntry e in Entries ) {
 				if ( e.StringJPN != null ) {
-					Serialized.AddRange( HyoutaTools.Util.StringToBytesShiftJis( e.StringJPN ) );
+					Serialized.AddRange( Util.StringToBytesShiftJis( e.StringJPN ) );
 					Serialized.Add( 0x00 );
 				}
 				/* Only exporting JP and putting a pointer to that into both ENG and JPN slots

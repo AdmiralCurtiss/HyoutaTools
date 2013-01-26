@@ -63,8 +63,8 @@ namespace HyoutaTools.Trophy.Viewer
             if (u.Unlocked == 1)
             {
                 this.labelUnlocked.Text = "Acquired";
-				this.labelTimestamp.Text = HyoutaTools.Util.PS3TimeToDateTime( u.Timestamp1 ).ToString();
-				this.labelTimestamp2.Text = HyoutaTools.Util.PS3TimeToDateTime( u.Timestamp2 ).ToString();
+				this.labelTimestamp.Text = Util.PS3TimeToDateTime( u.Timestamp1 ).ToString();
+				this.labelTimestamp2.Text = Util.PS3TimeToDateTime( u.Timestamp2 ).ToString();
             }
             else
             {
