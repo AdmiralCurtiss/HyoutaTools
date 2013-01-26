@@ -29,8 +29,8 @@ namespace HyoutaTools {
 					// case "GraceNote.Vesperia.SCFOMBIN-to-GraceNote":
 					// case "Other.NitroidDataBinEx":
 					// case "GraceNote.Vesperia.StringDic-from-GraceNote":
-					//
-					//
+					// case "DanganRonpa.Pak.Extract":
+					// case "DanganRonpa.Pak.Pack":
 					//
 				}
 
