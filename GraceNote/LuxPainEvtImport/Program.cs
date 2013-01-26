@@ -5,7 +5,7 @@ using System.Text;
 using System.Data.SQLite;
 using HyoutaTools.Other.LuxPain;
 
-namespace HyoutaTools.GraceNote.LuxPainEvtDump {
+namespace HyoutaTools.GraceNote.LuxPainEvtImport {
 	class ScenarioString {
 		public int Pointer;
 		public String Jpn;

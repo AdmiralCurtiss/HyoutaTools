@@ -66,6 +66,7 @@
     <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
     <Compile Include="GraceNote\DumpDatabase\Util.cs" />
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
+    <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\To8chtxExport\Program.cs" />
@@ -92,7 +93,7 @@
     <Compile Include="Other\AutoExtract\Program.cs" />
     <Compile Include="Other\GoldenSunDarkDawnMsgExtract\Program.cs" />
     <Compile Include="Other\LuxPain\LuxPainEvt.cs" />
-    <Compile Include="GraceNote\LuxPainEvtDump\Program.cs" />
+    <Compile Include="GraceNote\LuxPainEvtImport\Program.cs" />
     <Compile Include="Other\LuxPain\Util.cs" />
     <Compile Include="Other\NisPakEx\Program.cs" />
     <Compile Include="Other\NitroidDataBinEx\DataBinFileInfo.cs" />
