@@ -26,16 +26,16 @@ namespace HyoutaTools {
 					// case "Tales.Vesperia.MapList":
 					// case "Other.NisPakEx":
 					// case "Tales.Vesperia.SpkdUnpack":
-					// case "GraceNote.Vesperia.SCFOMBIN-to-GraceNote":
+					// case "GraceNote.Vesperia.ScfombinImport":
 					// case "Other.NitroidDataBinEx":
-					// case "GraceNote.Vesperia.StringDic-from-GraceNote":
+					// case "GraceNote.Vesperia.StringDicExport":
 					// case "DanganRonpa.Pak.Extract":
 					// case "DanganRonpa.Pak.Pack":
 					// case "Other.AutoExtract":
 					// case "GraceNote.FindEarliestGracesJapaneseEntry":
 					// case "DanganRonpa.Nonstop.Viewer":
 					// case "GraceNote.DumpDatabase":
-					//
+					// case "GraceNote.TropSfmImport":
 					//
 					//
 					//

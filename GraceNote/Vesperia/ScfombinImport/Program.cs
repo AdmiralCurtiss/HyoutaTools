@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data.SQLite;
 
-namespace HyoutaTools.GraceNote.Vesperia.SCFOMBIN_to_GraceNote {
+namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 	class ScenarioString {
 		public int Pointer;
 		public String Jpn;

@@ -66,7 +66,11 @@
     <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
     <Compile Include="GraceNote\DumpDatabase\Util.cs" />
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
-    <Compile Include="GraceNote\Vesperia\StringDic-from-GraceNote\Program.cs" />
+    <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
+    <Compile Include="Trophy\TrophyConfNode.cs" />
+    <Compile Include="Trophy\TrophyNode.cs" />
+    <Compile Include="Trophy\Util.cs" />
+    <Compile Include="GraceNote\Vesperia\StringDicExport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicNpcCompare360\Program.cs" />
     <Compile Include="GraceNote\Vesperia\VVoicesGenerate\Program.cs" />
     <Compile Include="Other\AutoExtract\Program.cs" />
@@ -101,7 +105,7 @@
     <Compile Include="Tales\Vesperia\MapList\MapName.cs" />
     <Compile Include="Tales\Vesperia\MapList\Program.cs" />
     <Compile Include="Tales\Vesperia\MapList\Util.cs" />
-    <Compile Include="GraceNote\Vesperia\SCFOMBIN-to-GraceNote\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\ScfombinImport\Program.cs" />
     <Compile Include="Tales\Vesperia\SpkdUnpack\Program.cs" />
     <Compile Include="Tales\Vesperia\SpkdUnpack\Util.cs" />
     <Compile Include="Tales\Vesperia\TSS\TSSEntry.cs" />

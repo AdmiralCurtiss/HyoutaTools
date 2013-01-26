@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using HyoutaTools.Tales.Vesperia.TSS;
 
-namespace HyoutaTools.GraceNote.Vesperia.StringDic_from_GraceNote {
+namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 	class Program {
 		static void Execute( string[] args ) {
 			bool UseInsaneNames = false;
