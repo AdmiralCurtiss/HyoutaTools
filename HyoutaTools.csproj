@@ -187,6 +187,7 @@
     </Compile>
     <Compile Include="Trophy\Viewer\TropUsr.cs" />
     <Compile Include="Trophy\Viewer\TropUsrSingleTrophy.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DanganRonpa\Font\Viewer\FontViewer.resx">

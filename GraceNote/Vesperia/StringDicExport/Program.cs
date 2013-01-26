@@ -52,7 +52,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 				}
 
 				if ( UseInsaneNames ) {
-					e.StringJPN = Util.ReplaceWithInsaneNames( e.StringJPN );
+					e.StringJPN = HyoutaTools.Tales.Vesperia.TSS.Util.ReplaceWithInsaneNames( e.StringJPN );
 				}
 			}
 
