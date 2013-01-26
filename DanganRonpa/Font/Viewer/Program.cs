@@ -37,7 +37,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault( false );
-				Form1 form = new Form1( f, new System.Drawing.Bitmap( ImagePath ) );
+				FontViewer form = new FontViewer( f, new System.Drawing.Bitmap( ImagePath ) );
 				Application.Run( form );
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.ToString() );

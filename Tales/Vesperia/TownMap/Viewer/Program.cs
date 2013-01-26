@@ -13,7 +13,7 @@ namespace HyoutaTools.Tales.Vesperia.TownMap.Viewer {
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
-			Application.Run( new Form1( t ) );
+			Application.Run( new TownMapDisplay( t ) );
 		}
 	}
 }

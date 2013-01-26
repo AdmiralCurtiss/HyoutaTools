@@ -50,11 +50,11 @@
   <ItemGroup>
     <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
     <Compile Include="DanganRonpa\Font\Util.cs" />
-    <Compile Include="DanganRonpa\Font\Viewer\Form1.cs">
+    <Compile Include="DanganRonpa\Font\Viewer\FontViewer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DanganRonpa\Font\Viewer\Form1.designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="DanganRonpa\Font\Viewer\FontViewer.designer.cs">
+      <DependentUpon>FontViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="DanganRonpa\Font\Viewer\Program.cs" />
     <Compile Include="DanganRonpa\Lin\LIN.cs" />
@@ -89,11 +89,11 @@
     <Compile Include="Other\InvokeGimConv\Program.cs" />
     <Compile Include="Tales\Vesperia\Font\FontInfo.cs" />
     <Compile Include="Tales\Vesperia\Font\Util.cs" />
-    <Compile Include="Tales\Vesperia\Font\Viewer\Form1.cs">
+    <Compile Include="Tales\Vesperia\Font\Viewer\FontViewer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Tales\Vesperia\Font\Viewer\Form1.designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Tales\Vesperia\Font\Viewer\FontViewer.designer.cs">
+      <DependentUpon>FontViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="Tales\Vesperia\Font\Viewer\Program.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemDat.cs" />
@@ -112,11 +112,11 @@
     <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTile.cs" />
     <Compile Include="Tales\Vesperia\TownMap\Util.cs" />
-    <Compile Include="Tales\Vesperia\TownMap\Viewer\Form1.cs">
+    <Compile Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Tales\Vesperia\TownMap\Viewer\Form1.designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.designer.cs">
+      <DependentUpon>TownMapDisplay.cs</DependentUpon>
     </Compile>
     <Compile Include="Tales\Vesperia\TownMap\Viewer\Program.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />
@@ -189,20 +189,20 @@
     <Compile Include="Trophy\Viewer\TropUsrSingleTrophy.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DanganRonpa\Font\Viewer\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="DanganRonpa\Font\Viewer\FontViewer.resx">
+      <DependentUpon>FontViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
       <DependentUpon>NonstopForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tales\Vesperia\Font\Viewer\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Tales\Vesperia\Font\Viewer\FontViewer.resx">
+      <DependentUpon>FontViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\ItemDat\ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tales\Vesperia\TownMap\Viewer\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.resx">
+      <DependentUpon>TownMapDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Trophy\Viewer\GameSelectForm.resx">
       <DependentUpon>GameSelectForm.cs</DependentUpon>

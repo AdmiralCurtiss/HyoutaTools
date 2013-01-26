@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
-	public partial class Form1 : Form {
+	public partial class FontViewer : Form {
 		private FontInfo[] FontInfos;
 		private Bitmap[] Textures;
 
@@ -21,11 +21,11 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 
 		bool BoxByBox = false;
 
-		public Form1() {
+		public FontViewer() {
 			InitializeComponent();
 		}
 
-		public Form1( FontInfo[] f, String Font, int Fontblock, String[] Textlines, bool BoxByBox, bool ApproxDialogueColor ) {
+		public FontViewer( FontInfo[] f, String Font, int Fontblock, String[] Textlines, bool BoxByBox, bool ApproxDialogueColor ) {
 			InitializeComponent();
 			this.FontInfos = f;
 			this.BoxByBox = BoxByBox;

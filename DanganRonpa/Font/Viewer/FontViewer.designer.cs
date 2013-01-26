@@ -1,6 +1,6 @@
 ﻿namespace HyoutaTools.DanganRonpa.Font.Viewer
 {
-    partial class Form1
+    partial class FontViewer
     {
         /// <summary>
         /// Required designer variable.
@@ -296,7 +296,7 @@
 			this.panel1.Size = new System.Drawing.Size(954, 138);
 			this.panel1.TabIndex = 36;
 			// 
-			// Form1
+			// FontViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -319,8 +319,8 @@
 			this.Controls.Add(this.labelTiles);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.TownMapIDBox);
-			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Name = "FontViewer";
+			this.Text = "Dangan Ronpa Font Viewer";
 			((System.ComponentModel.ISupportInitialize)(this.TownMapIDBox)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownTileNumber)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();

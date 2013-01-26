@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HyoutaTools.DanganRonpa.Font.Viewer {
-	public partial class Form1 : Form {
+	public partial class FontViewer : Form {
 		private DRFontInfo FontInfo;
 		private Bitmap Texture;
 
@@ -16,11 +16,11 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 		bool BoxByBox = false;
 
-		public Form1() {
+		public FontViewer() {
 			InitializeComponent();
 		}
 
-		public Form1( DRFontInfo f, Bitmap tex ) {
+		public FontViewer( DRFontInfo f, Bitmap tex ) {
 			InitializeComponent();
 			this.FontInfo = f;
 

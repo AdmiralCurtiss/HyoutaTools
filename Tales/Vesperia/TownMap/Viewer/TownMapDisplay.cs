@@ -9,19 +9,19 @@ using System.Windows.Forms;
 
 namespace HyoutaTools.Tales.Vesperia.TownMap.Viewer
 {
-    public partial class Form1 : Form
+    public partial class TownMapDisplay : Form
     {
         TownMapTable Table;
 
         int XCorrection = Int32.MaxValue;
         int YCorrection = Int32.MaxValue;
 
-        public Form1()
+        public TownMapDisplay()
         {
             InitializeComponent();
         }
 
-        public Form1(TownMapTable Table)
+        public TownMapDisplay(TownMapTable Table)
         {
             InitializeComponent();
             this.Table = Table;

@@ -117,7 +117,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault( false );
-				Form1 form = new Form1( f, Font, Fontblock, TextLines, BoxByBox, DialogueBoxColor );
+				FontViewer form = new FontViewer( f, Font, Fontblock, TextLines, BoxByBox, DialogueBoxColor );
 
 				if ( Mode == ProgramMode.GUI ) {
 					Application.Run( form );
