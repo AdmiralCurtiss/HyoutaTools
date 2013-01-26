@@ -79,6 +79,8 @@
     </Compile>
     <Compile Include="Tales\Vesperia\ItemDat\RunItemViewer.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\Util.cs" />
+    <Compile Include="Tales\Vesperia\To8chtx\ChatFile.cs" />
+    <Compile Include="Tales\Vesperia\To8chtx\Util.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />
     <Compile Include="Trophy\TrophyNode.cs" />
     <Compile Include="Trophy\Util.cs" />
