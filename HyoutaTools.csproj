@@ -39,6 +39,8 @@
     <Reference Include="System.Data.SQLite">
       <HintPath>.\System.Data.SQLite.DLL</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,6 +48,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DanganRonpa\Nonstop\NonstopForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DanganRonpa\Nonstop\NonstopForm.designer.cs">
+      <DependentUpon>NonstopForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DanganRonpa\Nonstop\Nonstop.cs" />
+    <Compile Include="DanganRonpa\Nonstop\NonstopSingle.cs" />
+    <Compile Include="DanganRonpa\Nonstop\RunNonstopForm.cs" />
     <Compile Include="DanganRonpa\Pak\Program.cs" />
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
     <Compile Include="DanganRonpa\umdimagedat\Util.cs" />
@@ -99,7 +110,11 @@
     <Compile Include="Tales\Xillia\Util.cs" />
     <Compile Include="Tales\Xillia\XilliaScriptFile.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
+      <DependentUpon>NonstopForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
