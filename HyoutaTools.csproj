@@ -47,10 +47,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
+    <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tales\tlzc\7zip\Common\CommandLineParser.cs" />
+    <Compile Include="Tales\tlzc\7zip\Common\CRC.cs" />
+    <Compile Include="Tales\tlzc\7zip\Common\InBuffer.cs" />
+    <Compile Include="Tales\tlzc\7zip\Common\OutBuffer.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="Tales\tlzc\7zip\ICoder.cs" />
+    <Compile Include="Tales\tlzc\TLZC.cs" />
+    <Compile Include="Tales\tlzc\tlzcmain.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="GraceNote\" />
     <Folder Include="Tales\Vesperia\" />
     <Folder Include="Tales\Xillia\" />
   </ItemGroup>
