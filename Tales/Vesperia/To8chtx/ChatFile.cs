@@ -112,9 +112,9 @@ namespace HyoutaTools.Tales.Vesperia.To8chtx {
 			byte ByteNull = 0x00;
 
 			foreach ( ChatFileLine Line in Lines ) {
-				Serialized.AddRange( Util.StringToBytes( Line.SName ) );
+				Serialized.AddRange( HyoutaTools.Util.StringToBytesShiftJis( Line.SName ) );
 				Serialized.Add( ByteNull );
-				Serialized.AddRange( Util.StringToBytes( Line.SENG ) );
+				Serialized.AddRange( HyoutaTools.Util.StringToBytesShiftJis( Line.SENG ) );
 				Serialized.Add( ByteNull );
 			}
 
@@ -125,11 +125,11 @@ namespace HyoutaTools.Tales.Vesperia.To8chtx {
 			uint Size = Header.TextStart;
 			for ( int i = 0; i < Lines.Length; i++ ) {
 				Lines[i].Name = Size - Header.TextStart;
-				Size += (uint)Util.StringToBytes( Lines[i].SName ).Length;
+				Size += (uint)HyoutaTools.Util.StringToBytesShiftJis( Lines[i].SName ).Length;
 				Size++;
 				Lines[i].JPN = Size - Header.TextStart;
 				Lines[i].ENG = Size - Header.TextStart;
-				Size += (uint)Util.StringToBytes( Lines[i].SENG ).Length;
+				Size += (uint)HyoutaTools.Util.StringToBytesShiftJis( Lines[i].SENG ).Length;
 				Size++;
 			}
 

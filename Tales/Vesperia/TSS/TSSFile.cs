@@ -219,7 +219,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 
 				if ( e.StringJPN != null ) {
 					e.SetJPNPointer( ptr );
-					uint StringLength = (uint)Util.StringToBytes( e.StringJPN ).Length;
+					uint StringLength = (uint)HyoutaTools.Util.StringToBytesShiftJis( e.StringJPN ).Length;
 					CurrentPointer += StringLength + 1;
 					if ( e.StringENG != null ) {
 						e.SetENGPointer( ptr + StringLength );
@@ -252,7 +252,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			}
 			foreach ( TSSEntry e in Entries ) {
 				if ( e.StringJPN != null ) {
-					Serialized.AddRange( Util.StringToBytes( e.StringJPN ) );
+					Serialized.AddRange( HyoutaTools.Util.StringToBytesShiftJis( e.StringJPN ) );
 					Serialized.Add( 0x00 );
 				}
 				/* Only exporting JP and putting a pointer to that into both ENG and JPN slots

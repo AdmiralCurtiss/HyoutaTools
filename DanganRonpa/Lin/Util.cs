@@ -5,8 +5,6 @@ using System.Text;
 
 namespace HyoutaTools.DanganRonpa.Lin {
 	static class Util {
-		public static Encoding ShiftJISEncoding = Encoding.GetEncoding( "shift-jis" );
-
 		public static byte ParseDecOrHex( string s ) {
 			s = s.Trim();
 
@@ -91,19 +89,5 @@ namespace HyoutaTools.DanganRonpa.Lin {
 			}
 		}
 
-		public static int AlignToByteBoundary( int x, int boundary ) {
-			int diff = x % boundary;
-			if ( diff == 0 ) return x;
-
-			diff = boundary - diff;
-			return x + diff;
-		}
-
-
-		public static byte[] StringToBytes( String s ) {
-			//byte[] bytes = ShiftJISEncoding.GetBytes(s);
-			//return bytes.TakeWhile(subject => subject != 0x00).ToArray();
-			return ShiftJISEncoding.GetBytes( s );
-		}
 	}
 }

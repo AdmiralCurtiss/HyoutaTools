@@ -104,7 +104,6 @@
     </Compile>
     <Compile Include="Tales\Vesperia\ItemDat\RunItemViewer.cs" />
     <Compile Include="Tales\Vesperia\To8chtx\ChatFile.cs" />
-    <Compile Include="Tales\Vesperia\To8chtx\Util.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTile.cs" />

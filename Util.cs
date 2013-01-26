@@ -97,6 +97,20 @@ namespace HyoutaTools {
 			}
 			return s;
 		}
+		public static byte[] StringToBytesShiftJis( String s ) {
+			//byte[] bytes = ShiftJISEncoding.GetBytes(s);
+			//return bytes.TakeWhile(subject => subject != 0x00).ToArray();
+			return ShiftJISEncoding.GetBytes( s );
+		}
+		#endregion
+
+		#region TimeUtils
+		public static DateTime UnixTimeToDateTime( uint unixTime ) {
+			return new DateTime( 1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).AddSeconds( unixTime ).ToLocalTime();
+		}
+		public static DateTime PS3TimeToDateTime( ulong PS3Time ) {
+			return new DateTime( 1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).AddMilliseconds( PS3Time / 1000 ).ToLocalTime();
+		}
 		#endregion
 	}
 }

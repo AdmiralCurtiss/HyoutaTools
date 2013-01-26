@@ -45,7 +45,6 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			}
 
 			String Text = sb.ToString();
-			Text = Util.RemoveTags( Text );
 
 			if ( BoxByBox ) {
 				List<string> lst = new List<string>();

@@ -5,8 +5,6 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.TSS {
 	static class Util {
-		public static Encoding ShiftJISEncoding = Encoding.GetEncoding( "shift-jis" );
-
 		private static String[][] InsaneNames = new String[][] {
             new String[] { "Commandant Alexei", "Emperor Peony Wesker-Dumbledore" } ,
             new String[] { "commandant Alexei", "Emperor Peony Wesker-Dumbledore" } ,
@@ -39,12 +37,6 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 				input = input.Replace( s[0], s[1] );
 			}
 			return input;
-		}
-
-		public static byte[] StringToBytes( String s ) {
-			//byte[] bytes = ShiftJISEncoding.GetBytes(s);
-			//return bytes.TakeWhile(subject => subject != 0x00).ToArray();
-			return ShiftJISEncoding.GetBytes( s );
 		}
 	}
 }

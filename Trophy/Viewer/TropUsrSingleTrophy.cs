@@ -52,7 +52,7 @@ namespace HyoutaTools.Trophy.Viewer {
 		}
 
 		public override string ToString() {
-			return Util.PS3TimeToDateTime( Timestamp1 ).ToString();
+			return HyoutaTools.Util.PS3TimeToDateTime( Timestamp1 ).ToString();
 		}
 	}
 }

@@ -6,7 +6,6 @@ using System.Xml;
 
 namespace HyoutaTools.Trophy {
 	static class Util {
-		public static Encoding ShiftJISEncoding = Encoding.GetEncoding( "shift-jis" );
 
 		public static TrophyConfNode ReadTropSfmWithTropConf( String Filename, String FilenameTropConf ) {
 			String XMLFile = System.IO.File.ReadAllText( Filename, Encoding.UTF8 );
@@ -56,12 +55,5 @@ namespace HyoutaTools.Trophy {
 		}
 
 
-		public static DateTime UnixTimeToDateTime( uint unixTime ) {
-			return new DateTime( 1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).AddSeconds( unixTime ).ToLocalTime();
-		}
-
-		internal static object PS3TimeToDateTime( ulong PS3Time ) {
-			return new DateTime( 1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).AddMilliseconds( PS3Time / 1000 ).ToLocalTime();
-		}
 	}
 }
