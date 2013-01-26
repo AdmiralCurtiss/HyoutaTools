@@ -18,7 +18,8 @@ namespace HyoutaTools {
 					case "Generic.BlockCopy": return Generic.BlockCopy.BlockCopy.Execute( ProgramArguments.ToArray() );
 					case "Generic.ByteHotfix": return Generic.ByteHotfix.ByteHotfix.Execute( ProgramArguments.ToArray() );
 					case "Tales.tlzc": return Tales.tlzc.tlzcmain.Execute( ProgramArguments.ToArray() );
-					// case "GraceNote.LuxPainDump":
+					// case "GraceNote.LuxPainEvtExport":
+					// case "GraceNote.LuxPainEvtImport":
 					// case "GraceNote.XilliaScriptFileDump":
 					// case "Other.GoldenSunDarkDawnMsgExtract":
 					// case "GraceNote.Vesperia.VVoicesGenerate":
@@ -41,13 +42,11 @@ namespace HyoutaTools {
 					// case "Tales.Vesperia.ItemDat.Viewer";
 					// case "GraceNote.To8chtxExport";
 					// case "GraceNote.To8chtxImport";
-					//
-					//
-					//
-					//
-					//
-					//
-					//
+					// case "Tales.Vesperia.Font.Viewer";
+					// case "DanganRonpa.Font.Viewer;
+					// case "GraceNote.DanganRonpa.LinImport";
+					// case "GraceNote.DanganRonpa.PakTextExport";
+					// case "GraceNote.DanganRonpa.PakTextImport";
 				}
 
 			}

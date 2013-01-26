@@ -48,6 +48,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
+    <Compile Include="DanganRonpa\Font\Util.cs" />
+    <Compile Include="DanganRonpa\Font\Viewer\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DanganRonpa\Font\Viewer\Form1.designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DanganRonpa\Font\Viewer\Program.cs" />
+    <Compile Include="DanganRonpa\Lin\LIN.cs" />
+    <Compile Include="DanganRonpa\Lin\Util.cs" />
     <Compile Include="DanganRonpa\Nonstop\NonstopForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,6 +73,7 @@
     <Compile Include="DanganRonpa\umdimagedat\Util.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
+    <Compile Include="GraceNote\DanganRonpa\LinImport\Program.cs" />
     <Compile Include="GraceNote\DumpDatabase\Program.cs" />
     <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
     <Compile Include="GraceNote\DumpDatabase\Util.cs" />
@@ -72,6 +84,15 @@
     <Compile Include="GraceNote\Vesperia\To8chtxExport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
+    <Compile Include="Tales\Vesperia\Font\FontInfo.cs" />
+    <Compile Include="Tales\Vesperia\Font\Util.cs" />
+    <Compile Include="Tales\Vesperia\Font\Viewer\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tales\Vesperia\Font\Viewer\Form1.designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tales\Vesperia\Font\Viewer\Program.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemDat.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemDatSingle.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemForm.cs">
@@ -154,8 +175,14 @@
     <Compile Include="Trophy\Viewer\TropUsrSingleTrophy.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DanganRonpa\Font\Viewer\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
       <DependentUpon>NonstopForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tales\Vesperia\Font\Viewer\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\ItemDat\ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
@@ -167,7 +194,12 @@
       <DependentUpon>TrophyForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DanganRonpa\PakText\" />
+    <Folder Include="GraceNote\DanganRonpa\LinExport\" />
+    <Folder Include="GraceNote\DanganRonpa\PakTextExport\" />
+    <Folder Include="GraceNote\DanganRonpa\PakTextImport\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
