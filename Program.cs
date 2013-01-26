@@ -15,7 +15,7 @@ namespace HyoutaTools {
 
 				switch ( ProgramName ) {
 					case "Generic.BlockCopy": return Generic.BlockCopy.BlockCopy.Execute( ProgramArguments.ToArray() );
-
+					case "Generic.ByteHotfix": return Generic.ByteHotfix.ByteHotfix.Execute( ProgramArguments.ToArray() );
 				}
 
 			}
