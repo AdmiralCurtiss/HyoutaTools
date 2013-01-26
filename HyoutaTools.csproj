@@ -51,6 +51,7 @@
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
     <Compile Include="GraceNote\Vesperia\StringDic-from-GraceNote\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\StringDicNpcCompare360\Program.cs" />
     <Compile Include="GraceNote\Vesperia\VVoicesGenerate\Program.cs" />
     <Compile Include="Other\GoldenSunDarkDawnMsgExtract\Program.cs" />
     <Compile Include="Other\LuxPain\LuxPainEvt.cs" />

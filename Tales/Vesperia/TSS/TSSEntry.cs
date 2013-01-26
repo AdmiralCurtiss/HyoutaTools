@@ -8,8 +8,8 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public uint[] Entry;
 		public String StringJPN;
 		public String StringENG;
-		private int StringJPNIndex;
-		private int StringENGIndex;
+		public int StringJPNIndex;
+		public int StringENGIndex;
 
 		public TSSEntry( uint[] Entry, String StringJPN, String StringENG, int StringJPNIndex, int StringENGIndex ) {
 			this.Entry = Entry;
