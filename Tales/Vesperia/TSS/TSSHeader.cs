@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.TSS {
-	class TSSHeader {
+	public class TSSHeader {
 		public UInt32 Magic;
 		public UInt32 CodeStart;
 		public UInt32 CodeLength;

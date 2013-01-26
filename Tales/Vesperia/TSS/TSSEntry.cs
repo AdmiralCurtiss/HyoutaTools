@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.TSS {
-	class TSSEntry {
+	public class TSSEntry {
 		public uint[] Entry;
 		public String StringJPN;
 		public String StringENG;

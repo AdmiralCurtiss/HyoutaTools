@@ -68,6 +68,17 @@
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
+    <Compile Include="Other\InvokeGimConv\Program.cs" />
+    <Compile Include="Tales\Vesperia\ItemDat\ItemDat.cs" />
+    <Compile Include="Tales\Vesperia\ItemDat\ItemDatSingle.cs" />
+    <Compile Include="Tales\Vesperia\ItemDat\ItemForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tales\Vesperia\ItemDat\ItemForm.designer.cs">
+      <DependentUpon>ItemForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tales\Vesperia\ItemDat\RunItemViewer.cs" />
+    <Compile Include="Tales\Vesperia\ItemDat\Util.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />
     <Compile Include="Trophy\TrophyNode.cs" />
     <Compile Include="Trophy\Util.cs" />
@@ -121,6 +132,9 @@
   <ItemGroup>
     <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
       <DependentUpon>NonstopForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tales\Vesperia\ItemDat\ItemForm.resx">
+      <DependentUpon>ItemForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

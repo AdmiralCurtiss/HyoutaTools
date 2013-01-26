@@ -6,7 +6,7 @@ using System.Data.SQLite;
 using System.Text.RegularExpressions;
 
 namespace HyoutaTools.Tales.Vesperia.TSS {
-	class TSSFile {
+	public class TSSFile {
 		public TSSHeader Header;
 		public TSSEntry[] Entries;
 		public byte[] File;
