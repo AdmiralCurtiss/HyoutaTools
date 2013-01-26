@@ -54,6 +54,15 @@ namespace HyoutaTools.DanganRonpa.PakText {
 				}
 
 				Byte[] bytetext = Encoding.Unicode.GetBytes( Text );
+				if ( bytetext[0] != 0xFF || bytetext[1] != 0xFE ) {
+					Byte[] tmp = new byte[bytetext.Length + 2];
+					tmp[0] = 0xFF;
+					tmp[1] = 0xFE;
+
+					bytetext.CopyTo( tmp, 2 );
+
+					bytetext = tmp;
+				}
 				startpoints[i] = total;
 				total += bytetext.Length;
 			}
@@ -70,7 +79,20 @@ namespace HyoutaTools.DanganRonpa.PakText {
 				}
 
 				Byte[] bytetext = Encoding.Unicode.GetBytes( Text );
+				if ( bytetext[0] != 0xFF || bytetext[1] != 0xFE ) {
+					Byte[] tmp = new byte[bytetext.Length + 2];
+					tmp[0] = 0xFF;
+					tmp[1] = 0xFE;
+
+					bytetext.CopyTo( tmp, 2 );
+
+					bytetext = tmp;
+				}
 				Bytes.AddRange( bytetext );
+			}
+
+			while ( Bytes.Count % 1024 != 0 ) {
+				Bytes.Add( 0x00 );
 			}
 
 			return Bytes.ToArray();
