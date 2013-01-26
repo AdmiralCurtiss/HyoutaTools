@@ -56,6 +56,8 @@
     <Compile Include="GraceNote\LuxPainEvtDump\Program.cs" />
     <Compile Include="Other\LuxPain\Util.cs" />
     <Compile Include="Other\NisPakEx\Program.cs" />
+    <Compile Include="Other\NitroidDataBinEx\DataBinFileInfo.cs" />
+    <Compile Include="Other\NitroidDataBinEx\Program.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tales\tlzc\7zip\Common\CommandLineParser.cs" />

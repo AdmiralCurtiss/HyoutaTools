@@ -27,7 +27,7 @@ namespace HyoutaTools {
 					// case "Other.NisPakEx":
 					// case "Tales.Vesperia.SpkdUnpack":
 					// case "GraceNote.Vesperia.SCFOMBIN-to-GraceNote":
-					//
+					// case "Other.NitroidDataBinEx":
 					//
 					//
 					//
