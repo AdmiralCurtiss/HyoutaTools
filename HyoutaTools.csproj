@@ -108,6 +108,17 @@
     <Compile Include="Tales\Vesperia\ItemDat\Util.cs" />
     <Compile Include="Tales\Vesperia\To8chtx\ChatFile.cs" />
     <Compile Include="Tales\Vesperia\To8chtx\Util.cs" />
+    <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
+    <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />
+    <Compile Include="Tales\Vesperia\TownMap\TownMapTile.cs" />
+    <Compile Include="Tales\Vesperia\TownMap\Util.cs" />
+    <Compile Include="Tales\Vesperia\TownMap\Viewer\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tales\Vesperia\TownMap\Viewer\Form1.designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tales\Vesperia\TownMap\Viewer\Program.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />
     <Compile Include="Trophy\TrophyNode.cs" />
     <Compile Include="Trophy\Util.cs" />
@@ -189,6 +200,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\ItemDat\ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tales\Vesperia\TownMap\Viewer\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Trophy\Viewer\GameSelectForm.resx">
       <DependentUpon>GameSelectForm.cs</DependentUpon>

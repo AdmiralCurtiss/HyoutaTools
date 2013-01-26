@@ -47,6 +47,7 @@ namespace HyoutaTools {
 					// case "GraceNote.DanganRonpa.LinImport";
 					// case "GraceNote.DanganRonpa.PakTextExport";
 					// case "GraceNote.DanganRonpa.PakTextImport";
+					// case "Tales.Vesperia.TownMap.Viewer";
 				}
 
 			}
