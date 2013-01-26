@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 
 namespace HyoutaTools.Trophy {
-	class TrophyNode {
+	class TrophyNode : IComparable {
 		public String ID;
 		public bool Hidden;
 		public String TType;
@@ -67,5 +67,19 @@ namespace HyoutaTools.Trophy {
 
 			return sb.ToString();
 		}
+
+
+
+		#region IComparable Members
+
+		public int CompareTo( object obj ) {
+			TrophyNode t = (TrophyNode)obj;
+			int CurrentID = Int32.Parse( this.ID );
+			int OtherID = Int32.Parse( t.ID );
+
+			return CurrentID - OtherID;
+		}
+
+		#endregion
 	}
 }
