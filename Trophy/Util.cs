@@ -48,13 +48,15 @@ namespace HyoutaTools.Trophy {
 					i++;
 				}
 				String Text = Util.ShiftJISEncoding.GetString( File, Pointer, i - Pointer );
+				//String Text = Util.ShiftJISEncoding.GetString(File, Pointer, 0x400);
 				return Text;
 			} catch ( Exception ) {
 				return null;
 			}
 		}
 
-		public static TrophyConfNode ReadTropSfm( String Filename, String FilenameTropConf ) {
+
+		public static TrophyConfNode ReadTropSfmWithTropConf( String Filename, String FilenameTropConf ) {
 			String XMLFile = System.IO.File.ReadAllText( Filename, Encoding.UTF8 );
 			String Signature;
 			try {
@@ -77,7 +79,37 @@ namespace HyoutaTools.Trophy {
 			doc.Load( Filename );
 
 			XmlElement root = doc.DocumentElement;
-			return new TrophyConfNode( root, Signature, SignatureTropConf );
+			return new TrophyConfNode( root, Signature, SignatureTropConf, null );
+		}
+
+		public static TrophyConfNode ReadTropSfmWithFolder( String Folder, String Filename ) {
+			if ( !Folder.EndsWith( "/" ) && !Folder.EndsWith( "\\" ) ) {
+				Folder = Folder + "/";
+			}
+			String XMLFile = System.IO.File.ReadAllText( Folder + Filename, Encoding.UTF8 );
+			XMLFile = XMLFile.Substring( 0x40 ).TrimEnd( '\0' );
+			String Signature;
+			try {
+				Signature = XMLFile.Substring( XMLFile.IndexOf( "<!--Sce-Np-Trophy-Signature: " ) + "<!--Sce-Np-Trophy-Signature: ".Length );
+				Signature = Signature.Substring( 0, Signature.IndexOf( "-->" ) );
+			} catch ( Exception ) {
+				Signature = "";
+			}
+
+			XmlDocument doc = new XmlDocument();
+			doc.LoadXml( XMLFile );
+
+			XmlElement root = doc.DocumentElement;
+			return new TrophyConfNode( root, Signature, Signature, Folder );
+		}
+
+
+		public static DateTime UnixTimeToDateTime( uint unixTime ) {
+			return new DateTime( 1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).AddSeconds( unixTime ).ToLocalTime();
+		}
+
+		internal static object PS3TimeToDateTime( ulong PS3Time ) {
+			return new DateTime( 1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).AddMilliseconds( PS3Time / 1000 ).ToLocalTime();
 		}
 	}
 }

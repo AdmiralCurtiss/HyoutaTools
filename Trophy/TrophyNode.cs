@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 
 namespace HyoutaTools.Trophy {
-	class TrophyNode : IComparable {
+	public class TrophyNode : IComparable {
 		public String ID;
 		public bool Hidden;
 		public String TType;
@@ -14,7 +14,35 @@ namespace HyoutaTools.Trophy {
 		public String Name;
 		public String Detail;
 
-		public TrophyNode( XmlNode Node ) {
+		public String Folder;
+
+		private System.Drawing.Image _TrophyImage = null;
+		private System.Drawing.Image _TrophyThumbnail = null;
+
+		public System.Drawing.Image TrophyImage {
+			get {
+				if ( _TrophyImage == null ) LoadImage();
+				return _TrophyImage;
+			}
+		}
+		public System.Drawing.Image TrophyThumbnail {
+			get {
+				if ( _TrophyThumbnail == null ) LoadThumbnail();
+				return _TrophyThumbnail;
+			}
+		}
+
+		private void LoadImage() {
+			String pngname = "TROP" + this.ID + ".PNG ";
+			_TrophyImage = System.Drawing.Image.FromFile( Folder + pngname );
+		}
+
+		private void LoadThumbnail() {
+			String pngname = "TROP" + this.ID + ".PNG ";
+			_TrophyThumbnail = System.Drawing.Image.FromFile( Folder + pngname ).GetThumbnailImage( 60, 60, delegate { return false; }, System.IntPtr.Zero );
+		}
+
+		public TrophyNode( XmlNode Node, String Folder ) {
 			ID = Node.Attributes["id"].Value;
 			Hidden = Node.Attributes["hidden"].Value == "yes";
 			TType = Node.Attributes["ttype"].Value;
@@ -22,15 +50,18 @@ namespace HyoutaTools.Trophy {
 
 			Name = Node["name"].InnerText;
 			Detail = Node["detail"].InnerText;
+
+			this.Folder = Folder;
 		}
 
-		public TrophyNode( String ID, bool Hidden, String TType, String PID, String Name, String Detail ) {
+		public TrophyNode( String ID, bool Hidden, String TType, String PID, String Name, String Detail, String Folder ) {
 			this.ID = ID;
 			this.Hidden = Hidden;
 			this.TType = TType;
 			this.PID = PID;
 			this.Name = Name;
 			this.Detail = Detail;
+			this.Folder = Folder;
 		}
 
 		public String ExportTropSFM( bool TropConf ) {
@@ -68,6 +99,10 @@ namespace HyoutaTools.Trophy {
 			return sb.ToString();
 		}
 
+
+		public override string ToString() {
+			return this.Name;
+		}
 
 
 		#region IComparable Members

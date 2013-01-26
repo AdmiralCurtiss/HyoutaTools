@@ -47,7 +47,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmImport {
 			//*/
 
 
-			TrophyConfNode TROPSFM = Util.ReadTropSfm( Filename, FilenameTropConf );
+			TrophyConfNode TROPSFM = Util.ReadTropSfmWithTropConf( Filename, FilenameTropConf );
 			System.IO.File.Copy( TemplateDB, NewDB );
 			InsertSQL( TROPSFM, "Data Source=" + NewDB, "Data Source=" + GracesDB );
 			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophyConf.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(true)));
@@ -113,7 +113,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmImport {
 				int JPMaxID = Int32.Parse( JPMaxIDObject.ToString() ); // wtf why doesn't this work directly?
 				int ENID = 1;
 
-				foreach ( TrophyNode Trophy in TROPSFM.Trophies ) {
+				foreach ( TrophyNode Trophy in TROPSFM.Trophies.Values ) {
 					// fetch GracesJapanese ID or generate new & insert new text
 					JapaneseSearchParam.Value = Trophy.Name;
 					object JPIDobj = CommandSearchJapanese.ExecuteScalar();

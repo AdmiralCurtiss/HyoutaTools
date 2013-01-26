@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using HyoutaTools.Trophy.Viewer;
 
 namespace HyoutaTools.Trophy {
-	class TrophyConfNode {
+	public class TrophyConfNode {
 		public String SceNpTrophySignature;
 		public String SceNpTrophySignature_TropConf;
 		public String version;
@@ -17,9 +18,41 @@ namespace HyoutaTools.Trophy {
 		public String TitleName;
 		public String TitleDetail;
 
-		public List<TrophyNode> Trophies;
+		public Dictionary<uint, TrophyNode> Trophies;
 
-		public TrophyConfNode( XmlNode Node, String TrophySignature, String TrophyConfigSignature ) {
+		public String Folder;
+
+		public TropUsr TropUsrFile;
+
+
+		private System.Drawing.Image _GameImage = null;
+		private System.Drawing.Image _GameThumbnail = null;
+
+		public System.Drawing.Image GameImage {
+			get {
+				if ( _GameImage == null ) LoadImage();
+				return _GameImage;
+			}
+		}
+		public System.Drawing.Image GameThumbnail {
+			get {
+				if ( _GameThumbnail == null ) LoadThumbnail();
+				return _GameThumbnail;
+			}
+		}
+
+		private void LoadImage() {
+			String pngname = "ICON0.PNG";
+			_GameImage = System.Drawing.Image.FromFile( Folder + pngname ); // 320x176
+		}
+
+		private void LoadThumbnail() {
+			String pngname = "ICON0.PNG";
+			_GameThumbnail = System.Drawing.Image.FromFile( Folder + pngname ).GetThumbnailImage( 160, 88, delegate { return false; }, System.IntPtr.Zero );
+		}
+
+
+		public TrophyConfNode( XmlNode Node, String TrophySignature, String TrophyConfigSignature, String Folder ) {
 			SceNpTrophySignature = TrophySignature;
 			SceNpTrophySignature_TropConf = TrophyConfigSignature;
 
@@ -31,17 +64,23 @@ namespace HyoutaTools.Trophy {
 			parentallevel_licensearea = Node["parental-level"].Attributes["license-area"].Value;
 			TitleName = Node["title-name"].InnerText;
 			TitleDetail = Node["title-detail"].InnerText;
+			this.Folder = Folder;
 
 			XmlNodeList TrophyNodes = Node.SelectNodes( "trophy" );
 
-			Trophies = new List<TrophyNode>();
+			if ( Folder != null ) {
+				TropUsrFile = new TropUsr( System.IO.File.ReadAllBytes( Folder + "TROPUSR.DAT" ) );
+			}
+
+			Trophies = new Dictionary<uint, TrophyNode>();
 			foreach ( XmlNode Trophy in TrophyNodes ) {
-				Trophies.Add( new TrophyNode( Trophy ) );
+				TrophyNode t = new TrophyNode( Trophy, Folder );
+				Trophies.Add( UInt32.Parse( t.ID ), t );
 			}
 		}
 
 		public TrophyConfNode( String SceNpTrophySignature, String SceNpTrophySignature_TropConf, String version, String npcommid, String trophysetversion,
-							  String parentallevel, String parentallevel_licensearea, String TitleName, String TitleDetail ) {
+							  String parentallevel, String parentallevel_licensearea, String TitleName, String TitleDetail, String Folder ) {
 			this.SceNpTrophySignature = SceNpTrophySignature;
 			this.SceNpTrophySignature_TropConf = SceNpTrophySignature_TropConf;
 			this.version = version;
@@ -51,6 +90,68 @@ namespace HyoutaTools.Trophy {
 			this.parentallevel_licensearea = parentallevel_licensearea;
 			this.TitleName = TitleName;
 			this.TitleDetail = TitleDetail;
+			this.Folder = Folder;
+		}
+
+		public void SortBy( Comparison<TropUsrSingleTrophy> SortType, bool Descending ) {
+			List<TropUsrSingleTrophy> TrophyInfoList = new List<TropUsrSingleTrophy>( TropUsrFile.TrophyInfos.Values.Count );
+			foreach ( TropUsrSingleTrophy t in TropUsrFile.TrophyInfos.Values ) {
+				TrophyInfoList.Add( t );
+			}
+
+			TrophyInfoList.Sort( SortType );
+
+			Dictionary<uint, TropUsrSingleTrophy> NewDict = new Dictionary<uint, TropUsrSingleTrophy>( TropUsrFile.TrophyInfos.Count );
+			if ( Descending ) {
+				for ( int i = TrophyInfoList.Count - 1; i >= 0; i-- ) NewDict.Add( TrophyInfoList[i].TrophyID, TrophyInfoList[i] );
+			} else {
+				foreach ( TropUsrSingleTrophy t in TrophyInfoList ) NewDict.Add( t.TrophyID, t );
+			}
+			TropUsrFile.TrophyInfos = NewDict;
+
+			Dictionary<uint, TrophyNode> TrophyNodeNewDict = new Dictionary<uint, TrophyNode>( NewDict.Count );
+			foreach ( uint key in NewDict.Keys ) {
+				TrophyNodeNewDict.Add( key, Trophies[key] );
+			}
+			Trophies = TrophyNodeNewDict;
+		}
+
+		public void SortByUnlockedBeforeLocked( Comparison<TropUsrSingleTrophy> SortType, bool DescendingUnlocked, bool DescendingLocked, bool SortLockedByID ) {
+			List<TropUsrSingleTrophy> TrophyInfoListLocked = new List<TropUsrSingleTrophy>( TropUsrFile.TrophyInfos.Values.Count );
+			List<TropUsrSingleTrophy> TrophyInfoListUnlocked = new List<TropUsrSingleTrophy>( TropUsrFile.TrophyInfos.Values.Count );
+			foreach ( TropUsrSingleTrophy t in TropUsrFile.TrophyInfos.Values ) {
+				if ( t.Unlocked == 1 ) {
+					TrophyInfoListUnlocked.Add( t );
+				} else {
+					TrophyInfoListLocked.Add( t );
+				}
+			}
+
+			if ( SortLockedByID ) {
+				TrophyInfoListLocked.Sort( TropUsrSingleTrophy.SortByTrophyID );
+			} else {
+				TrophyInfoListLocked.Sort( SortType );
+			}
+			TrophyInfoListUnlocked.Sort( SortType );
+
+			Dictionary<uint, TropUsrSingleTrophy> NewDict = new Dictionary<uint, TropUsrSingleTrophy>( TropUsrFile.TrophyInfos.Count );
+			if ( DescendingUnlocked ) {
+				for ( int i = TrophyInfoListUnlocked.Count - 1; i >= 0; i-- ) NewDict.Add( TrophyInfoListUnlocked[i].TrophyID, TrophyInfoListUnlocked[i] );
+			} else {
+				foreach ( TropUsrSingleTrophy t in TrophyInfoListUnlocked ) NewDict.Add( t.TrophyID, t );
+			}
+			if ( DescendingLocked ) {
+				for ( int i = TrophyInfoListLocked.Count - 1; i >= 0; i-- ) NewDict.Add( TrophyInfoListLocked[i].TrophyID, TrophyInfoListLocked[i] );
+			} else {
+				foreach ( TropUsrSingleTrophy t in TrophyInfoListLocked ) NewDict.Add( t.TrophyID, t );
+			}
+			TropUsrFile.TrophyInfos = NewDict;
+
+			Dictionary<uint, TrophyNode> TrophyNodeNewDict = new Dictionary<uint, TrophyNode>( NewDict.Count );
+			foreach ( uint key in NewDict.Keys ) {
+				TrophyNodeNewDict.Add( key, Trophies[key] );
+			}
+			Trophies = TrophyNodeNewDict;
 		}
 
 		public String ExportTropSFM( bool TropConf ) {
@@ -92,7 +193,7 @@ namespace HyoutaTools.Trophy {
 				sb.Append( "</title-detail>\n" );
 			}
 
-			foreach ( TrophyNode Trophy in Trophies ) {
+			foreach ( TrophyNode Trophy in Trophies.Values ) {
 				sb.Append( Trophy.ExportTropSFM( TropConf ) );
 			}
 
