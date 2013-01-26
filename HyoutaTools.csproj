@@ -50,6 +50,7 @@
     <Compile Include="DanganRonpa\umdimagedat\Util.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
+    <Compile Include="Other\GoldenSunDarkDawnMsgExtract\Program.cs" />
     <Compile Include="Other\LuxPain\LuxPainEvt.cs" />
     <Compile Include="GraceNote\LuxPainEvtDump\Program.cs" />
     <Compile Include="Other\LuxPain\Util.cs" />

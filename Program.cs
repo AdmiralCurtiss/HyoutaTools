@@ -20,6 +20,7 @@ namespace HyoutaTools {
 					case "Tales.tlzc": return Tales.tlzc.tlzcmain.Execute( ProgramArguments.ToArray() );
 					// case "GraceNote.LuxPainDump":
 					// case "GraceNote.XilliaScriptFileDump":
+					// case "Other.GoldenSunDarkDawnMsgExtract":
 				}
 
 			}
