@@ -21,6 +21,7 @@ namespace HyoutaTools {
 					// case "GraceNote.LuxPainDump":
 					// case "GraceNote.XilliaScriptFileDump":
 					// case "Other.GoldenSunDarkDawnMsgExtract":
+					// case "Tales.Xillia.TldatExtract":
 				}
 
 			}

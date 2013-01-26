@@ -8,6 +8,11 @@ namespace HyoutaTools.Tales.Xillia {
 	static class Util {
 		public static Encoding ShiftJISEncoding = Encoding.GetEncoding( "shift-jis" );
 
+		public static UInt16 SwapEndian( UInt16 x ) {
+			return (UInt16)( ( ( x & 0xff00 ) >> 8 ) |
+					 ( ( x & 0x00ff ) << 8 ) );
+		}
+
 		public static UInt32 SwapEndian( UInt32 x ) {
 			return x = ( x >> 24 ) |
 					  ( ( x << 8 ) & 0x00FF0000 ) |
@@ -68,6 +73,15 @@ namespace HyoutaTools.Tales.Xillia {
 				return null;
 			}
 		}
+
+		public static String TrimNull( String s ) {
+			int n = s.IndexOf( '\0', 0 );
+			if ( n >= 0 ) {
+				return s.Substring( 0, n );
+			}
+			return s;
+		}
+
 
 	}
 }
