@@ -14,6 +14,7 @@ namespace HyoutaTools {
 				}
 
 				switch ( ProgramName ) {
+					case "DanganRonpa.umdimagedat": return DanganRonpa.umdimagedat.umdimagedat.Execute( ProgramArguments.ToArray() );
 					case "Generic.BlockCopy": return Generic.BlockCopy.BlockCopy.Execute( ProgramArguments.ToArray() );
 					case "Generic.ByteHotfix": return Generic.ByteHotfix.ByteHotfix.Execute( ProgramArguments.ToArray() );
 					case "Tales.tlzc": return Tales.tlzc.tlzcmain.Execute( ProgramArguments.ToArray() );

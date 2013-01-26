@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
+    <Compile Include="DanganRonpa\umdimagedat\Util.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
     <Compile Include="Program.cs" />
