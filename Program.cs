@@ -31,6 +31,14 @@ namespace HyoutaTools {
 					// case "GraceNote.Vesperia.StringDic-from-GraceNote":
 					// case "DanganRonpa.Pak.Extract":
 					// case "DanganRonpa.Pak.Pack":
+					// case "Other.AutoExtract":
+					// case "GraceNote.FindEarliestGracesJapaneseEntry":
+					//
+					//
+					//
+					//
+					//
+					//
 					//
 				}
 
