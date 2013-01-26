@@ -21,12 +21,12 @@ namespace HyoutaTools {
 					// case "GraceNote.LuxPainDump":
 					// case "GraceNote.XilliaScriptFileDump":
 					// case "Other.GoldenSunDarkDawnMsgExtract":
-					// case "GraceNote.VVoicesGenerate":
+					// case "GraceNote.Vesperia.VVoicesGenerate":
 					// case "Tales.Xillia.TldatExtract":
 					// case "Tales.Vesperia.MapList":
 					// case "Other.NisPakEx":
-					//
-					//
+					// case "Tales.Vesperia.SpkdUnpack":
+					// case "GraceNote.Vesperia.SCFOMBIN-to-GraceNote":
 					//
 					//
 					//

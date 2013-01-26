@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data.SQLite;
 
-namespace HyoutaTools.GraceNote.VVoicesGenerate {
+namespace HyoutaTools.GraceNote.Vesperia.VVoicesGenerate {
 	class Program {
 		static void Execute( string[] args ) {
 			String VOBTLDir = @"c:\Users\Georg\Documents\Tales of Vesperia\ToV_Voices_Japanese_PS3_mp3v8\PS3_JP\VOBTL\";

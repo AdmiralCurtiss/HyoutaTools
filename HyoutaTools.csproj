@@ -50,7 +50,7 @@
     <Compile Include="DanganRonpa\umdimagedat\Util.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
-    <Compile Include="GraceNote\VVoicesGenerate\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\VVoicesGenerate\Program.cs" />
     <Compile Include="Other\GoldenSunDarkDawnMsgExtract\Program.cs" />
     <Compile Include="Other\LuxPain\LuxPainEvt.cs" />
     <Compile Include="GraceNote\LuxPainEvtDump\Program.cs" />
@@ -80,6 +80,9 @@
     <Compile Include="Tales\Vesperia\MapList\MapName.cs" />
     <Compile Include="Tales\Vesperia\MapList\Program.cs" />
     <Compile Include="Tales\Vesperia\MapList\Util.cs" />
+    <Compile Include="GraceNote\Vesperia\SCFOMBIN-to-GraceNote\Program.cs" />
+    <Compile Include="Tales\Vesperia\SpkdUnpack\Program.cs" />
+    <Compile Include="Tales\Vesperia\SpkdUnpack\Util.cs" />
     <Compile Include="Tales\Xillia\TldatExtract\Program.cs" />
     <Compile Include="Tales\Xillia\TldatExtract\TOFHDBheader.cs" />
     <Compile Include="Tales\Xillia\Util.cs" />
