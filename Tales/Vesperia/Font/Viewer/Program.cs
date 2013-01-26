@@ -36,8 +36,8 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 			-outfile text.png
 			*/
 
-			Util.Path = "ffinfo.bin";
-			Util.FontInfoOffset = 0;
+			string Filepath = "ffinfo.bin";
+			int FontInfoOffset = 0;
 			String Textfile = null;
 			ProgramMode Mode = ProgramMode.GUI;
 			String Font = "FONTTEX10.TXV";
@@ -50,15 +50,15 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 				for ( int i = 0; i < args.Length; i++ ) {
 					switch ( args[i].ToLowerInvariant() ) {
 						case "-fontinfofile":
-							Util.Path = args[++i];
+							Filepath = args[++i];
 							break;
 						case "-fontinfofiletype":
 							switch ( args[++i].ToLowerInvariant() ) {
 								case "elf":
-									Util.FontInfoOffset = 0x00720860;
+									FontInfoOffset = 0x00720860;
 									break;
 								case "fontinfo":
-									Util.FontInfoOffset = 0;
+									FontInfoOffset = 0;
 									break;
 							}
 							break;
@@ -100,15 +100,15 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 
 
 			try {
-				byte[] File = System.IO.File.ReadAllBytes( Util.Path );
+				byte[] File = System.IO.File.ReadAllBytes( Filepath );
 
 				FontInfo[] f = new FontInfo[6];
-				f[0] = new FontInfo( File, Util.FontInfoOffset );
-				f[1] = new FontInfo( File, Util.FontInfoOffset + 0x880 );
-				f[2] = new FontInfo( File, Util.FontInfoOffset + 0x880 * 2 );
-				f[3] = new FontInfo( File, Util.FontInfoOffset + 0x880 * 3 );
-				f[4] = new FontInfo( File, Util.FontInfoOffset + 0x880 * 4 );
-				f[5] = new FontInfo( File, Util.FontInfoOffset + 0x880 * 5 );
+				f[0] = new FontInfo( File, FontInfoOffset );
+				f[1] = new FontInfo( File, FontInfoOffset + 0x880 );
+				f[2] = new FontInfo( File, FontInfoOffset + 0x880 * 2 );
+				f[3] = new FontInfo( File, FontInfoOffset + 0x880 * 3 );
+				f[4] = new FontInfo( File, FontInfoOffset + 0x880 * 4 );
+				f[5] = new FontInfo( File, FontInfoOffset + 0x880 * 5 );
 
 				String[] TextLines = null;
 				if ( Textfile != null ) {
@@ -118,6 +118,8 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault( false );
 				FontViewer form = new FontViewer( f, Font, Fontblock, TextLines, BoxByBox, DialogueBoxColor );
+				form.Filepath = Filepath;
+				form.FontInfoOffset = FontInfoOffset;
 
 				if ( Mode == ProgramMode.GUI ) {
 					Application.Run( form );

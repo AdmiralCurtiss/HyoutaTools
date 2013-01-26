@@ -11,15 +11,14 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 	public partial class FontViewer : Form {
 		private FontInfo[] FontInfos;
 		private Bitmap[] Textures;
-
 		private Color bgcolor;
-
 		private String LastTexture = null;
 		private String LastText = null;
-
 		bool IndicateCharacter = false;
-
 		bool BoxByBox = false;
+
+		public int FontInfoOffset;
+		public string Filepath;
 
 		public FontViewer() {
 			InitializeComponent();
@@ -151,7 +150,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 		public void WriteElf() {
 			int CurrentFontInfoToUse = (int)numericUpDownTileNumber.Value;
 
-			FontInfos[CurrentFontInfoToUse].WriteCharacterLengths( Util.Path, Util.FontInfoOffset + 0x880 * CurrentFontInfoToUse );
+			FontInfos[CurrentFontInfoToUse].WriteCharacterLengths( Filepath, FontInfoOffset + 0x880 * CurrentFontInfoToUse );
 		}
 
 		public void UpdateText( string Text ) {

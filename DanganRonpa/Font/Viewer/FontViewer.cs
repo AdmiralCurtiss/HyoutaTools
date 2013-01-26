@@ -16,6 +16,8 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 		bool BoxByBox = false;
 
+		public string Filepath;
+
 		public FontViewer() {
 			InitializeComponent();
 		}
@@ -223,7 +225,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		}
 
 		private void buttonWriteNewCharLength_Click( object sender, EventArgs e ) {
-			FontInfo.WriteFile( Util.Path );
+			FontInfo.WriteFile( Filepath );
 		}
 
 		private void numUpDownCharLength_ValueChanged( object sender, EventArgs e ) {

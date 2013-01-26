@@ -26,18 +26,19 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		}
 
 		static void Execute( string[] args ) {
-			Util.Path = "../../umdimage2-0169/0001";
-			String ImagePath = "../../umdimage2-0169/0000.bmp";
+			string Filepath = "../../umdimage2-0169/0001";
+			string ImagePath = "../../umdimage2-0169/0000.bmp";
 
 
 			try {
-				byte[] File = System.IO.File.ReadAllBytes( Util.Path );
+				byte[] File = System.IO.File.ReadAllBytes( Filepath );
 
 				DRFontInfo f = new DRFontInfo( File );
 
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault( false );
 				FontViewer form = new FontViewer( f, new System.Drawing.Bitmap( ImagePath ) );
+				form.Filepath = Filepath;
 				Application.Run( form );
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.ToString() );

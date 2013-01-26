@@ -49,7 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
-    <Compile Include="DanganRonpa\Font\Util.cs" />
     <Compile Include="DanganRonpa\Font\Viewer\FontViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,7 +85,6 @@
     <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
     <Compile Include="Tales\Vesperia\Font\FontInfo.cs" />
-    <Compile Include="Tales\Vesperia\Font\Util.cs" />
     <Compile Include="Tales\Vesperia\Font\Viewer\FontViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -157,7 +155,6 @@
     <Compile Include="Tales\Vesperia\TSS\TSSEntry.cs" />
     <Compile Include="Tales\Vesperia\TSS\TSSFile.cs" />
     <Compile Include="Tales\Vesperia\TSS\TSSHeader.cs" />
-    <Compile Include="Tales\Vesperia\TSS\Util.cs" />
     <Compile Include="Tales\Xillia\TldatExtract\Program.cs" />
     <Compile Include="Tales\Xillia\TldatExtract\TOFHDBheader.cs" />
     <Compile Include="Tales\Xillia\XilliaScriptFile.cs" />
