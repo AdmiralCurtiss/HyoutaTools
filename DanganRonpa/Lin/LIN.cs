@@ -5,7 +5,7 @@ using System.Text;
 using System.Data.SQLite;
 
 namespace HyoutaTools.DanganRonpa.Lin {
-	class ScriptEntry {
+	public class ScriptEntry {
 		public byte Type;
 		public byte[] Arguments;
 
@@ -115,7 +115,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 		}
 	}
 
-	class LIN {
+	public class LIN {
 		byte[] OriginalFile;
 		int Type;
 		int HeaderSize;

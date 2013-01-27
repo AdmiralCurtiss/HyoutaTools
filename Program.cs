@@ -21,7 +21,9 @@ namespace HyoutaTools {
 					case "DanganRonpa.umdimagedat": return DanganRonpa.umdimagedat.umdimagedat.Execute( ProgramArguments.ToArray() );
 					case "Generic.BlockCopy": return Generic.BlockCopy.BlockCopy.Execute( ProgramArguments.ToArray() );
 					case "Generic.ByteHotfix": return Generic.ByteHotfix.ByteHotfix.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.DanganRonpa.LinImport": return GraceNote.DanganRonpa.LinImport.Program.Execute( ProgramArguments.ToArray() );
+					case "GraceNote.DanganRonpa.LinImport": return GraceNote.DanganRonpa.LinImport.Importer.Import( ProgramArguments.ToArray() );
+					case "GraceNote.DanganRonpa.LinExport": return GraceNote.DanganRonpa.LinExport.Exporter.Export( ProgramArguments.ToArray() );
+					case "GraceNote.DanganRonpa.LinLegacyTool": return GraceNote.DanganRonpa.LinImport.Program.Execute( ProgramArguments.ToArray() );
 					case "GraceNote.DanganRonpa.PakTextExport": return GraceNote.DanganRonpa.PakTextExport.Program.Execute( ProgramArguments.ToArray() );
 					case "GraceNote.DanganRonpa.PakTextImport": return GraceNote.DanganRonpa.PakTextImport.Program.Execute( ProgramArguments.ToArray() );
 					case "GraceNote.DumpDatabase": return GraceNote.DumpDatabase.Program.Execute( ProgramArguments.ToArray() );
@@ -65,6 +67,7 @@ namespace HyoutaTools {
 			Console.WriteLine( "DanganRonpa.umdimagedat" );
 			Console.WriteLine( "Generic.BlockCopy" );
 			Console.WriteLine( "Generic.ByteHotfix" );
+			Console.WriteLine( "GraceNote.DanganRonpa.LinExport" );
 			Console.WriteLine( "GraceNote.DanganRonpa.LinImport" );
 			Console.WriteLine( "GraceNote.DanganRonpa.PakTextExport" );
 			Console.WriteLine( "GraceNote.DanganRonpa.PakTextImport" );

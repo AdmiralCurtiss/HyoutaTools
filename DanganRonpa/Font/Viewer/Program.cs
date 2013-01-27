@@ -26,8 +26,8 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		}
 
 		public static int Execute( string[] args ) {
-			string Filepath = "../../umdimage2-0169/0001";
-			string ImagePath = "../../umdimage2-0169/0000.bmp";
+			string Filepath = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\fontdata1";
+			string ImagePath = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\fontdata0";
 
 
 			try {
