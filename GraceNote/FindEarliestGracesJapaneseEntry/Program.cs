@@ -58,15 +58,15 @@ namespace HyoutaTools.GraceNote.FindEarliestGracesJapaneseEntry {
 			}
 		}
 
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 
 			if ( args.Length != 2 ) {
 				Console.WriteLine( "FindEarliestGracesJapaneseEntry Database GracesJapanese" );
-				return;
+				return -1;
 			}
 
 			FindEarliestGracesJapaneseEntry( "Data Source=" + args[0], "Data Source=" + args[1] );
-			return;
+			return 0;
 		}
 	}
 }

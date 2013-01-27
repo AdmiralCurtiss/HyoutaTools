@@ -19,10 +19,10 @@ namespace HyoutaTools.GraceNote.LuxPainEvtExport {
 	}
 
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length != 3 ) {
 				Console.WriteLine( "Usage: GN_LPE Infile Outfile DB" );
-				return;
+				return -1;
 			}
 
 			//*
@@ -48,7 +48,7 @@ namespace HyoutaTools.GraceNote.LuxPainEvtExport {
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.Message );
 				Console.WriteLine( "Failed loading menu file!" );
-				return;
+				return -1;
 			}
 
 			LuxPainEvt Evt2 = new LuxPainEvt( EvtFile );
@@ -71,7 +71,7 @@ namespace HyoutaTools.GraceNote.LuxPainEvtExport {
 
 			System.IO.File.WriteAllBytes( OutFilename, newEvtFile.ToArray() );
 
-			return;
+			return 0;
 		}
 	}
 }

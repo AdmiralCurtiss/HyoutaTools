@@ -19,7 +19,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmImport {
 	}
 
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length != 5 ) {
 				Console.WriteLine( "Usage: TropSFM_GraceNote TROP.SFM TROPCONF.SFM NewDBFile TemplateDBFile GracesJapanese" );
 				//   return;
@@ -53,7 +53,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmImport {
 			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophyConf.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(true)));
 			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophy.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(false)));
 
-			return;
+			return 0;
 		}
 
 

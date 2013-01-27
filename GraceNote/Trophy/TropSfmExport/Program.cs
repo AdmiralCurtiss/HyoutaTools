@@ -97,7 +97,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmExport {
 			return Trophies.Values.ToList();
 		}
 
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			String Database;
 			String GracesJapanese;
 
@@ -110,7 +110,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmExport {
 
 			if ( args.Length != 2 ) {
 				Console.WriteLine( "Usage: GraceNote_TropSFM VTrophies GracesJapanese" );
-				return;
+				return -1;
 			} else {
 				Database = args[0];
 				GracesJapanese = args[1];
@@ -121,7 +121,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmExport {
 				EnglishTrophies = GetSQL( "Data Source=" + Database, "Data Source=" + GracesJapanese );
 				EnglishTrophies.Sort();
 			} catch ( Exception ) {
-				return;
+				return -1;
 			}
 
 			TrophyConfNode TROPSFM = new TrophyConfNode(
@@ -138,7 +138,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmExport {
 			System.IO.File.WriteAllBytes( @"newTrophyConf.SFM", Encoding.UTF8.GetBytes( TROPSFM.ExportTropSFM( true ) ) );
 			System.IO.File.WriteAllBytes( @"newTrophy.SFM", Encoding.UTF8.GetBytes( TROPSFM.ExportTropSFM( false ) ) );
 
-			return;
+			return 0;
 		}
 	}
 }

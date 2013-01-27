@@ -6,13 +6,15 @@ using System.Windows.Forms;
 
 namespace HyoutaTools.Tales.Vesperia.TownMap.Viewer {
 	static class Program {
-		static void Execute() {
+		public static int Execute() {
 			string Path = @"../../0.bin";
 			TownMapTable t = new TownMapTable( Path );
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
 			Application.Run( new TownMapDisplay( t ) );
+
+			return 0;
 		}
 	}
 }

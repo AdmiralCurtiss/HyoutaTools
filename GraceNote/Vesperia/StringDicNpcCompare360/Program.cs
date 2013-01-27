@@ -161,7 +161,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicNpcCompare360 {
 			}
 		}
 
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 
 			//Console.WriteLine( "おっさん試されてる？↵新騎士団長はおっかないわ……" );
 			//FindEarliestGracesJapaneseEntry( "Data Source=VSkit Text", "Data Source=GracesJapanese" );
@@ -173,7 +173,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicNpcCompare360 {
 				TSS = new TSSFile( System.IO.File.ReadAllBytes( "STRING_DIC.SO" ) );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
-				return;
+				return -1;
 			}
 
 			List<ScenarioString> npcLines = GetSQL( "Data Source=VSkit Text", "Data Source=GracesJapanese" ).ToList();
@@ -338,7 +338,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicNpcCompare360 {
 				}
 			}
 
-			return;
+			return 0;
 		}
 	}
 }

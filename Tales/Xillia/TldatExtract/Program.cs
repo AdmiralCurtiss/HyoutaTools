@@ -6,10 +6,10 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Xillia.TldatExtract {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length != 4 ) {
 				Console.WriteLine( "Usage: TLDATextract TLDAT TOFHDB ExtractFolder" );
-				//return;
+				return -1;
 			}
 
 			String TLDAT = @"c:\Users\Georg\Downloads\XilliaStuff\USRDIR\TLFILE.TLDAT";
@@ -43,7 +43,7 @@ namespace HyoutaTools.Tales.Xillia.TldatExtract {
 
 			fs.Close();
 
-			return;
+			return 0;
 		}
 	}
 }

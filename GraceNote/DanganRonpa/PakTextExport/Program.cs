@@ -6,10 +6,10 @@ using HyoutaTools.DanganRonpa.PakText;
 
 namespace HyoutaTools.GraceNote.DanganRonpa.PakTextExport {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length != 2 ) {
 				Console.WriteLine( "Usage: GN_DRM Outfile DB" );
-				return;
+				return -1;
 			}
 
 			// templateDB must contain:
@@ -37,7 +37,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.PakTextExport {
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.Message );
 				Console.WriteLine( "Failed loading menu file!" );
-				return;
+				return -1;
 			}
 			byte[] newfile = DRMF.CreateFile();
 			System.IO.File.WriteAllBytes( Filename, newfile );
@@ -45,7 +45,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.PakTextExport {
 			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophyConf.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(true)));
 			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophy.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(false)));
 
-			return;
+			return 0;
 		}
 	}
 }

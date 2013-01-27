@@ -19,12 +19,12 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 	}
 
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length < 1 ) {
 				Console.WriteLine( "Usage: DanganRonpaText_GraceNote -dump text.lin NewDBFile TemplateDBFile GracesJapanese" );
 				Console.WriteLine( "Usage: DanganRonpaText_GraceNote -insert text.lin.orig text.lin.new database [alignment (default 1024)]" );
 				Console.WriteLine( "Usage: DanganRonpaText_GraceNote -dumptxt text.lin out.txt" );
-				return;
+				return -1;
 			}
 
 			// templateDB must contain:
@@ -33,15 +33,15 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 			 ***/
 
 			if ( args[0] == "-dump" ) {
-				Dump( args[1], args[2], args[3], args[4] );
+				return Dump( args[1], args[2], args[3], args[4] );
 			} else if ( args[0] == "-insert" ) {
 				int Alignment;
 				if ( !( args.Length >= 5 && Int32.TryParse( args[4], out Alignment ) ) ) {
 					Alignment = 1024;
 				}
-				Insert( args[1], args[2], args[3], Alignment );
+				return Insert( args[1], args[2], args[3], Alignment );
 			} else if ( args[0] == "-check" ) {
-				Check( args[1] );
+				return Check( args[1] );
 			} else if ( args[0] == "-dumpinsertcheck" ) {
 				int Alignment = 16;
 				Dump( args[1], args[2], args[3], args[4] );
@@ -51,15 +51,15 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 				Byte[] OriginalFile = System.IO.File.ReadAllBytes( args[1] );
 				LIN lin = new LIN( OriginalFile );
 				lin.CreateFile( Alignment );
-				Compare( OriginalFile, System.IO.File.ReadAllBytes( args[1] + ".new" ), lin.UnalignedFilesize, args[1] + ".fail" );
+				return Compare( OriginalFile, System.IO.File.ReadAllBytes( args[1] + ".new" ), lin.UnalignedFilesize, args[1] + ".fail" );
 			} else if ( args[0] == "-dumptxt" ) {
-				DumpTxt( args[1], args[2] );
+				return DumpTxt( args[1], args[2] );
 			}
 
-			return;
+			return -1;
 		}
 
-		public static void Compare( Byte[] OriginalFile, Byte[] RecreatedFile, int UnalignedFilesize, string outputOnFail ) {
+		public static int Compare( Byte[] OriginalFile, Byte[] RecreatedFile, int UnalignedFilesize, string outputOnFail ) {
 			try {
 				if ( OriginalFile.Length != RecreatedFile.Length ) {
 					throw new Exception( "Filesizes don't match!" );
@@ -80,21 +80,23 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.Message );
 				System.IO.File.WriteAllBytes( outputOnFail, RecreatedFile );
+				return -1;
 			}
 
 			Console.WriteLine( "Check done." );
+			return 0;
 		}
 
-		public static void Check( String Filename ) {
+		public static int Check( String Filename ) {
 			Byte[] OriginalFile = System.IO.File.ReadAllBytes( Filename );
 			LIN lin = new LIN( OriginalFile );
 			Byte[] RecreatedFile = lin.CreateFile( 1024 );
 			LIN linOrig = new LIN( OriginalFile );
 
-			Compare( OriginalFile, RecreatedFile, lin.UnalignedFilesize, Filename + ".fail" );
+			return Compare( OriginalFile, RecreatedFile, lin.UnalignedFilesize, Filename + ".fail" );
 		}
 
-		public static void Insert( String InFilename, String OutFilename, String DB, int Alignment ) {
+		public static int Insert( String InFilename, String OutFilename, String DB, int Alignment ) {
 			LIN lin;
 			try {
 				lin = new LIN( InFilename );
@@ -102,36 +104,38 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.Message );
 				Console.WriteLine( "Failed loading text file!" );
-				return;
+				return -1;
 			}
 			byte[] newfile = lin.CreateFile( Alignment );
 			System.IO.File.WriteAllBytes( OutFilename, newfile );
+			return 0;
 		}
 
-		public static void Dump( String Filename, String NewDB, String TemplateDB, String GracesDB ) {
+		public static int Dump( String Filename, String NewDB, String TemplateDB, String GracesDB ) {
 			LIN lin;
 			try {
 				lin = new LIN( Filename );
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.Message );
 				Console.WriteLine( "Failed loading text file!" );
-				return;
+				return -1;
 			}
 
 			Console.WriteLine( "Importing..." );
 			System.IO.File.Copy( TemplateDB, NewDB, true );
 			InsertSQL( lin, "Data Source=" + NewDB, "Data Source=" + GracesDB );
 			Console.WriteLine( "Successfully imported entries!" );
+			return 0;
 		}
 
-		public static void DumpTxt( String Filename, String TxtFilename ) {
+		public static int DumpTxt( String Filename, String TxtFilename ) {
 			LIN lin;
 			try {
 				lin = new LIN( Filename );
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.Message );
 				Console.WriteLine( "Failed loading text file!" );
-				return;
+				return -1;
 			}
 
 
@@ -153,7 +157,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 			}
 
 			System.IO.File.WriteAllLines( TxtFilename, Output.ToArray() );
-
+			return 0;
 		}
 
 		public static bool InsertSQL( LIN lin, String ConnectionString, String ConnectionStringGracesJapanese ) {

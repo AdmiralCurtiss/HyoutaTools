@@ -5,12 +5,12 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.MapList {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			// 0xCB20
 
 			if ( args.Length != 1 ) {
 				Console.WriteLine( "MAPLIST path/to/MAPLIST.DAT" );
-				return;
+				return -1;
 			}
 
 			String Path = args[0];
@@ -33,6 +33,8 @@ namespace HyoutaTools.Tales.Vesperia.MapList {
 
 				i++;
 			}
+
+			return 0;
 		}
 	}
 }

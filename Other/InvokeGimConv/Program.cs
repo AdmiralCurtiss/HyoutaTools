@@ -45,7 +45,7 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			}
 		}
 
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			List<String> gimconvargs = new List<string>();
 
 			string OriginalFile = null;
@@ -119,8 +119,8 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			foreach ( string a in gimconvargs ) {
 				ga.Append( a ).Append( ' ' );
 			}
-			RunProgram( "GimConv", ga.ToString() );
-
+			bool success = RunProgram( "GimConv", ga.ToString() );
+			return success ? 0 : -1;
 		}
 	}
 }

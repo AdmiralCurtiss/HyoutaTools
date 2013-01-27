@@ -6,10 +6,10 @@ using HyoutaTools.Tales.Vesperia.To8chtx;
 
 namespace HyoutaTools.GraceNote.Vesperia.To8chtxImport {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length != 3 ) {
 				Console.WriteLine( "Usage: TO8CHTX_GraceNote ChatFilename NewDBFilename GracesJapanese" );
-				return;
+				return -1;
 			}
 
 			String Filename = args[0];
@@ -21,7 +21,7 @@ namespace HyoutaTools.GraceNote.Vesperia.To8chtxImport {
 			System.IO.File.Copy( "VTemplate", NewDB, true );
 
 			c.InsertSQL( "Data Source=" + NewDB, "Data Source=" + GracesDB );
-			return;
+			return 0;
 		}
 	}
 }

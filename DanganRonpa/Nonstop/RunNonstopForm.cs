@@ -6,13 +6,13 @@ using System.Windows.Forms;
 
 namespace HyoutaTools.DanganRonpa.Nonstop {
 	class RunNonstopForm {
-		public void Execute() {
+		public static int Execute() {
 			Nonstop items = new Nonstop( @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\umdimage.dat.ex\0052_nonstop_02_002.dat" );
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
 			NonstopForm itemForm = new NonstopForm( items );
 			Application.Run( itemForm );
-			return;
+			return 0;
 		}
 	}
 }

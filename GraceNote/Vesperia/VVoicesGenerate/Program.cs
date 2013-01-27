@@ -6,7 +6,7 @@ using System.Data.SQLite;
 
 namespace HyoutaTools.GraceNote.Vesperia.VVoicesGenerate {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			String VOBTLDir = @"c:\Users\Georg\Documents\Tales of Vesperia\ToV_Voices_Japanese_PS3_mp3v8\PS3_JP\VOBTL\";
 			String VoiceDB = @"c:\Users\Georg\Documents\Tales of Vesperia\_voice\VVoices";
 			String GracesDB = @"c:\Users\Georg\Documents\Tales of Vesperia\_voice\GracesJapanese";
@@ -21,7 +21,7 @@ namespace HyoutaTools.GraceNote.Vesperia.VVoicesGenerate {
 				}
 				InsertSQL( "Data Source=" + VoiceDB, "Data Source=" + GracesDB, VOBTLcut );
 			}
-			return;
+			return 0;
 		}
 
 		public static int ENID = 1;

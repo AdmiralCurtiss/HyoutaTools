@@ -6,14 +6,14 @@ using HyoutaTools.Tales.Vesperia.To8chtx;
 
 namespace HyoutaTools.GraceNote.Vesperia.To8chtxExport {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			String Filename;
 			String Database;
 			String NewFilename;
 
 			if ( args.Length != 3 ) {
 				Console.WriteLine( "Usage: GraceNote_TO8CHTX ChatFilename DBFilename NewChatFilename" );
-				return;
+				return -1;
 			} else {
 				Filename = args[0];
 				Database = args[1];
@@ -31,7 +31,7 @@ namespace HyoutaTools.GraceNote.Vesperia.To8chtxExport {
 			c.RecalculatePointers();
 			System.IO.File.WriteAllBytes( NewFilename, c.Serialize() );
 
-			return;
+			return 0;
 		}
 	}
 }

@@ -116,7 +116,12 @@ namespace HyoutaTools.DanganRonpa.Pak {
 			}
 		}
 
-		static int ExecuteExtract( string[] args ) {
+		public static int ExecuteExtract( string[] args ) {
+			if ( args.Length == 0 ) {
+				Console.WriteLine( "DanganRonpa.Pak.Extract file.pak [file2.pak ...]" );
+				return -1;
+			}
+
 			bool fail = false;
 			foreach ( string arg in args ) {
 				try {
@@ -129,12 +134,14 @@ namespace HyoutaTools.DanganRonpa.Pak {
 			return fail ? -1 : 0;
 		}
 
-		static void ExecutePack( string[] args ) {
+		public static int ExecutePack( string[] args ) {
 			try {
 				Pack( System.IO.Directory.GetFiles( args[0] ).ToList(), args[1], args.Length >= 3 ? args[2] : null );
 			} catch ( Exception ) {
-				Console.WriteLine( "DanganRonpaPakPa directory outfile" );
+				Console.WriteLine( "DanganRonpa.Pak.Pack directory outfile.pak" );
+				return -1;
 			}
+			return 0;
 		}
 	}
 }

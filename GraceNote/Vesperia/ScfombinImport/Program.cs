@@ -18,10 +18,10 @@ namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 	}
 
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length != 5 ) {
 				Console.WriteLine( "Usage: btlpack_GraceNote btlpackexFile NewDBFile TemplateDBFile GracesJapanese StartOfTextpointersInHex" );
-				return;
+				return -1;
 			}
 
 			//*
@@ -51,7 +51,7 @@ namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 			System.IO.File.Copy( TemplateDB, NewDB );
 			InsertSQL( AllStrings, "Data Source=" + NewDB, "Data Source=" + GracesDB );
 
-			return;
+			return 0;
 		}
 
 

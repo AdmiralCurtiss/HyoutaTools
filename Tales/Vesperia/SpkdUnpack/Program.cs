@@ -6,12 +6,12 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.SpkdUnpack {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			//args = new string[] { @"c:\Users\Georg\Documents\Visual Studio 2008\Projects\slz\slz\bin\Release\STRCONFIG.STP" };
 
 			if ( args.Length != 1 ) {
 				Console.WriteLine( "Usage: SPKDunpack file" );
-				return;
+				return -1;
 			}
 
 			byte[] spkd = File.ReadAllBytes( args[0] );
@@ -39,6 +39,8 @@ namespace HyoutaTools.Tales.Vesperia.SpkdUnpack {
 				Buffer.BlockCopy( spkd, (int)FileInfos[i].FileStart1, b, 0, Filesize );
 				File.WriteAllBytes( d.FullName + "\\" + FileInfos[i].Name, b );
 			}
+
+			return 0;
 		}
 
 

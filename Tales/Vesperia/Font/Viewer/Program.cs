@@ -24,7 +24,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 			Console.WriteLine( " -dialoguebubble" );
 		}
 
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			/*
 			FontDisplay
 			-fontinfofile tov.elf
@@ -94,7 +94,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 				}
 			} catch ( IndexOutOfRangeException ) {
 				PrintUsage();
-				return;
+				return -1;
 			}
 
 
@@ -129,8 +129,10 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.ToString() );
 				PrintUsage();
-				return;
+				return -1;
 			}
+
+			return 0;
 		}
 	}
 }

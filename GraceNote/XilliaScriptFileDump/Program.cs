@@ -19,10 +19,10 @@ namespace HyoutaTools.GraceNote.XilliaScriptFileDump {
 	}
 
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length != 4 ) {
 				Console.WriteLine( "Usage: XilliaScript_GraceNote XilliaScriptFile NewDBFile TemplateDBFile GracesJapanese" );
-				return;
+				return -1;
 			}
 
 			// templateDB must contain:
@@ -51,7 +51,7 @@ namespace HyoutaTools.GraceNote.XilliaScriptFileDump {
 			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophyConf.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(true)));
 			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophy.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(false)));
 
-			return;
+			return 0;
 		}
 
 

@@ -84,7 +84,7 @@ namespace HyoutaTools.Other.AutoExtract {
 		}
 
 
-		static void Execute() {
+		public static int Execute() {
 			Queue<FileStruct> queue = new Queue<FileStruct>();
 
 			Console.WriteLine( "Adding all files and folders recursively..." );
@@ -274,6 +274,7 @@ namespace HyoutaTools.Other.AutoExtract {
 					Console.WriteLine( ex.ToString() );
 				}
 			}
+			return 0;
 		}
 
 		public static String RenameToWithExtension( String filename, String extension ) {

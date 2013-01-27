@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HyoutaTools.Other.GoldenSunDarkDawnMsgExtract {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			String Filename = args[0];
 
 
@@ -50,7 +50,7 @@ namespace HyoutaTools.Other.GoldenSunDarkDawnMsgExtract {
 
 			System.IO.File.WriteAllLines( Filename + ".txt", Lines.ToArray() );
 
-			return;
+			return 0;
 		}
 	}
 }

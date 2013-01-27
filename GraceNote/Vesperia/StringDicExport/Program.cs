@@ -6,7 +6,7 @@ using HyoutaTools.Tales.Vesperia.TSS;
 
 namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			bool UseInsaneNames = false;
 
 			if ( args.Length == 1 ) {
@@ -23,7 +23,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 				TSS = new TSSFile( System.IO.File.ReadAllBytes( "STRING_DIC.SO" ) );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
-				return;
+				return -1;
 			}
 
 
@@ -41,7 +41,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 			Console.WriteLine( "Importing databases..." );
 			if ( !TSS.ImportSQL() ) {
 				Console.WriteLine( "Could not import all databases! Exiting..." );
-				return;
+				return -1;
 			}
 
 
@@ -66,7 +66,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 
 
 			Console.WriteLine( "Done!" );
-			return;
+			return 0;
 		}
 	}
 }

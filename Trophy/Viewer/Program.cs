@@ -5,11 +5,11 @@ using System.Text;
 
 namespace HyoutaTools.Trophy.Viewer {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length > 1 ) {
 				Console.WriteLine( "Usage: TrophyViewer [folder]" );
 				Console.WriteLine( "       TrophyViewer [TROPUSR.DAT]" );
-				return;
+				return -1;
 			}
 
 			//String Folder = @"c:\Dokumente und Einstellungen\GStrof\Eigene Dateien\Visual Studio 2008\Projects\trophy\NPWR00642_00\"; // Tales of Vesperia
@@ -46,7 +46,7 @@ namespace HyoutaTools.Trophy.Viewer {
 			System.Windows.Forms.Application.Run(TForm);
 			*/
 
-
+			return 0;
 		}
 	}
 }

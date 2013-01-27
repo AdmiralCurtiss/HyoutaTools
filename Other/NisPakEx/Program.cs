@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HyoutaTools.Other.NisPakEx {
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			string Filename = @"c:\Users\Georg\Music\disgaea4\disg4.pak";
 			string OutPath = @"c:\Users\Georg\Music\disgaea4\";
 
@@ -26,6 +26,8 @@ namespace HyoutaTools.Other.NisPakEx {
 					new System.IO.FileStream( f, System.IO.FileMode.Create );
 				fs.Write( b, (int)Offset, (int)FileSize );
 			}
+
+			return 0;
 		}
 	}
 }

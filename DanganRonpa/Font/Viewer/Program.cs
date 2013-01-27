@@ -25,7 +25,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			Console.WriteLine( " -dialoguebubble" );
 		}
 
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			string Filepath = "../../umdimage2-0169/0001";
 			string ImagePath = "../../umdimage2-0169/0000.bmp";
 
@@ -43,8 +43,10 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.ToString() );
 				PrintUsage();
-				return;
+				return -1;
 			}
+
+			return 0;
 		}
 	}
 }

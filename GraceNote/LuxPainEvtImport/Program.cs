@@ -19,10 +19,10 @@ namespace HyoutaTools.GraceNote.LuxPainEvtImport {
 	}
 
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length != 5 ) {
 				Console.WriteLine( "Usage: LuxPainEvt_GraceNote event.evt NewDBFile TemplateDBFile GracesJapanese event.jp.evt" );
-				return;
+				return -1;
 			}
 
 			// templateDB must contain:
@@ -46,7 +46,7 @@ namespace HyoutaTools.GraceNote.LuxPainEvtImport {
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.Message );
 				Console.WriteLine( "Failed loading text file!" );
-				return;
+				return -1;
 			}
 			Evt.FormatTextForEditing();
 			EvtJp.FormatTextForEditing();
@@ -76,7 +76,7 @@ namespace HyoutaTools.GraceNote.LuxPainEvtImport {
 			InsertSQL( Evt, EvtJp, "Data Source=" + NewDB, "Data Source=" + GracesDB );
 			Console.WriteLine( "Successfully imported entries!" );
 
-			return;
+			return 0;
 		}
 
 

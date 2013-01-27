@@ -19,10 +19,10 @@ namespace HyoutaTools.GraceNote.DanganRonpa.PakTextImport {
 	}
 
 	class Program {
-		static void Execute( string[] args ) {
+		public static int Execute( string[] args ) {
 			if ( args.Length != 4 ) {
 				Console.WriteLine( "Usage: DanganRonpaMenu_GraceNote menu.pak NewDBFile TemplateDBFile GracesJapanese" );
-				return;
+				return -1;
 			}
 
 			// templateDB must contain:
@@ -50,7 +50,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.PakTextImport {
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.Message );
 				Console.WriteLine( "Failed loading menu file!" );
-				return;
+				return -1;
 			}
 			Console.WriteLine( "Found " + DRMF.TextList.Count + " entries, importing..." );
 			System.IO.File.Copy( TemplateDB, NewDB, true );
@@ -63,7 +63,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.PakTextImport {
 			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophyConf.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(true)));
 			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophy.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(false)));
 
-			return;
+			return 0;
 		}
 
 
