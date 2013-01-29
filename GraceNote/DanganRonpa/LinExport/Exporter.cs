@@ -7,7 +7,7 @@ using HyoutaTools.DanganRonpa.Lin;
 namespace HyoutaTools.GraceNote.DanganRonpa.LinExport {
 	public static class Exporter {
 		public static int Export( string[] args ) {
-			if ( args.Length < 1 ) {
+			if ( args.Length < 3 ) {
 				Console.WriteLine( "Usage: text.lin.orig text.lin.new database [alignment (default 1024)]" );
 				return -1;
 			}

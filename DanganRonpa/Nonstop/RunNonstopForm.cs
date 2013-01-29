@@ -7,7 +7,7 @@ using System.Windows.Forms;
 namespace HyoutaTools.DanganRonpa.Nonstop {
 	class RunNonstopForm {
 		public static int Execute() {
-			Nonstop items = new Nonstop( @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\umdimage.dat.ex\0052_nonstop_02_002.dat" );
+			Nonstop items = new Nonstop( @"e:\____DANGAN_RONPA_AUDIO_STUFF\__\nonstop\0052_nonstop_02_002.dat" );
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
 			NonstopForm itemForm = new NonstopForm( items );

@@ -75,6 +75,7 @@
     <Compile Include="GraceNote\DanganRonpa\LinExport\Exporter.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinImport\Importer.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinImport\Program.cs" />
+    <Compile Include="GraceNote\DanganRonpa\NonstopExistingDatabaseImport\Importer.cs" />
     <Compile Include="GraceNote\DanganRonpa\PakTextExport\Program.cs" />
     <Compile Include="GraceNote\DanganRonpa\PakTextImport\Program.cs" />
     <Compile Include="GraceNote\DumpDatabase\Program.cs" />
