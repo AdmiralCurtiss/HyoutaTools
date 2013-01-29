@@ -309,7 +309,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 
 
 		public byte[] CreateFile( int Alignment ) {
-			List<byte> file = new List<byte>();
+			List<byte> file = new List<byte>( Filesize + 0x40000 );
 
 			// header
 			file.AddRange( BitConverter.GetBytes( Type ) );
@@ -514,24 +514,22 @@ namespace HyoutaTools.DanganRonpa.Lin {
 									default: e.Type = Util.ParseDecOrHexToByte( typestr ); break;
 								}
 
-								List<byte> args = new List<byte>();
+								byte[] args = new byte[bytestrs.Length - 1];
 								for ( int i = 1; i < bytestrs.Length; ++i ) {
 									if ( bytestrs[i].Contains( '[' ) && bytestrs[i].Contains( ']' ) ) {
-										args.Add( DanganUtil.NameToCharacterId( bytestrs[i].Replace( "[", "" ).Replace( "]", "" ) ) );
+										args[i - 1] = ( DanganUtil.NameToCharacterId( bytestrs[i].Replace( "[", "" ).Replace( "]", "" ) ) );
 									} else {
-										args.Add( Util.ParseDecOrHexToByte( bytestrs[i] ) );
+										args[i - 1] = ( Util.ParseDecOrHexToByte( bytestrs[i] ) );
 									}
 								}
-								e.Arguments = args.ToArray();
+								e.Arguments = args;
 
 							} else {
 								// command without args
-								if ( cmd == "WaitPlayerInput" ) {
-									e.Type = 0x3A;
-								} else if ( cmd == "WaitFrame" ) {
-									e.Type = 0x3B;
-								} else {
-									e.Type = Util.ParseDecOrHexToByte( cmd );
+								switch ( cmd ) {
+									case "WaitPlayerInput": e.Type = 0x3A; break;
+									case "WaitFrame": e.Type = 0x3B; break; 
+									default: e.Type = Util.ParseDecOrHexToByte( cmd ); break;
 								}
 								e.Arguments = new byte[0];
 							}
@@ -555,8 +553,8 @@ namespace HyoutaTools.DanganRonpa.Lin {
 								ScriptEntry e = new ScriptEntry();
 								e.Type = 0x02;
 								e.Arguments = new byte[2];
-								e.Arguments[0] = 0xFF; // will be fixed later in CreateFile()
-								e.Arguments[1] = 0xFF;
+								//e.Arguments[0] = 0xFF; // will be fixed later in CreateFile()
+								//e.Arguments[1] = 0xFF;
 								e.Text = s;
 								ScriptData.Add( e );
 								first = false;
