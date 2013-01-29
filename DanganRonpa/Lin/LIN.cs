@@ -526,9 +526,10 @@ namespace HyoutaTools.DanganRonpa.Lin {
 
 							} else {
 								// command without args
+								if ( cmd == "__END__" ) { break; } // ending command processing for this entry
 								switch ( cmd ) {
 									case "WaitPlayerInput": e.Type = 0x3A; break;
-									case "WaitFrame": e.Type = 0x3B; break; 
+									case "WaitFrame": e.Type = 0x3B; break;
 									default: e.Type = Util.ParseDecOrHexToByte( cmd ); break;
 								}
 								e.Arguments = new byte[0];
