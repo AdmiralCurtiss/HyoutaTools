@@ -10,9 +10,14 @@ namespace HyoutaTools.DanganRonpa.Nonstop {
 		TimeBeforeFadeoutMaybe = 11,
 		HorizontalPosition = 12,
 		VerticalPosition = 13,
-		AudioSpeaker = 21,
+		Character = 21,
+		Sprite = 22,
 		AudioSampleId = 25,
-		AudioChapter = 27,
+		Chapter = 27,
+		Type = 1,
+		HasWeakPoint = 6,
+		ShootWithEvidence = 3,
+		ShootWithWeakpoint = 4,
 		StructureSize = 0x3C / 2
 	}
 
