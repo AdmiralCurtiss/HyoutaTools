@@ -23,6 +23,7 @@ namespace HyoutaTools {
 					case "Generic.ByteHotfix": return Generic.ByteHotfix.ByteHotfix.Execute( ProgramArguments.ToArray() );
 					case "GraceNote.DanganRonpa.LinImport": return GraceNote.DanganRonpa.LinImport.Importer.Import( ProgramArguments.ToArray() );
 					case "GraceNote.DanganRonpa.LinExport": return GraceNote.DanganRonpa.LinExport.Exporter.Export( ProgramArguments.ToArray() );
+					case "GraceNote.DanganRonpa.NonstopExistingDatabaseImport.Auto": return GraceNote.DanganRonpa.NonstopExistingDatabaseImport.Importer.AutoImport();
 					case "GraceNote.DanganRonpa.LinLegacyTool": return GraceNote.DanganRonpa.LinImport.Program.Execute( ProgramArguments.ToArray() );
 					case "GraceNote.DanganRonpa.PakTextExport": return GraceNote.DanganRonpa.PakTextExport.Program.Execute( ProgramArguments.ToArray() );
 					case "GraceNote.DanganRonpa.PakTextImport": return GraceNote.DanganRonpa.PakTextImport.Program.Execute( ProgramArguments.ToArray() );
