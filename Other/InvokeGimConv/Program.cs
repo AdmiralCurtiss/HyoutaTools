@@ -7,10 +7,12 @@ using System.Diagnostics;
 namespace HyoutaTools.Other.InvokeGimConv {
 	class Program {
 
-		static bool RunProgram( String prog, String args ) {
-			Console.Write( prog );
-			Console.Write( " " );
-			Console.WriteLine( args );
+		static bool RunProgram( String prog, String args, bool displayCommandLine ) {
+			if ( displayCommandLine ) {
+				Console.Write( prog );
+				Console.Write( " " );
+				Console.WriteLine( args );
+			}
 
 			// Use ProcessStartInfo class
 			ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -122,7 +124,7 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			foreach ( string a in gimconvargs ) {
 				ga.Append( a ).Append( ' ' );
 			}
-			bool success = RunProgram( "GimConv", ga.ToString() );
+			bool success = RunProgram( "GimConv", ga.ToString(), displayCommandLine: false );
 			return success ? 0 : -1;
 		}
 	}
