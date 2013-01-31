@@ -55,14 +55,17 @@ namespace HyoutaTools.Other.InvokeGimConv {
 				if ( arg.StartsWith( "----" ) ) {
 					if ( arg.StartsWith( "----FILE" ) ) {
 						OriginalFile = arg.Substring( 8 );
+						// THIS IS A VERY UGLY HACK but windows command line batch file SUCK so here
+						if ( OriginalFile.EndsWith( "-big.png" ) ) { return 0; }
 					} else if ( arg.StartsWith( "----OFFS" ) ) {
-						OffsetInOriFile = Int32.Parse( arg.Substring( 8 ), System.Globalization.NumberStyles.AllowHexSpecifier );
+						string suboffs = arg.Substring( 8 );
+						if ( suboffs.EndsWith( "-big" ) ) { return 0; }
+						OffsetInOriFile = Int32.Parse( suboffs, System.Globalization.NumberStyles.AllowHexSpecifier );
 					}
 				} else {
 					gimconvargs.Add( "\"" + arg + "\"" );
 				}
 			}
-
 
 			byte[] orig = System.IO.File.ReadAllBytes( OriginalFile );
 			byte[] GimIdent = new byte[] { 0x4D, 0x49, 0x47, 0x2E, 0x30, 0x30, 0x2E, 0x31, 0x50, 0x53, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00 };
