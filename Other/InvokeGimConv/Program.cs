@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace HyoutaTools.Other.InvokeGimConv {
 	class Program {
 
-		static bool RunProgram( String prog, String args, bool displayCommandLine ) {
+		static bool RunProgram( String prog, String args, bool displayCommandLine, bool displayOutput ) {
 			if ( displayCommandLine ) {
 				Console.Write( prog );
 				Console.Write( " " );
@@ -27,12 +27,19 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			using ( Process exeProcess = Process.Start( startInfo ) ) {
 				exeProcess.WaitForExit();
 				string output = exeProcess.StandardOutput.ReadToEnd();
+				string err = exeProcess.StandardError.ReadToEnd();
+				int exitCode = exeProcess.ExitCode;
 
-				if ( exeProcess.ExitCode != 0 ) {
+				if ( exitCode != 0 ) {
 					Console.WriteLine( prog + " returned nonzero:" );
 					Console.WriteLine( output );
 					throw new Exception( output );
 					//return false;
+				}
+
+				if ( displayOutput ) {
+					Console.WriteLine( output );
+					Console.WriteLine( err );
 				}
 
 				return true;
@@ -134,7 +141,7 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			foreach ( string a in gimconvargs ) {
 				ga.Append( a ).Append( ' ' );
 			}
-			bool success = RunProgram( "GimConv", ga.ToString(), displayCommandLine: true );
+			bool success = RunProgram( "GimConv", ga.ToString(), displayCommandLine: true, displayOutput: true );
 			return success ? 0 : -1;
 		}
 	}
