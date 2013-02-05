@@ -73,7 +73,11 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			byte[] GimIdent = new byte[] { 0x4D, 0x49, 0x47, 0x2E, 0x30, 0x30, 0x2E, 0x31, 0x50, 0x53, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00 };
 			for ( int j = 0; j < GimIdent.Length; ++j ) {
 				if ( orig[OffsetInOriFile + j] != GimIdent[j] ) {
-					throw new Exception( "FILE Not a GIM!" );
+					throw new Exception(
+						"Could not find GIM header at requested location!\n" +
+						"File: " + OriginalFile + "\n" +
+						"Offs: " + OffsetInOriFile + "\n"  
+					);
 				}
 			}
 
