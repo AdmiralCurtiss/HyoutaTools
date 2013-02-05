@@ -52,6 +52,7 @@ namespace HyoutaTools.Other.InvokeGimConv {
 
 			string OriginalFile = null;
 			int OffsetInOriFile = 0;
+			string WriteBitsPerPixelPath = null;
 
 			foreach ( string arg in args ) {
 				if ( arg.StartsWith( "----" ) ) {
@@ -63,6 +64,8 @@ namespace HyoutaTools.Other.InvokeGimConv {
 						string suboffs = arg.Substring( 8 );
 						if ( suboffs.EndsWith( "-big" ) ) { return 0; }
 						OffsetInOriFile = Int32.Parse( suboffs, System.Globalization.NumberStyles.AllowHexSpecifier );
+					} else if ( arg.StartsWith( "----WBPP" ) ) {
+						WriteBitsPerPixelPath = arg.Substring( 8 );
 					}
 				} else {
 					gimconvargs.Add( "\"" + arg + "\"" );
@@ -99,6 +102,9 @@ namespace HyoutaTools.Other.InvokeGimConv {
 
 			int bitperpixel = BitConverter.ToInt16( orig, OffsetInOriFile + 0x4C );
 			gimconvargs.Add( "--image_format" );
+			if ( WriteBitsPerPixelPath != null ) {
+				System.IO.File.WriteAllText( WriteBitsPerPixelPath, bitperpixel.ToString() );
+			}
 			switch ( bitperpixel ) {
 				case 8:
 					ReplaceInList( gimconvargs, @"assets\h.png", @"assets\h8.png" );
@@ -128,7 +134,7 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			foreach ( string a in gimconvargs ) {
 				ga.Append( a ).Append( ' ' );
 			}
-			bool success = RunProgram( "GimConv", ga.ToString(), displayCommandLine: false );
+			bool success = RunProgram( "GimConv", ga.ToString(), displayCommandLine: true );
 			return success ? 0 : -1;
 		}
 	}
