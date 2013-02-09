@@ -72,6 +72,7 @@
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
+    <Compile Include="Generic\DbTextReplace\Replacement.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinExport\Exporter.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinImport\Importer.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinImport\Program.cs" />

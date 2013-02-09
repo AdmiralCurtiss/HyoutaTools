@@ -6,6 +6,9 @@ using System.Text;
 namespace HyoutaTools {
 	class Program {
 		static int Main( string[] args ) {
+			//Generic.DbTextReplace.Replacement.Replace();
+			//return -1;
+
 			if ( args.Length > 0 ) {
 				string ProgramName = args[0];
 				List<string> ProgramArguments = new List<string>( args.Length - 1 );

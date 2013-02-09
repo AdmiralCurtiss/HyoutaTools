@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data.SQLite;
 
 namespace HyoutaTools {
 	class Util {
@@ -148,6 +149,61 @@ namespace HyoutaTools {
 		}
 		public static DateTime PS3TimeToDateTime( ulong PS3Time ) {
 			return new DateTime( 1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).AddMilliseconds( PS3Time / 1000 ).ToLocalTime();
+		}
+		#endregion
+
+		#region SqliteUtils
+		public static object GenericSqliteSelect( string connString, string statement ) {
+			return GenericSqliteSelect( connString, statement, new object[0] );
+		}
+		public static object GenericSqliteSelect( string connString, string statement, IEnumerable<object> parameters ) {
+			object retval = null;
+			SQLiteConnection Connection = new SQLiteConnection( connString );
+			Connection.Open();
+
+			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
+			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
+				Command.CommandText = statement;
+				foreach ( object p in parameters ) {
+					SQLiteParameter sqp = new SQLiteParameter();
+					sqp.Value = p;
+					Command.Parameters.Add( sqp );
+				}
+				retval = Command.ExecuteScalar();
+				Transaction.Commit();
+			}
+			Connection.Close();
+
+			return retval;
+		}
+		
+		public static int GenericSqliteUpdate( string connString, string statement ) {
+			return GenericSqliteUpdate( connString, statement, new object[0] );
+		}
+		public static int GenericSqliteUpdate( string connString, string statement, IEnumerable<object> parameters ) {
+			SQLiteConnection Connection = new SQLiteConnection( connString );
+			Connection.Open();
+			int retval = GenericSqliteUpdate( Connection, statement, parameters );
+			Connection.Close();
+			return retval;
+		}
+		public static int GenericSqliteUpdate( SQLiteConnection Connection, string statement, IEnumerable<object> parameters )
+		{
+			int affected = -1;
+
+			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
+			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
+				Command.CommandText = statement;
+				foreach ( object p in parameters ) {
+					SQLiteParameter sqp = new SQLiteParameter();
+					sqp.Value = p;
+					Command.Parameters.Add( sqp );
+				}
+				affected = Command.ExecuteNonQuery();
+				Transaction.Commit();
+			}
+
+			return affected;
 		}
 		#endregion
 	}
