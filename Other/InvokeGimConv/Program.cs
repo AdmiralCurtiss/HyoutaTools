@@ -7,45 +7,6 @@ using System.Diagnostics;
 namespace HyoutaTools.Other.InvokeGimConv {
 	class Program {
 
-		static bool RunProgram( String prog, String args, bool displayCommandLine, bool displayOutput ) {
-			if ( displayCommandLine ) {
-				Console.Write( prog );
-				Console.Write( " " );
-				Console.WriteLine( args );
-			}
-
-			// Use ProcessStartInfo class
-			ProcessStartInfo startInfo = new ProcessStartInfo();
-			startInfo.CreateNoWindow = false;
-			startInfo.UseShellExecute = false;
-			startInfo.FileName = prog;
-			startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-			startInfo.Arguments = args;
-			startInfo.RedirectStandardOutput = true;
-			startInfo.RedirectStandardError = true;
-
-			using ( Process exeProcess = Process.Start( startInfo ) ) {
-				exeProcess.WaitForExit();
-				string output = exeProcess.StandardOutput.ReadToEnd();
-				string err = exeProcess.StandardError.ReadToEnd();
-				int exitCode = exeProcess.ExitCode;
-
-				if ( exitCode != 0 ) {
-					Console.WriteLine( prog + " returned nonzero:" );
-					Console.WriteLine( output );
-					throw new Exception( output );
-					//return false;
-				}
-
-				if ( displayOutput ) {
-					Console.WriteLine( output );
-					Console.WriteLine( err );
-				}
-
-				return true;
-			}
-		}
-
 		static void ReplaceInList( List<String> gimconvargs, string orig, string repl ) {
 			for ( int i = 0; i < gimconvargs.Count; ++i ) {
 				if ( gimconvargs[i] == orig ) {
@@ -141,7 +102,7 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			foreach ( string a in gimconvargs ) {
 				ga.Append( a ).Append( ' ' );
 			}
-			bool success = RunProgram( "GimConv", ga.ToString(), displayCommandLine: true, displayOutput: true );
+			bool success = Util.RunProgram( "GimConv", ga.ToString(), displayCommandLine: true, displayOutput: true );
 			return success ? 0 : -1;
 		}
 	}

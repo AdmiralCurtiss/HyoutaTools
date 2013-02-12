@@ -206,5 +206,53 @@ namespace HyoutaTools {
 			return affected;
 		}
 		#endregion
+
+		#region ProgramUtils
+		public static bool RunProgram( String prog, String args, bool displayCommandLine, bool displayOutput ) {
+			if ( displayCommandLine ) {
+				Console.Write( prog );
+				Console.Write( " " );
+				Console.WriteLine( args );
+			}
+
+			// Use ProcessStartInfo class
+			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+			startInfo.CreateNoWindow = false;
+			startInfo.UseShellExecute = false;
+			startInfo.FileName = prog;
+			startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+			startInfo.Arguments = args;
+			startInfo.RedirectStandardOutput = true;
+			startInfo.RedirectStandardError = true;
+
+			using ( System.Diagnostics.Process exeProcess = System.Diagnostics.Process.Start( startInfo ) ) {
+				exeProcess.WaitForExit();
+				string output = exeProcess.StandardOutput.ReadToEnd();
+				string err = exeProcess.StandardError.ReadToEnd();
+				int exitCode = exeProcess.ExitCode;
+
+				if ( exitCode != 0 ) {
+					Console.WriteLine( prog + " returned nonzero:" );
+					Console.WriteLine( output );
+					throw new Exception( output );
+					//return false;
+				}
+
+				if ( displayOutput ) {
+					Console.WriteLine( output );
+					Console.WriteLine( err );
+				}
+
+				return true;
+			}
+		}
+
+		#endregion
+
+		public static void CopyByteArrayPart( byte[] from, int locationFrom, byte[] to, int locationTo, int count ) {
+			for ( int i = 0; i < count; i++ ) {
+				to[locationTo + i] = from[locationFrom + i];
+			}
+		}
 	}
 }

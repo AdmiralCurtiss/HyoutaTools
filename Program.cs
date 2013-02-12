@@ -54,6 +54,7 @@ namespace HyoutaTools {
 					case "Tales.Vesperia.TownMap.Viewer": return Tales.Vesperia.TownMap.Viewer.Program.Execute();
 					case "Tales.Xillia.TldatExtract": return Tales.Xillia.TldatExtract.Program.Execute( ProgramArguments.ToArray() );
 					case "Tales.tlzc": return Tales.tlzc.tlzcmain.Execute( ProgramArguments.ToArray() );
+					case "Other.Xbox360.Rebundler": return Other.Xbox360.Rebundler.Rebundler.Rebundle( ProgramArguments.ToArray() );
 					default: PrintUsage(); break;
 				}
 

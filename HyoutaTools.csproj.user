@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>Other.InvokeGimConv "----FILEd:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\umdimage2.dat.ex\0024.ex\0003" "----OFFS13E14" "d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\umdimage2\0024\0003\13E14.png" "d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\h.png" "d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\q.png" -o "13E14.gim" --format_style psp --format_endian little --pixel_order faster --palette_format rgba8888 --pixel_channel rgba --update_fileinfo on --merge_mode level</StartArguments>
+    <StartArguments>GraceNote.Vesperia.To8chtxImport "e:\__\chat3.svo.ext\VC001J.DAT.dec.ext\3"</StartArguments>
   </PropertyGroup>
 </Project>
