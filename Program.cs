@@ -6,9 +6,6 @@ using System.Text;
 namespace HyoutaTools {
 	class Program {
 		static int Main( string[] args ) {
-			//Generic.DbTextReplace.Replacement.Replace();
-			//return -1;
-
 			if ( args.Length > 0 ) {
 				string ProgramName = args[0];
 				List<string> ProgramArguments = new List<string>( args.Length - 1 );
@@ -55,6 +52,7 @@ namespace HyoutaTools {
 					case "Tales.Xillia.TldatExtract": return Tales.Xillia.TldatExtract.Program.Execute( ProgramArguments.ToArray() );
 					case "Tales.tlzc": return Tales.tlzc.tlzcmain.Execute( ProgramArguments.ToArray() );
 					case "Other.Xbox360.Rebundler": return Other.Xbox360.Rebundler.Rebundler.Rebundle( ProgramArguments.ToArray() );
+					case "Gemeroc.DbTextReplace": return Generic.DbTextReplace.Replacement.Replace( ProgramArguments.ToArray() );
 					default: PrintUsage(); break;
 				}
 

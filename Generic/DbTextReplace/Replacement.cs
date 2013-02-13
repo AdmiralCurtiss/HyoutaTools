@@ -6,14 +6,15 @@ using System.Data.SQLite;
 
 namespace HyoutaTools.Generic.DbTextReplace {
 	public static class Replacement {
-		public static void Replace() {
-			string Database = @"c:\_svn\GraceNote\GraceNote\DanganRonpaBestOfDB\GracesJapanese";
+		public static int Replace(string[] args) {
+			string Database = args[0]; //@"c:\_svn\GraceNote\GraceNote\DanganRonpaBestOfDB\GracesJapanese";
 
 			// remove the dumb unicode byte order mark
 			
 			List<object[]> objects =
-				GenericSqliteSelect( "Data Source=" + Database, "SELECT id, string FROM japanese ORDER BY id ASC", new object[0] );
-				//GenericSqliteSelect( @"Data Source=c:\_svn\GraceNote\GraceNote\DanganRonpaBestOfDB\DRBO2439", "SELECT stringid, english FROM text ORDER BY id ASC", new object[0] );
+				GenericSqliteSelect( "Data Source=" + Database,
+					//"SELECT id, string FROM japanese ORDER BY id ASC", new object[0] );
+					"SELECT id, english FROM text ORDER BY id ASC", new object[0] );
 
 			SQLiteConnection Connection = new SQLiteConnection( "Data Source=" + Database );
 			Connection.Open();
@@ -24,7 +25,10 @@ namespace HyoutaTools.Generic.DbTextReplace {
 					int ID = (int)objects[i][0];
 					string str = (string)objects[i][1];
 					string fstr = Encoding.Unicode.GetString( b, 2, b.Length - 2 );
-					Util.GenericSqliteUpdate( Connection, "UPDATE japanese SET string = ? WHERE id = ?", new object[] {
+					Util.GenericSqliteUpdate( Connection,
+						//"UPDATE japanese SET string = ? WHERE id = ?",
+						"UPDATE Text SET english = ? WHERE id = ?",
+						new object[] {
 						fstr, ID	
 					});
 				}
@@ -32,7 +36,7 @@ namespace HyoutaTools.Generic.DbTextReplace {
 
 			Connection.Close();
 
-			return;
+			return 0;
 
 		}
 
