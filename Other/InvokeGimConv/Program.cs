@@ -21,6 +21,7 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			string OriginalFile = null;
 			int OffsetInOriFile = 0;
 			string WriteBitsPerPixelPath = null;
+			string WriteLayerCountPath = null;
 
 			foreach ( string arg in args ) {
 				if ( arg.StartsWith( "----" ) ) {
@@ -34,6 +35,8 @@ namespace HyoutaTools.Other.InvokeGimConv {
 						OffsetInOriFile = Int32.Parse( suboffs, System.Globalization.NumberStyles.AllowHexSpecifier );
 					} else if ( arg.StartsWith( "----WBPP" ) ) {
 						WriteBitsPerPixelPath = arg.Substring( 8 );
+					} else if ( arg.StartsWith( "----WLAY" ) ) {
+						WriteLayerCountPath = arg.Substring( 8 );
 					}
 				} else {
 					gimconvargs.Add( "\"" + arg + "\"" );
@@ -53,6 +56,7 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			}
 
 			int layers = BitConverter.ToInt16( orig, OffsetInOriFile + 0x6A );
+			if ( WriteLayerCountPath != null ) { System.IO.File.WriteAllText( WriteLayerCountPath, layers.ToString() ); }
 			switch ( layers ) {
 				case 3:
 					// yeah this is expected, ok
