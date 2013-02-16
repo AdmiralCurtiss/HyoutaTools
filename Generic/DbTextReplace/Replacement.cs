@@ -25,9 +25,10 @@ namespace HyoutaTools.Generic.DbTextReplace {
 					int ID = (int)objects[i][0];
 					string str = (string)objects[i][1];
 					string fstr = Encoding.Unicode.GetString( b, 2, b.Length - 2 );
+					Console.WriteLine( fstr );
 					Util.GenericSqliteUpdate( Connection,
 						//"UPDATE japanese SET string = ? WHERE id = ?",
-						"UPDATE Text SET english = ? WHERE id = ?",
+						"UPDATE Text SET english = ?, updated = 1 WHERE id = ?",
 						new object[] {
 						fstr, ID	
 					});

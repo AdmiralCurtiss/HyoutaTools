@@ -52,7 +52,7 @@ namespace HyoutaTools {
 					case "Tales.Xillia.TldatExtract": return Tales.Xillia.TldatExtract.Program.Execute( ProgramArguments.ToArray() );
 					case "Tales.tlzc": return Tales.tlzc.tlzcmain.Execute( ProgramArguments.ToArray() );
 					case "Other.Xbox360.Rebundler": return Other.Xbox360.Rebundler.Rebundler.Rebundle( ProgramArguments.ToArray() );
-					case "Gemeroc.DbTextReplace": return Generic.DbTextReplace.Replacement.Replace( ProgramArguments.ToArray() );
+					case "Generic.DbTextReplace": return Generic.DbTextReplace.Replacement.Replace( ProgramArguments.ToArray() );
 					default: PrintUsage(); break;
 				}
 
