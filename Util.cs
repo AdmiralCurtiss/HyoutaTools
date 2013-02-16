@@ -141,6 +141,9 @@ namespace HyoutaTools {
 			//return bytes.TakeWhile(subject => subject != 0x00).ToArray();
 			return ShiftJISEncoding.GetBytes( s );
 		}
+		public static byte[] StringToBytesUTF16( String s ) {
+			return Encoding.Unicode.GetBytes( s );
+		}
 		#endregion
 
 		#region TimeUtils
