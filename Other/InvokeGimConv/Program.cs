@@ -27,11 +27,11 @@ namespace HyoutaTools.Other.InvokeGimConv {
 				if ( arg.StartsWith( "----" ) ) {
 					if ( arg.StartsWith( "----FILE" ) ) {
 						OriginalFile = arg.Substring( 8 );
-						// THIS IS A VERY UGLY HACK but windows command line batch file SUCK so here
-						if ( OriginalFile.EndsWith( "-big.png" ) ) { return 0; }
+						//if ( OriginalFile.Contains( "-" ) || OriginalFile.Contains( "h" ) || OriginalFile.Contains( "q" ) || OriginalFile.Contains( "m" ) ) { return 0; }
 					} else if ( arg.StartsWith( "----OFFS" ) ) {
 						string suboffs = arg.Substring( 8 );
-						if ( suboffs.EndsWith( "-big" ) ) { return 0; }
+						// THIS IS A VERY UGLY HACK but windows command line batch file SUCK so here
+						if ( suboffs.Contains( "-" ) || suboffs.Contains( "h" ) || suboffs.Contains( "q" ) || suboffs.Contains( "m" ) ) { return 0; }
 						OffsetInOriFile = Int32.Parse( suboffs, System.Globalization.NumberStyles.AllowHexSpecifier );
 					} else if ( arg.StartsWith( "----WBPP" ) ) {
 						WriteBitsPerPixelPath = arg.Substring( 8 );
@@ -79,17 +79,9 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			}
 			switch ( bitperpixel ) {
 				case 8:
-					ReplaceInList( gimconvargs, @"assets\h.png", @"assets\h8.png" );
-					ReplaceInList( gimconvargs, @"assets\q.png", @"assets\q8.png" );
-					ReplaceInList( gimconvargs, "\"assets\\h.png\"", @"assets\h8.png" );
-					ReplaceInList( gimconvargs, "\"assets\\q.png\"", @"assets\q8.png" );
 					gimconvargs.Add( "index8" );
 					break;
 				case 4:
-					ReplaceInList( gimconvargs, @"assets\h.png", @"assets\h4.png" );
-					ReplaceInList( gimconvargs, @"assets\q.png", @"assets\q4.png" );
-					ReplaceInList( gimconvargs, "\"assets\\h.png\"", @"assets\h4.png" );
-					ReplaceInList( gimconvargs, "\"assets\\q.png\"", @"assets\q4.png" );
 					gimconvargs.Add( "index4" );
 					break;
 				//case 16:
