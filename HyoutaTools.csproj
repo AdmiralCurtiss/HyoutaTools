@@ -89,6 +89,9 @@
     <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
     <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
+    <Compile Include="Tales\Vesperia\Credits\CreditsInfo.cs" />
+    <Compile Include="Tales\Vesperia\Credits\CreditsInfoSingle.cs" />
+    <Compile Include="Tales\Vesperia\Credits\RunCreditsViewer.cs" />
     <Compile Include="Tales\Vesperia\Font\FontInfo.cs" />
     <Compile Include="Tales\Vesperia\Font\Viewer\FontViewer.cs">
       <SubType>Form</SubType>

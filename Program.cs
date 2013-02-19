@@ -45,6 +45,7 @@ namespace HyoutaTools {
 					case "Other.NisPakEx": return Other.NisPakEx.Program.Execute( ProgramArguments.ToArray() );
 					case "Other.NitroidDataBinEx": return Other.NitroidDataBinEx.Program.Execute( ProgramArguments.ToArray() );
 					case "Tales.Vesperia.Font.Viewer": return Tales.Vesperia.Font.Viewer.Program.Execute( ProgramArguments.ToArray() );
+					case "Tales.Vesperia.Credits.Viewer": return Tales.Vesperia.Credits.RunCreditsViewer.Execute( ProgramArguments.ToArray() );
 					case "Tales.Vesperia.ItemDat.Viewer": return Tales.Vesperia.ItemDat.RunItemViewer.Execute( ProgramArguments.ToArray() );
 					case "Tales.Vesperia.MapList": return Tales.Vesperia.MapList.Program.Execute( ProgramArguments.ToArray() );
 					case "Tales.Vesperia.SpkdUnpack": return Tales.Vesperia.SpkdUnpack.Program.Execute( ProgramArguments.ToArray() );
