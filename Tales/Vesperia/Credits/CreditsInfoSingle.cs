@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.Credits {
-	enum CreditsData {
+	public enum CreditsData {
 		EntryNumber = 1,
 		ItemDataCount = 10
 	}
 
-	class CreditsInfoSingle {
+	public class CreditsInfoSingle {
 		public static int Size = 40;
-		public UInt32[] Data;
+		public int Offset = 0;
+		public UInt32[] Data;				
 
 		public CreditsInfoSingle( int offset, byte[] file ) {
-			Data = new UInt32[Size / 4];
+			this.Offset = offset;
+			this.Data = new UInt32[Size / 4];
 			for ( int i = 0; i < Size / 4; ++i ) {
 				Data[i] = Util.SwapEndian( BitConverter.ToUInt32( file, offset + i * 0x04 ) );
 			}

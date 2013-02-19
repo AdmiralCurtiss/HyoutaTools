@@ -91,6 +91,12 @@
     <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfo.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfoSingle.cs" />
+    <Compile Include="Tales\Vesperia\Credits\CreditsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tales\Vesperia\Credits\CreditsForm.designer.cs">
+      <DependentUpon>CreditsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tales\Vesperia\Credits\RunCreditsViewer.cs" />
     <Compile Include="Tales\Vesperia\Font\FontInfo.cs" />
     <Compile Include="Tales\Vesperia\Font\Viewer\FontViewer.cs">
@@ -192,6 +198,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
       <DependentUpon>NonstopForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tales\Vesperia\Credits\CreditsForm.resx">
+      <DependentUpon>CreditsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\Font\Viewer\FontViewer.resx">
       <DependentUpon>FontViewer.cs</DependentUpon>
