@@ -257,5 +257,15 @@ namespace HyoutaTools {
 				to[locationTo + i] = from[locationFrom + i];
 			}
 		}
+
+		/// <summary>
+		/// converts a 32-bit int that's actually a byte representation of a float
+		/// to an actual float for use in calculations or whatever
+		/// </summary>
+		public static float UIntToFloat( uint integer ) {
+			byte[] b = BitConverter.GetBytes( integer );
+			float f = BitConverter.ToSingle( b, 0 );
+			return f;
+		}
 	}
 }

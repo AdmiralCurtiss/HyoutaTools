@@ -13,7 +13,7 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 			Console.WriteLine( "Opening STRING_DIC.SO..." );
 			TSSFile TSS;
 			try {
-				TSS = new TSSFile( System.IO.File.ReadAllBytes( @"e:\__\string.svo.new.ext\STRING_DIC.SO" ) );
+				TSS = new TSSFile( System.IO.File.ReadAllBytes( @"e:\___rebuild\STRING_DIC.SO" ) );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
 				return -1;

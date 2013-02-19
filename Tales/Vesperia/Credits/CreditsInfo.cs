@@ -16,7 +16,8 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 		private void Initialize( byte[] file ) {
 			CreditInfoStartOffset = Util.SwapEndian( BitConverter.ToUInt32( file, 0x24 ) );
 			CreditInfoCount = Util.SwapEndian( BitConverter.ToUInt32( file, (int)CreditInfoStartOffset ) );
-			CreditInfoCount = 2995; // not accurate in file...?
+			CreditInfoCount = 2995; // PS3 // not accurate in file...?
+			//CreditInfoCount = 0x1ACE8 / 40; // 360
 
 			items = new List<CreditsInfoSingle>( (int)CreditInfoCount );
 			for ( int i = 0; i < CreditInfoCount; ++i ) {

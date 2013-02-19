@@ -57,13 +57,19 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 		private void Reload() {
 			listBox1.Items.Clear();
 			foreach ( CreditsInfoSingle i in itemDat.items ) {
-				listBox1.Items.Add( i.Offset.ToString( "X6" ) + ": [" + i.Data[0] + "] " + GetEntry( i.Data[(int)CreditsData.EntryNumber] ).StringJPN );
+				listBox1.Items.Add(
+					i.Offset.ToString( "X6" ) + ": [" + i.Data[0] + "] "
+					+ ( i.Data[0] == 3 ? " --- Free Space: " + Util.UIntToFloat( i.Data[4] ).ToString() + " --- " : "" )
+					+ ( i.Data[0] == 5 ? " --- Text Size?: " + Util.UIntToFloat( i.Data[4] ).ToString() + " --- " : "" )
+					+ GetEntry( i.Data[(int)CreditsData.EntryNumber] ).StringJPN
+				);
 			}
 		}
 
 		private TSSEntry GetEntry( uint ptr ) {
 			try {
 				int ItemStartInTss = 17763; // PS3
+				//ItemStartInTss = 17763 + 216; // 360 with PS3 string_dic
 				return TSS.Entries[ptr - 340000 + ItemStartInTss];
 			} catch ( Exception ) {
 				return new TSSEntry( new uint[0], "", "", 0, 0 );
@@ -81,10 +87,7 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 						break;
 					case 3:
 					case 4:
-						uint d = item.Data[i];
-						byte[] b = BitConverter.GetBytes(d);
-						float f = BitConverter.ToSingle( b, 0 );
-						textboxes[i].Text = f.ToString();
+						textboxes[i].Text = Util.UIntToFloat(item.Data[i]).ToString();
 						break;
 				}
 			}
