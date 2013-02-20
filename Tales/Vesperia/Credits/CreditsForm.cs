@@ -55,18 +55,17 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 		}
 
 		private void Reload() {
+			SuspendLayout();
 			listBox1.Items.Clear();
 			foreach ( CreditsInfoSingle i in itemDat.items ) {
-				listBox1.Items.Add(
-					i.Offset.ToString( "X6" ) + ": [" + i.Data[0] + "] "
-					+ ( i.Data[0] == 3 ? " --- Free Space: " + Util.UIntToFloat( i.Data[4] ).ToString() + " --- " : "" )
-					+ ( i.Data[0] == 5 ? " --- Text Size?: " + Util.UIntToFloat( i.Data[4] ).ToString() + " --- " : "" )
-					+ GetEntry( i.Data[(int)CreditsData.EntryNumber] ).StringJPN
-				);
+				//if ( i.Data[0] != 2 ) continue;
+				i.Form = this;
+				listBox1.Items.Add( i );
 			}
+			ResumeLayout();
 		}
 
-		private TSSEntry GetEntry( uint ptr ) {
+		public TSSEntry GetEntry( uint ptr ) {
 			try {
 				int ItemStartInTss = 17763; // PS3
 				//ItemStartInTss = 17763 + 216; // 360 with PS3 string_dic
@@ -77,7 +76,7 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 		}
 
 		private void listBox1_SelectedIndexChanged( object sender, EventArgs e ) {
-			CreditsInfoSingle item = itemDat.items[listBox1.SelectedIndex];
+			CreditsInfoSingle item = (CreditsInfoSingle)listBox1.SelectedItem;
 
 			for ( int i = 0; i < CreditsInfoSingle.Size / 4; ++i ) {
 				labels[i].Text = ( (CreditsData)i ).ToString();
@@ -85,9 +84,13 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 					default:
 						textboxes[i].Text = item.Data[i].ToString();
 						break;
+					case 1:
+					case 2:
+						textboxes[i].Text = item.Data[i].ToString( "X" );
+						break;
 					case 3:
 					case 4:
-						textboxes[i].Text = Util.UIntToFloat(item.Data[i]).ToString();
+						textboxes[i].Text = Util.UIntToFloat( item.Data[i] ).ToString();
 						break;
 				}
 			}

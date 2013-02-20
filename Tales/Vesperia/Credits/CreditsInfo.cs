@@ -8,12 +8,14 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 		public List<CreditsInfoSingle> items;
 		public uint CreditInfoStartOffset = 0;
 		public uint CreditInfoCount = 0;
+		public byte[] File;
 
 		public CreditsInfo( string Filename ) {
 			Initialize( System.IO.File.ReadAllBytes( Filename ) );
 		}
 
 		private void Initialize( byte[] file ) {
+			this.File = file;
 			CreditInfoStartOffset = Util.SwapEndian( BitConverter.ToUInt32( file, 0x24 ) );
 			CreditInfoCount = Util.SwapEndian( BitConverter.ToUInt32( file, (int)CreditInfoStartOffset ) );
 			CreditInfoCount = 2995; // PS3 // not accurate in file...?
@@ -21,9 +23,13 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 
 			items = new List<CreditsInfoSingle>( (int)CreditInfoCount );
 			for ( int i = 0; i < CreditInfoCount; ++i ) {
-				items.Add( new CreditsInfoSingle( (int)CreditInfoStartOffset + 4 + i * 40, file ) );
+				items.Add( new CreditsInfoSingle( this, (int)CreditInfoStartOffset + 4 + i * 40, file ) );
 			}
 
+		}
+
+		public string GetInFileString( int pointer ) {
+			return Util.GetTextUTF8( pointer, File );
 		}
 	}
 }
