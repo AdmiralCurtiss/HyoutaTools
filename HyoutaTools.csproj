@@ -88,6 +88,15 @@
     <Compile Include="GraceNote\Vesperia\To8chtxExport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
+    <Compile Include="Other\PSP\GIM\EndOfFileSection.cs" />
+    <Compile Include="Other\PSP\GIM\EndOfImageSection.cs" />
+    <Compile Include="Other\PSP\GIM\FileInfoSection.cs" />
+    <Compile Include="Other\PSP\GIM\GIM.cs" />
+    <Compile Include="Other\PSP\GIM\HeaderSection.cs" />
+    <Compile Include="Other\PSP\GIM\ImageSection.cs" />
+    <Compile Include="Other\PSP\GIM\LayerSplitter\Split.cs" />
+    <Compile Include="Other\PSP\GIM\PaletteSection.cs" />
+    <Compile Include="Other\PSP\GIM\ISection.cs" />
     <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfo.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfoSingle.cs" />
@@ -221,6 +230,7 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

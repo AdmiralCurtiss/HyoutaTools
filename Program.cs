@@ -54,6 +54,7 @@ namespace HyoutaTools {
 					case "Tales.tlzc": return Tales.tlzc.tlzcmain.Execute( ProgramArguments.ToArray() );
 					case "Other.Xbox360.Rebundler": return Other.Xbox360.Rebundler.Rebundler.Rebundle( ProgramArguments.ToArray() );
 					case "Generic.DbTextReplace": return Generic.DbTextReplace.Replacement.Replace( ProgramArguments.ToArray() );
+					case "Other.PSP.GIM.LayerSplitter": return Other.PSP.GIM.LayerSplitter.Splitter.Split( ProgramArguments.ToArray() );
 					default: PrintUsage(); break;
 				}
 
