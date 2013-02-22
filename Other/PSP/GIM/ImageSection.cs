@@ -53,7 +53,8 @@ namespace HyoutaTools.Other.PSP.GIM {
 		public ushort FrameCount;
 
 		public uint[] ImageOffsets;
-		public byte[][] Images;
+		public byte[][] ImagesRawBytes;
+		public List<List<uint>> Images;
 
 
 		public uint ImageCount;
@@ -98,7 +99,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 			}
 
 
-			Images = new byte[ImageCount][];
+			ImagesRawBytes = new byte[ImageCount][];
 			for ( int i = 0; i < ImageOffsets.Length; ++i ) {
 				uint poffs = ImageOffsets[i];
 				uint nextpoffs;
@@ -108,10 +109,63 @@ namespace HyoutaTools.Other.PSP.GIM {
 					nextpoffs = ImageOffsets[i + 1];
 				}
 				uint size = nextpoffs - poffs;
-				Images[i] = new byte[size];
+				ImagesRawBytes[i] = new byte[size];
 
-				Util.CopyByteArrayPart( File, Offset + (int)poffs + 0x10, Images[i], 0, (int)size );
+				Util.CopyByteArrayPart( File, Offset + (int)poffs + 0x10, ImagesRawBytes[i], 0, (int)size );
 			}
+
+
+
+			Images = new List<List<uint>>();
+			foreach ( byte[] img in ImagesRawBytes ) {
+				int BitPerPixel = GetBitPerPixel();
+				List<uint> IndividualImage = new List<uint>();
+				for ( int cnt = 0; cnt < img.Length * 8; cnt += BitPerPixel ) {
+					uint color = 0;
+					int i = cnt / 8;
+					switch ( BitPerPixel ) {
+						case 4:
+							if ( i % 2 == 0 ) {
+								color = ( img[i / 2] & 0xF0u ) >> 4;
+							} else {
+								color = ( img[i / 2] & 0x0Fu );
+							}
+							break;
+						case 8:
+							color = img[i];
+							break;
+						case 16:
+							color = BitConverter.ToUInt16( img, i );
+							break;
+						case 32:
+							color = BitConverter.ToUInt32( img, i );
+							break;
+					}
+					IndividualImage.Add( color );
+				}
+				Images.Add( IndividualImage );
+			}
+
+
+			return;
+		}
+
+		public int GetBitPerPixel() {
+			switch ( Format ) {
+				case ImageFormat.Index4:
+					return 4;
+				case ImageFormat.Index8:
+					return 8;
+				case ImageFormat.Index16:
+				case ImageFormat.RGBA4444:
+				case ImageFormat.RGBA5551:
+				case ImageFormat.RGBA5650:
+					return 16;
+				case ImageFormat.Index32:
+				case ImageFormat.RGBA8888:
+					return 32;
+			}
+			return 0;
 		}
 
 		public uint GetPartSize() {
@@ -120,14 +174,14 @@ namespace HyoutaTools.Other.PSP.GIM {
 
 
 		public void Recalculate( int NewFilesize ) {
-			if ( ImageOffsets.Length != Images.Length ) {
-				ImageOffsets = new uint[Images.Length];
+			if ( ImageOffsets.Length != ImagesRawBytes.Length ) {
+				ImageOffsets = new uint[ImagesRawBytes.Length];
 			}
 
 			uint totalLength = 0;
-			for ( int i = 0; i < Images.Length; ++i ) {
+			for ( int i = 0; i < ImagesRawBytes.Length; ++i ) {
 				ImageOffsets[i] = totalLength + 0x40;
-				totalLength += (uint)Images[i].Length;
+				totalLength += (uint)ImagesRawBytes[i].Length;
 			}
 
 			PartSize = totalLength + 0x50;
@@ -176,10 +230,30 @@ namespace HyoutaTools.Other.PSP.GIM {
 			while ( serialized.Count % 16 != 0 ) {
 				serialized.Add( 0x00 );
 			}
-			for ( int i = 0; i < Images.Length; ++i ) {
-				serialized.AddRange( Images[i] );
+			for ( int i = 0; i < ImagesRawBytes.Length; ++i ) {
+				serialized.AddRange( ImagesRawBytes[i] );
 			}
 			return serialized.ToArray();
+		}
+
+		public void ConvertToTruecolor( int imageNumber, List<uint> Palette ) {
+			for ( int i = 0; i < Images[imageNumber].Count; ++i ) {
+				uint index = Images[imageNumber][i];
+				Images[imageNumber][i] = Palette[(int)index];
+			}
+		}
+
+		public void CovertToPaletted( int imageNumber, uint[] NewPalette ) {
+			Dictionary<uint, uint> PaletteDict = new Dictionary<uint, uint>( NewPalette.Length );
+			for ( uint i = 0; i < NewPalette.Length; ++i ) {
+				PaletteDict.Add( NewPalette[i], i );
+			}
+
+			for ( int i = 0; i < Images[imageNumber].Count; ++i ) {
+				uint color = Images[imageNumber][i];
+				uint index = PaletteDict[color];
+				Images[imageNumber][i] = index;
+			}
 		}
 	}
 }

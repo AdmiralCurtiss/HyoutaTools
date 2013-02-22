@@ -37,7 +37,8 @@ namespace HyoutaTools.Other.PSP.GIM {
 		public ushort FrameCount;
 
 		public uint[] PaletteOffsets;
-		public byte[][] Palettes;
+		public byte[][] PalettesRawBytes;
+		public List<List<uint>> Palettes;
 
 
 		public uint PaletteCount;
@@ -82,17 +83,37 @@ namespace HyoutaTools.Other.PSP.GIM {
 			}
 
 
-			Palettes = new byte[PaletteCount][];
+			PalettesRawBytes = new byte[PaletteCount][];
 			for ( int i = 0; i < PaletteOffsets.Length; ++i ) {
 				uint poffs = PaletteOffsets[i];
-				int size = ColorDepth * GetBitPerColor();
-				Palettes[i] = new byte[size];
+				int size = ColorDepth * GetBytePerColor();
+				PalettesRawBytes[i] = new byte[size];
 
-				Util.CopyByteArrayPart( File, Offset + (int)poffs + 0x10, Palettes[i], 0, size );
+				Util.CopyByteArrayPart( File, Offset + (int)poffs + 0x10, PalettesRawBytes[i], 0, size );
 			}
+
+
+			Palettes = new List<List<uint>>();
+			foreach ( byte[] pal in PalettesRawBytes ) {
+				int BytePerColor = GetBytePerColor();
+				List<uint> IndividualPalette = new List<uint>();
+				for ( int i = 0; i < pal.Length; i += BytePerColor ) {
+					uint color = 0;
+					if ( BytePerColor == 4 ) {
+						color = BitConverter.ToUInt32( pal, i );
+					} else if ( BytePerColor == 2 ) {
+						color = BitConverter.ToUInt16( pal, i );
+					}
+					IndividualPalette.Add( color );
+				}
+				Palettes.Add( IndividualPalette );
+			}
+
+
+			return;
 		}
 
-		public int GetBitPerColor() {
+		public int GetBytePerColor() {
 			if ( Format == ImageFormat.RGBA4444 ) {
 				return 2;
 			}
@@ -104,13 +125,13 @@ namespace HyoutaTools.Other.PSP.GIM {
 			return PartSize;
 		}
 		public void Recalculate( int NewFilesize ) {
-			if ( PaletteOffsets.Length != Palettes.Length ) {
-				PaletteOffsets = new uint[Palettes.Length];
+			if ( PaletteOffsets.Length != PalettesRawBytes.Length ) {
+				PaletteOffsets = new uint[PalettesRawBytes.Length];
 			}
 			uint totalLength = 0;
-			for ( int i = 0; i < Palettes.Length; ++i ) {
+			for ( int i = 0; i < PalettesRawBytes.Length; ++i ) {
 				PaletteOffsets[i] = totalLength + 0x40;
-				totalLength += (uint)Palettes[i].Length;
+				totalLength += (uint)PalettesRawBytes[i].Length;
 			}
 
 			PartSize = totalLength + 0x50;
@@ -158,8 +179,8 @@ namespace HyoutaTools.Other.PSP.GIM {
 			while ( serialized.Count % 16 != 0 ) {
 				serialized.Add( 0x00 );
 			}
-			for ( int i = 0; i < Palettes.Length; ++i ) {
-				serialized.AddRange( Palettes[i] );
+			for ( int i = 0; i < PalettesRawBytes.Length; ++i ) {
+				serialized.AddRange( PalettesRawBytes[i] );
 			}
 			return serialized.ToArray();
 		}

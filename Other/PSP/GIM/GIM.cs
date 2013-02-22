@@ -59,24 +59,24 @@ namespace HyoutaTools.Other.PSP.GIM {
 			foreach ( var section in Sections ) {
 				if ( section.GetType() == typeof( ImageSection ) ) {
 					ImageSection isec = (ImageSection)section;
-					byte[] img = isec.Images[imageNumber];
-					isec.Images = new byte[1][];
-					isec.Images[0] = img;
+					byte[] img = isec.ImagesRawBytes[imageNumber];
+					isec.ImagesRawBytes = new byte[1][];
+					isec.ImagesRawBytes[0] = img;
 					isec.Width = (ushort)( isec.Width >> imageNumber );
 					isec.Height = (ushort)( isec.Height >> imageNumber );
 				}
 				if ( section.GetType() == typeof( PaletteSection ) ) {
 					PaletteSection psec = (PaletteSection)section;
-					byte[] pal = psec.Palettes[imageNumber];
-					psec.Palettes = new byte[1][];
-					psec.Palettes[0] = pal;
+					byte[] pal = psec.PalettesRawBytes[imageNumber];
+					psec.PalettesRawBytes = new byte[1][];
+					psec.PalettesRawBytes[0] = pal;
 				}
 			}
 
 			uint fileinfosection = 0;
 			foreach ( var section in Sections ) {
 				section.Recalculate( 0 );
-				if ( section.GetType() == typeof( EndOfFileSection ) ) {
+				if ( section.GetType() == typeof( FileInfoSection ) ) {
 					fileinfosection = section.GetPartSize();
 				}
 			}
@@ -86,10 +86,47 @@ namespace HyoutaTools.Other.PSP.GIM {
 					section.Recalculate( (int)Filesize - 0x10 );
 				}
 				if ( section.GetType() == typeof( EndOfImageSection ) ) {
-					section.Recalculate( (int)Filesize - 0x64 - (int)fileinfosection );
+					section.Recalculate( (int)Filesize - 0x20 - (int)fileinfosection );
 				}
 			}
 		}
+
+
+		public void HomogenizePalette() {
+			ImageSection isec = null;
+			PaletteSection psec = null;
+			foreach ( var section in Sections ) {
+				if ( section.GetType() == typeof( ImageSection ) ) {
+					isec = (ImageSection)section;
+				}
+				if ( section.GetType() == typeof( PaletteSection ) ) {
+					psec = (PaletteSection)section;
+				}
+			}
+
+
+			List<uint> PaletteList = new List<uint>();
+			foreach ( List<uint> pal in psec.Palettes ) {
+				PaletteList.AddRange( pal );
+			}
+			uint[] NewPalette = PaletteList.Distinct().ToArray();
+
+			if ( NewPalette.Length > isec.ColorDepth ) {
+				string err = "ERROR: Combined Palette over the amount of allowed colors. (" + NewPalette.Length + " > " + isec.ColorDepth + ")";
+				Console.WriteLine( err );
+				throw new Exception( err );
+			}
+
+			for ( int i = 0; i < isec.ImageCount; ++i ) {
+				isec.ConvertToTruecolor( i, psec.Palettes[i] );
+				isec.CovertToPaletted( i, NewPalette );
+				psec.Palettes[i] = NewPalette.ToList();
+			}
+			
+
+
+		}
+
 
 		public byte[] Serialize() {
 			List<byte> newfile = new List<byte>( File.Length );
