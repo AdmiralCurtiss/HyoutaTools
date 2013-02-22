@@ -230,9 +230,30 @@ namespace HyoutaTools.Other.PSP.GIM {
 			while ( serialized.Count % 16 != 0 ) {
 				serialized.Add( 0x00 );
 			}
-			for ( int i = 0; i < ImagesRawBytes.Length; ++i ) {
-				serialized.AddRange( ImagesRawBytes[i] );
+
+			int BitPerPixel = GetBitPerPixel();
+			foreach ( List<uint> img in Images ) {
+				for ( int i = 0; i < img.Count; ++i ) {
+					uint col = img[i];
+					switch ( BitPerPixel ) {
+						case 4:
+							col = ( img[i] << 4 ) | ( img[i + 1] );
+							serialized.Add( (byte)col );
+							++i;
+							break;
+						case 8:
+							serialized.Add( (byte)col );
+							break;
+						case 16:
+							serialized.AddRange( BitConverter.GetBytes( (ushort)col ) );
+							break;
+						case 32:
+							serialized.AddRange( BitConverter.GetBytes( col ) );
+							break;
+					}
+				}
 			}
+
 			return serialized.ToArray();
 		}
 

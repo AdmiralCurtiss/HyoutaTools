@@ -179,8 +179,15 @@ namespace HyoutaTools.Other.PSP.GIM {
 			while ( serialized.Count % 16 != 0 ) {
 				serialized.Add( 0x00 );
 			}
-			for ( int i = 0; i < PalettesRawBytes.Length; ++i ) {
-				serialized.AddRange( PalettesRawBytes[i] );
+			int BytePerColor = GetBytePerColor();
+			foreach ( List<uint> pal in Palettes ) {
+				foreach ( uint col in pal ) {
+					if ( BytePerColor == 4 ) {
+						serialized.AddRange( BitConverter.GetBytes( col ) );
+					} else if ( BytePerColor == 2 ) {
+						serialized.AddRange( BitConverter.GetBytes( (ushort)col ) );
+					}
+				}
 			}
 			return serialized.ToArray();
 		}

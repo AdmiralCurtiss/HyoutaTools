@@ -93,6 +93,7 @@
     <Compile Include="Other\PSP\GIM\FileInfoSection.cs" />
     <Compile Include="Other\PSP\GIM\GIM.cs" />
     <Compile Include="Other\PSP\GIM\HeaderSection.cs" />
+    <Compile Include="Other\PSP\GIM\HomogenizePalette\Program.cs" />
     <Compile Include="Other\PSP\GIM\ImageSection.cs" />
     <Compile Include="Other\PSP\GIM\LayerSplitter\Split.cs" />
     <Compile Include="Other\PSP\GIM\PaletteSection.cs" />
