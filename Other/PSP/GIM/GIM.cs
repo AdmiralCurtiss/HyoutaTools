@@ -109,17 +109,21 @@ namespace HyoutaTools.Other.PSP.GIM {
 			foreach ( List<uint> pal in psec.Palettes ) {
 				PaletteList.AddRange( pal );
 			}
-			uint[] NewPalette = PaletteList.Distinct().ToArray();
+			List<uint> NewPalette = PaletteList.Distinct().ToList();
 
-			if ( NewPalette.Length > isec.ColorDepth ) {
-				string err = "ERROR: Combined Palette over the amount of allowed colors. (" + NewPalette.Length + " > " + isec.ColorDepth + ")";
+			int maxColors = 1 << isec.ColorDepth;
+			if ( NewPalette.Count > maxColors ) {
+				string err = "ERROR: Combined Palette over the amount of allowed colors. (" + NewPalette.Count + " > " + maxColors + ")";
 				Console.WriteLine( err );
 				throw new Exception( err );
+			}
+			while ( NewPalette.Count < maxColors ) {
+				NewPalette.Add( 0 );
 			}
 
 			for ( int i = 0; i < isec.ImageCount; ++i ) {
 				isec.ConvertToTruecolor( i, psec.Palettes[i] );
-				isec.CovertToPaletted( i, NewPalette );
+				isec.CovertToPaletted( i, NewPalette.ToArray() );
 				psec.Palettes[i] = NewPalette.ToList();
 			}
 			
