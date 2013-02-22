@@ -267,7 +267,12 @@ namespace HyoutaTools.Other.PSP.GIM {
 		public void CovertToPaletted( int imageNumber, uint[] NewPalette ) {
 			Dictionary<uint, uint> PaletteDict = new Dictionary<uint, uint>( NewPalette.Length );
 			for ( uint i = 0; i < NewPalette.Length; ++i ) {
-				PaletteDict.Add( NewPalette[i], i );
+				try {
+					PaletteDict.Add( NewPalette[i], i );
+				} catch ( System.ArgumentException ) {
+					// if we reach a duplicate we *should* be at the end of our colors
+					break;
+				}
 			}
 
 			for ( int i = 0; i < Images[imageNumber].Count; ++i ) {
