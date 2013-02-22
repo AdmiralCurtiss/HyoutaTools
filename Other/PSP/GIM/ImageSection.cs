@@ -125,10 +125,10 @@ namespace HyoutaTools.Other.PSP.GIM {
 					int i = cnt / 8;
 					switch ( BitPerPixel ) {
 						case 4:
-							if ( i % 2 == 0 ) {
-								color = ( img[i / 2] & 0xF0u ) >> 4;
+							if ( cnt % 8 == 0 ) {
+								color = ( img[i] & 0xF0u ) >> 4;
 							} else {
-								color = ( img[i / 2] & 0x0Fu );
+								color = ( img[i] & 0x0Fu );
 							}
 							break;
 						case 8:

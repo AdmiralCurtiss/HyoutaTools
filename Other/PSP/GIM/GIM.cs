@@ -126,9 +126,6 @@ namespace HyoutaTools.Other.PSP.GIM {
 				isec.CovertToPaletted( i, NewPalette.ToArray() );
 				psec.Palettes[i] = NewPalette.ToList();
 			}
-			
-
-
 		}
 
 
