@@ -1,9 +1,10 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace HyoutaTools.Tales.tlzc {
 	class tlzcmain {
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 
 			String Usage = "usage: tlzc [-c/-d] infile outfile";
 
@@ -12,26 +13,26 @@ namespace HyoutaTools.Tales.tlzc {
 			String Filename;
 			String FilenameOut = null;
 
-			if ( args.Length < 1 ) {
+			if ( args.Count < 1 ) {
 				Console.WriteLine( Usage );
 				return -1;
 			}
 
 			// the most convoluted argument checking
 			if ( args[0] == "-c" || args[0] == "-d" ) {
-				if ( args.Length < 2 ) {
+				if ( args.Count < 2 ) {
 					Console.WriteLine( Usage );
 					return -1;
 				}
 				if ( args[0] == "-c" ) ForceCompress = true;
 				else ForceDecompress = true;
 				Filename = args[1];
-				if ( args.Length > 2 ) {
+				if ( args.Count > 2 ) {
 					FilenameOut = args[2];
 				}
 			} else {
 				Filename = args[0];
-				if ( args.Length > 1 ) {
+				if ( args.Count > 1 ) {
 					FilenameOut = args[1];
 				}
 			}

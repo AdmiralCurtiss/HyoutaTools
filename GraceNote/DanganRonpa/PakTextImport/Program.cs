@@ -19,8 +19,8 @@ namespace HyoutaTools.GraceNote.DanganRonpa.PakTextImport {
 	}
 
 	class Program {
-		public static int Execute( string[] args ) {
-			if ( args.Length != 4 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count != 4 ) {
 				Console.WriteLine( "Usage: DanganRonpaMenu_GraceNote menu.pak NewDBFile TemplateDBFile GracesJapanese" );
 				return -1;
 			}

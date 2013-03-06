@@ -4,59 +4,79 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools {
+
+	class ProgramName : IEquatable<string>, IComparable<ProgramName> {
+		public string Name;
+		public string Shortcut;
+		public ProgramName( string Name, string Shortcut ) { this.Name = Name; this.Shortcut = Shortcut; }
+		public bool Equals( string other ) { return Name == other || Shortcut == other; }
+		public int CompareTo( ProgramName other ) { return Name.CompareTo( other.Name ); }
+	}
+
 	class Program {
+
+		public delegate int ExecuteProgramDelegate( List<string> args );
+
+
+		public static System.Collections.Generic.List<KeyValuePair<ProgramName, ExecuteProgramDelegate>> ProgramList = new List<KeyValuePair<ProgramName, ExecuteProgramDelegate>>() {
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Font.Viewer",                 "DrFont"      ),  DanganRonpa.Font.Viewer.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Nonstop.Viewer",              "DrNonstop"   ),  DanganRonpa.Nonstop.RunNonstopForm.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Pak.Extract",                 "DrPakE"      ),  DanganRonpa.Pak.Program.ExecuteExtract) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Pak.Pack",                    "DrPakP"      ),  DanganRonpa.Pak.Program.ExecutePack) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.umdimagedat",                 "DrUmdImg"    ),  DanganRonpa.umdimagedat.umdimagedat.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.BlockCopy",                       "BlockCopy"   ),  Generic.BlockCopy.BlockCopy.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.ByteHotfix",                      "ByteFix"     ),  Generic.ByteHotfix.ByteHotfix.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.LinImport",         "GNDRlinIm"   ),  GraceNote.DanganRonpa.LinImport.Importer.Import) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.LinExport",         "GNDRlinEx"   ),  GraceNote.DanganRonpa.LinExport.Exporter.Export) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.NonstopMetaIntoDb", "-"           ),  GraceNote.DanganRonpa.NonstopExistingDatabaseImport.Importer.AutoImport) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.LinLegacyTool",     "-"           ),  GraceNote.DanganRonpa.LinImport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.PakTextExport",     "GNDRpakEx"   ),  GraceNote.DanganRonpa.PakTextExport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.PakTextImport",     "GNDRpakIm"   ),  GraceNote.DanganRonpa.PakTextImport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DumpDatabase",                  "GNdump"      ),  GraceNote.DumpDatabase.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.FindEarliestGracesJapaneseId",  "-"           ),  GraceNote.FindEarliestGracesJapaneseEntry.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LuxPainEvtExport",              "-"           ),  GraceNote.LuxPainEvtExport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LuxPainEvtImport",              "-"           ),  GraceNote.LuxPainEvtImport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Trophy.TropSfmExport",          "GNtrophyex"  ),  GraceNote.Trophy.TropSfmExport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Trophy.TropSfmImport",          "GNtrophyim"  ),  GraceNote.Trophy.TropSfmImport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Vesperia.ScfombinImport",       "GNToVscfom"  ),  GraceNote.Vesperia.ScfombinImport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Vesperia.StringDicExport",      "GNToVstrdic" ),  GraceNote.Vesperia.StringDicExport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Vesperia.To8chtxExport",        "GNToVchatex" ),  GraceNote.Vesperia.To8chtxExport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Vesperia.To8chtxImport",        "GNToVchatim" ),  GraceNote.Vesperia.To8chtxImport.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Vesperia.VVoicesGenerate",      "-"           ),  GraceNote.Vesperia.VVoicesGenerate.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.XilliaScriptFileDump",          "-"           ),  GraceNote.XilliaScriptFileDump.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.AutoExtract",                       "autoex"      ),  Other.AutoExtract.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.GoldenSunDarkDawnMsgExtract",       "-"           ),  Other.GoldenSunDarkDawnMsgExtract.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.InvokeGimConv",                     "-"           ),  Other.InvokeGimConv.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.NisPakEx",                          "-"           ),  Other.NisPakEx.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.NitroidDataBinEx",                  "-"           ),  Other.NitroidDataBinEx.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.Font.Viewer",              "ToVfont"     ),  Tales.Vesperia.Font.Viewer.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.Credits.Viewer",           "ToVcredits"  ),  Tales.Vesperia.Credits.RunCreditsViewer.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.ItemDat.Viewer",           "ToVitemdat"  ),  Tales.Vesperia.ItemDat.RunItemViewer.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.MapList",                  "ToVmaplist"  ),  Tales.Vesperia.MapList.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.SpkdUnpack",               "ToVspkd"     ),  Tales.Vesperia.SpkdUnpack.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.TownMap.Viewer",           "ToVtownmap"  ),  Tales.Vesperia.TownMap.Viewer.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Xillia.TldatExtract",               "ToXtldat"    ),  Tales.Xillia.TldatExtract.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.tlzc",                              "tlzc"        ),  Tales.tlzc.tlzcmain.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.Xbox360.Rebundler",                 "-"           ),  Other.Xbox360.Rebundler.Rebundler.Rebundle) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.DbTextReplace",                   "-"           ),  Generic.DbTextReplace.Replacement.Replace) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PSP.GIM.LayerSplitter",             "gimSplit"    ),  Other.PSP.GIM.LayerSplitter.Splitter.Split) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PSP.GIM.HomogenizePalette",         "gimSamePal"  ),  Other.PSP.GIM.HomogenizePalette.Program.Homogenize) },
+		};
+
 		static int Main( string[] args ) {
 			if ( args.Length > 0 ) {
 				string ProgramName = args[0];
+				if ( ProgramName == "-" ) { PrintUsage(); return -1; }
 				List<string> ProgramArguments = new List<string>( args.Length - 1 );
 				for ( int i = 1; i < args.Length; ++i ) {
 					ProgramArguments.Add( args[i] );
 				}
 
-				switch ( ProgramName ) {
-					case "DanganRonpa.Font.Viewer": return DanganRonpa.Font.Viewer.Program.Execute( ProgramArguments.ToArray() );
-					case "DanganRonpa.Nonstop.Viewer": return DanganRonpa.Nonstop.RunNonstopForm.Execute();
-					case "DanganRonpa.Pak.Extract": return DanganRonpa.Pak.Program.ExecuteExtract( ProgramArguments.ToArray() );
-					case "DanganRonpa.Pak.Pack": return DanganRonpa.Pak.Program.ExecutePack( ProgramArguments.ToArray() );
-					case "DanganRonpa.umdimagedat": return DanganRonpa.umdimagedat.umdimagedat.Execute( ProgramArguments.ToArray() );
-					case "Generic.BlockCopy": return Generic.BlockCopy.BlockCopy.Execute( ProgramArguments.ToArray() );
-					case "Generic.ByteHotfix": return Generic.ByteHotfix.ByteHotfix.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.DanganRonpa.LinImport": return GraceNote.DanganRonpa.LinImport.Importer.Import( ProgramArguments.ToArray() );
-					case "GraceNote.DanganRonpa.LinExport": return GraceNote.DanganRonpa.LinExport.Exporter.Export( ProgramArguments.ToArray() );
-					case "GraceNote.DanganRonpa.NonstopExistingDatabaseImport.Auto": return GraceNote.DanganRonpa.NonstopExistingDatabaseImport.Importer.AutoImport();
-					case "GraceNote.DanganRonpa.LinLegacyTool": return GraceNote.DanganRonpa.LinImport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.DanganRonpa.PakTextExport": return GraceNote.DanganRonpa.PakTextExport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.DanganRonpa.PakTextImport": return GraceNote.DanganRonpa.PakTextImport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.DumpDatabase": return GraceNote.DumpDatabase.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.FindEarliestGracesJapaneseEntry": return GraceNote.FindEarliestGracesJapaneseEntry.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.LuxPainEvtExport": return GraceNote.LuxPainEvtExport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.LuxPainEvtImport": return GraceNote.LuxPainEvtImport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.Trophy.TropSfmExport": return GraceNote.Trophy.TropSfmExport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.Trophy.TropSfmImport": return GraceNote.Trophy.TropSfmImport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.Vesperia.ScfombinImport": return GraceNote.Vesperia.ScfombinImport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.Vesperia.StringDicExport": return GraceNote.Vesperia.StringDicExport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.Vesperia.To8chtxExport": return GraceNote.Vesperia.To8chtxExport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.Vesperia.To8chtxImport": return GraceNote.Vesperia.To8chtxImport.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.Vesperia.VVoicesGenerate": return GraceNote.Vesperia.VVoicesGenerate.Program.Execute( ProgramArguments.ToArray() );
-					case "GraceNote.XilliaScriptFileDump": return GraceNote.XilliaScriptFileDump.Program.Execute( ProgramArguments.ToArray() );
-					case "Other.AutoExtract": return Other.AutoExtract.Program.Execute();
-					case "Other.GoldenSunDarkDawnMsgExtract": return Other.GoldenSunDarkDawnMsgExtract.Program.Execute( ProgramArguments.ToArray() );
-					case "Other.InvokeGimConv": return Other.InvokeGimConv.Program.Execute( ProgramArguments.ToArray() );
-					case "Other.NisPakEx": return Other.NisPakEx.Program.Execute( ProgramArguments.ToArray() );
-					case "Other.NitroidDataBinEx": return Other.NitroidDataBinEx.Program.Execute( ProgramArguments.ToArray() );
-					case "Tales.Vesperia.Font.Viewer": return Tales.Vesperia.Font.Viewer.Program.Execute( ProgramArguments.ToArray() );
-					case "Tales.Vesperia.Credits.Viewer": return Tales.Vesperia.Credits.RunCreditsViewer.Execute( ProgramArguments.ToArray() );
-					case "Tales.Vesperia.ItemDat.Viewer": return Tales.Vesperia.ItemDat.RunItemViewer.Execute( ProgramArguments.ToArray() );
-					case "Tales.Vesperia.MapList": return Tales.Vesperia.MapList.Program.Execute( ProgramArguments.ToArray() );
-					case "Tales.Vesperia.SpkdUnpack": return Tales.Vesperia.SpkdUnpack.Program.Execute( ProgramArguments.ToArray() );
-					case "Tales.Vesperia.TownMap.Viewer": return Tales.Vesperia.TownMap.Viewer.Program.Execute();
-					case "Tales.Xillia.TldatExtract": return Tales.Xillia.TldatExtract.Program.Execute( ProgramArguments.ToArray() );
-					case "Tales.tlzc": return Tales.tlzc.tlzcmain.Execute( ProgramArguments.ToArray() );
-					case "Other.Xbox360.Rebundler": return Other.Xbox360.Rebundler.Rebundler.Rebundle( ProgramArguments.ToArray() );
-					case "Generic.DbTextReplace": return Generic.DbTextReplace.Replacement.Replace( ProgramArguments.ToArray() );
-					case "Other.PSP.GIM.LayerSplitter": return Other.PSP.GIM.LayerSplitter.Splitter.Split( ProgramArguments.ToArray() );
-					case "Other.PSP.GIM.HomogenizePalette": return Other.PSP.GIM.HomogenizePalette.Program.Homogenize( ProgramArguments.ToArray() );
-					default: PrintUsage(); break;
+				var kvp = ProgramList.Find( x => x.Key.Equals( ProgramName ) );
+				if ( kvp.Value != null ) {
+					return kvp.Value( ProgramArguments );
+				} else {
+					PrintUsage();
 				}
 
 			} else {
@@ -66,41 +86,10 @@ namespace HyoutaTools {
 		}
 
 		private static void PrintUsage() {
-			Console.WriteLine( "DanganRonpa.Font.Viewer" );
-			Console.WriteLine( "DanganRonpa.Nonstop.Viewer" );
-			Console.WriteLine( "DanganRonpa.Pak.Extract" );
-			Console.WriteLine( "DanganRonpa.Pak.Pack" );
-			Console.WriteLine( "DanganRonpa.umdimagedat" );
-			Console.WriteLine( "Generic.BlockCopy" );
-			Console.WriteLine( "Generic.ByteHotfix" );
-			Console.WriteLine( "GraceNote.DanganRonpa.LinExport" );
-			Console.WriteLine( "GraceNote.DanganRonpa.LinImport" );
-			Console.WriteLine( "GraceNote.DanganRonpa.PakTextExport" );
-			Console.WriteLine( "GraceNote.DanganRonpa.PakTextImport" );
-			Console.WriteLine( "GraceNote.DumpDatabase" );
-			Console.WriteLine( "GraceNote.FindEarliestGracesJapaneseEntry" );
-			Console.WriteLine( "GraceNote.LuxPainEvtExport" );
-			Console.WriteLine( "GraceNote.LuxPainEvtImport" );
-			Console.WriteLine( "GraceNote.Trophy.TropSfmExport" );
-			Console.WriteLine( "GraceNote.Trophy.TropSfmImport" );
-			Console.WriteLine( "GraceNote.Vesperia.ScfombinImport" );
-			Console.WriteLine( "GraceNote.Vesperia.StringDicExport" );
-			Console.WriteLine( "GraceNote.Vesperia.To8chtxExport" );
-			Console.WriteLine( "GraceNote.Vesperia.To8chtxImport" );
-			Console.WriteLine( "GraceNote.Vesperia.VVoicesGenerate" );
-			Console.WriteLine( "GraceNote.XilliaScriptFileDump" );
-			Console.WriteLine( "Other.AutoExtract" );
-			Console.WriteLine( "Other.GoldenSunDarkDawnMsgExtract" );
-			Console.WriteLine( "Other.InvokeGimConv" );
-			Console.WriteLine( "Other.NisPakEx" );
-			Console.WriteLine( "Other.NitroidDataBinEx" );
-			Console.WriteLine( "Tales.Vesperia.Font.Viewer" );
-			Console.WriteLine( "Tales.Vesperia.ItemDat.Viewer" );
-			Console.WriteLine( "Tales.Vesperia.MapList" );
-			Console.WriteLine( "Tales.Vesperia.SpkdUnpack" );
-			Console.WriteLine( "Tales.Vesperia.TownMap.Viewer" );
-			Console.WriteLine( "Tales.Xillia.TldatExtract" );
-			Console.WriteLine( "Tales.tlzc" );
+			ProgramList.Sort( (x, y) => x.Key.CompareTo(y.Key) );
+			foreach ( var p in ProgramList ) {
+				Console.WriteLine( String.Format(" {1,-12} {0}", p.Key.Name, p.Key.Shortcut ) );
+			}
 		}
 	}
 }

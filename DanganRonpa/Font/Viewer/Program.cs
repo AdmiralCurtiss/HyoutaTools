@@ -25,7 +25,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			Console.WriteLine( " -dialoguebubble" );
 		}
 
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			string Filepath = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\fontdata1";
 			string ImagePath = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\fontdata0";
 

@@ -6,12 +6,12 @@ using HyoutaTools.Tales.Vesperia.To8chtx;
 
 namespace HyoutaTools.GraceNote.Vesperia.To8chtxExport {
 	class Program {
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			String Filename;
 			String Database;
 			String NewFilename;
 
-			if ( args.Length != 3 ) {
+			if ( args.Count != 3 ) {
 				Console.WriteLine( "Usage: GraceNote_TO8CHTX ChatFilename DBFilename NewChatFilename" );
 				return -1;
 			} else {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HyoutaTools.Other.Xbox360.Rebundler {
 	public static class Rebundler {
-		public static int Rebundle(string[] args) {
+		public static int Rebundle( List<string> args ) {
 			string filename = args[0];
 
 			// first, call bundler on the RDF, so we get a new XPR with the right header and stuff

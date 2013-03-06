@@ -5,10 +5,10 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.MapList {
 	class Program {
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			// 0xCB20
 
-			if ( args.Length != 1 ) {
+			if ( args.Count != 1 ) {
 				Console.WriteLine( "MAPLIST path/to/MAPLIST.DAT" );
 				return -1;
 			}

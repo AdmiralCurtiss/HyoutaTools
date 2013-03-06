@@ -7,7 +7,7 @@ using HyoutaTools.Tales.Vesperia.TSS;
 
 namespace HyoutaTools.Tales.Vesperia.ItemDat {
 	class RunItemViewer {
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 
 			ItemDat items = new ItemDat( @"d:\Dropbox\ToV\360\item.svo.ext\ITEM.DAT" );
 

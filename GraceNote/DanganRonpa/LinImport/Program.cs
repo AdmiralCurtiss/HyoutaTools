@@ -7,8 +7,8 @@ using HyoutaTools.DanganRonpa.Lin;
 
 namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 	class Program {
-		public static int Execute( string[] args ) {
-			if ( args.Length < 1 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count < 1 ) {
 				Console.WriteLine( "Usage: DanganRonpaText_GraceNote -dumptxt text.lin out.txt" );
 				return -1;
 			}

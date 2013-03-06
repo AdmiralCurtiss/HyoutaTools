@@ -19,8 +19,8 @@ namespace HyoutaTools.GraceNote.LuxPainEvtImport {
 	}
 
 	class Program {
-		public static int Execute( string[] args ) {
-			if ( args.Length != 5 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count != 5 ) {
 				Console.WriteLine( "Usage: LuxPainEvt_GraceNote event.evt NewDBFile TemplateDBFile GracesJapanese event.jp.evt" );
 				return -1;
 			}

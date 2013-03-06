@@ -32,7 +32,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.NonstopExistingDatabaseImport {
 			foreach ( string s in strs ) { if ( s.Contains( sub ) ) return s; }
 			return null;
 		}
-		public static int AutoImport() {
+		public static int AutoImport( List<string> args ) {
 			string dir = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\umdimage.dat.ex\";
 			string voicedir = @"d:\_svn\GraceNote\GraceNote\Voices\";
 			string[] files = System.IO.Directory.GetFiles( dir );

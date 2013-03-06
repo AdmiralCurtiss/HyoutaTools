@@ -7,7 +7,7 @@ using HyoutaTools.Tales.Vesperia.TSS;
 
 namespace HyoutaTools.Tales.Vesperia.Credits {
 	public class RunCreditsViewer {
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 
 
 			Console.WriteLine( "Opening STRING_DIC.SO..." );

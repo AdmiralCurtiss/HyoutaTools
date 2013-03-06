@@ -19,8 +19,8 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmImport {
 	}
 
 	class Program {
-		public static int Execute( string[] args ) {
-			if ( args.Length != 5 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count != 5 ) {
 				Console.WriteLine( "Usage: TropSFM_GraceNote TROP.SFM TROPCONF.SFM NewDBFile TemplateDBFile GracesJapanese" );
 				//   return;
 			}

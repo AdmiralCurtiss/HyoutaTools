@@ -19,8 +19,8 @@ namespace HyoutaTools.GraceNote.LuxPainEvtExport {
 	}
 
 	class Program {
-		public static int Execute( string[] args ) {
-			if ( args.Length != 3 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count != 3 ) {
 				Console.WriteLine( "Usage: GN_LPE Infile Outfile DB" );
 				return -1;
 			}

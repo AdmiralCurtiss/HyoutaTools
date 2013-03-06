@@ -8,12 +8,12 @@ using System.Data.SQLite;
 namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 	public static class Importer {
 
-		public static int Import( string[] args ) {
+		public static int Import( List<string> args ) {
 			// templateDB must contain:
 			/***
 			 * CREATE TABLE Text(ID int primary key, StringID int, english text, comment text, updated tinyint, status tinyint, PointerRef integer, IdentifyString text, IdentifyPointerRef integer);
 			 ***/
-			if ( args.Length < 1 ) {
+			if ( args.Count < 1 ) {
 				Console.WriteLine( "Usage: text.lin NewDBFile TemplateDBFile GracesJapanese" );
 				return -1;
 			}

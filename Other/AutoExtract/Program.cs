@@ -84,7 +84,7 @@ namespace HyoutaTools.Other.AutoExtract {
 		}
 
 
-		public static int Execute() {
+		public static int Execute( List<string> argumentsGiven ) {
 			Queue<FileStruct> queue = new Queue<FileStruct>();
 
 			Console.WriteLine( "Adding all files and folders recursively..." );

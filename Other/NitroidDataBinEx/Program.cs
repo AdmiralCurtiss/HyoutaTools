@@ -5,8 +5,8 @@ using System.Text;
 
 namespace HyoutaTools.Other.NitroidDataBinEx {
 	class Program {
-		public static int Execute( string[] args ) {
-			if ( args.Length != 1 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count != 1 ) {
 				Console.WriteLine( "Usage: NitroidDataBinEx data.bin" );
 				Console.WriteLine( "       Or drag & drop data.bin on this file" );
 				return -1;

@@ -6,8 +6,8 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Xillia.TldatExtract {
 	class Program {
-		public static int Execute( string[] args ) {
-			if ( args.Length != 4 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count != 4 ) {
 				Console.WriteLine( "Usage: TLDATextract TLDAT TOFHDB ExtractFolder" );
 				return -1;
 			}

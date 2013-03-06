@@ -24,7 +24,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 			Console.WriteLine( " -dialoguebubble" );
 		}
 
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			/*
 			FontDisplay
 			-fontinfofile tov.elf
@@ -47,7 +47,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 			bool DialogueBoxColor = false;
 
 			try {
-				for ( int i = 0; i < args.Length; i++ ) {
+				for ( int i = 0; i < args.Count; i++ ) {
 					switch ( args[i].ToLowerInvariant() ) {
 						case "-fontinfofile":
 							Filepath = args[++i];

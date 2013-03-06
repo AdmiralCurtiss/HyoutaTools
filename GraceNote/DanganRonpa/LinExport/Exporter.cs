@@ -6,14 +6,14 @@ using HyoutaTools.DanganRonpa.Lin;
 
 namespace HyoutaTools.GraceNote.DanganRonpa.LinExport {
 	public static class Exporter {
-		public static int Export( string[] args ) {
-			if ( args.Length < 3 ) {
+		public static int Export( List<string> args ) {
+			if ( args.Count < 3 ) {
 				Console.WriteLine( "Usage: text.lin.orig text.lin.new database [alignment (default 1024)]" );
 				return -1;
 			}
 
 			int Alignment;
-			if ( !( args.Length >= 4 && Int32.TryParse( args[3], out Alignment ) ) ) {
+			if ( !( args.Count >= 4 && Int32.TryParse( args[3], out Alignment ) ) ) {
 				Alignment = 1024;
 			}
 			return LinExport.Exporter.Export( args[0], args[1], args[2], Alignment );

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HyoutaTools.Other.NisPakEx {
 	class Program {
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			string Filename = @"c:\Users\Georg\Music\disgaea4\disg4.pak";
 			string OutPath = @"c:\Users\Georg\Music\disgaea4\";
 

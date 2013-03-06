@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HyoutaTools.Other.PSP.GIM.LayerSplitter {
 	class Splitter {
-		public static int Split( string[] args ) {
+		public static int Split( List<string> args ) {
 			string Filename = args[0];
 			GIM[] gims = new GIM[3];
 			gims[0] = new GIM( Filename ); ;

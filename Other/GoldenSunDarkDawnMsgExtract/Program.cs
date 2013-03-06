@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HyoutaTools.Other.GoldenSunDarkDawnMsgExtract {
 	class Program {
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			String Filename = args[0];
 
 

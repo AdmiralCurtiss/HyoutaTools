@@ -43,8 +43,8 @@ namespace HyoutaTools.DanganRonpa.umdimagedat {
 			return -1;
 		}
 
-		public static int Execute( string[] args ) {
-			if ( args.Length == 0 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count == 0 ) {
 				Console.WriteLine( "extract without eboot (no filenames!):" );
 				Console.WriteLine( " umdimagedat e umdimage.dat" );
 				Console.WriteLine( "extract with eboot:" );
@@ -55,10 +55,10 @@ namespace HyoutaTools.DanganRonpa.umdimagedat {
 			}
 
 			if ( args[0] == "e" ) {
-				if ( args.Length == 2 ) {
+				if ( args.Count == 2 ) {
 					return Extract( args[1] );
 				} else {
-					return Extract( args[1], args[2], args.Length > 3 && args[3] == "-nofilenames" );
+					return Extract( args[1], args[2], args.Count > 3 && args[3] == "-nofilenames" );
 				}
 			} else if ( args[0] == "p" ) {
 				return Pack( args[1], args[2], args[3], args[4] );

@@ -6,10 +6,10 @@ using HyoutaTools.Tales.Vesperia.TSS;
 
 namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 	class Program {
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			bool UseInsaneNames = false;
 
-			if ( args.Length == 1 ) {
+			if ( args.Count == 1 ) {
 				if ( args[0] == "-insane" ) {
 					Console.WriteLine( "Wesker-Dumbledore Mode Activated!" );
 					UseInsaneNames = true;
@@ -27,7 +27,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 			}
 
 
-			if ( args.Length == 1 ) {
+			if ( args.Count == 1 ) {
 				if ( args[0] == "-engorigdmp" ) {
 					Console.WriteLine( "Exporting original text (english)..." );
 					System.IO.File.WriteAllBytes( "STRING_DIC_original_eng_export.txt", TSS.ExportTextForEnglishDump() );

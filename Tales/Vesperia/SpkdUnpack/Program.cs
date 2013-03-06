@@ -6,10 +6,10 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.SpkdUnpack {
 	class Program {
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			//args = new string[] { @"c:\Users\Georg\Documents\Visual Studio 2008\Projects\slz\slz\bin\Release\STRCONFIG.STP" };
 
-			if ( args.Length != 1 ) {
+			if ( args.Count != 1 ) {
 				Console.WriteLine( "Usage: SPKDunpack file" );
 				return -1;
 			}

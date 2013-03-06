@@ -7,8 +7,8 @@ using System.Globalization;
 
 namespace HyoutaTools.Generic.BlockCopy {
 	class BlockCopy {
-		public static int Execute( string[] args ) {
-			if ( args.Length != 5 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count != 5 ) {
 				Console.WriteLine( "Usage: BlockCopy SourceFile SourceStartLocation DestinationFile DestinationStartLocation Length" );
 				Console.WriteLine( "All numbers (including length!) in Hex." );
 				Console.WriteLine();

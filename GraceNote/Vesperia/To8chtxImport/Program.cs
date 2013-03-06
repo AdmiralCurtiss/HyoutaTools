@@ -6,8 +6,8 @@ using HyoutaTools.Tales.Vesperia.To8chtx;
 
 namespace HyoutaTools.GraceNote.Vesperia.To8chtxImport {
 	class Program {
-		public static int Execute( string[] args ) {
-			if ( args.Length != 3 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count != 3 ) {
 				Console.WriteLine( "Usage: TO8CHTX_GraceNote ChatFilename NewDBFilename GracesJapanese" );
 				return -1;
 			}

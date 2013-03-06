@@ -18,8 +18,8 @@ namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 	}
 
 	class Program {
-		public static int Execute( string[] args ) {
-			if ( args.Length != 5 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count != 5 ) {
 				Console.WriteLine( "Usage: btlpack_GraceNote btlpackexFile NewDBFile TemplateDBFile GracesJapanese StartOfTextpointersInHex" );
 				return -1;
 			}

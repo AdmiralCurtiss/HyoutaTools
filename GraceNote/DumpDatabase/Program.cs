@@ -96,7 +96,7 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 			return ScenarioFiles.ToArray();
 		}
 
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			String Database;
 			String TxtFilename;
 			String GracesJapanese;
@@ -116,7 +116,7 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 			bool ForceJapaneseDump = false;
 			bool DumpDebug = false;
 
-			if ( args.Length != 3 && args.Length != 4 ) {
+			if ( args.Count != 3 && args.Count != 4 ) {
 				Console.WriteLine( "Usage: GraceNote_DumpText DBFilename TxtName GracesJapanese [nrvijd]" );
 				Console.WriteLine( "n: Try to identify names (for Vesperia!)" );
 				Console.WriteLine( "r: Remove newlines within a single entry" );
@@ -130,7 +130,7 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 				TxtFilename = args[1];
 				GracesJapanese = args[2];
 
-				if ( args.Length == 4 ) {
+				if ( args.Count == 4 ) {
 					String bonusargs = args[3];
 					foreach ( char c in bonusargs ) {
 						switch ( c ) {

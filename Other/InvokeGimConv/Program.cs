@@ -15,7 +15,7 @@ namespace HyoutaTools.Other.InvokeGimConv {
 			}
 		}
 
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			List<String> gimconvargs = new List<string>();
 
 			string OriginalFile = null;

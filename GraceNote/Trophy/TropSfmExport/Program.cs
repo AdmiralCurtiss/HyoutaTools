@@ -97,7 +97,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmExport {
 			return Trophies.Values.ToList();
 		}
 
-		public static int Execute( string[] args ) {
+		public static int Execute( List<string> args ) {
 			String Database;
 			String GracesJapanese;
 
@@ -108,7 +108,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmExport {
 			};
 			//*/
 
-			if ( args.Length != 2 ) {
+			if ( args.Count != 2 ) {
 				Console.WriteLine( "Usage: GraceNote_TropSFM VTrophies GracesJapanese" );
 				return -1;
 			} else {

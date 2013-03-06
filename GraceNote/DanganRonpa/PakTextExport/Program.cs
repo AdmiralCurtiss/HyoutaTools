@@ -6,8 +6,8 @@ using HyoutaTools.DanganRonpa.PakText;
 
 namespace HyoutaTools.GraceNote.DanganRonpa.PakTextExport {
 	class Program {
-		public static int Execute( string[] args ) {
-			if ( args.Length != 2 ) {
+		public static int Execute( List<string> args ) {
+			if ( args.Count != 2 ) {
 				Console.WriteLine( "Usage: GN_DRM Outfile DB" );
 				return -1;
 			}
