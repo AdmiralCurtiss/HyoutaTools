@@ -110,9 +110,13 @@ namespace HyoutaTools.Tales.Abyss.FPS3 {
 				try {
 					outfile.Write( b, (int)fileloc, (int)( fileend - fileloc ) );
 				} catch ( Exception ) {
-					Console.WriteLine( "ERROR on file " + outfile.Name );
-					outfile.Close();
-					return -1;
+					try {
+						outfile.Write( b, (int)fileloc, (int)( fileend ) );
+					} catch ( Exception ) {
+						Console.WriteLine( "ERROR on file " + outfile.Name );
+						outfile.Close();
+						return -1;
+					}
 				}
 				outfile.Close();
 			}
