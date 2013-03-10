@@ -30,7 +30,7 @@ namespace HyoutaTools.Tales.Abyss.FPS3 {
 
 			bool hasFilestart = ( metaBitmask & 0x0001 ) == 0x0001;
 			bool hasFileend = ( metaBitmask & 0x0002 ) == 0x0002;
-			bool hasUnknown0004 = ( metaBitmask & 0x0004 ) == 0x0004;
+			bool hasFilesizeMaybe = ( metaBitmask & 0x0004 ) == 0x0004;
 			bool hasFilename = ( metaBitmask & 0x0008 ) == 0x0008;
 
 			bool hasExtension = ( metaBitmask & 0x0010 ) == 0x0010;
@@ -52,7 +52,7 @@ namespace HyoutaTools.Tales.Abyss.FPS3 {
 			uint Unknown2 = BitConverter.ToUInt16( b, 0x18 );
 
 
-			if ( hasUnknown0004 ||
+			if (
 								  hasUnknown0020 || hasUnknown0040 || hasUnknown0080 ||
 				hasUnknown0100 || hasUnknown0200 || hasUnknown0400 || hasUnknown0800 ||
 				hasUnknown1000 || hasUnknown2000 || hasUnknown4000 || hasUnknown8000 ) {
@@ -84,12 +84,26 @@ namespace HyoutaTools.Tales.Abyss.FPS3 {
 					fileend = BitConverter.ToUInt32( b, (int)( entryLoc + entrysize ) );
 				}
 
+				uint filesize;
+				if ( hasFilesizeMaybe ) {
+					filesize = BitConverter.ToUInt32( b, (int)( entryLoc + inEntryLoc ) );
+					inEntryLoc += 4;
+				} else {
+					filesize = fileend - fileloc;
+				}
+
 				if ( fileloc == 0 || fileend == 0 || fileloc == 0xFFFFFFFF || fileend == 0xFFFFFFFF ) continue;
 
 				string filename;
 				if ( hasFilename ) {
-					filename = Encoding.ASCII.GetString( b, (int)( entryLoc + inEntryLoc ), 0x20 ).Trim( '\0' );
-					inEntryLoc += 0x20;
+					uint filenameLength = entrysize;
+					if ( hasFilestart ) filenameLength -= 4;
+					if ( hasFileend ) filenameLength -= 4;
+					if ( hasFilesizeMaybe ) filenameLength -= 4;
+					if ( hasExtension ) filenameLength -= 4;
+
+					filename = Encoding.ASCII.GetString( b, (int)( entryLoc + inEntryLoc ), (int)filenameLength ).Trim( '\0' );
+					inEntryLoc += filenameLength;
 
 					if ( String.IsNullOrEmpty( filename ) ) continue;
 				} else {
@@ -108,7 +122,7 @@ namespace HyoutaTools.Tales.Abyss.FPS3 {
 				FileStream outfile;
 				outfile = new FileStream( dirname + '/' + filename, FileMode.Create );
 				try {
-					outfile.Write( b, (int)fileloc, (int)( fileend - fileloc ) );
+					outfile.Write( b, (int)fileloc, (int)( filesize ) );
 				} catch ( Exception ) {
 					try {
 						outfile.Write( b, (int)fileloc, (int)( fileend ) );

@@ -127,7 +127,36 @@ namespace HyoutaTools.Other.AutoExtract {
 						// maybe a comptoe file
 						if ( AllowComptoe ) {
 							if ( firstbyte == 0x01 || firstbyte == 0x03 ) {
-								if ( f.ToUpperInvariant().EndsWith( ".PKF" ) ) {
+
+								uint maybefilesizeBigEndian = ( (uint)secondbyte ) << 24 | ( (uint)thirdbyte ) << 16 | ( (uint)fourthbyte ) << 8 | (uint)fifthbyte;
+								uint maybefilesizeLitEndian = ( (uint)fifthbyte ) << 24 | ( (uint)fourthbyte ) << 16 | ( (uint)thirdbyte ) << 8 | (uint)secondbyte;
+								if ( ( maybefilesizeBigEndian == filesize ) ||
+									 ( maybefilesizeLitEndian + 9 == filesize ) ) {
+									int b6 = fs.ReadByte();
+									int b7 = fs.ReadByte();
+									int b8 = fs.ReadByte();
+									int b9 = fs.ReadByte();
+									uint uncompressedfilesizeBigEndian = ( (uint)b6 ) << 24 | ( (uint)b7 ) << 16 | ( (uint)b8 ) << 8 | (uint)b9;
+									uint uncompressedfilesizeLitEndian = ( (uint)b6 ) | ( (uint)b7 ) << 8 | ( (uint)b8 ) << 16 | ( (uint)b9 ) << 24;
+									fs.Close();
+									prog = "comptoe";
+									args = "-d \"" + f + "\" \"" + f + ".d\"";
+									Console.WriteLine();
+									Console.WriteLine( prog + " " + args );
+									if ( RunProgram( prog, args ) ) {
+										queue.Enqueue( new FileStruct( f + ".d", fstr.Indirection ) );
+										FileInfo decInfo = new FileInfo( f + ".d" );
+										if ( ( decInfo.Length == uncompressedfilesizeBigEndian ) || ( decInfo.Length == uncompressedfilesizeLitEndian ) ) {
+											System.IO.File.Delete( f );
+										} else {
+											Console.WriteLine( "Uncompressed comptoe Filesize does not match!" );
+										}
+									}
+								} else {
+									Console.WriteLine();
+									Console.WriteLine( f );
+									Console.WriteLine( "Suspected comptoe, but compressed Filesize does not match!" );
+
 									Console.WriteLine();
 									Console.WriteLine( "Tales.Abyss.PKF.Split.SplitPkf " + f );
 									fs.Close();
@@ -135,37 +164,9 @@ namespace HyoutaTools.Other.AutoExtract {
 										EnqueueDirectoryRecursively( queue, f + ".ex" );
 										System.IO.File.Delete( f );
 									}
-								} else {
-									uint maybefilesizeBigEndian = ( (uint)secondbyte ) << 24 | ( (uint)thirdbyte ) << 16 | ( (uint)fourthbyte ) << 8 | (uint)fifthbyte;
-									uint maybefilesizeLitEndian = ( (uint)fifthbyte ) << 24 | ( (uint)fourthbyte ) << 16 | ( (uint)thirdbyte ) << 8 | (uint)secondbyte;
-									if ( ( maybefilesizeBigEndian == filesize ) ||
-										 ( maybefilesizeLitEndian + 9 == filesize ) ) {
-										int b6 = fs.ReadByte();
-										int b7 = fs.ReadByte();
-										int b8 = fs.ReadByte();
-										int b9 = fs.ReadByte();
-										uint uncompressedfilesizeBigEndian = ( (uint)b6 ) << 24 | ( (uint)b7 ) << 16 | ( (uint)b8 ) << 8 | (uint)b9;
-										uint uncompressedfilesizeLitEndian = ( (uint)b6 ) | ( (uint)b7 ) << 8 | ( (uint)b8 ) << 16 | ( (uint)b9 ) << 24;
-										fs.Close();
-										prog = "comptoe";
-										args = "-d \"" + f + "\" \"" + f + ".d\"";
-										Console.WriteLine();
-										Console.WriteLine( prog + " " + args );
-										if ( RunProgram( prog, args ) ) {
-											queue.Enqueue( new FileStruct( f + ".d", fstr.Indirection ) );
-											FileInfo decInfo = new FileInfo( f + ".d" );
-											if ( ( decInfo.Length == uncompressedfilesizeBigEndian ) || ( decInfo.Length == uncompressedfilesizeLitEndian ) ) {
-												System.IO.File.Delete( f );
-											} else {
-												Console.WriteLine( "Uncompressed comptoe Filesize does not match!" );
-											}
-										}
-									} else {
-										Console.WriteLine();
-										Console.WriteLine( f );
-										Console.WriteLine( "Suspected comptoe, but compressed Filesize does not match!" );
-									}
+
 								}
+
 							}
 						}
 
