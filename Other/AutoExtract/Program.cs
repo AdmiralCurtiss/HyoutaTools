@@ -192,7 +192,32 @@ namespace HyoutaTools.Other.AutoExtract {
 								args = "\"" + f + "\"";
 								Console.WriteLine();
 								Console.WriteLine( prog + " " + args );
-								if ( RunProgram( prog, args ) ) {
+								List<string> argList = new List<string>( 1 );
+								argList.Add( f );
+								if ( 0 == Tales.Vesperia.FPS4.Program.Execute( argList ) ) {
+									EnqueueDirectoryRecursively( queue, f + ".ext" );
+									System.IO.File.Delete( f );
+								}
+							}
+
+							if ( secondbyte == (int)'P' && thirdbyte == (int)'S' && fourthbyte == (int)'2' ) {
+								fs.Close();
+								Console.WriteLine();
+								Console.WriteLine( "Tales.Abyss.FPS2.Extract " + f );
+								List<string> argList = new List<string>( 1 );
+								argList.Add( f );
+								if ( 0 == Tales.Abyss.FPS2.Program.Execute( argList ) ) {
+									EnqueueDirectoryRecursively( queue, f + ".ext" );
+									System.IO.File.Delete( f );
+								}
+							}
+							if ( secondbyte == (int)'P' && thirdbyte == (int)'S' && fourthbyte == (int)'3' ) {
+								fs.Close();
+								Console.WriteLine();
+								Console.WriteLine( "Tales.Abyss.FPS3.Extract " + f );
+								List<string> argList = new List<string>( 1 );
+								argList.Add( f );
+								if ( 0 == Tales.Abyss.FPS3.Program.Execute( argList ) ) {
 									EnqueueDirectoryRecursively( queue, f + ".ext" );
 									System.IO.File.Delete( f );
 								}

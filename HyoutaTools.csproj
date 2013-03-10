@@ -99,6 +99,8 @@
     <Compile Include="Other\PSP\GIM\PaletteSection.cs" />
     <Compile Include="Other\PSP\GIM\ISection.cs" />
     <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
+    <Compile Include="Tales\Abyss\FPS2\Program.cs" />
+    <Compile Include="Tales\Abyss\FPS3\Program.cs" />
     <Compile Include="Tales\Abyss\PKF\Split.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfo.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfoSingle.cs" />
@@ -117,6 +119,7 @@
       <DependentUpon>FontViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="Tales\Vesperia\Font\Viewer\Program.cs" />
+    <Compile Include="Tales\Vesperia\FPS4\Program.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemDat.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemDatSingle.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemForm.cs">
