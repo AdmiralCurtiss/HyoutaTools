@@ -57,6 +57,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.TownMap.Viewer",           "ToVtownmap"  ),  Tales.Vesperia.TownMap.Viewer.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Xillia.TldatExtract",               "ToXtldat"    ),  Tales.Xillia.TldatExtract.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.tlzc",                              "tlzc"        ),  Tales.tlzc.tlzcmain.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Abyss.PKF.Split",                   "TotApkfspl"  ),  Tales.Abyss.PKF.Split.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.Xbox360.Rebundler",                 "-"           ),  Other.Xbox360.Rebundler.Rebundler.Rebundle) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.DbTextReplace",                   "-"           ),  Generic.DbTextReplace.Replacement.Replace) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PSP.GIM.LayerSplitter",             "gimSplit"    ),  Other.PSP.GIM.LayerSplitter.Splitter.Split) },

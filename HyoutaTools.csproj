@@ -99,6 +99,7 @@
     <Compile Include="Other\PSP\GIM\PaletteSection.cs" />
     <Compile Include="Other\PSP\GIM\ISection.cs" />
     <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
+    <Compile Include="Tales\Abyss\PKF\Split.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfo.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfoSingle.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsForm.cs">

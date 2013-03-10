@@ -267,5 +267,14 @@ namespace HyoutaTools {
 			float f = BitConverter.ToSingle( b, 0 );
 			return f;
 		}
+
+		public static uint Align( uint Number, uint Alignment ) {
+			uint diff = Number % Alignment;
+			if ( diff == 0 ) {
+				return Number;
+			} else {
+				return ( Number + ( Alignment - diff ) );
+			}
+		}
 	}
 }
