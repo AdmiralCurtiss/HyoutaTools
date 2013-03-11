@@ -70,6 +70,7 @@
     <Compile Include="DanganRonpa\PakText\PakText.cs" />
     <Compile Include="DanganRonpa\Pak\Program.cs" />
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
+    <Compile Include="Generic\ArbitraryTextDump\Dump.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
     <Compile Include="Generic\DbTextReplace\Replacement.cs" />
@@ -99,7 +100,7 @@
     <Compile Include="Other\PSP\GIM\LayerSplitter\Split.cs" />
     <Compile Include="Other\PSP\GIM\PaletteSection.cs" />
     <Compile Include="Other\PSP\GIM\ISection.cs" />
-    <Compile Include="Other\TrailsInTheSkyScenarioDump\Bin.cs" />
+    <Compile Include="Other\TrailsInTheSkyScenarioDump\ScenarioBin.cs" />
     <Compile Include="Other\TrailsInTheSkyScenarioDump\DumpText.cs" />
     <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
     <Compile Include="Tales\Abyss\FPS2\Program.cs" />

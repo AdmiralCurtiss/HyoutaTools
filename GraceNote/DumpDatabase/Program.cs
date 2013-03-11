@@ -198,7 +198,7 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 			}
 
 			for ( int i = 0; i < Strings.Count; ++i ) {
-				if ( VesperiaTagReplacement ) Strings[i] = RemoveTags( Strings[i] );
+				if ( VesperiaTagReplacement ) Strings[i] = RemoveVesperiaTags( Strings[i] );
 				if ( RemovingNewlines ) Strings[i] = RemoveNewlines( Strings[i] );
 			}
 
@@ -207,13 +207,13 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 			return 0;
 		}
 
-		private static String RemoveNewlines( String s ) {
+		public static String RemoveNewlines( String s ) {
 			s = s.Replace( " \n", " " );
 			s = s.Replace( "\n", " " );
 			return s;
 		}
 
-		private static String RemoveTags( String s ) {
+		public static String RemoveVesperiaTags( String s ) {
 			s = s.Replace( "''", "'" );
 			s = s.Replace( "(YUR)", "Yuri" );
 			s = s.Replace( "(EST)", "Estellise" );

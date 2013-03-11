@@ -13,7 +13,12 @@ namespace HyoutaTools.Other.AutoExtract {
 
 			while ( queue.Count > 0 ) {
 				FileStruct fstr = queue.Dequeue();
-				fstr.Filename.LastIndexOf( '\\' );
+				int idx = fstr.Filename.LastIndexOf( '\\' );
+				string a = fstr.Filename.Substring( 0, idx );
+				string b = fstr.Filename.Substring( idx + 1 );
+				string newFilename = a + "." + b;
+
+				System.IO.File.Move( fstr.Filename, newFilename );
 			}
 
 			return 0;

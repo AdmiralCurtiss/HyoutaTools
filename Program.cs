@@ -46,6 +46,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.XilliaScriptFileDump",          "-"           ),  GraceNote.XilliaScriptFileDump.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.AutoExtract",                       "autoex"      ),  Other.AutoExtract.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.FileToFolderRename",                "-"           ),  Other.AutoExtract.FileToFolderRename.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.ArbitraryTextDump",               "-"           ),  Generic.ArbitraryTextDump.Dump.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.GoldenSunDarkDawnMsgExtract",       "-"           ),  Other.GoldenSunDarkDawnMsgExtract.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.InvokeGimConv",                     "-"           ),  Other.InvokeGimConv.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.NisPakEx",                          "-"           ),  Other.NisPakEx.Program.Execute) },

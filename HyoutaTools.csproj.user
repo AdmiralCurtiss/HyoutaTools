@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>Other.FileToFolderRename</StartArguments>
+    <StartArguments>Generic.ArbitraryTextDump "e:\__trails\Legend of Heroes, The - Trails in the Sky (USA)\PSP_GAME\USRDIR\data\scenario\0\r3202.bin"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <StartArguments>Other.InvokeGimConv "----FILEumdimage2.dat.ex\0024.ex\0003" "----OFFS19484" "assets\umdimage2\0024\0003\19484.png" "assets\h.png" "assets\q.png" -o "19484.gim" --format_style psp --format_endian little --pixel_order faster --palette_format rgba8888 --pixel_channel rgba --update_fileinfo on --merge_mode level</StartArguments>
