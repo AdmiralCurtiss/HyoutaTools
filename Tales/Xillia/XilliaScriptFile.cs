@@ -46,8 +46,8 @@ namespace HyoutaTools.Tales.Xillia {
 				XS x = new XS();
 				x.PointerIDString = ( Offset + ( (int)i * 4 + 8 ) ) + (int)Util.SwapEndian( BitConverter.ToUInt32( Bytes, Offset + ( (int)i * 4 + 8 ) ) );
 				x.PointerText = ( Offset + ( (int)( i + 1 ) * 4 + 8 ) ) + (int)Util.SwapEndian( BitConverter.ToUInt32( Bytes, Offset + ( (int)( i + 1 ) * 4 + 8 ) ) );
-				x.IDString = Util.GetTextUTF8( x.PointerIDString, Bytes );
-				x.Text = Util.GetTextUTF8( x.PointerText, Bytes );
+				x.IDString = Util.GetTextUTF8( Bytes, x.PointerIDString );
+				x.Text = Util.GetTextUTF8( Bytes, x.PointerText );
 				TextList.Add( x );
 			}
 

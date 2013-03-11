@@ -29,7 +29,7 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 		}
 
 		public string GetInFileString( int pointer ) {
-			return Util.GetTextUTF8( pointer, File );
+			return Util.GetTextUTF8( File, pointer );
 		}
 	}
 }

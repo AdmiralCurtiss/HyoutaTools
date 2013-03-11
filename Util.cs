@@ -115,7 +115,7 @@ namespace HyoutaTools {
 				return null;
 			}
 		}
-		public static String GetTextUTF8( int Pointer, byte[] File ) {
+		public static String GetTextUTF8( byte[] File, int Pointer ) {
 			if ( Pointer == -1 ) return null;
 
 			try {
@@ -179,7 +179,7 @@ namespace HyoutaTools {
 
 			return retval;
 		}
-		
+
 		public static int GenericSqliteUpdate( string connString, string statement ) {
 			return GenericSqliteUpdate( connString, statement, new object[0] );
 		}
@@ -190,8 +190,7 @@ namespace HyoutaTools {
 			Connection.Close();
 			return retval;
 		}
-		public static int GenericSqliteUpdate( SQLiteConnection Connection, string statement, IEnumerable<object> parameters )
-		{
+		public static int GenericSqliteUpdate( SQLiteConnection Connection, string statement, IEnumerable<object> parameters ) {
 			int affected = -1;
 
 			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )

@@ -74,7 +74,7 @@ namespace HyoutaTools.Other.AutoExtract {
 		}
 
 
-		static void EnqueueDirectoryRecursively( Queue<FileStruct> queue, string Directory ) {
+		public static void EnqueueDirectoryRecursively( Queue<FileStruct> queue, string Directory ) {
 			foreach ( string f in System.IO.Directory.GetFiles( Directory ) ) {
 				queue.Enqueue( new FileStruct( f, 0 ) );
 			}
