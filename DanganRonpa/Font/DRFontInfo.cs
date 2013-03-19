@@ -37,6 +37,28 @@ namespace HyoutaTools.DanganRonpa.Font {
 			System.IO.File.WriteAllBytes( Filename, file );
 		}
 
+		public string[] GetGnConfig() {
+			List<string> gn = new List<string>();
+
+			for ( int i = 0; i < this.InfoCount; ++i ) {
+
+				var ch = GetChar( i );
+
+				byte[] chbytes = BitConverter.GetBytes(ch.Character);
+				char character = Encoding.Unicode.GetChars( chbytes )[0];
+
+				string c = Util.XmlEscape( character.ToString() );
+
+				string n =
+					"			<Glyph char=\"" + c + "\" " +
+					"x=\"" + ch.XOffset + "\" y=\"" + ch.YOffset +
+					"\" width=\"" + ch.Width + "\" height=\"" + ch.Height + "\" />";
+				gn.Add( n );
+			}
+
+			return gn.ToArray();
+		}
+
 		public DRFontChar GetChar( int id ) {
 			if ( id >= this.InfoCount ) id = 0;
 

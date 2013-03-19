@@ -47,6 +47,7 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.guiCharX = new System.Windows.Forms.NumericUpDown();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.buttonWriteGN = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.TownMapIDBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownTileNumber)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -296,11 +297,22 @@
 			this.panel1.Size = new System.Drawing.Size(954, 138);
 			this.panel1.TabIndex = 36;
 			// 
+			// buttonWriteGN
+			// 
+			this.buttonWriteGN.Location = new System.Drawing.Point(895, 90);
+			this.buttonWriteGN.Name = "buttonWriteGN";
+			this.buttonWriteGN.Size = new System.Drawing.Size(75, 23);
+			this.buttonWriteGN.TabIndex = 37;
+			this.buttonWriteGN.Text = "Write GN Config";
+			this.buttonWriteGN.UseVisualStyleBackColor = true;
+			this.buttonWriteGN.Click += new System.EventHandler(this.buttonWriteGN_Click);
+			// 
 			// FontViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(982, 286);
+			this.Controls.Add(this.buttonWriteGN);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.guiCharY);
@@ -356,6 +368,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown guiCharX;
 		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Button buttonWriteGN;
     }
 }
 

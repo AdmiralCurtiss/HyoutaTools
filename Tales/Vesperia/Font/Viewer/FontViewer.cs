@@ -333,5 +333,11 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 		private void checkBoxApproxDialogue_CheckedChanged( object sender, EventArgs e ) {
 			UpdateAny();
 		}
+
+		private void buttonWriteGN_Click( object sender, EventArgs e ) {
+			int CurrentFontInfoToUse = (int)numericUpDownTileNumber.Value;
+			string[] gn = FontInfos[CurrentFontInfoToUse].GetGnConfig();
+			System.IO.File.WriteAllLines( "GnConfig.xml", gn );
+		}
 	}
 }

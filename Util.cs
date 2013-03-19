@@ -275,5 +275,14 @@ namespace HyoutaTools {
 				return ( Number + ( Alignment - diff ) );
 			}
 		}
+
+		public static string XmlEscape( string s ) {
+			s = s.Replace( "&", "&amp;" );
+			s = s.Replace( "\"", "&quot;" );
+			s = s.Replace( "'", "&apos;" );
+			s = s.Replace( "<", "&lt;" );
+			s = s.Replace( ">", "&gt;" );
+			return s;
+		}
 	}
 }

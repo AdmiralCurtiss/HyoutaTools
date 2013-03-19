@@ -40,6 +40,7 @@
 			this.buttonWriteNewCharLength = new System.Windows.Forms.Button();
 			this.comboBoxFilename = new System.Windows.Forms.ComboBox();
 			this.checkBoxApproxDialogue = new System.Windows.Forms.CheckBox();
+			this.buttonWriteGN = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.TownMapIDBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownTileNumber)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -200,11 +201,22 @@
 			this.checkBoxApproxDialogue.UseVisualStyleBackColor = true;
 			this.checkBoxApproxDialogue.CheckedChanged += new System.EventHandler(this.checkBoxApproxDialogue_CheckedChanged);
 			// 
+			// buttonWriteGN
+			// 
+			this.buttonWriteGN.Location = new System.Drawing.Point(895, 83);
+			this.buttonWriteGN.Name = "buttonWriteGN";
+			this.buttonWriteGN.Size = new System.Drawing.Size(75, 23);
+			this.buttonWriteGN.TabIndex = 30;
+			this.buttonWriteGN.Text = "Write GN Info";
+			this.buttonWriteGN.UseVisualStyleBackColor = true;
+			this.buttonWriteGN.Click += new System.EventHandler(this.buttonWriteGN_Click);
+			// 
 			// FontViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(982, 286);
+			this.Controls.Add(this.buttonWriteGN);
 			this.Controls.Add(this.checkBoxApproxDialogue);
 			this.Controls.Add(this.comboBoxFilename);
 			this.Controls.Add(this.buttonWriteNewCharLength);
@@ -242,6 +254,7 @@
         private System.Windows.Forms.Button buttonWriteNewCharLength;
         private System.Windows.Forms.ComboBox comboBoxFilename;
         private System.Windows.Forms.CheckBox checkBoxApproxDialogue;
+		private System.Windows.Forms.Button buttonWriteGN;
     }
 }
 

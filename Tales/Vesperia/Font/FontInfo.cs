@@ -31,6 +31,26 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			System.IO.File.WriteAllBytes( Filename, File );
 		}
 
+		public string[] GetGnConfig() {
+			List<string> gn = new List<string>();
+
+			foreach ( var kvp in CharacterMap ) {
+				int textureNumber = kvp.Value / ( 16 * 16 );
+				int CharacterX = ( kvp.Value % 16 );
+				int CharacterY = ( kvp.Value % ( 16 * 16 ) ) / 16;
+
+				string c = Util.XmlEscape( kvp.Key.ToString() );
+
+				string n =
+					"			<Glyph char=\"" + c + "\" " +
+					"x=\"" + ( CharacterX * 32 ) + "\" y=\"" + ( CharacterY * 32 ) +
+					"\" width=\"" + ( CharacterLengths[kvp.Value] + 2 ) + "\" height=\"" + 32 + "\" />";
+				gn.Add( n );
+			}
+
+			return gn.ToArray();
+		}
+
 		public List<char> tmp = null;
 
 		public int GetCharacterIdFromCharacter( char c ) {

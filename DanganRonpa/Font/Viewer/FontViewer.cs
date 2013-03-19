@@ -267,5 +267,10 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 			UpdateAny();
 		}
+
+		private void buttonWriteGN_Click( object sender, EventArgs e ) {
+			string[] gn = FontInfo.GetGnConfig();
+			System.IO.File.WriteAllLines( "GnConfig.xml", gn );
+		}
 	}
 }
