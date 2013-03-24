@@ -6,14 +6,14 @@ using System.IO;
 
 namespace HyoutaTools.DanganRonpa.Font {
 	public class DRFontChar {
-		public Int16 Character;
-		public Int16 XOffset;
-		public Int16 YOffset;
-		public Int16 Width;
-		public Int16 Height;
-		public Int16 Unk1;
-		public Int16 Unk2;
-		public Int16 Unk3;
+		public UInt16 Character;
+		public UInt16 XOffset;
+		public UInt16 YOffset;
+		public UInt16 Width;
+		public UInt16 Height;
+		public UInt16 Unk1;
+		public UInt16 Unk2;
+		public UInt16 Unk3;
 	}
 
 	public class DRFontInfo {
@@ -24,7 +24,7 @@ namespace HyoutaTools.DanganRonpa.Font {
 		int Unknown1;
 		int InfoCount;
 		int InfoLocation;
-		int LookupTableCount;
+		int LookupTableLength;
 		int LookupTableLocation;
 		int Unknown2;
 		int Unknown3;
@@ -42,7 +42,7 @@ namespace HyoutaTools.DanganRonpa.Font {
 			this.Unknown1 = BitConverter.ToInt32( file, 0x04 );
 			this.InfoCount = BitConverter.ToInt32( file, 0x08 );
 			this.InfoLocation = BitConverter.ToInt32( file, 0x0C );
-			this.LookupTableCount = BitConverter.ToInt32( file, 0x10 );
+			this.LookupTableLength = BitConverter.ToInt32( file, 0x10 );
 			this.LookupTableLocation = BitConverter.ToInt32( file, 0x14 );
 			this.Unknown2 = BitConverter.ToInt32( file, 0x18 );
 			this.Unknown3 = BitConverter.ToInt32( file, 0x1C );
@@ -53,31 +53,34 @@ namespace HyoutaTools.DanganRonpa.Font {
 				DRFontChar c = GetCharFromRaw( i );
 				Chars.Add( c );
 			}
+
+			return;
 		}
 
 		public void WriteFile( String Filename ) {
 			FileStream fs = new FileStream( Filename, FileMode.Create );
 
 
-			LookupTableCount = 0;
+			LookupTableLength = 0;
 			foreach ( DRFontChar c in Chars ) {
-				LookupTableCount = Math.Max( c.Character, LookupTableCount );
+				LookupTableLength = Math.Max( c.Character, LookupTableLength );
 			}
+			LookupTableLength = LookupTableLength * 2 + 2;
 			InfoCount = Chars.Count;
-			InfoLocation = LookupTableLocation + 2 * LookupTableCount;
+			InfoLocation = LookupTableLocation + LookupTableLength;
 
 
 			fs.Write( BitConverter.GetBytes( Magic ), 0, 4 );
 			fs.Write( BitConverter.GetBytes( Unknown1 ), 0, 4 );
 			fs.Write( BitConverter.GetBytes( InfoCount ), 0, 4 );
 			fs.Write( BitConverter.GetBytes( InfoLocation ), 0, 4 );
-			fs.Write( BitConverter.GetBytes( LookupTableCount ), 0, 4 );
+			fs.Write( BitConverter.GetBytes( LookupTableLength / 2 ), 0, 4 );
 			fs.Write( BitConverter.GetBytes( LookupTableLocation ), 0, 4 );
 			fs.Write( BitConverter.GetBytes( Unknown2 ), 0, 4 );
 			fs.Write( BitConverter.GetBytes( Unknown3 ), 0, 4 );
 
 			int currentCharId = 0;
-			for ( int i = 0; i < LookupTableCount; ++i ) {
+			for ( int i = 0; i < LookupTableLength / 2; ++i ) {
 				if ( Chars[currentCharId].Character == i ) {
 					fs.Write( BitConverter.GetBytes( (ushort)currentCharId ), 0, 2 );
 					++currentCharId;
@@ -88,14 +91,18 @@ namespace HyoutaTools.DanganRonpa.Font {
 			}
 
 			foreach ( DRFontChar c in Chars ) {
-				fs.Write( BitConverter.GetBytes( c.Character ), 0, 4 );
-				fs.Write( BitConverter.GetBytes( c.XOffset ), 0, 4 );
-				fs.Write( BitConverter.GetBytes( c.YOffset ), 0, 4 );
-				fs.Write( BitConverter.GetBytes( c.Width ), 0, 4 );
-				fs.Write( BitConverter.GetBytes( c.Height ), 0, 4 );
-				fs.Write( BitConverter.GetBytes( c.Unk1 ), 0, 4 );
-				fs.Write( BitConverter.GetBytes( c.Unk2 ), 0, 4 );
-				fs.Write( BitConverter.GetBytes( c.Unk3 ), 0, 4 );
+				fs.Write( BitConverter.GetBytes( c.Character ), 0, 2 );
+				fs.Write( BitConverter.GetBytes( c.XOffset ), 0, 2 );
+				fs.Write( BitConverter.GetBytes( c.YOffset ), 0, 2 );
+				fs.Write( BitConverter.GetBytes( c.Width ), 0, 2 );
+				fs.Write( BitConverter.GetBytes( c.Height ), 0, 2 );
+				fs.Write( BitConverter.GetBytes( c.Unk1 ), 0, 2 );
+				fs.Write( BitConverter.GetBytes( c.Unk2 ), 0, 2 );
+				fs.Write( BitConverter.GetBytes( c.Unk3 ), 0, 2 );
+			}
+
+			while ( fs.Length % 16 != 0 ) {
+				fs.WriteByte( 0x00 );
 			}
 
 			fs.Close();
@@ -130,14 +137,14 @@ namespace HyoutaTools.DanganRonpa.Font {
 			if ( id >= this.InfoCount ) id = 0;
 
 			DRFontChar c = new DRFontChar();
-			c.Character = BitConverter.ToInt16( file, InfoLocation + ( id * InfoLength ) + 0x00 );
-			c.XOffset = BitConverter.ToInt16( file, InfoLocation + ( id * InfoLength ) + 0x02 );
-			c.YOffset = BitConverter.ToInt16( file, InfoLocation + ( id * InfoLength ) + 0x04 );
-			c.Width = BitConverter.ToInt16( file, InfoLocation + ( id * InfoLength ) + 0x06 );
-			c.Height = BitConverter.ToInt16( file, InfoLocation + ( id * InfoLength ) + 0x08 );
-			c.Unk1 = BitConverter.ToInt16( file, InfoLocation + ( id * InfoLength ) + 0x0A );
-			c.Unk2 = BitConverter.ToInt16( file, InfoLocation + ( id * InfoLength ) + 0x0C );
-			c.Unk3 = BitConverter.ToInt16( file, InfoLocation + ( id * InfoLength ) + 0x0E );
+			c.Character = BitConverter.ToUInt16( file, InfoLocation + ( id * InfoLength ) + 0x00 );
+			c.XOffset = BitConverter.ToUInt16( file, InfoLocation + ( id * InfoLength ) + 0x02 );
+			c.YOffset = BitConverter.ToUInt16( file, InfoLocation + ( id * InfoLength ) + 0x04 );
+			c.Width = BitConverter.ToUInt16( file, InfoLocation + ( id * InfoLength ) + 0x06 );
+			c.Height = BitConverter.ToUInt16( file, InfoLocation + ( id * InfoLength ) + 0x08 );
+			c.Unk1 = BitConverter.ToUInt16( file, InfoLocation + ( id * InfoLength ) + 0x0A );
+			c.Unk2 = BitConverter.ToUInt16( file, InfoLocation + ( id * InfoLength ) + 0x0C );
+			c.Unk3 = BitConverter.ToUInt16( file, InfoLocation + ( id * InfoLength ) + 0x0E );
 
 			return c;
 		}

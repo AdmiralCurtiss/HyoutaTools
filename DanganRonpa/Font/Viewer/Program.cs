@@ -26,25 +26,27 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		}
 
 		public static int Execute( List<string> args ) {
-			string Filepath = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\fontdata1";
-			string ImagePath = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\fontdata0";
+			string Filepath = args[1];
+			string ImagePath = args[0];
 
 
-			try {
+			FontViewer form;
+			//try {
 				byte[] File = System.IO.File.ReadAllBytes( Filepath );
 
 				DRFontInfo f = new DRFontInfo( File );
 
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault( false );
-				FontViewer form = new FontViewer( f, new System.Drawing.Bitmap( ImagePath ) );
+				form = new FontViewer( f, new System.Drawing.Bitmap( ImagePath ) );
 				form.Filepath = Filepath;
-				Application.Run( form );
-			} catch ( Exception ex ) {
-				Console.WriteLine( ex.ToString() );
-				PrintUsage();
-				return -1;
-			}
+			//} catch ( Exception ex ) {
+			//    Console.WriteLine( ex.ToString() );
+			//    PrintUsage();
+			//    return -1;
+			//}
+
+			Application.Run( form );
 
 			return 0;
 		}

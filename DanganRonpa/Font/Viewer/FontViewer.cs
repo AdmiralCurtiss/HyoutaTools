@@ -225,13 +225,13 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		}
 
 		private void buttonWriteNewCharLength_Click( object sender, EventArgs e ) {
-			FontInfo.WriteFile( Filepath );
+			FontInfo.WriteFile( Filepath + ".new" );
 		}
 
 		private void numUpDownCharLength_ValueChanged( object sender, EventArgs e ) {
 			int CharacterID = (int)TownMapIDBox.Value;
 			DRFontChar c = FontInfo.GetChar( CharacterID );
-			c.Width = (Int16)guiCharWidth.Value;
+			c.Width = (ushort)guiCharWidth.Value;
 
 			UpdateAny();
 		}
@@ -243,7 +243,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		private void guiCharX_ValueChanged( object sender, EventArgs e ) {
 			int CharacterID = (int)TownMapIDBox.Value;
 			DRFontChar c = FontInfo.GetChar( CharacterID );
-			c.XOffset = (Int16)guiCharX.Value;
+			c.XOffset = (ushort)guiCharX.Value;
 
 			UpdateAny();
 		}
@@ -251,7 +251,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		private void guiCharY_ValueChanged( object sender, EventArgs e ) {
 			int CharacterID = (int)TownMapIDBox.Value;
 			DRFontChar c = FontInfo.GetChar( CharacterID );
-			c.YOffset = (Int16)guiCharY.Value;
+			c.YOffset = (ushort)guiCharY.Value;
 
 			UpdateAny();
 		}
@@ -259,7 +259,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		private void guiCharHeight_ValueChanged( object sender, EventArgs e ) {
 			int CharacterID = (int)TownMapIDBox.Value;
 			DRFontChar c = FontInfo.GetChar( CharacterID );
-			c.Height = (Int16)guiCharHeight.Value;
+			c.Height = (ushort)guiCharHeight.Value;
 
 			UpdateAny();
 		}
