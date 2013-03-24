@@ -232,7 +232,6 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			int CharacterID = (int)TownMapIDBox.Value;
 			DRFontChar c = FontInfo.GetChar( CharacterID );
 			c.Width = (Int16)guiCharWidth.Value;
-			FontInfo.SetChar( CharacterID, c );
 
 			UpdateAny();
 		}
@@ -245,7 +244,6 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			int CharacterID = (int)TownMapIDBox.Value;
 			DRFontChar c = FontInfo.GetChar( CharacterID );
 			c.XOffset = (Int16)guiCharX.Value;
-			FontInfo.SetChar( CharacterID, c );
 
 			UpdateAny();
 		}
@@ -254,7 +252,6 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			int CharacterID = (int)TownMapIDBox.Value;
 			DRFontChar c = FontInfo.GetChar( CharacterID );
 			c.YOffset = (Int16)guiCharY.Value;
-			FontInfo.SetChar( CharacterID, c );
 
 			UpdateAny();
 		}
@@ -263,7 +260,6 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			int CharacterID = (int)TownMapIDBox.Value;
 			DRFontChar c = FontInfo.GetChar( CharacterID );
 			c.Height = (Int16)guiCharHeight.Value;
-			FontInfo.SetChar( CharacterID, c );
 
 			UpdateAny();
 		}
