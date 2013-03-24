@@ -48,6 +48,7 @@
 			this.guiCharX = new System.Windows.Forms.NumericUpDown();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.buttonWriteGN = new System.Windows.Forms.Button();
+			this.labelCharacterDisplayer = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.TownMapIDBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownTileNumber)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -307,11 +308,23 @@
 			this.buttonWriteGN.UseVisualStyleBackColor = true;
 			this.buttonWriteGN.Click += new System.EventHandler(this.buttonWriteGN_Click);
 			// 
+			// labelCharacterDisplayer
+			// 
+			this.labelCharacterDisplayer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelCharacterDisplayer.AutoSize = true;
+			this.labelCharacterDisplayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelCharacterDisplayer.Location = new System.Drawing.Point(265, 74);
+			this.labelCharacterDisplayer.Name = "labelCharacterDisplayer";
+			this.labelCharacterDisplayer.Size = new System.Drawing.Size(21, 31);
+			this.labelCharacterDisplayer.TabIndex = 38;
+			this.labelCharacterDisplayer.Text = " ";
+			// 
 			// FontViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(982, 286);
+			this.Controls.Add(this.labelCharacterDisplayer);
 			this.Controls.Add(this.buttonWriteGN);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.label4);
@@ -369,6 +382,7 @@
         private System.Windows.Forms.NumericUpDown guiCharX;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Button buttonWriteGN;
+		private System.Windows.Forms.Label labelCharacterDisplayer;
     }
 }
 

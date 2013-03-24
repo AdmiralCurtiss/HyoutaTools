@@ -28,6 +28,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		public static int Execute( List<string> args ) {
 			string Filepath = args[1];
 			string ImagePath = args[0];
+			string Filepath2 = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\i";
 
 
 			FontViewer form;
@@ -35,8 +36,8 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 				byte[] File = System.IO.File.ReadAllBytes( Filepath );
 
 				DRFontInfo f = new DRFontInfo( File );
-				//DRFontInfo f2 = new DRFontInfo( System.IO.File.ReadAllBytes( Filepath2 ) );
-				//f.CopyInfoFrom( f2 );
+				DRFontInfo f2 = new DRFontInfo( System.IO.File.ReadAllBytes( Filepath2 ) );
+				f.CopyInfoFrom( f2 );
 
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault( false );

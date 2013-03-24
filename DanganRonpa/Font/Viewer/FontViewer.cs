@@ -88,6 +88,9 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			guiCharX.Value = c.XOffset;
 			guiCharY.Value = c.YOffset;
 
+			char ch = (char)c.Character;
+			labelCharacterDisplayer.Text = ch.ToString();
+
 			pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
 			if ( textBoxDisplayDelay.Text == "" ) {
 				pictureBox2.Image = UpdateSingleCharacter( (int)TownMapIDBox.Value );
