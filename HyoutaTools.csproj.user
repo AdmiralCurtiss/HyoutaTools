@@ -4,6 +4,6 @@
     <StartArguments>Generic.ArbitraryTextDump "e:\__trails\Legend of Heroes, The - Trails in the Sky (USA)\PSP_GAME\USRDIR\data\scenario\0\r3202.bin"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <StartArguments>DanganRonpa.Font.Viewer</StartArguments>
+    <StartArguments>Tales.DestinyRemake.TblBin.Extract e:\___destiny\MOV.TBL e:\___destiny\MOV.BIN</StartArguments>
   </PropertyGroup>
 </Project>

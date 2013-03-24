@@ -284,5 +284,17 @@ namespace HyoutaTools {
 			s = s.Replace( ">", "&gt;" );
 			return s;
 		}
+
+		public static void CopyStream( System.IO.Stream input, System.IO.Stream output, int count ) {
+			byte[] buffer = new byte[4096];
+			int read;
+
+			int bytesLeft = count;
+			while ( ( read = input.Read( buffer, 0, Math.Min( buffer.Length, bytesLeft ) ) ) > 0 ) {
+				output.Write( buffer, 0, read );
+				bytesLeft -= read;
+				if ( bytesLeft <= 0 ) return;
+			}
+		}
 	}
 }
