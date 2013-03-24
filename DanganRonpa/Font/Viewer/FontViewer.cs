@@ -82,7 +82,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 		public void UpdateAny() {
 			int CharacterID = (int)TownMapIDBox.Value;
-			DRFontChar c = FontInfo.GetChar( CharacterID );
+			DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 			guiCharWidth.Value = c.Width;
 			guiCharHeight.Value = c.Height;
 			guiCharX.Value = c.XOffset;
@@ -128,7 +128,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			try {
 				int scale = (int)numericUpDownTileNumber.Value;
 
-				DRFontChar c = FontInfo.GetChar( CharacterID );
+				DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 				System.Drawing.Bitmap img = new System.Drawing.Bitmap( c.Width * scale, c.Height * scale );
 
 				for ( int x = 0; x < c.Width; x++ ) {
@@ -230,7 +230,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 		private void numUpDownCharLength_ValueChanged( object sender, EventArgs e ) {
 			int CharacterID = (int)TownMapIDBox.Value;
-			DRFontChar c = FontInfo.GetChar( CharacterID );
+			DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 			c.Width = (ushort)guiCharWidth.Value;
 
 			UpdateAny();
@@ -242,7 +242,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 		private void guiCharX_ValueChanged( object sender, EventArgs e ) {
 			int CharacterID = (int)TownMapIDBox.Value;
-			DRFontChar c = FontInfo.GetChar( CharacterID );
+			DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 			c.XOffset = (ushort)guiCharX.Value;
 
 			UpdateAny();
@@ -250,7 +250,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 		private void guiCharY_ValueChanged( object sender, EventArgs e ) {
 			int CharacterID = (int)TownMapIDBox.Value;
-			DRFontChar c = FontInfo.GetChar( CharacterID );
+			DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 			c.YOffset = (ushort)guiCharY.Value;
 
 			UpdateAny();
@@ -258,7 +258,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 		private void guiCharHeight_ValueChanged( object sender, EventArgs e ) {
 			int CharacterID = (int)TownMapIDBox.Value;
-			DRFontChar c = FontInfo.GetChar( CharacterID );
+			DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 			c.Height = (ushort)guiCharHeight.Value;
 
 			UpdateAny();

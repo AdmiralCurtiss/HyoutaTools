@@ -14,6 +14,9 @@ namespace HyoutaTools.DanganRonpa.Font {
 		public UInt16 Unk1;
 		public UInt16 Unk2;
 		public UInt16 Unk3;
+		static public int Compare( DRFontChar one, DRFontChar other ) {
+			return one.Character - other.Character;
+		}
 	}
 
 	public class DRFontInfo {
@@ -130,8 +133,16 @@ namespace HyoutaTools.DanganRonpa.Font {
 			return gn.ToArray();
 		}
 
-		public DRFontChar GetChar( int id ) {
+		public DRFontChar GetCharViaId( int id ) {
 			return Chars[id];
+		}
+		public DRFontChar GetCharViaCharacter( ushort Character ) {
+			foreach ( DRFontChar c in Chars ) {
+				if ( c.Character == Character ) {
+					return c;
+				}
+			}
+			return null;
 		}
 		private DRFontChar GetCharFromRaw( int id ) {
 			if ( id >= this.InfoCount ) id = 0;
@@ -148,5 +159,27 @@ namespace HyoutaTools.DanganRonpa.Font {
 
 			return c;
 		}
+
+		public void CopyInfoFrom( DRFontInfo f2 ) {
+			foreach ( DRFontChar fc in f2.Chars ) {
+				DRFontChar mine = GetCharViaCharacter( fc.Character );
+				if ( mine == null ) {
+					this.Chars.Add( fc );
+				} else {
+					mine.Character = fc.Character;
+					mine.XOffset = fc.XOffset;
+					mine.YOffset = fc.YOffset;
+					mine.Width = fc.Width;
+					mine.Height = fc.Height;
+					mine.Unk1 = fc.Unk1;
+					mine.Unk2 = fc.Unk2;
+					mine.Unk3 = fc.Unk3;
+				}
+			}
+
+			this.Chars.Sort( DRFontChar.Compare );
+		}
+
+
 	}
 }

@@ -35,6 +35,8 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 				byte[] File = System.IO.File.ReadAllBytes( Filepath );
 
 				DRFontInfo f = new DRFontInfo( File );
+				//DRFontInfo f2 = new DRFontInfo( System.IO.File.ReadAllBytes( Filepath2 ) );
+				//f.CopyInfoFrom( f2 );
 
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault( false );
