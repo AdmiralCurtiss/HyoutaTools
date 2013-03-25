@@ -32,22 +32,75 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 
 			FontViewer form;
-			//try {
+			try {
 				byte[] File = System.IO.File.ReadAllBytes( Filepath );
 
 				DRFontInfo f = new DRFontInfo( File );
 				//DRFontInfo f2 = new DRFontInfo( System.IO.File.ReadAllBytes( Filepath2 ) );
 				//f.CopyInfoFrom( f2 );
 
+				DRFontChar apos = f.GetCharViaCharacter( (ushort)'\'' );
+				DRFontChar quot = f.GetCharViaCharacter( (ushort)'"' );
+
+				DRFontChar fontch = new DRFontChar();
+				fontch.Character = (ushort)'’';
+				DRFontInfo.CopyCharInfo( apos, fontch );
+				f.ImportExternalCharacter( fontch );
+
+				fontch = new DRFontChar();
+				fontch.Character = (ushort)'‘';
+				DRFontInfo.CopyCharInfo( apos, fontch );
+				f.ImportExternalCharacter( fontch );
+
+				fontch = new DRFontChar();
+				fontch.Character = (ushort)'‛';
+				DRFontInfo.CopyCharInfo( apos, fontch );
+				f.ImportExternalCharacter( fontch );
+
+				fontch = new DRFontChar();
+				fontch.Character = (ushort)'“';
+				DRFontInfo.CopyCharInfo( quot, fontch );
+				f.ImportExternalCharacter( fontch );
+
+				fontch = new DRFontChar();
+				fontch.Character = (ushort)'”';
+				DRFontInfo.CopyCharInfo( quot, fontch );
+				f.ImportExternalCharacter( fontch );
+
+				fontch = new DRFontChar();
+				fontch.Character = (ushort)'‟';
+				DRFontInfo.CopyCharInfo( quot, fontch );
+				f.ImportExternalCharacter( fontch );
+
+				fontch = new DRFontChar();
+				fontch.Character = (ushort)'〝';
+				DRFontInfo.CopyCharInfo( quot, fontch );
+				f.ImportExternalCharacter( fontch );
+
+				fontch = new DRFontChar();
+				fontch.Character = (ushort)'〞';
+				DRFontInfo.CopyCharInfo( quot, fontch );
+				f.ImportExternalCharacter( fontch );
+
+				fontch = new DRFontChar();
+				fontch.Character = (ushort)'＂';
+				DRFontInfo.CopyCharInfo( quot, fontch );
+				f.ImportExternalCharacter( fontch );
+
+				fontch = new DRFontChar();
+				fontch.Character = (ushort)'＇';
+				DRFontInfo.CopyCharInfo( apos, fontch );
+				f.ImportExternalCharacter( fontch );
+
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault( false );
 				form = new FontViewer( f, new System.Drawing.Bitmap( ImagePath ) );
 				form.Filepath = Filepath;
-			//} catch ( Exception ex ) {
-			//    Console.WriteLine( ex.ToString() );
-			//    PrintUsage();
-			//    return -1;
-			//}
+			} catch ( Exception ex ) {
+				Console.WriteLine( ex.ToString() );
+				PrintUsage();
+				return -1;
+			}
 
 			Application.Run( form );
 

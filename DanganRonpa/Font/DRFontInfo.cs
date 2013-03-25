@@ -184,6 +184,7 @@ namespace HyoutaTools.DanganRonpa.Font {
 			DRFontChar mine = GetCharViaCharacter( fc.Character );
 			if ( mine == null ) {
 				this.Chars.Add( fc );
+				this.Chars.Sort( DRFontChar.Compare );
 			} else {
 				mine.Character = fc.Character;
 				mine.XOffset = fc.XOffset;
@@ -194,6 +195,16 @@ namespace HyoutaTools.DanganRonpa.Font {
 				mine.Unk2 = fc.Unk2;
 				mine.Unk3 = fc.Unk3;
 			}
+		}
+
+		public static void CopyCharInfo( DRFontChar CopyFrom, DRFontChar CopyTo ) {
+			CopyTo.Width = CopyFrom.Width;
+			CopyTo.Height = CopyFrom.Height;
+			CopyTo.XOffset = CopyFrom.XOffset;
+			CopyTo.YOffset = CopyFrom.YOffset;
+			CopyTo.Unk1 = CopyFrom.Unk1;
+			CopyTo.Unk2 = CopyFrom.Unk2;
+			CopyTo.Unk3 = CopyFrom.Unk3;
 		}
 
 	}

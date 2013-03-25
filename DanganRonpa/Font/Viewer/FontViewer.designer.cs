@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.TownMapIDBox = new System.Windows.Forms.NumericUpDown();
+			this.numericUpDownCharacterId = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
 			this.labelTiles = new System.Windows.Forms.Label();
 			this.numericUpDownTileNumber = new System.Windows.Forms.NumericUpDown();
@@ -51,7 +51,7 @@
 			this.labelCharacterDisplayer = new System.Windows.Forms.Label();
 			this.buttonCopyFrom = new System.Windows.Forms.Button();
 			this.textBoxCopyFrom = new System.Windows.Forms.TextBox();
-			((System.ComponentModel.ISupportInitialize)(this.TownMapIDBox)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownCharacterId)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownTileNumber)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.guiCharWidth)).BeginInit();
@@ -63,21 +63,21 @@
 			// 
 			// TownMapIDBox
 			// 
-			this.TownMapIDBox.Location = new System.Drawing.Point(37, 12);
-			this.TownMapIDBox.Maximum = new decimal(new int[] {
+			this.numericUpDownCharacterId.Location = new System.Drawing.Point(37, 12);
+			this.numericUpDownCharacterId.Maximum = new decimal(new int[] {
             20000,
             0,
             0,
             0});
-			this.TownMapIDBox.Name = "TownMapIDBox";
-			this.TownMapIDBox.Size = new System.Drawing.Size(85, 20);
-			this.TownMapIDBox.TabIndex = 0;
-			this.TownMapIDBox.Value = new decimal(new int[] {
+			this.numericUpDownCharacterId.Name = "TownMapIDBox";
+			this.numericUpDownCharacterId.Size = new System.Drawing.Size(85, 20);
+			this.numericUpDownCharacterId.TabIndex = 0;
+			this.numericUpDownCharacterId.Value = new decimal(new int[] {
             100,
             0,
             0,
             0});
-			this.TownMapIDBox.ValueChanged += new System.EventHandler(this.TownMapIDBox_ValueChanged);
+			this.numericUpDownCharacterId.ValueChanged += new System.EventHandler(this.TownMapIDBox_ValueChanged);
 			// 
 			// label1
 			// 
@@ -365,10 +365,10 @@
 			this.Controls.Add(this.numericUpDownTileNumber);
 			this.Controls.Add(this.labelTiles);
 			this.Controls.Add(this.label1);
-			this.Controls.Add(this.TownMapIDBox);
+			this.Controls.Add(this.numericUpDownCharacterId);
 			this.Name = "FontViewer";
 			this.Text = "Dangan Ronpa Font Viewer";
-			((System.ComponentModel.ISupportInitialize)(this.TownMapIDBox)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownCharacterId)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownTileNumber)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.guiCharWidth)).EndInit();
@@ -384,7 +384,7 @@
 
         #endregion
 
-        private System.Windows.Forms.NumericUpDown TownMapIDBox;
+        private System.Windows.Forms.NumericUpDown numericUpDownCharacterId;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelTiles;
         private System.Windows.Forms.NumericUpDown numericUpDownTileNumber;

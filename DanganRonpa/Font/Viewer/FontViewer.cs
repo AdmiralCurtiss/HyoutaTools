@@ -18,12 +18,16 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 		public string Filepath;
 
+		private int previousId;
+
 		public FontViewer() {
 			InitializeComponent();
+			previousId = (int)numericUpDownCharacterId.Value;
 		}
 
 		public FontViewer( DRFontInfo f, Bitmap tex ) {
 			InitializeComponent();
+			previousId = (int)numericUpDownCharacterId.Value;
 			this.FontInfo = f;
 
 			//bgcolor = Color.FromArgb(0xFF, 0xFF, 0xFF, 0xED);
@@ -81,7 +85,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		}
 
 		public void UpdateAny() {
-			int CharacterID = (int)TownMapIDBox.Value;
+			int CharacterID = (int)numericUpDownCharacterId.Value;
 			DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 			guiCharWidth.Value = c.Width;
 			guiCharHeight.Value = c.Height;
@@ -93,10 +97,10 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 			pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
 			if ( textBoxDisplayDelay.Text == "" ) {
-				pictureBox2.Image = UpdateSingleCharacter( (int)TownMapIDBox.Value );
+				pictureBox2.Image = UpdateSingleCharacter( (int)numericUpDownCharacterId.Value );
 			} else {
 				List<Bitmap> bmplist = new List<Bitmap>();
-				for ( int i = 0; i <= (int)TownMapIDBox.Value; ++i ) {
+				for ( int i = 0; i <= (int)numericUpDownCharacterId.Value; ++i ) {
 					bmplist.Add( UpdateSingleCharacter( i ) );
 				}
 				pictureBox2.Image = CombineBitmaps( bmplist.ToArray() );
@@ -202,6 +206,13 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		 */
 
 		private void TownMapIDBox_ValueChanged( object sender, EventArgs e ) {
+			int newId = (int)numericUpDownCharacterId.Value;
+			int diff = newId - previousId;
+			previousId = newId;
+
+			char ch = textBoxCopyFrom.Text[0];
+			textBoxCopyFrom.Text = ( (char)( ( (uint)ch ) + diff ) ).ToString();
+
 			UpdateAny();
 		}
 
@@ -232,7 +243,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		}
 
 		private void numUpDownCharLength_ValueChanged( object sender, EventArgs e ) {
-			int CharacterID = (int)TownMapIDBox.Value;
+			int CharacterID = (int)numericUpDownCharacterId.Value;
 			DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 			c.Width = (ushort)guiCharWidth.Value;
 
@@ -244,7 +255,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		}
 
 		private void guiCharX_ValueChanged( object sender, EventArgs e ) {
-			int CharacterID = (int)TownMapIDBox.Value;
+			int CharacterID = (int)numericUpDownCharacterId.Value;
 			DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 			c.XOffset = (ushort)guiCharX.Value;
 
@@ -252,7 +263,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		}
 
 		private void guiCharY_ValueChanged( object sender, EventArgs e ) {
-			int CharacterID = (int)TownMapIDBox.Value;
+			int CharacterID = (int)numericUpDownCharacterId.Value;
 			DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 			c.YOffset = (ushort)guiCharY.Value;
 
@@ -260,7 +271,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		}
 
 		private void guiCharHeight_ValueChanged( object sender, EventArgs e ) {
-			int CharacterID = (int)TownMapIDBox.Value;
+			int CharacterID = (int)numericUpDownCharacterId.Value;
 			DRFontChar c = FontInfo.GetCharViaId( CharacterID );
 			c.Height = (ushort)guiCharHeight.Value;
 
@@ -275,14 +286,8 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		private void buttonCopyFrom_Click( object sender, EventArgs e ) {
 			char ch = textBoxCopyFrom.Text[0];
 			DRFontChar other = FontInfo.GetCharViaCharacter( (ushort)ch );
-			DRFontChar mine = FontInfo.GetCharViaId( (int)TownMapIDBox.Value );
-			mine.Width = other.Width;
-			mine.Height = other.Height;
-			mine.XOffset = other.XOffset;
-			mine.YOffset = other.YOffset;
-			mine.Unk1 = other.Unk1;
-			mine.Unk2 = other.Unk2;
-			mine.Unk3 = other.Unk3;
+			DRFontChar mine = FontInfo.GetCharViaId( (int)numericUpDownCharacterId.Value );
+			DRFontInfo.CopyCharInfo( other, mine );
 
 			UpdateAny();
 		}
