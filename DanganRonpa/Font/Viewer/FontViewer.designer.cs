@@ -49,6 +49,8 @@
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.buttonWriteGN = new System.Windows.Forms.Button();
 			this.labelCharacterDisplayer = new System.Windows.Forms.Label();
+			this.buttonCopyFrom = new System.Windows.Forms.Button();
+			this.textBoxCopyFrom = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.TownMapIDBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownTileNumber)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -315,15 +317,35 @@
 			this.labelCharacterDisplayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelCharacterDisplayer.Location = new System.Drawing.Point(265, 74);
 			this.labelCharacterDisplayer.Name = "labelCharacterDisplayer";
-			this.labelCharacterDisplayer.Size = new System.Drawing.Size(21, 31);
+			this.labelCharacterDisplayer.Size = new System.Drawing.Size(37, 31);
 			this.labelCharacterDisplayer.TabIndex = 38;
-			this.labelCharacterDisplayer.Text = " ";
+			this.labelCharacterDisplayer.Text = " !!";
+			// 
+			// buttonCopyFrom
+			// 
+			this.buttonCopyFrom.Location = new System.Drawing.Point(271, 107);
+			this.buttonCopyFrom.Name = "buttonCopyFrom";
+			this.buttonCopyFrom.Size = new System.Drawing.Size(67, 23);
+			this.buttonCopyFrom.TabIndex = 39;
+			this.buttonCopyFrom.Text = "Copy From";
+			this.buttonCopyFrom.UseVisualStyleBackColor = true;
+			this.buttonCopyFrom.Click += new System.EventHandler(this.buttonCopyFrom_Click);
+			// 
+			// textBoxCopyFrom
+			// 
+			this.textBoxCopyFrom.Location = new System.Drawing.Point(237, 110);
+			this.textBoxCopyFrom.Name = "textBoxCopyFrom";
+			this.textBoxCopyFrom.Size = new System.Drawing.Size(28, 20);
+			this.textBoxCopyFrom.TabIndex = 40;
+			this.textBoxCopyFrom.Text = "A";
 			// 
 			// FontViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(982, 286);
+			this.Controls.Add(this.textBoxCopyFrom);
+			this.Controls.Add(this.buttonCopyFrom);
 			this.Controls.Add(this.labelCharacterDisplayer);
 			this.Controls.Add(this.buttonWriteGN);
 			this.Controls.Add(this.panel1);
@@ -383,6 +405,8 @@
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Button buttonWriteGN;
 		private System.Windows.Forms.Label labelCharacterDisplayer;
+		private System.Windows.Forms.Button buttonCopyFrom;
+		private System.Windows.Forms.TextBox textBoxCopyFrom;
     }
 }
 

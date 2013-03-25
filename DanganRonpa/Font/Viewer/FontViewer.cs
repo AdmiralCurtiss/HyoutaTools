@@ -271,5 +271,20 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			string[] gn = FontInfo.GetGnConfig();
 			System.IO.File.WriteAllLines( "GnConfig.xml", gn );
 		}
+
+		private void buttonCopyFrom_Click( object sender, EventArgs e ) {
+			char ch = textBoxCopyFrom.Text[0];
+			DRFontChar other = FontInfo.GetCharViaCharacter( (ushort)ch );
+			DRFontChar mine = FontInfo.GetCharViaId( (int)TownMapIDBox.Value );
+			mine.Width = other.Width;
+			mine.Height = other.Height;
+			mine.XOffset = other.XOffset;
+			mine.YOffset = other.YOffset;
+			mine.Unk1 = other.Unk1;
+			mine.Unk2 = other.Unk2;
+			mine.Unk3 = other.Unk3;
+
+			UpdateAny();
+		}
 	}
 }

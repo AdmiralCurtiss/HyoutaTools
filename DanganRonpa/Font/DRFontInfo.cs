@@ -180,6 +180,21 @@ namespace HyoutaTools.DanganRonpa.Font {
 			this.Chars.Sort( DRFontChar.Compare );
 		}
 
+		public void ImportExternalCharacter( DRFontChar fc ) {
+			DRFontChar mine = GetCharViaCharacter( fc.Character );
+			if ( mine == null ) {
+				this.Chars.Add( fc );
+			} else {
+				mine.Character = fc.Character;
+				mine.XOffset = fc.XOffset;
+				mine.YOffset = fc.YOffset;
+				mine.Width = fc.Width;
+				mine.Height = fc.Height;
+				mine.Unk1 = fc.Unk1;
+				mine.Unk2 = fc.Unk2;
+				mine.Unk3 = fc.Unk3;
+			}
+		}
 
 	}
 }
