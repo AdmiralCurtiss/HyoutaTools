@@ -210,8 +210,12 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 			int diff = newId - previousId;
 			previousId = newId;
 
-			char ch = textBoxCopyFrom.Text[0];
-			textBoxCopyFrom.Text = ( (char)( ( (uint)ch ) + diff ) ).ToString();
+			try {
+				char ch = textBoxCopyFrom.Text[0];
+				textBoxCopyFrom.Text = ( (char)( ( (uint)ch ) + diff ) ).ToString();
+			} catch ( Exception ) {
+				textBoxCopyFrom.Text = "A";
+			}
 
 			UpdateAny();
 		}
