@@ -541,7 +541,28 @@ namespace HyoutaTools.DanganRonpa.Lin {
 
 					} else if ( PointerRef == 2 ) {
 						// normal text
-						if ( !SQLText.StartsWith( "<REMOVE>" ) ) {
+
+						if ( SQLText.StartsWith( "<REMOVE>" ) ) {
+							// remove this entry by simply not inserting it into the data
+							// also find previous <WaitForPlayerInput> if it exists and remove it
+							// ...also remove <WaitFrame>s although I'm not 100% on this if it's actually smart,
+							// but we'll see this during testing I guess!
+
+							// search through script data in reverse order until we find either the beginning
+							// or the previous Text entry
+							for ( int i = ScriptData.Count - 1; i >= 0; --i ) {
+								if ( ScriptData[i].Type == 0x02 ) { // text entry
+									break; // we're done
+								}
+
+								// 0x3A -> WaitPlayerInput; 0x3B -> WaitFrame
+								if ( ScriptData[i].Type == 0x3A || ScriptData[i].Type == 0x3B ) {
+									ScriptData.RemoveAt( i );
+								}
+							}
+
+
+						} else {
 							bool first = true;
 							foreach ( string s in SQLText.Split( '\f' ) ) {
 								if ( !first ) {
