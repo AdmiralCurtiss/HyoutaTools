@@ -30,25 +30,25 @@
 			this.SelectedSaveNumUpDown = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.label7 = new System.Windows.Forms.Label();
+			this.MaxHealthNumericUpDown = new System.Windows.Forms.NumericUpDown();
+			this.label6 = new System.Windows.Forms.Label();
+			this.RupeesNumericUpDown = new System.Windows.Forms.NumericUpDown();
+			this.label5 = new System.Windows.Forms.Label();
+			this.HealthNumericUpDown = new System.Windows.Forms.NumericUpDown();
+			this.SixtyFourDiskDriveCheckBox = new System.Windows.Forms.CheckBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.DeathsNumericUpDown = new System.Windows.Forms.NumericUpDown();
+			this.ChildLinkCheckbox = new System.Windows.Forms.CheckBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.buttonSave = new System.Windows.Forms.Button();
 			this.buttonOpen = new System.Windows.Forms.Button();
-			this.ChildLinkCheckbox = new System.Windows.Forms.CheckBox();
-			this.DeathsNumericUpDown = new System.Windows.Forms.NumericUpDown();
-			this.label4 = new System.Windows.Forms.Label();
-			this.SixtyFourDiskDriveCheckBox = new System.Windows.Forms.CheckBox();
-			this.label5 = new System.Windows.Forms.Label();
-			this.HealthNumericUpDown = new System.Windows.Forms.NumericUpDown();
-			this.label6 = new System.Windows.Forms.Label();
-			this.RupeesNumericUpDown = new System.Windows.Forms.NumericUpDown();
-			this.label7 = new System.Windows.Forms.Label();
-			this.MaxHealthNumericUpDown = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.SelectedSaveNumUpDown)).BeginInit();
 			this.panel1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.DeathsNumericUpDown)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.HealthNumericUpDown)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RupeesNumericUpDown)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MaxHealthNumericUpDown)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.RupeesNumericUpDown)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.HealthNumericUpDown)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.DeathsNumericUpDown)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// ZTargettingHoldCheckbox
@@ -97,7 +97,7 @@
 			// SelectedSaveNumUpDown
 			// 
 			this.SelectedSaveNumUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.SelectedSaveNumUpDown.Location = new System.Drawing.Point(571, 12);
+			this.SelectedSaveNumUpDown.Location = new System.Drawing.Point(726, 12);
 			this.SelectedSaveNumUpDown.Maximum = new decimal(new int[] {
             5,
             0,
@@ -112,7 +112,7 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(488, 14);
+			this.label2.Location = new System.Drawing.Point(643, 14);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(77, 13);
 			this.label2.TabIndex = 5;
@@ -137,127 +137,8 @@
 			this.panel1.Controls.Add(this.NameTextBox);
 			this.panel1.Location = new System.Drawing.Point(12, 39);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(589, 391);
+			this.panel1.Size = new System.Drawing.Size(744, 394);
 			this.panel1.TabIndex = 6;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(3, 7);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(35, 13);
-			this.label3.TabIndex = 3;
-			this.label3.Text = "Name";
-			// 
-			// buttonSave
-			// 
-			this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonSave.Location = new System.Drawing.Point(526, 436);
-			this.buttonSave.Name = "buttonSave";
-			this.buttonSave.Size = new System.Drawing.Size(75, 23);
-			this.buttonSave.TabIndex = 7;
-			this.buttonSave.Text = "Save";
-			this.buttonSave.UseVisualStyleBackColor = true;
-			this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
-			// 
-			// buttonOpen
-			// 
-			this.buttonOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOpen.Location = new System.Drawing.Point(445, 436);
-			this.buttonOpen.Name = "buttonOpen";
-			this.buttonOpen.Size = new System.Drawing.Size(75, 23);
-			this.buttonOpen.TabIndex = 8;
-			this.buttonOpen.Text = "Open";
-			this.buttonOpen.UseVisualStyleBackColor = true;
-			this.buttonOpen.Click += new System.EventHandler(this.buttonOpen_Click);
-			// 
-			// ChildLinkCheckbox
-			// 
-			this.ChildLinkCheckbox.AutoSize = true;
-			this.ChildLinkCheckbox.Location = new System.Drawing.Point(151, 6);
-			this.ChildLinkCheckbox.Name = "ChildLinkCheckbox";
-			this.ChildLinkCheckbox.Size = new System.Drawing.Size(72, 17);
-			this.ChildLinkCheckbox.TabIndex = 4;
-			this.ChildLinkCheckbox.Text = "Child Link";
-			this.ChildLinkCheckbox.UseVisualStyleBackColor = true;
-			this.ChildLinkCheckbox.CheckedChanged += new System.EventHandler(this.ChildLinkCheckbox_CheckedChanged);
-			// 
-			// DeathsNumericUpDown
-			// 
-			this.DeathsNumericUpDown.Location = new System.Drawing.Point(276, 4);
-			this.DeathsNumericUpDown.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.DeathsNumericUpDown.Name = "DeathsNumericUpDown";
-			this.DeathsNumericUpDown.Size = new System.Drawing.Size(58, 20);
-			this.DeathsNumericUpDown.TabIndex = 5;
-			this.DeathsNumericUpDown.ValueChanged += new System.EventHandler(this.DeathsNumericUpDown_ValueChanged);
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(229, 7);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(41, 13);
-			this.label4.TabIndex = 6;
-			this.label4.Text = "Deaths";
-			// 
-			// SixtyFourDiskDriveCheckBox
-			// 
-			this.SixtyFourDiskDriveCheckBox.AutoSize = true;
-			this.SixtyFourDiskDriveCheckBox.Location = new System.Drawing.Point(353, 6);
-			this.SixtyFourDiskDriveCheckBox.Name = "SixtyFourDiskDriveCheckBox";
-			this.SixtyFourDiskDriveCheckBox.Size = new System.Drawing.Size(82, 17);
-			this.SixtyFourDiskDriveCheckBox.TabIndex = 7;
-			this.SixtyFourDiskDriveCheckBox.Text = "64DD Save";
-			this.SixtyFourDiskDriveCheckBox.UseVisualStyleBackColor = true;
-			this.SixtyFourDiskDriveCheckBox.CheckedChanged += new System.EventHandler(this.SixtyFourDiskDriveCheckBox_CheckedChanged);
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(2, 33);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(68, 13);
-			this.label5.TabIndex = 9;
-			this.label5.Text = "Health (16th)";
-			// 
-			// HealthNumericUpDown
-			// 
-			this.HealthNumericUpDown.Location = new System.Drawing.Point(76, 31);
-			this.HealthNumericUpDown.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.HealthNumericUpDown.Name = "HealthNumericUpDown";
-			this.HealthNumericUpDown.Size = new System.Drawing.Size(58, 20);
-			this.HealthNumericUpDown.TabIndex = 8;
-			this.HealthNumericUpDown.ValueChanged += new System.EventHandler(this.HealthNumericUpDown_ValueChanged);
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(275, 33);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(44, 13);
-			this.label6.TabIndex = 11;
-			this.label6.Text = "Rupees";
-			// 
-			// RupeesNumericUpDown
-			// 
-			this.RupeesNumericUpDown.Location = new System.Drawing.Point(325, 31);
-			this.RupeesNumericUpDown.Maximum = new decimal(new int[] {
-            -1,
-            0,
-            0,
-            0});
-			this.RupeesNumericUpDown.Name = "RupeesNumericUpDown";
-			this.RupeesNumericUpDown.Size = new System.Drawing.Size(58, 20);
-			this.RupeesNumericUpDown.TabIndex = 10;
-			this.RupeesNumericUpDown.ValueChanged += new System.EventHandler(this.RupeesNumericUpDown_ValueChanged);
 			// 
 			// label7
 			// 
@@ -281,11 +162,130 @@
 			this.MaxHealthNumericUpDown.TabIndex = 12;
 			this.MaxHealthNumericUpDown.ValueChanged += new System.EventHandler(this.MaxHealthNumericUpDown_ValueChanged);
 			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(275, 33);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(44, 13);
+			this.label6.TabIndex = 11;
+			this.label6.Text = "Rupees";
+			// 
+			// RupeesNumericUpDown
+			// 
+			this.RupeesNumericUpDown.Location = new System.Drawing.Point(325, 31);
+			this.RupeesNumericUpDown.Maximum = new decimal(new int[] {
+            -1,
+            0,
+            0,
+            0});
+			this.RupeesNumericUpDown.Name = "RupeesNumericUpDown";
+			this.RupeesNumericUpDown.Size = new System.Drawing.Size(58, 20);
+			this.RupeesNumericUpDown.TabIndex = 10;
+			this.RupeesNumericUpDown.ValueChanged += new System.EventHandler(this.RupeesNumericUpDown_ValueChanged);
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(2, 33);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(68, 13);
+			this.label5.TabIndex = 9;
+			this.label5.Text = "Health (16th)";
+			// 
+			// HealthNumericUpDown
+			// 
+			this.HealthNumericUpDown.Location = new System.Drawing.Point(76, 31);
+			this.HealthNumericUpDown.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.HealthNumericUpDown.Name = "HealthNumericUpDown";
+			this.HealthNumericUpDown.Size = new System.Drawing.Size(58, 20);
+			this.HealthNumericUpDown.TabIndex = 8;
+			this.HealthNumericUpDown.ValueChanged += new System.EventHandler(this.HealthNumericUpDown_ValueChanged);
+			// 
+			// SixtyFourDiskDriveCheckBox
+			// 
+			this.SixtyFourDiskDriveCheckBox.AutoSize = true;
+			this.SixtyFourDiskDriveCheckBox.Location = new System.Drawing.Point(353, 6);
+			this.SixtyFourDiskDriveCheckBox.Name = "SixtyFourDiskDriveCheckBox";
+			this.SixtyFourDiskDriveCheckBox.Size = new System.Drawing.Size(82, 17);
+			this.SixtyFourDiskDriveCheckBox.TabIndex = 7;
+			this.SixtyFourDiskDriveCheckBox.Text = "64DD Save";
+			this.SixtyFourDiskDriveCheckBox.UseVisualStyleBackColor = true;
+			this.SixtyFourDiskDriveCheckBox.CheckedChanged += new System.EventHandler(this.SixtyFourDiskDriveCheckBox_CheckedChanged);
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(229, 7);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(41, 13);
+			this.label4.TabIndex = 6;
+			this.label4.Text = "Deaths";
+			// 
+			// DeathsNumericUpDown
+			// 
+			this.DeathsNumericUpDown.Location = new System.Drawing.Point(276, 4);
+			this.DeathsNumericUpDown.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.DeathsNumericUpDown.Name = "DeathsNumericUpDown";
+			this.DeathsNumericUpDown.Size = new System.Drawing.Size(58, 20);
+			this.DeathsNumericUpDown.TabIndex = 5;
+			this.DeathsNumericUpDown.ValueChanged += new System.EventHandler(this.DeathsNumericUpDown_ValueChanged);
+			// 
+			// ChildLinkCheckbox
+			// 
+			this.ChildLinkCheckbox.AutoSize = true;
+			this.ChildLinkCheckbox.Location = new System.Drawing.Point(151, 6);
+			this.ChildLinkCheckbox.Name = "ChildLinkCheckbox";
+			this.ChildLinkCheckbox.Size = new System.Drawing.Size(72, 17);
+			this.ChildLinkCheckbox.TabIndex = 4;
+			this.ChildLinkCheckbox.Text = "Child Link";
+			this.ChildLinkCheckbox.UseVisualStyleBackColor = true;
+			this.ChildLinkCheckbox.CheckedChanged += new System.EventHandler(this.ChildLinkCheckbox_CheckedChanged);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(3, 7);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(35, 13);
+			this.label3.TabIndex = 3;
+			this.label3.Text = "Name";
+			// 
+			// buttonSave
+			// 
+			this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonSave.Location = new System.Drawing.Point(681, 439);
+			this.buttonSave.Name = "buttonSave";
+			this.buttonSave.Size = new System.Drawing.Size(75, 23);
+			this.buttonSave.TabIndex = 7;
+			this.buttonSave.Text = "Save";
+			this.buttonSave.UseVisualStyleBackColor = true;
+			this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+			// 
+			// buttonOpen
+			// 
+			this.buttonOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOpen.Location = new System.Drawing.Point(600, 439);
+			this.buttonOpen.Name = "buttonOpen";
+			this.buttonOpen.Size = new System.Drawing.Size(75, 23);
+			this.buttonOpen.TabIndex = 8;
+			this.buttonOpen.Text = "Open";
+			this.buttonOpen.UseVisualStyleBackColor = true;
+			this.buttonOpen.Click += new System.EventHandler(this.buttonOpen_Click);
+			// 
 			// OoTSaveEditForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(613, 471);
+			this.ClientSize = new System.Drawing.Size(768, 474);
 			this.Controls.Add(this.buttonOpen);
 			this.Controls.Add(this.buttonSave);
 			this.Controls.Add(this.panel1);
@@ -299,10 +299,10 @@
 			((System.ComponentModel.ISupportInitialize)(this.SelectedSaveNumUpDown)).EndInit();
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.DeathsNumericUpDown)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.HealthNumericUpDown)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RupeesNumericUpDown)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.MaxHealthNumericUpDown)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.RupeesNumericUpDown)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.HealthNumericUpDown)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.DeathsNumericUpDown)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
