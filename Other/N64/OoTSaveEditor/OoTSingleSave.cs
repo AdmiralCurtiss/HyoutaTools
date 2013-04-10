@@ -16,7 +16,8 @@ namespace HyoutaTools.Other.N64.OoTSaveEditor {
 		public ushort DeathCounter; // 0x0022
 		public string PlayerName; // 0x0024, 8 bytes, padded with 0xDF
 		public ushort DiskDriveSaveFlag; // 0x0030, unknown if location/size matches, 0 = no, 1 = yes
-		public uint Health; // 0x0032, in 16th of a heart
+		public ushort MaxHealth; // 0x0032, in 16th of a heart
+		public ushort Health; // 0x0032, in 16th of a heart
 		public uint Rupees; // 0x0036
 		public ushort UnknownClockOnCurrentMap; // 0x003A
 
@@ -39,10 +40,11 @@ namespace HyoutaTools.Other.N64.OoTSaveEditor {
 			IdentifierAZ = Util.SwapEndian( BitConverter.ToUInt16( File, Offset + 0x20 ) );
 			DeathCounter = Util.SwapEndian( BitConverter.ToUInt16( File, Offset + 0x22 ) );
 			PlayerName = BitConverter.ToString( File, Offset + 0x24, 8 );
-			DiskDriveSaveFlag = Util.SwapEndian( BitConverter.ToUInt16( File, Offset + 0x30 ) );
-			Health = Util.SwapEndian( BitConverter.ToUInt32( File, Offset + 0x32 ) );
-			Rupees = Util.SwapEndian( BitConverter.ToUInt32( File, Offset + 0x36 ) );
-			UnknownClockOnCurrentMap = Util.SwapEndian( BitConverter.ToUInt16( File, Offset + 0x3A ) );
+			DiskDriveSaveFlag = Util.SwapEndian( BitConverter.ToUInt16( File, Offset + 0x2C ) );
+			MaxHealth = Util.SwapEndian( BitConverter.ToUInt16( File, Offset + 0x2E ) );
+			Health = Util.SwapEndian( BitConverter.ToUInt16( File, Offset + 0x30 ) );
+			Rupees = Util.SwapEndian( BitConverter.ToUInt32( File, Offset + 0x32 ) );
+			UnknownClockOnCurrentMap = Util.SwapEndian( BitConverter.ToUInt16( File, Offset + 0x38 ) );
 			FaroreWarpPosX = BitConverter.ToSingle( File, Offset + 0x0E64 );
 			FaroreWarpPosY = BitConverter.ToSingle( File, Offset + 0x0E68 );
 			FaroreWarpPosZ = BitConverter.ToSingle( File, Offset + 0x0E6C );
@@ -62,9 +64,16 @@ namespace HyoutaTools.Other.N64.OoTSaveEditor {
 		}
 
 		public void WriteToFile() {
-
+			BitConverter.GetBytes( Util.SwapEndian( Age ) ).CopyTo( File, Offset + 0x04 );
+			BitConverter.GetBytes( Util.SwapEndian( DeathCounter ) ).CopyTo( File, Offset + 0x22 );
+			BitConverter.GetBytes( Util.SwapEndian( DiskDriveSaveFlag ) ).CopyTo( File, Offset + 0x2C );
+			BitConverter.GetBytes( Util.SwapEndian( MaxHealth ) ).CopyTo( File, Offset + 0x2E );
+			BitConverter.GetBytes( Util.SwapEndian( Health ) ).CopyTo( File, Offset + 0x30 );
+			BitConverter.GetBytes( Util.SwapEndian( Rupees ) ).CopyTo( File, Offset + 0x32 );
 
 			RecalculateChecksum();
+
+			BitConverter.GetBytes( Util.SwapEndian( Checksum ) ).CopyTo( File, Offset + 0x1352 );
 		}
 	}
 }

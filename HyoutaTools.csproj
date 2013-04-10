@@ -90,6 +90,12 @@
     <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
     <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
+    <Compile Include="Other\N64\OoTSaveEditor\OoTSaveEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Other\N64\OoTSaveEditor\OoTSaveEditForm.Designer.cs">
+      <DependentUpon>OoTSaveEditForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Other\N64\OoTSaveEditor\OoTSaveFile.cs" />
     <Compile Include="Other\N64\OoTSaveEditor\OoTSaveHeader.cs" />
     <Compile Include="Other\N64\OoTSaveEditor\OoTSingleSave.cs" />
@@ -224,6 +230,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
       <DependentUpon>NonstopForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Other\N64\OoTSaveEditor\OoTSaveEditForm.resx">
+      <DependentUpon>OoTSaveEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\Credits\CreditsForm.resx">
       <DependentUpon>CreditsForm.cs</DependentUpon>

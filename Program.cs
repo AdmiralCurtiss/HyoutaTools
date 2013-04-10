@@ -74,6 +74,7 @@ namespace HyoutaTools {
 
 		};
 
+		[STAThread]
 		static int Main( string[] args ) {
 			if ( args.Length > 0 ) {
 				string ProgramName = args[0];
