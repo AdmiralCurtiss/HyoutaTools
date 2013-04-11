@@ -213,6 +213,54 @@ namespace HyoutaTools.Other.N64.OoTSaveEditor {
 		TitaniumgloveGlitchedUpGraphic = 0xCD,
 		SilverScaleGlitchedUpGraphic = 0xCE,
 		GoldScaleGlitchedUpGraphic = 0xCF,
+		Unknown_0xD0 = 0xD0,
+		Unknown_0xD1 = 0xD1,
+		Unknown_0xD2 = 0xD2,
+		Unknown_0xD3 = 0xD3,
+		Unknown_0xD4 = 0xD4,
+		Unknown_0xD5 = 0xD5,
+		Unknown_0xD6 = 0xD6,
+		Unknown_0xD7 = 0xD7,
+		Unknown_0xD8 = 0xD8,
+		Unknown_0xD9 = 0xD9,
+		Unknown_0xDA = 0xDA,
+		Unknown_0xDB = 0xDB,
+		Unknown_0xDC = 0xDC,
+		Unknown_0xDD = 0xDD,
+		Unknown_0xDE = 0xDE,
+		Unknown_0xDF = 0xDF,
+		Unknown_0xE0 = 0xE0,
+		Unknown_0xE1 = 0xE1,
+		Unknown_0xE2 = 0xE2,
+		Unknown_0xE3 = 0xE3,
+		Unknown_0xE4 = 0xE4,
+		Unknown_0xE5 = 0xE5,
+		Unknown_0xE6 = 0xE6,
+		Unknown_0xE7 = 0xE7,
+		Unknown_0xE8 = 0xE8,
+		Unknown_0xE9 = 0xE9,
+		Unknown_0xEA = 0xEA,
+		Unknown_0xEB = 0xEB,
+		Unknown_0xEC = 0xEC,
+		Unknown_0xED = 0xED,
+		Unknown_0xEE = 0xEE,
+		Unknown_0xEF = 0xEF,
+		Unknown_0xF0 = 0xF0,
+		Unknown_0xF1 = 0xF1,
+		Unknown_0xF2 = 0xF2,
+		Unknown_0xF3 = 0xF3,
+		Unknown_0xF4 = 0xF4,
+		Unknown_0xF5 = 0xF5,
+		Unknown_0xF6 = 0xF6,
+		Unknown_0xF7 = 0xF7,
+		Unknown_0xF8 = 0xF8,
+		Unknown_0xF9 = 0xF9,
+		Unknown_0xFA = 0xFA,
+		Unknown_0xFB = 0xFB,
+		Unknown_0xFC = 0xFC,
+		Unknown_0xFD = 0xFD,
+		Unknown_0xFE = 0xFE,
+		EmptySlot = 0xFF,
 	}
 
 	public enum Rooms {
@@ -2386,6 +2434,112 @@ namespace HyoutaTools.Other.N64.OoTSaveEditor {
 		AdultNgtEntrance03_RoomBB_ = 0xBB4F,
 	}
 
+	public enum QuestScreenFlags {
+		// use by (uint Questscreenflags >> enum Questscreenflags) & 0x01
+		ForestMedallion,
+		FireMedallion,
+		WaterMedallion,
+		SpiritMedallion,
+		ShadowMedallion,
+		LightMedallion,
+		MinuetOfForest,
+		BoleroOfFire,
+		SerenadeOfWater,
+		RequiemOfSpirit,
+		NocturneOfShadow,
+		PreludeToLight,
+		ZeldasLullaby,
+		EponasSong,
+		SariasSong,
+		SunsSong,
+		SongOfTime,
+		SongOfStorms,
+		KokirisEmerald,
+		GoronsRuby,
+		ZorasSapphire,
+		StoneOfAgony,
+		GerudosCard,
+		GoldSkulltullaVisible,
+		_0x01000000,
+		_0x02000000,
+		_0x04000000,
+		_0x08000000,
+		HeartPiecesQuarter,
+		HeartPiecesHalf,
+		_0x40000000,
+		_0x80000000,
+	}
+
+	public enum PrimaryEquipmentFlags {
+		_0x00000001,
+		_0x00000002,
+		_0x00000004,
+		_0x00000008,
+		_0x00000010,
+		_0x00000020,
+		_0x00000040,
+		_0x00000080,
+		_0x00000100,
+		_0x00000200,
+		_0x00000400,
+		_0x00000800,
+		_0x00001000,
+		_0x00002000,
+		_0x00004000,
+		_0x00008000,
+		KokiriSword,
+		MasterSword,
+		ThirdSword,
+		BrokenFlag,
+		DekuShield,
+		HylianShield,
+		MirrorShield,
+		_0x00800000,
+		KokiriTunic,
+		GoronTunic,
+		ZoraTunic,
+		_0x08000000,
+		KokiriBoots,
+		IronBoots,
+		HoverBoots,
+		_0x80000000,
+	}
+
+	public enum SecondaryEquipmentFlags {
+		Quiver1,
+		Quiver2,
+		_0x00000004,
+		BombBag1,
+		BombBag2,
+		_0x00000020,
+		Lifting1,
+		Lifting2,
+		_0x00000100,
+		SilverScale,
+		GoldScale,
+		_0x00000800,
+		Wallet200,
+		Wallet500,
+		BulletBag1,
+		BulletBag2,
+		_0x00010000,
+		DekuSticks1,
+		DekuSticks2,
+		DekuSticksDisable,
+		DekuNuts1,
+		DekuNuts2,
+		DekuNutsDisable,
+		_0x00800000,
+		_0x01000000,
+		_0x02000000,
+		_0x04000000,
+		_0x08000000,
+		_0x10000000,
+		_0x20000000,
+		_0x40000000,
+		_0x80000000,
+	}
+
 	public class OoTSingleSave {
 		private byte[] File;
 		private int Offset;
@@ -2413,8 +2567,14 @@ namespace HyoutaTools.Other.N64.OoTSaveEditor {
 
 		public ushort Checksum; // 0x1352
 
+		public byte BButtonItem; // 0x68
+		public byte[] CButtonItems = new byte[6]; // 0x69
 		public byte[] ItemInventory = new byte[24]; // 0x74
-		public byte[] ItemInventoryAmmoCounts = new byte[15];
+		public byte[] ItemInventoryAmmoCounts = new byte[16];
+
+		public uint QuestScreenFlags; // 0xA4
+		public uint PrimaryEquipment; // 0x9C
+		public uint SecondaryEquipment;	 // 0xA0
 
 		public OoTSingleSave( byte[] File, int Offset ) {
 			this.File = File;
@@ -2437,11 +2597,25 @@ namespace HyoutaTools.Other.N64.OoTSaveEditor {
 			FaroreWarpMapNumber = Util.SwapEndian( BitConverter.ToUInt32( File, Offset + 0x0E7C ) );
 			FaroreWarpIsSet = Util.SwapEndian( BitConverter.ToUInt32( File, Offset + 0x0E80 ) );
 			Room = File[Offset + 0x67];
+			BButtonItem = File[Offset + 0x68];
+
+
+
+			QuestScreenFlags = Util.SwapEndian( BitConverter.ToUInt32( File, Offset + 0xA4 ) );
+			SecondaryEquipment = Util.SwapEndian( BitConverter.ToUInt32( File, Offset + 0xA0 ) );
+			PrimaryEquipment = Util.SwapEndian( BitConverter.ToUInt32( File, Offset + 0x9C ) );
+
+
+
+
+			for ( int i = 0; i < 6; ++i ) {
+				CButtonItems[i] = File[Offset + 0x69 + i];
+			}
 
 			for ( int i = 0; i < 24; ++i ) {
 				ItemInventory[i] = File[Offset + 0x74 + i];
 			}
-			for ( int i = 0; i < 15; ++i ) {
+			for ( int i = 0; i < 16; ++i ) {
 				ItemInventoryAmmoCounts[i] = File[Offset + 0x74 + 24 + i];
 			}
 
@@ -2465,15 +2639,21 @@ namespace HyoutaTools.Other.N64.OoTSaveEditor {
 			BitConverter.GetBytes( Util.SwapEndian( MaxHealth ) ).CopyTo( File, Offset + 0x2E );
 			BitConverter.GetBytes( Util.SwapEndian( Health ) ).CopyTo( File, Offset + 0x30 );
 			BitConverter.GetBytes( Util.SwapEndian( Rupees ) ).CopyTo( File, Offset + 0x34 );
+			BitConverter.GetBytes( Util.SwapEndian( QuestScreenFlags ) ).CopyTo( File, Offset + 0xA4 );
+			BitConverter.GetBytes( Util.SwapEndian( SecondaryEquipment ) ).CopyTo( File, Offset + 0xA0 );
+			BitConverter.GetBytes( Util.SwapEndian( PrimaryEquipment ) ).CopyTo( File, Offset + 0x9C );
 			File[Offset + 0x67] = Room;
+			File[Offset + 0x68] = BButtonItem;
 
 
 
-
+			for ( int i = 0; i < 6; ++i ) {
+				File[Offset + 0x69 + i] = CButtonItems[i];
+			}
 			for ( int i = 0; i < 24; ++i ) {
 				File[Offset + 0x74 + i] = ItemInventory[i];
 			}
-			for ( int i = 0; i < 15; ++i ) {
+			for ( int i = 0; i < 16; ++i ) {
 				File[Offset + 0x74 + 24 + i] = ItemInventoryAmmoCounts[i];
 			}
 
