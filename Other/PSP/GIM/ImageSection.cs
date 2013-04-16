@@ -281,5 +281,45 @@ namespace HyoutaTools.Other.PSP.GIM {
 				Images[imageNumber][i] = index;
 			}
 		}
+
+		public void DiscardUnusedColorsPaletted( int imageNumber, PaletteSection paletteSection, int paletteNumber ) {
+			List<uint> pal = paletteSection.Palettes[paletteNumber];
+			List<uint> img = Images[imageNumber];
+
+			bool[] usedPaletteEntries = new bool[pal.Count];
+			for ( int i = 0; i < usedPaletteEntries.Length; ++i ) {
+				usedPaletteEntries[i] = false; // initialize array to false
+			}
+			for ( int i = 0; i < img.Count; ++i ) {
+				usedPaletteEntries[img[i]] = true; // all used palette entries get set to true
+			}
+
+			// remap old palette entries to new ones by essentially skipping over all unused colors
+			uint[] remapTable = new uint[pal.Count];
+			uint counter = 0;
+			for ( int i = 0; i < usedPaletteEntries.Length; ++i ) {
+				if ( usedPaletteEntries[i] ) {
+					remapTable[i] = counter;
+					counter++;
+				} else {
+					remapTable[i] = 0xFFFFFFFFu; // just making sure these aren't used
+				}
+			}
+
+			// remap the image
+			for ( int i = 0; i < img.Count; ++i ) {
+				img[i] = remapTable[img[i]];
+			}
+
+			// generate the new palette
+			List<uint> newPal = new List<uint>( (int)counter );
+			for ( int i = 0; i < usedPaletteEntries.Length; ++i ) {
+				if ( usedPaletteEntries[i] ) {
+					newPal.Add( pal[i] );
+				}
+			}
+
+			paletteSection.Palettes[paletteNumber] = newPal;
+		}
 	}
 }

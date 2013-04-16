@@ -104,6 +104,9 @@ namespace HyoutaTools.Other.PSP.GIM {
 				}
 			}
 
+			for ( int i = 0; i < isec.ImageCount; ++i ) {
+				isec.DiscardUnusedColorsPaletted( i, psec, i );
+			}
 
 			List<uint> PaletteList = new List<uint>();
 			foreach ( List<uint> pal in psec.Palettes ) {
