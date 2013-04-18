@@ -71,6 +71,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PSP.GIM.HomogenizePalette",         "gimSamePal"  ),  Other.PSP.GIM.HomogenizePalette.Program.Homogenize) },
 			//{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.DestinyRemake.TblBin.Extract",      "-"           ),  Tales.DestinyRemake.TblBin.Execute.Extract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.N64.OoTSaveEditor",                 "OoTsaveedit" ),  Other.N64.OoTSaveEditor.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.GoogleTranslate",               "GNtranslate" ),  GraceNote.GoogleTranslate.TranslateDatabase.Execute) },
 
 		};
 
@@ -98,9 +99,9 @@ namespace HyoutaTools {
 		}
 
 		private static void PrintUsage() {
-			ProgramList.Sort( (x, y) => x.Key.CompareTo(y.Key) );
+			ProgramList.Sort( ( x, y ) => x.Key.CompareTo( y.Key ) );
 			foreach ( var p in ProgramList ) {
-				Console.WriteLine( String.Format(" {1,-12} {0}", p.Key.Name, p.Key.Shortcut ) );
+				Console.WriteLine( String.Format( " {1,-12} {0}", p.Key.Name, p.Key.Shortcut ) );
 			}
 		}
 	}
