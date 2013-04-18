@@ -25,24 +25,48 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			WebClient webClient = new WebClient();
 			webClient.BaseAddress = "http://translate.google.com";
 
+			System.Random rng = new System.Random();
 
 			foreach ( DatabaseEntry e in entries ) {
-				try {
-					webClient.Encoding = Encoding.UTF8;
-					webClient.Headers["User-Agent"] = "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.3) Gecko/20100402 Namoroka/3.6.3 (.NET CLR 3.5.30729)";
-					webClient.QueryString.Clear();
-					webClient.QueryString["client"] = "t";
-					webClient.QueryString["sl"] = "ja";
-					webClient.QueryString["tl"] = "en";
-					webClient.QueryString["text"] = e.TextJP;
-					webClient.QueryString["text"] = "パーティー\nの\n料理";
-					string translateResult = webClient.DownloadString( "/translate_a/t" );
-					string english = CleanGoogleTranslatedString( translateResult );
-					e.TextEN = english;
-				} catch ( WebException ) {
+				e.TextJP = e.TextJP.Replace( "\n", "" );
+			}
+
+
+			SQLiteConnection conn = new SQLiteConnection( "Data Source=" + Filename );
+			conn.Open();
+			Object[] param = new Object[2];
+
+			foreach ( DatabaseEntry e in entries ) {
+				if ( e.Status == -1 ) { continue; }
+				while ( true ) {
+					try {
+						webClient.Encoding = Encoding.UTF8;
+						webClient.Headers["User-Agent"] = "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.3) Gecko/20100402 Namoroka/3.6.3 (.NET CLR 3.5.30729)";
+						webClient.QueryString.Clear();
+						webClient.QueryString["client"] = "t";
+						webClient.QueryString["sl"] = "ja";
+						webClient.QueryString["tl"] = "en";
+						webClient.QueryString["text"] = e.TextJP;
+						string translateResult = webClient.DownloadString( "/translate_a/t" );
+						string english = CleanGoogleTranslatedString( translateResult );
+						e.TextEN = english;
+
+						Console.WriteLine( e.TextJP );
+						Console.WriteLine( e.TextEN );
+						Console.WriteLine();
+
+						param[0] = e.TextEN;
+						param[1] = e.ID;
+						Util.GenericSqliteUpdate( conn, "UPDATE Text SET english = ? WHERE ID = ?", param );
+		
+						System.Threading.Thread.Sleep( rng.Next( 2000, 8000 ) );
+						break;
+					} catch ( WebException ) {
+					}
 				}
 			}
 
+			conn.Close();
 
 			return;
 		}
@@ -50,9 +74,9 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 
 		public static string CleanGoogleTranslatedString( string str ) {
 			//string example = "[[[\"Cooking Party\",\"パーティーの料理\",\"\",\"Pātī no ryōri\"]],,\"ja\",,[[\"Cooking\",[4],1,0,320,0,1,0],[\"Party\",[5],1,0,314,1,2,0]],[[\"料理\",4,[[\"Cooking\",320,1,0],[\"Cuisine\",15,1,0],[\"Food\",8,1,0],[\"Dishes\",0,1,0],[\"Cuisines\",0,1,0]],[[6,8]],\"パーティーの料理\"],[\"の パーティー\",5,[[\"Party\",314,1,0],[\"a party\",0,1,0],[\"parties\",0,1,0],[\"for party\",0,1,0]],[[0,6]],\"\"]],,,[[\"ja\"]],30]";
-			string example = "[[[\"[ Cuisine \\\" of \\\" party ]\",\"[パーティー\\\"の\\\"料理]\",\"\",\"[Pātī\\\" no\\\" ryōri]\"]],,\"ja\",,[[\"[\",[4],1,1,1000,0,1,0],[\"Cuisine \\\"\",[5],0,1,902,1,3,0],[\"of\",[6],0,0,821,3,4,0],[\"\\\"\",[7],0,0,821,4,5,0],[\"party\",[8],1,0,782,5,6,0],[\"]\",[9],0,0,782,6,7,0]],[[\"[\",4,[[\"[\",1000,1,1]],[[0,1]],\"[パーティー\\\"の\\\"料理]\"],[\"料理 \\\"\",5,[[\"Cuisine \\\"\",902,0,1]],[[6,7],[9,11]],\"\"],[\"の\",6,[[\"of\",821,0,0],[\"of the\",106,0,0],[\"in\",2,0,0],[\"the\",0,0,0],[\"for\",0,0,0]],[[7,8]],\"\"],[\"\\\"\",7,[[\"\\\"\",821,0,0]],[[8,9]],\"\"],[\"パーティー\",8,[[\"party\",782,1,0],[\"parties\",0,1,0],[\"Event\",0,1,0],[\"the party\",0,1,0],[\"a party\",0,1,0]],[[1,6]],\"\"],[\"]\",9,[[\"]\",782,0,0]],[[11,12]],\"\"]],,,[[\"ja\"]],1]";
-			string exmaple = "[[[\"Party\\n\",\"パーティー\",\"\",\"Pātī\"],[\"Of\\n\",\"の\",\"\",\"No\"],[\"Cooking\",\"料理\",\"\",\"Ryōri\"]],,\"ja\",,[[\"Party\",[4],1,0,1000,0,1,0],[\"\\n\",,0,0,0,0,0,0],[\"Of\",[11],1,0,1000,0,1,1],[\"\\n\",,0,0,0,0,0,0],[\"Cooking\",[21],1,0,794,0,1,1]],[[\"パーティー\",4,[[\"Party\",1000,1,0],[\"Parties\",0,1,0],[\"Event\",0,1,0],[\"The party\",0,1,0],[\"A party\",0,1,0]],[[0,5]],\"パーティー\"],[\"の\",11,[[\"Of\",1000,1,0],[\"The\",0,1,0],[\"Of the\",0,1,0],[\"In\",0,1,0],[\"For\",0,1,0]],[[0,1]],\"の\"],[\"料理\",21,[[\"Cooking\",794,1,0],[\"Cuisine\",166,1,0],[\"Dish\",38,1,0],[\"Fare\",0,1,0],[\"Cuisines\",0,1,0]],[[0,2]],\"料理\"]],,,[[\"ja\"]],60]";
-			str = example;
+			//string example = "[[[\"[ Cuisine \\\" of \\\" party ]\",\"[パーティー\\\"の\\\"料理]\",\"\",\"[Pātī\\\" no\\\" ryōri]\"]],,\"ja\",,[[\"[\",[4],1,1,1000,0,1,0],[\"Cuisine \\\"\",[5],0,1,902,1,3,0],[\"of\",[6],0,0,821,3,4,0],[\"\\\"\",[7],0,0,821,4,5,0],[\"party\",[8],1,0,782,5,6,0],[\"]\",[9],0,0,782,6,7,0]],[[\"[\",4,[[\"[\",1000,1,1]],[[0,1]],\"[パーティー\\\"の\\\"料理]\"],[\"料理 \\\"\",5,[[\"Cuisine \\\"\",902,0,1]],[[6,7],[9,11]],\"\"],[\"の\",6,[[\"of\",821,0,0],[\"of the\",106,0,0],[\"in\",2,0,0],[\"the\",0,0,0],[\"for\",0,0,0]],[[7,8]],\"\"],[\"\\\"\",7,[[\"\\\"\",821,0,0]],[[8,9]],\"\"],[\"パーティー\",8,[[\"party\",782,1,0],[\"parties\",0,1,0],[\"Event\",0,1,0],[\"the party\",0,1,0],[\"a party\",0,1,0]],[[1,6]],\"\"],[\"]\",9,[[\"]\",782,0,0]],[[11,12]],\"\"]],,,[[\"ja\"]],1]";
+			//string exmaple = "[[[\"Party\\n\",\"パーティー\",\"\",\"Pātī\"],[\"Of\\n\",\"の\",\"\",\"No\"],[\"Cooking\",\"料理\",\"\",\"Ryōri\"]],,\"ja\",,[[\"Party\",[4],1,0,1000,0,1,0],[\"\\n\",,0,0,0,0,0,0],[\"Of\",[11],1,0,1000,0,1,1],[\"\\n\",,0,0,0,0,0,0],[\"Cooking\",[21],1,0,794,0,1,1]],[[\"パーティー\",4,[[\"Party\",1000,1,0],[\"Parties\",0,1,0],[\"Event\",0,1,0],[\"The party\",0,1,0],[\"A party\",0,1,0]],[[0,5]],\"パーティー\"],[\"の\",11,[[\"Of\",1000,1,0],[\"The\",0,1,0],[\"Of the\",0,1,0],[\"In\",0,1,0],[\"For\",0,1,0]],[[0,1]],\"の\"],[\"料理\",21,[[\"Cooking\",794,1,0],[\"Cuisine\",166,1,0],[\"Dish\",38,1,0],[\"Fare\",0,1,0],[\"Cuisines\",0,1,0]],[[0,2]],\"料理\"]],,,[[\"ja\"]],60]";
+			//str = example;
 
 			// first grab the part that actually has the translated string
 			StringBuilder sb = new StringBuilder();
@@ -64,7 +88,7 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 						if ( bracketCount > 3 ) sb.Append( c );
 						break;
 					case ']':
-						if ( bracketCount > 3 ) sb.Append( c ); 
+						if ( bracketCount > 3 ) sb.Append( c );
 						bracketCount--;
 						if ( bracketCount == 2 ) goto post; break;
 					default: sb.Append( c ); break;
@@ -72,16 +96,18 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			}
 
 		post:
+			// then grab the quote-enclosed part (the translation)
 			str = sb.ToString();
 			for ( int i = 1; i < str.Length; ++i ) {
 				if ( str[i] == '"' ) {
-					if ( str[i-1] != '\\' ) {
-						str = str.Substring(1, i-1);
+					if ( str[i - 1] != '\\' ) {
+						str = str.Substring( 1, i - 1 );
 						break;
 					}
 				}
 			}
 
+			// and fix up the escaped stuff
 			str = str.Replace( "\\\"", "\"" );
 			str = str.Replace( "\\\\", "\\" );
 

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>GNtranslate c:\_svn\GraceNote\GraceNote\SDR2db\06_KotodamaName.db c:\_svn\GraceNote\GraceNote\SDR2db\GracesJapanese</StartArguments>
+    <StartArguments>GNtranslate d:\_svn\GraceNote\GraceNote\SDR2db\02_BgmName.db d:\_svn\GraceNote\GraceNote\SDR2db\GracesJapanese</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <StartArguments>GNDRlinIm "e:\__dr2\PSP_GAME\USRDIR\jp\script\lin\e01_204_000.lin" "e:\__dr2\PSP_GAME\USRDIR\jp\script\lin\e01_204_000.db" "e:\__dr2\PSP_GAME\USRDIR\jp\script\XTemplate" "e:\__dr2\PSP_GAME\USRDIR\jp\script\lin\GracesJapanese"</StartArguments>
