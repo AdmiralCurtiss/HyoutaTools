@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>Other.PSP.GIM.HomogenizePalette "d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\umdimage2\0018\0007\5C6E8.gim"</StartArguments>
+    <StartArguments>GNDRlinIm "e:\__dr2\PSP_GAME\USRDIR\jp\script\lin\e00_000_101.lin" "e:\__dr2\PSP_GAME\USRDIR\jp\script\lin\e00_000_101.db" "e:\__dr2\PSP_GAME\USRDIR\jp\script\XTemplate" "e:\__dr2\PSP_GAME\USRDIR\jp\script\lin\GracesJapanese"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <StartArguments>Tales.DestinyRemake.TblBin.Extract e:\___destiny\MOV.TBL e:\___destiny\MOV.BIN</StartArguments>
+    <StartArguments>GNDRlinIm "e:\__dr2\PSP_GAME\USRDIR\jp\script\lin\e01_204_000.lin" "e:\__dr2\PSP_GAME\USRDIR\jp\script\lin\e01_204_000.db" "e:\__dr2\PSP_GAME\USRDIR\jp\script\XTemplate" "e:\__dr2\PSP_GAME\USRDIR\jp\script\lin\GracesJapanese"</StartArguments>
   </PropertyGroup>
 </Project>

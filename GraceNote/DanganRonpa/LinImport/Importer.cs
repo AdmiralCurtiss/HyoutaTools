@@ -64,7 +64,9 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 				CommandGracesJapanese.Parameters.Add( JapaneseIDParam );
 				CommandGracesJapanese.Parameters.Add( JapaneseParam );
 
-				Command.CommandText = "INSERT INTO Text (ID, StringID, english, comment, updated, status, PointerRef, IdentifyString, IdentifyPointerRef) VALUES (?, ?, ?, \"\", 0, ?, ?, ?, ?)";
+				Command.CommandText =
+					"INSERT INTO Text (ID, StringID, english, comment, updated, status, PointerRef, IdentifyString, IdentifyPointerRef) " + 
+					          "VALUES (?,  ?,        ?,       \"\",    0,       ?, ?, ?, ?)";
 				Command.Parameters.Add( EnglishIDParam );
 				Command.Parameters.Add( StringIDParam );
 				Command.Parameters.Add( EnglishParam );  // Line.SENG
@@ -146,7 +148,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 			EnglishIDParam.Value = ENID;
 			StringIDParam.Value = JPID;
 			EnglishParam.Value = TextToInsert;
-			EnglishStatusParam.Value = 0;
+			EnglishStatusParam.Value = IdentStringToInsert == "[Game Code]" ? -1 : 0;
 			PointerRefParam.Value = PointerRefToInsert;
 			IdentifyStringParam.Value = IdentStringToInsert;
 			IdentifyPointerRefParam.Value = IdentRefToInsert;

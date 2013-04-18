@@ -95,12 +95,22 @@ namespace HyoutaTools.DanganRonpa.Lin {
 					//case 0x38: entry.Arguments = new byte[5]; break;
 					//case 0x39: entry.Arguments = new byte[5]; break;
 					case 0x3A:
-						sb.Append( "WaitPlayerInput" );
-						if ( Arguments.Length != 0 ) { throw new Exception( "0x3A has arguments!" ); }
+						if ( DanganUtil.GameVersion == 1 ) {
+							sb.Append( "WaitPlayerInput" );
+							if ( Arguments.Length != 0 ) { throw new Exception( "0x3A has arguments!" ); }
+						} else if ( DanganUtil.GameVersion >= 2 ) {
+							sb.Append( "WaitPlayerInput: " );
+							foreach ( byte a in Arguments ) { sb.Append( " " ).Append( "0x" ).Append( a.ToString( "X2" ) ); }
+						}
 						break;
 					case 0x3B:
-						sb.Append( "WaitFrame" );
-						if ( Arguments.Length != 0 ) { throw new Exception( "0x3B has arguments!" ); }
+						if ( DanganUtil.GameVersion == 1 ) {
+							sb.Append( "WaitFrame" );
+							if ( Arguments.Length != 0 ) { throw new Exception( "0x3B has arguments!" ); }
+						} else if ( DanganUtil.GameVersion >= 2 ) {
+							sb.Append( "WaitFrame: " );
+							foreach ( byte a in Arguments ) { sb.Append( " " ).Append( "0x" ).Append( a.ToString( "X2" ) ); }
+						}
 						break;
 					//case 0x3C: entry.Arguments = new byte[0]; break;
 					default:
@@ -186,6 +196,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 
 					int TextLocation = BitConverter.ToInt32( OriginalFile, TextBlockLocation + ( ( TextId + 1 ) * 4 ) );
 					int NextTextLocation = BitConverter.ToInt32( OriginalFile, TextBlockLocation + ( ( TextId + 2 ) * 4 ) );
+					if ( TextId == TextAmount - 1 ) { NextTextLocation = this.Filesize - TextBlockLocation; }
 					ScriptData[i].Text = Encoding.Unicode.GetString( OriginalFile, TextBlockLocation + TextLocation, NextTextLocation - TextLocation );
 				} else {
 					ScriptData[i].Text = null;
@@ -217,7 +228,13 @@ namespace HyoutaTools.DanganRonpa.Lin {
 					entry.Type = OriginalFile[i];
 					switch ( entry.Type ) {
 						case 0x00: entry.Arguments = new byte[2]; break;
-						case 0x01: entry.Arguments = new byte[3]; break;
+						case 0x01:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[3];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[4];
+							}
+							break;
 						case 0x02: entry.Arguments = new byte[2]; break;
 						case 0x03: entry.Arguments = new byte[1]; break;
 						case 0x04: entry.Arguments = new byte[4]; break;
@@ -233,11 +250,35 @@ namespace HyoutaTools.DanganRonpa.Lin {
 						case 0x0F: entry.Arguments = new byte[3]; break;
 						case 0x10: entry.Arguments = new byte[3]; break;
 						case 0x11: entry.Arguments = new byte[4]; break;
-						case 0x14: entry.Arguments = new byte[3]; break;
-						case 0x15: entry.Arguments = new byte[3]; break;
-						case 0x19: entry.Arguments = new byte[3]; break;
+						case 0x14:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[3];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[6];
+							}
+							break;
+						case 0x15:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[3];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[4];
+							}
+							break;
+						case 0x19:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[3];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[5];
+							}
+							break;
 						case 0x1A: entry.Arguments = new byte[0]; break;
-						case 0x1B: entry.Arguments = new byte[3]; break;
+						case 0x1B:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[3];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[5];
+							}
+							break;
 						case 0x1C: entry.Arguments = new byte[0]; break;
 						case 0x1E: entry.Arguments = new byte[5]; break;
 						case 0x1F: entry.Arguments = new byte[7]; break;
@@ -248,18 +289,66 @@ namespace HyoutaTools.DanganRonpa.Lin {
 						case 0x25: entry.Arguments = new byte[2]; break;
 						case 0x26: entry.Arguments = new byte[3]; break;
 						case 0x27: entry.Arguments = new byte[1]; break;
-						case 0x29: entry.Arguments = new byte[1]; break;
-						case 0x2A: entry.Arguments = new byte[2]; break;
+						case 0x29:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[1];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[0xD];
+							}
+							break;
+						case 0x2A:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[2];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[0xC];
+							}
+							break;
 						case 0x2B: entry.Arguments = new byte[1]; break;
-						case 0x2E: entry.Arguments = new byte[2]; break;
-						case 0x30: entry.Arguments = new byte[3]; break;
+						case 0x2C: entry.Arguments = new byte[2]; break;
+						case 0x2E:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[2];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[5];
+							}
+							break;
+						case 0x2F: entry.Arguments = new byte[10]; break;
+						case 0x30:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[3];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[2];
+							}
+							break;
+						case 0x32: entry.Arguments = new byte[1]; break;
 						case 0x33: entry.Arguments = new byte[4]; break;
-						case 0x34: entry.Arguments = new byte[2]; break;
+						case 0x34:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[2];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[1];
+							}
+							break;
 						case 0x38: entry.Arguments = new byte[5]; break;
 						case 0x39: entry.Arguments = new byte[5]; break;
-						case 0x3A: entry.Arguments = new byte[0]; break;
-						case 0x3B: entry.Arguments = new byte[0]; break;
+						case 0x3A:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[0];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[4];
+							}
+							break;
+						case 0x3B:
+							if ( DanganUtil.GameVersion == 1 ) {
+								entry.Arguments = new byte[0];
+							} else if ( DanganUtil.GameVersion >= 2 ) {
+								entry.Arguments = new byte[2];
+							}
+							break;
 						case 0x3C: entry.Arguments = new byte[0]; break;
+						//case 0x47: entry.Arguments = new byte[5]; break; // this seems to actually be varargs
+						case 0x4C: entry.Arguments = new byte[0]; break;
+						case 0x4D: entry.Arguments = new byte[0]; break;
 						default:
 							List<byte> VariableLengthArgs = new List<byte>();
 							while ( OriginalFile[i + 1] != 0x70 ) { VariableLengthArgs.Add( OriginalFile[i + 1] ); ++i; }
@@ -278,7 +367,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 					// reached end of file?
 					for ( ; i < TextBlockLocation; i++ ) {
 						if ( OriginalFile[i] != 0x00 ) {
-							throw new Exception( "script entry doesn't start with 0x70, abort" );
+							throw new Exception( "script entry doesn't start with 0x70 at 0x" + i.ToString("X6") + ", abort" );
 						}
 					}
 					return Script;
