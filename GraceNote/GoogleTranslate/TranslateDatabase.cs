@@ -16,6 +16,17 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			return 0;
 		}
 
+		public class DatabaseEntry {
+			public string TextEN;
+			public string TextJP;
+			public int ID;
+			public int JPID;
+			public int Status;
+
+			public int NewLineCount;
+			public bool NewLineAtEnd;
+		}
+
 
 		public static void Translate( string Filename, string FilenameGracesJapanese ) {
 			CleanGoogleTranslatedString( "" );
@@ -28,6 +39,8 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			System.Random rng = new System.Random();
 
 			foreach ( DatabaseEntry e in entries ) {
+				e.NewLineAtEnd = e.TextJP.EndsWith( "\n" );
+				e.NewLineCount = e.TextJP.Count( ch => ch == '\n' );
 				e.TextJP = e.TextJP.Replace( "\n", "" );
 			}
 
@@ -51,13 +64,7 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 						string english = CleanGoogleTranslatedString( translateResult );
 						e.TextEN = english;
 
-						Console.WriteLine( e.TextJP );
-						Console.WriteLine( e.TextEN );
-						Console.WriteLine();
-
-						param[0] = e.TextEN;
-						param[1] = e.ID;
-						Util.GenericSqliteUpdate( conn, "UPDATE Text SET english = ? WHERE ID = ?", param );
+						ReinsertEntry( conn, e, param );
 		
 						System.Threading.Thread.Sleep( rng.Next( 2000, 8000 ) );
 						break;
@@ -69,6 +76,26 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			conn.Close();
 
 			return;
+		}
+
+		public static void ReinsertEntry( SQLiteConnection conn, DatabaseEntry e, Object[] param ) {
+
+			int NewLineCount = e.NewLineCount;
+			if ( e.NewLineAtEnd ) { NewLineCount--; }
+
+			
+
+
+
+			if ( e.NewLineAtEnd ) { e.TextEN = e.TextEN + '\n'; }
+
+			Console.WriteLine( e.TextJP );
+			Console.WriteLine( e.TextEN );
+			Console.WriteLine();
+
+			param[0] = e.TextEN;
+			param[1] = e.ID;
+			Util.GenericSqliteUpdate( conn, "UPDATE Text SET english = ? WHERE ID = ?", param );
 		}
 
 
@@ -112,14 +139,6 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			str = str.Replace( "\\\\", "\\" );
 
 			return str;
-		}
-
-		public class DatabaseEntry {
-			public string TextEN;
-			public string TextJP;
-			public int ID;
-			public int JPID;
-			public int Status;
 		}
 
 		public static DatabaseEntry[] GetSQL( String ConnectionString, String GracesJapaneseConnectionString ) {
