@@ -547,7 +547,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 
 
 
-
+		char[] singleSpaceInArray = new char[] { ' ' };
 		public void GetSQL( String ConnectionString ) {
 			SQLiteConnection Connection = new SQLiteConnection( ConnectionString );
 			Connection.Open();
@@ -590,7 +590,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 
 							if ( cmd.Contains( ':' ) ) {
 								// command with args
-								string[] bytestrs = cmd.Split( ' ' );
+								string[] bytestrs = cmd.Split( singleSpaceInArray, StringSplitOptions.RemoveEmptyEntries );
 								string typestr = bytestrs[0].Replace( ":", "" );
 								switch ( typestr ) {
 									case "FMV": e.Type = 0x05; break;
@@ -600,6 +600,8 @@ namespace HyoutaTools.DanganRonpa.Lin {
 									case "LoadScript": e.Type = 0x19; break;
 									case "Sprite": e.Type = 0x1E; break;
 									case "Speaker": e.Type = 0x21; break;
+									case "WaitPlayerInput": e.Type = 0x3A; break;
+									case "WaitFrame": e.Type = 0x3B; break;
 									default: e.Type = Util.ParseDecOrHexToByte( typestr ); break;
 								}
 

@@ -8,7 +8,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinExport {
 	public static class Exporter {
 		public static int Export( List<string> args ) {
 			if ( args.Count < 3 ) {
-				Console.WriteLine( "Usage: text.lin.orig text.lin.new database [alignment (default 1024)]" );
+				Console.WriteLine( "Usage: text.lin.orig text.lin.new database [alignment (default 1024)] [LIN version (default 1)]" );
 				return -1;
 			}
 
@@ -16,6 +16,11 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinExport {
 			if ( !( args.Count >= 4 && Int32.TryParse( args[3], out Alignment ) ) ) {
 				Alignment = 1024;
 			}
+			uint Version;
+			if ( !( args.Count >= 5 && UInt32.TryParse( args[4], out Version ) ) ) {
+				Version = 1;
+			}
+			HyoutaTools.DanganRonpa.DanganUtil.GameVersion = Version;
 			return LinExport.Exporter.Export( args[0], args[1], args[2], Alignment );
 		}
 		public static int Export( String InFilename, String OutFilename, String DB, int Alignment ) {

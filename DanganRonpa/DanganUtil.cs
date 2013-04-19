@@ -78,6 +78,6 @@ namespace HyoutaTools.DanganRonpa {
 			}
 		}
 
-		public static uint GameVersion = 2; // 1 == DR1, 2 == SDR2
+		public static uint GameVersion = 1; // 1 == DR1, 2 == SDR2
 	}
 }

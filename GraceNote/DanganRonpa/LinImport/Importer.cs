@@ -14,9 +14,14 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 			 * CREATE TABLE Text(ID int primary key, StringID int, english text, comment text, updated tinyint, status tinyint, PointerRef integer, IdentifyString text, IdentifyPointerRef integer);
 			 ***/
 			if ( args.Count < 1 ) {
-				Console.WriteLine( "Usage: text.lin NewDBFile TemplateDBFile GracesJapanese" );
+				Console.WriteLine( "Usage: text.lin NewDBFile TemplateDBFile GracesJapanese [LIN version (default 1)]" );
 				return -1;
 			}
+			uint Version;
+			if ( !( args.Count >= 5 && UInt32.TryParse( args[4], out Version ) ) ) {
+				Version = 1;
+			}
+			HyoutaTools.DanganRonpa.DanganUtil.GameVersion = Version;
 			return LinImport.Importer.Import( args[0], args[1], args[2], args[3] );
 		}
 		public static int Import( String Filename, String NewDB, String TemplateDB, String GracesDB ) {
