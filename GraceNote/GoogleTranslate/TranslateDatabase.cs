@@ -58,9 +58,12 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			FileStream FailLog = new FileStream( "googletranslate.log", FileMode.Append );
 			StreamWriter LogWriter = new StreamWriter( FailLog );
 
+			int entryCount = 0;
 			foreach ( DatabaseEntry e in entries ) {
+				entryCount++;
 				if ( e.Status == -1 ) { continue; }
 				try {
+					Console.WriteLine( "Processing Entry " + entryCount + "/" + entries.Length + "..." );
 					webClient.Encoding = Encoding.UTF8;
 					webClient.Headers["User-Agent"] = "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.3) Gecko/20100402 Namoroka/3.6.3 (.NET CLR 3.5.30729)";
 					webClient.QueryString.Clear();
@@ -77,7 +80,10 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 					LogWriter.WriteLine( "Failure in File " + Filename + ":" );
 					LogWriter.WriteLine( "ID: " + e.ID );
 					LogWriter.WriteLine( e.TextJP );
+					LogWriter.WriteLine( ex.ToString() );
 					LogWriter.WriteLine();
+					Console.WriteLine( ex.ToString() );
+					Console.WriteLine();
 				}
 				System.Threading.Thread.Sleep( rng.Next( 2000, 8000 ) );
 			}
@@ -135,6 +141,7 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			Console.WriteLine( e.TextJP );
 			Console.WriteLine( "ENGLISH WITH LINEBREAKS:" );
 			Console.WriteLine( e.TextEN );
+			Console.WriteLine( "----------------------------------------" );
 			Console.WriteLine();
 
 			param[0] = e.TextEN;
