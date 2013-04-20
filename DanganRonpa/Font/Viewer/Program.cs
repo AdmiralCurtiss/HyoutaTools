@@ -28,7 +28,7 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 		public static int Execute( List<string> args ) {
 			string Filepath = args[1];
 			string ImagePath = args[0];
-			string Filepath2 = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\i";
+			//string Filepath2 = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\i";
 
 
 			FontViewer form;

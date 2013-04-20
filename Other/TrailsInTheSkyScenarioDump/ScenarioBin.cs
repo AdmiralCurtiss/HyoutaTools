@@ -106,7 +106,7 @@ namespace HyoutaTools.Other.TrailsInTheSkyScenarioDump {
 		public List<E4> e4;
 		public List<E5> e5;
 		public List<E6> e6;
-		public List<E7> e7;
+		//public List<E7> e7;
 
 		public ushort TextPtrsLoc;
 

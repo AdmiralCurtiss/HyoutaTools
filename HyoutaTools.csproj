@@ -74,12 +74,14 @@
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
     <Compile Include="Generic\DbTextReplace\Replacement.cs" />
+    <Compile Include="GraceNote\DanganRonpa\AutoFormatting\AutoFormat.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinExport\Exporter.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinImport\Importer.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinImport\Program.cs" />
     <Compile Include="GraceNote\DanganRonpa\NonstopExistingDatabaseImport\Importer.cs" />
     <Compile Include="GraceNote\DanganRonpa\PakTextExport\Program.cs" />
     <Compile Include="GraceNote\DanganRonpa\PakTextImport\Program.cs" />
+    <Compile Include="GraceNote\GraceNoteDatabaseEntry.cs" />
     <Compile Include="GraceNote\DumpDatabase\Program.cs" />
     <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
