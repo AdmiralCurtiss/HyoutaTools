@@ -367,7 +367,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 					// reached end of file?
 					for ( ; i < TextBlockLocation; i++ ) {
 						if ( OriginalFile[i] != 0x00 ) {
-							throw new Exception( "script entry doesn't start with 0x70 at 0x" + i.ToString("X6") + ", abort" );
+							throw new Exception( "script entry doesn't start with 0x70 at 0x" + i.ToString( "X6" ) + ", abort" );
 						}
 					}
 					return Script;
@@ -646,10 +646,21 @@ namespace HyoutaTools.DanganRonpa.Lin {
 									break; // we're done
 								}
 
-								// 0x3A -> WaitPlayerInput; 0x3B -> WaitFrame
-								if ( ScriptData[i].Type == 0x3A || ScriptData[i].Type == 0x3B ) {
-									ScriptData.RemoveAt( i );
+								// DR1:  0x3A -> WaitPlayerInput; 0x3B -> WaitFrame
+								// SDR2: 0x4C -> WaitFrame; 0x4B -> WaitPlayerInput
+								switch ( DanganUtil.GameVersion ) {
+									case 1:
+										if ( ScriptData[i].Type == 0x3A || ScriptData[i].Type == 0x3B ) {
+											ScriptData.RemoveAt( i );
+										}
+										break;
+									default:
+										if ( ScriptData[i].Type == 0x4C || ScriptData[i].Type == 0x4B ) {
+											ScriptData.RemoveAt( i );
+										}
+										break;
 								}
+
 							}
 
 
@@ -658,7 +669,10 @@ namespace HyoutaTools.DanganRonpa.Lin {
 							foreach ( string s in SQLText.Split( '\f' ) ) {
 								if ( !first ) {
 									ScriptEntry wait = new ScriptEntry();
-									wait.Type = 0x3A;
+									switch ( DanganUtil.GameVersion ) {
+										case 1: wait.Type = 0x3A; break;
+										default: wait.Type = 0x4B; break;
+									}
 									wait.Arguments = new byte[0];
 									ScriptData.Add( wait );
 								}

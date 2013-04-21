@@ -94,6 +94,8 @@ namespace HyoutaTools.DanganRonpa.Font {
 			}
 
 			foreach ( DRFontChar c in Chars ) {
+				//c.YOffset += 2; <- convert DR1 font to SDR2 font
+				//c.Height -= 5;
 				fs.Write( BitConverter.GetBytes( c.Character ), 0, 2 );
 				fs.Write( BitConverter.GetBytes( c.XOffset ), 0, 2 );
 				fs.Write( BitConverter.GetBytes( c.YOffset ), 0, 2 );
