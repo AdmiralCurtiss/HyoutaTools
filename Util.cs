@@ -192,9 +192,17 @@ namespace HyoutaTools {
 		}
 		public static int GenericSqliteUpdate( SQLiteConnection Connection, string statement, IEnumerable<object> parameters ) {
 			int affected = -1;
+			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() ) {
+				affected = GenericSqliteUpdate( Transaction, statement, parameters );
+				Transaction.Commit();
+			}
+			return affected;
+		}
+		public static int GenericSqliteUpdate( SQLiteTransaction transaction, string statement, IEnumerable<object> parameters ) {
+			int affected = -1;
 
-			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
-			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
+			using ( SQLiteCommand Command = new SQLiteCommand() ) {
+				Command.Connection = transaction.Connection;
 				Command.CommandText = statement;
 				foreach ( object p in parameters ) {
 					SQLiteParameter sqp = new SQLiteParameter();
@@ -202,7 +210,6 @@ namespace HyoutaTools {
 					Command.Parameters.Add( sqp );
 				}
 				affected = Command.ExecuteNonQuery();
-				Transaction.Commit();
 			}
 
 			return affected;
@@ -296,5 +303,6 @@ namespace HyoutaTools {
 				if ( bytesLeft <= 0 ) return;
 			}
 		}
+
 	}
 }
