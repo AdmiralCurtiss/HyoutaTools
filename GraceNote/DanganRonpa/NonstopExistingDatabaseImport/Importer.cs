@@ -62,7 +62,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.NonstopExistingDatabaseImport {
 
 
 					// --- insert comment info ---
-					string comment = (string)Util.GenericSqliteSelect(
+					string comment = (string)Util.GenericSqliteSelectScalar(
 						"Data Source=" + databaseFile,
 						"SELECT comment FROM Text WHERE id = ?",
 						new object[] { correspondingTextEntry } );
@@ -86,7 +86,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.NonstopExistingDatabaseImport {
 
 
 					// --- insert voice info ---
-					string script = (string)Util.GenericSqliteSelect(
+					string script = (string)Util.GenericSqliteSelectScalar(
 						"Data Source=" + databaseFile,
 						"SELECT english FROM Text WHERE id = ?",
 						new object[] { correspondingScriptEntry } );

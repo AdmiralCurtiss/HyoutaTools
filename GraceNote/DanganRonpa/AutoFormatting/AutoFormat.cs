@@ -16,14 +16,71 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 			return 0;
 		}
 
-		public static void FormatDatabase( string Filename, string FilenameGracesJapanese ) {
-			GraceNoteDatabaseEntry[] entries = GraceNoteDatabaseEntry.GetAllEntriesFromDatabase( "Data Source=" + Filename, "Data Source=" + FilenameGracesJapanese );
+		private static void CleanGracesJapanese( string p ) {
+			List<object[]> results = 
+				Util.GenericSqliteSelectArray(p, "SELECT ID, string, debug FROM Japanese ORDER BY ID", new object[0]);
 
+			SQLiteConnection conn = new SQLiteConnection( p );
+			conn.Open();
+			SQLiteTransaction transaction = conn.BeginTransaction();
+
+			foreach ( var r in results ) {
+				int ID = (int)r[0];
+				string str = (string)r[1];
+				byte[] b = Encoding.Unicode.GetBytes( str );
+				if ( b.Length >= 2 && b[0] == '\xff' && b[1] == '\xfe' ) {
+					string fstr = Encoding.Unicode.GetString( b, 2, b.Length - 2 );
+					Util.GenericSqliteUpdate( transaction,
+						"UPDATE japanese SET string = ? WHERE id = ?",
+						new object[] { fstr, ID }
+					);
+				}
+			}
+
+			transaction.Commit();
+			conn.Close();
+		}
+		private static void CleanDatabase( string p ) {
+			List<object[]> results =
+				Util.GenericSqliteSelectArray( p,
+				"SELECT ID, english FROM Text ORDER BY ID", new object[0] );
+
+			SQLiteConnection conn = new SQLiteConnection( p );
+			conn.Open();
+			SQLiteTransaction transaction = conn.BeginTransaction();
+
+			foreach ( var r in results ) {
+				int ID = (int)r[0];
+				string str = (string)r[1];
+				byte[] b = Encoding.Unicode.GetBytes( str );
+				if ( b.Length >= 2 && b[0] == '\xff' && b[1] == '\xfe' ) {
+					string fstr = Encoding.Unicode.GetString( b, 2, b.Length - 2 );
+					Util.GenericSqliteUpdate( transaction,
+						"UPDATE Text SET english = ? WHERE ID = ?",
+						new object[] { fstr, ID }
+					);
+				}
+			}
+
+			transaction.Commit();
+			conn.Close();
+		}
+
+		public static void FormatDatabase( string Filename, string FilenameGracesJapanese ) {
+
+			//CleanGracesJapanese("Data Source=" + FilenameGracesJapanese);
+			//CleanDatabase( "Data Source=" + Filename );
+			//return;
+
+			GraceNoteDatabaseEntry[] entries = GraceNoteDatabaseEntry.GetAllEntriesFromDatabase( "Data Source=" + Filename, "Data Source=" + FilenameGracesJapanese );
 			SQLiteConnection conn = new SQLiteConnection( "Data Source=" + Filename );
 			conn.Open();
 			SQLiteTransaction transaction = conn.BeginTransaction();
 
 			foreach ( GraceNoteDatabaseEntry e in entries ) {
+				//e.TextEN = e.TextEN;
+
+				/*
 				if ( e.Status == -1 ) { continue; }
 
 				e.TextEN = FormatString( e.TextEN );
@@ -33,6 +90,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 					"UPDATE Text SET english = ? WHERE ID = ?",
 					new object[] { e.TextEN, e.ID }
 				);
+				*/
 			}
 
 			transaction.Commit();
@@ -40,6 +98,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 
 			return;
 		}
+
 
 		public static string FormatString( string str ) {
 			bool NewLineAtEnd = str.EndsWith( "\n" );

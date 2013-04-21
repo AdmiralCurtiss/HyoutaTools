@@ -156,10 +156,10 @@ namespace HyoutaTools {
 		#endregion
 
 		#region SqliteUtils
-		public static object GenericSqliteSelect( string connString, string statement ) {
-			return GenericSqliteSelect( connString, statement, new object[0] );
+		public static object GenericSqliteSelectScalar( string connString, string statement ) {
+			return GenericSqliteSelectScalar( connString, statement, new object[0] );
 		}
-		public static object GenericSqliteSelect( string connString, string statement, IEnumerable<object> parameters ) {
+		public static object GenericSqliteSelectScalar( string connString, string statement, IEnumerable<object> parameters ) {
 			object retval = null;
 			SQLiteConnection Connection = new SQLiteConnection( connString );
 			Connection.Open();
@@ -178,6 +178,39 @@ namespace HyoutaTools {
 			Connection.Close();
 
 			return retval;
+		}
+
+		public static List<Object[]> GenericSqliteSelectArray( string connString, string statement, IEnumerable<object> parameters ) {
+			List<Object[]> rows = null;
+			SQLiteConnection Connection = new SQLiteConnection( connString );
+			Connection.Open();
+
+			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
+			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
+				Command.CommandText = statement;
+				foreach ( object p in parameters ) {
+					SQLiteParameter sqp = new SQLiteParameter();
+					sqp.Value = p;
+					Command.Parameters.Add( sqp );
+				}
+				
+				SQLiteDataReader rd = Command.ExecuteReader();
+
+				rows = new List<object[]>();
+				if ( rd.Read() ) {
+					Object[] fields = new Object[rd.FieldCount];
+					do {
+						rd.GetValues( fields );
+						rows.Add( fields );
+						fields = new Object[rd.FieldCount];
+					} while ( rd.Read() );
+				}
+
+				Transaction.Commit();
+			}
+			Connection.Close();
+
+			return rows;
 		}
 
 		public static int GenericSqliteUpdate( string connString, string statement ) {

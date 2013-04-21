@@ -10,8 +10,8 @@ namespace HyoutaTools.Generic.DbTextReplace {
 			string Database = args[0]; //@"c:\_svn\GraceNote\GraceNote\DanganRonpaBestOfDB\GracesJapanese";
 
 			// remove the dumb unicode byte order mark
-			object o1 = Util.GenericSqliteSelect( "Data Source=" + args[0], "SELECT cast(english as blob) FROM text WHERE id = 12" );
-			object o2 = Util.GenericSqliteSelect( "Data Source=" + args[1], "SELECT cast(english as blob) FROM text WHERE id = 14" );
+			object o1 = Util.GenericSqliteSelectScalar( "Data Source=" + args[0], "SELECT cast(english as blob) FROM text WHERE id = 12" );
+			object o2 = Util.GenericSqliteSelectScalar( "Data Source=" + args[1], "SELECT cast(english as blob) FROM text WHERE id = 14" );
 
 			List<object[]> objects =
 				GenericSqliteSelect( "Data Source=" + Database,
