@@ -58,9 +58,12 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 				}
 
 				if ( charCount >= 28 ) {
-					numbersOfNewLinesInserted++;
-					charCount = i - lastSpaceAt;
-					sb[lastSpaceAt] = numbersOfNewLinesInserted % 2 == 0 ? '\f' : '\n'; // inserts a newline on 1st, 3rd, 5th, ... and a feed on 2nd, 4th, 6th, ...
+					if ( lastSpaceAt != -1 ) {
+						numbersOfNewLinesInserted++;
+						charCount = Math.Max( i - lastSpaceAt, 0 );
+						sb[lastSpaceAt] = numbersOfNewLinesInserted % 2 == 0 ? '\f' : '\n'; // inserts a newline on 1st, 3rd, 5th, ... and a feed on 2nd, 4th, 6th, ...
+						lastSpaceAt = -1;
+					}
 				}
 			}
 
