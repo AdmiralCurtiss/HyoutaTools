@@ -85,12 +85,20 @@ namespace HyoutaTools.Other.AutoExtract {
 
 
 		public static int Execute( List<string> argumentsGiven ) {
+			if ( !argumentsGiven.Contains( "start" ) ) {
+				Console.WriteLine( "Include \"start\" in the arguments to confirm execution!" );
+				Console.WriteLine( "Other arguments to enable specific file types:" );
+				Console.WriteLine( "  comptoe     Tales Compressor files" );
+
+			}
+
+
 			Queue<FileStruct> queue = new Queue<FileStruct>();
 
 			Console.WriteLine( "Adding all files and folders recursively..." );
 			EnqueueDirectoryRecursively( queue, System.Environment.CurrentDirectory );
 
-			bool AllowComptoe = true;
+			bool AllowComptoe = argumentsGiven.Contains( "comptoe" );
 
 			while ( queue.Count > 0 ) {
 				FileStruct fstr = queue.Dequeue();
@@ -295,11 +303,11 @@ namespace HyoutaTools.Other.AutoExtract {
 							f = RenameToWithExtension( f, ".llfs" );
 						}
 
-						if ( secondbyte == 0x00 && thirdbyte == 0x00 && fourthbyte == 0x00 ) {
+						if ( f.ToLowerInvariant().EndsWith( ".pak" ) || ( secondbyte < 0x10 && thirdbyte == 0x00 && fourthbyte == 0x00 ) ) {
 							// could maybe possibly be a PAK file who knows
 							fs.Close();
-							prog = @"DanganRonpaPakEx.exe";
-							args = "\"" + f + "\"";
+							prog = @"HyoutaTools";
+							args = "DrPakE \"" + f + "\"";
 							if ( RunProgram( prog, args ) ) {
 								EnqueueDirectoryRecursively( queue, f + ".ex" );
 								System.IO.File.Delete( f );
