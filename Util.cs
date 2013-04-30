@@ -86,7 +86,7 @@ namespace HyoutaTools {
 		}
 
 		#region TextUtils
-		public static Encoding ShiftJISEncoding = Encoding.GetEncoding( "shift-jis" );
+		public static Encoding ShiftJISEncoding = Encoding.GetEncoding( 932 );
 		public static String GetTextShiftJis( byte[] File, int Pointer ) {
 			if ( Pointer == -1 ) return null;
 
@@ -100,6 +100,50 @@ namespace HyoutaTools {
 			} catch ( Exception ) {
 				return null;
 			}
+		}
+		public static String GetTextPseudoShiftJis( byte[] File, int Pointer ) {
+			if ( Pointer == -1 ) return null;
+
+			try {
+				int i = Pointer;
+				while ( i < File.Length && File[i] != 0x00 ) {
+					i++;
+				}
+				String Text = GetStringPseudoShiftJis( File, Pointer, i - Pointer );
+				return Text;
+			} catch ( Exception ) {
+				return null;
+			}
+		}
+		public static String GetStringPseudoShiftJis( byte[] Bytes, int index, int count ) {
+			StringBuilder sb = new StringBuilder(count);
+			byte[] bytearray = new byte[2];
+			for ( int i = 0; i < count; ++i ) {
+				byte b = Bytes[index + i];
+				if ( b < 0x80 ) {
+					sb.Append( (char)b );
+				} else {
+					i++;
+					byte b2 = Bytes[index + i];
+
+					// works for hiragana, does not work for katakana/kanji
+					bytearray[0] = (byte)(b - 0x17);
+					bytearray[1] = (byte)(b2 - 0x09);
+					char[] chars = ShiftJISEncoding.GetChars( bytearray, 0, 2 );
+					foreach ( char c in chars ) {
+						sb.Append( c );
+					}
+				}
+			}
+			return sb.ToString();
+
+			//foreach ( char c in str ) {
+			//    if ( (int)c < 0x8000 ) {
+			//        b.Append( c );
+			//    } else {
+			//        b.Append( (int)c - 0x1709 );
+			//    }
+			//}		
 		}
 		public static String GetTextAscii( byte[] File, int Pointer ) {
 			if ( Pointer == -1 ) return null;

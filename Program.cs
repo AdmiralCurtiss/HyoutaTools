@@ -78,6 +78,24 @@ namespace HyoutaTools {
 
 		[STAThread]
 		static int Main( string[] args ) {
+
+
+
+			var das = System.IO.File.ReadAllBytes(@"c:\Users\Georg\Downloads\PCSX2_0.9.2_Brk_on_RW\sstates\TEST");
+			var res = Util.GetTextPseudoShiftJis( das, 0 );
+			StringBuilder b = new StringBuilder(res.Length);
+
+
+			
+
+
+
+
+
+
+
+
+
 			if ( args.Length > 0 ) {
 				string ProgramName = args[0];
 				if ( ProgramName == "-" ) { PrintUsage(); return -1; }
