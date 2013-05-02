@@ -116,6 +116,11 @@
     <Compile Include="Other\TrailsInTheSkyScenarioDump\ScenarioBin.cs" />
     <Compile Include="Other\TrailsInTheSkyScenarioDump\DumpText.cs" />
     <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Tales\Abyss\FPS2\Program.cs" />
     <Compile Include="Tales\Abyss\FPS3\Program.cs" />
     <Compile Include="Tales\Abyss\PKF\Split.cs" />
@@ -237,6 +242,10 @@
     <EmbeddedResource Include="Other\N64\OoTSaveEditor\OoTSaveEditForm.resx">
       <DependentUpon>OoTSaveEditForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\Credits\CreditsForm.resx">
       <DependentUpon>CreditsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -258,6 +267,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Files\todr_char_table_without_header.dat" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

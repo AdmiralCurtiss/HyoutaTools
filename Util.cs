@@ -153,6 +153,26 @@ namespace HyoutaTools {
 		public static char GetCharPseudoShiftJis( ushort character ) {
 			if ( PseudoShiftJisMap == null ) {
 				PseudoShiftJisMap = new Dictionary<ushort, char>();
+
+				byte[] tbl = HyoutaTools.Properties.Resources.todr_char_table_without_header;
+				byte[] shiftJisChar = new byte[2];
+				ushort TodChar = 0x9940;
+				for ( int i = 0; i < tbl.Length; i += 2 ) {
+					shiftJisChar[1] = tbl[i];
+					shiftJisChar[0] = tbl[i + 1];
+
+					char[] chars = ShiftJISEncoding.GetChars( shiftJisChar, 0, 2 );
+					PseudoShiftJisMap.Add( TodChar, chars[0] );
+
+					if ( TodChar == 0x99A0 ) { TodChar += 2; }
+
+					TodChar++;
+				}
+
+
+				  /*
+
+
 				//PseudoShiftJisMap.Add( 'ぁ', 0x011F );
 
 				for ( int i = 0; i < 0x4A; ++i ) { // あ to る
@@ -293,6 +313,7 @@ namespace HyoutaTools {
 				PseudoShiftJisMap.Add( 0xE997, '夢' );
 
 				// 率
+				*/
 			}
 			return PseudoShiftJisMap[character];
 		}
