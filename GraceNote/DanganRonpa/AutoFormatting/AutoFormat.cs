@@ -12,7 +12,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 	public class AutoFormat {
 
 		public static int Execute( List<string> args ) {
-			FormatDatabase( args[0], args[1] );
+			FormatDatabase( args[0], args[1], args.Count > 2 ? Int32.Parse(args[2]) : 28 );
 			return 0;
 		}
 
@@ -66,7 +66,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 			conn.Close();
 		}
 
-		public static void FormatDatabase( string Filename, string FilenameGracesJapanese ) {
+		public static void FormatDatabase( string Filename, string FilenameGracesJapanese, int maxCharsPerLine ) {
 
 			//CleanGracesJapanese("Data Source=" + FilenameGracesJapanese);
 			//CleanDatabase( "Data Source=" + Filename );
@@ -80,17 +80,15 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 			foreach ( GraceNoteDatabaseEntry e in entries ) {
 				//e.TextEN = e.TextEN;
 
-				/*
 				if ( e.Status == -1 ) { continue; }
 
-				e.TextEN = FormatString( e.TextEN );
+				e.TextEN = FormatString( e.TextEN, maxCharsPerLine );
 
 				Util.GenericSqliteUpdate(
 					transaction,
 					"UPDATE Text SET english = ? WHERE ID = ?",
 					new object[] { e.TextEN, e.ID }
 				);
-				*/
 			}
 
 			transaction.Commit();
@@ -100,7 +98,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 		}
 
 
-		public static string FormatString( string str ) {
+		public static string FormatString( string str, int maxCharsPerLine ) {
 			bool NewLineAtEnd = str.EndsWith( "\n" );
 
 			StringBuilder sb = new StringBuilder( str );
@@ -126,7 +124,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 					default: charCount++; break;
 				}
 
-				if ( charCount >= 28 ) {
+				if ( charCount >= maxCharsPerLine ) {
 					if ( lastSpaceAt != -1 ) {
 						numbersOfNewLinesInserted++;
 						sb[lastSpaceAt] = numbersOfNewLinesInserted % 2 == 0 ? '\f' : '\n'; // inserts a newline on 1st, 3rd, 5th, ... and a feed on 2nd, 4th, 6th, ...

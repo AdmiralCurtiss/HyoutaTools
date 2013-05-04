@@ -81,9 +81,9 @@ namespace HyoutaTools {
 
 
 
-			var das = System.IO.File.ReadAllBytes(@"c:\Users\Georg\Downloads\PCSX2_0.9.2_Brk_on_RW\sstates\TEST");
-			var res = Util.GetTextPseudoShiftJis( das, 0 );
-			StringBuilder b = new StringBuilder(res.Length);
+			//var das = System.IO.File.ReadAllBytes(@"c:\Users\Georg\Downloads\PCSX2_0.9.2_Brk_on_RW\sstates\TEST");
+			//var res = Util.GetTextPseudoShiftJis( das, 0 );
+			//StringBuilder b = new StringBuilder(res.Length);
 
 
 			
