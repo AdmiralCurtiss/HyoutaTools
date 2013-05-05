@@ -126,6 +126,8 @@
     <Compile Include="Tales\Abyss\PKF\Split.cs" />
     <Compile Include="Tales\Abyss\SB7\DumpText.cs" />
     <Compile Include="Tales\Abyss\SB7\SB7.cs" />
+    <Compile Include="Tales\DestinyRemake\MglkExtract\Execute.cs" />
+    <Compile Include="Tales\DestinyRemake\MglkExtract\MGLK.cs" />
     <Compile Include="Tales\DestinyRemake\TblBin\Execute.cs" />
     <Compile Include="Tales\DestinyRemake\TblBin\TBL.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfo.cs" />
@@ -271,6 +273,9 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /b "$(TargetPath)" "d:\_svn\Tools\HyoutaTools.exe"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
