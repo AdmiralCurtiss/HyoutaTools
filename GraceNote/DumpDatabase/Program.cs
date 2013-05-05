@@ -32,7 +32,8 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 			return SQLText;
 		}
 
-		public static ScenarioFile[] GetSQL( String ConnectionString, int FileNumber, String GracesJapaneseConnectionString, bool DumpIdentifyerStrings, bool ForceJapaneseDump, bool DumpDebug ) {
+		public static ScenarioFile[] GetSQL( String ConnectionString, int FileNumber, String GracesJapaneseConnectionString,
+			bool DumpIdentifyerStrings, bool ForceJapaneseDump, bool DumpDebug, bool SortByPointerRef ) {
 			List<ScenarioFile> ScenarioFiles = new List<ScenarioFile>();
 
 			SQLiteConnection Connection = new SQLiteConnection( ConnectionString );
@@ -47,13 +48,16 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 					}
 					Command.CommandText += " FROM Text"
 						+ ( DumpDebug ? "" : " WHERE status != -1" )
-						+ " ORDER BY PointerRef";
+						+ " ORDER BY " + ( SortByPointerRef ? "PointerRef" : "ID" );
 				} else {
 					// for VScenarioMissing
 					Command.CommandText = "SELECT english, PointerRef, StringID FROM Text WHERE"
 						+ ( DumpDebug ? "" : " status != -1 AND" )
-						+ " OriginalFile = " + FileNumber.ToString() + " ORDER BY PointerRef";
+						+ " OriginalFile = " + FileNumber.ToString()
+						+ " ORDER BY " + ( SortByPointerRef ? "PointerRef" : "ID" );
 				}
+
+
 				SQLiteDataReader r = Command.ExecuteReader();
 				while ( r.Read() ) {
 					String SQLText;
@@ -115,14 +119,16 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 			bool DumpIdentifyerStrings = false;
 			bool ForceJapaneseDump = false;
 			bool DumpDebug = false;
+			bool SortByPointerRef = false;
 
 			if ( args.Count != 3 && args.Count != 4 ) {
-				Console.WriteLine( "Usage: GraceNote_DumpText DBFilename TxtName GracesJapanese [nrvijd]" );
+				Console.WriteLine( "Usage: GraceNote_DumpText DBFilename TxtName GracesJapanese [nrvijpd]" );
 				Console.WriteLine( "n: Try to identify names (for Vesperia!)" );
 				Console.WriteLine( "r: Remove newlines within a single entry" );
 				Console.WriteLine( "v: Remove & Replace Vesperia Tags" );
 				Console.WriteLine( "i: Dump Identifyer Strings" );
 				Console.WriteLine( "j: Force Japanese dump" );
+				Console.WriteLine( "p: Sort by PointerRef instead of ID" );
 				Console.WriteLine( "d: Dump Debug entries too" );
 				return -1;
 			} else {
@@ -149,6 +155,9 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 							case 'j':
 								ForceJapaneseDump = true;
 								break;
+							case 'p':
+								SortByPointerRef = true;
+								break;
 							case 'd':
 								DumpDebug = true;
 								break;
@@ -159,10 +168,12 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 
 			ScenarioFile[] ScenarioStrings;
 			try {
-				ScenarioStrings = GetSQL( "Data Source=" + Database, -1, "Data Source=" + GracesJapanese, DumpIdentifyerStrings, ForceJapaneseDump, DumpDebug );
-				List<ScenarioFile> FullStrings = new List<ScenarioFile>( ScenarioStrings );
-				FullStrings.Sort();
-				ScenarioStrings = FullStrings.ToArray();
+				ScenarioStrings = GetSQL( "Data Source=" + Database, -1, "Data Source=" + GracesJapanese, DumpIdentifyerStrings, ForceJapaneseDump, DumpDebug, SortByPointerRef );
+				if ( SortByPointerRef ) {
+					List<ScenarioFile> FullStrings = new List<ScenarioFile>( ScenarioStrings );
+					FullStrings.Sort();
+					ScenarioStrings = FullStrings.ToArray();
+				}
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.ToString() );
 				return -1;
