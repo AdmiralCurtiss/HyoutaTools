@@ -219,6 +219,7 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 		}
 
 		public static String RemoveNewlines( String s ) {
+			s = s.Replace( "\f", "\n" );
 			s = s.Replace( " \n", " " );
 			s = s.Replace( "\n", " " );
 			return s;
