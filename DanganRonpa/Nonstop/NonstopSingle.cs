@@ -18,15 +18,17 @@ namespace HyoutaTools.DanganRonpa.Nonstop {
 		HasWeakPoint = 6,
 		ShootWithEvidence = 3,
 		ShootWithWeakpoint = 4,
-		StructureSize = 0x3C / 2
+		//StructureSize = 0x3C / 2 // DR1
+		//StructureSize = 0x44 / 2 // SDR2
 	}
 
 
 	public class NonstopSingle {
-		public static int size = 0x3C;
+		public int size = 0x3C;
 		public UInt16[] data;
 
-		public NonstopSingle( int offset, byte[] file ) {
+		public NonstopSingle( int offset, byte[] file, int size ) {
+			this.size = size;
 			data = new UInt16[size / 2];
 
 			for ( int i = 0; i < size / 2; ++i ) {

@@ -25,7 +25,7 @@ namespace HyoutaTools.DanganRonpa.Nonstop
             labels = new List<Label>();
             textboxes = new List<TextBox>();
 
-            for ( int i = 0; i < NonstopSingle.size / 2; ++i )
+            for ( int i = 0; i < itemDat.BytesPerEntry / 2; ++i )
             {
                 Label l = new Label();
                 l.Text = "";
@@ -61,7 +61,7 @@ namespace HyoutaTools.DanganRonpa.Nonstop
         {
 			NonstopSingle item = itemDat.items[listBox1.SelectedIndex];
 
-			for ( int i = 0; i < NonstopSingle.size / 2; ++i )
+			for ( int i = 0; i < itemDat.BytesPerEntry / 2; ++i )
             {
                 labels[i].Text = ((NonstopSingleStructure)i).ToString();
 				textboxes[i].Text = item.data[i].ToString();
