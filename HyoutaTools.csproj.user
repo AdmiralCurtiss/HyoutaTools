@@ -4,6 +4,6 @@
     <StartArguments>DanganRonpa.Nonstop.Viewer</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <StartArguments>DanganRonpa.Nonstop.Viewer d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\all\bin\nonstop_03_004.dat</StartArguments>
+    <StartArguments>DanganRonpa.Nonstop.Viewer d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\all\bin\nonstop_03_008.dat</StartArguments>
   </PropertyGroup>
 </Project>

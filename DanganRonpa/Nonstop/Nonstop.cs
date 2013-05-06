@@ -18,6 +18,7 @@ namespace HyoutaTools.DanganRonpa.Nonstop {
 			items = new List<NonstopSingle>( count );
 
 			BytesPerEntry = ( file.Length - 4 ) / count;
+			BytesPerEntry &= 0xFFFE; // make sure it's divisible by 2
 			switch ( BytesPerEntry ) {
 				case 60: GameVersion = 1; break;
 				case 68: GameVersion = 2; break;
