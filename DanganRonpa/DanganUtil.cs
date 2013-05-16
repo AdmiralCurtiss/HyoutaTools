@@ -6,35 +6,84 @@ using System.Text;
 namespace HyoutaTools.DanganRonpa {
 	class DanganUtil {
 		public static String CharacterIdToName( byte id ) {
-			switch ( id ) {
-				case 0x00: return "Naegi";
-				case 0x01: return "Ishimaru";
-				case 0x02: return "Togami";
-				case 0x03: return "Mondo";
-				case 0x04: return "Leon";
-				case 0x05: return "Yamada";
-				case 0x06: return "Hagakure";
-				case 0x07: return "Maizono";
-				case 0x08: return "Kirigiri";
-				case 0x09: return "Aoi";
-				case 0x0A: return "Fukawa";
-				case 0x0B: return "Sakura";
-				case 0x0C: return "Celes";
-				case 0x0D: return "Mukuro";
-				case 0x0E: return "Chihiro";
-				case 0x0F: return "Monobear";
-				case 0x10: return "Junko";
-				case 0x11: return "AlterEgo";
-				case 0x12: return "Syo";
-				case 0x13: return "Headmaster";
-				case 0x14: return "Mom";
-				case 0x15: return "Dad";
-				case 0x16: return "Sis";
-				case 0x18: return "Mondo/Ishimaru";
-				case 0x19: return "Daiya";
-				case 0x1E: return "???";
-				case 0x1F: return "None";
-				default: return "Unknown-" + id.ToString( "X2" );
+			switch ( GameVersion ) {
+				case 1:
+					switch ( id ) {
+						case 0x00: return "Naegi";
+						case 0x01: return "Ishimaru";
+						case 0x02: return "Togami";
+						case 0x03: return "Mondo";
+						case 0x04: return "Leon";
+						case 0x05: return "Yamada";
+						case 0x06: return "Hagakure";
+						case 0x07: return "Maizono";
+						case 0x08: return "Kirigiri";
+						case 0x09: return "Aoi";
+						case 0x0A: return "Fukawa";
+						case 0x0B: return "Sakura";
+						case 0x0C: return "Celes";
+						case 0x0D: return "Mukuro";
+						case 0x0E: return "Chihiro";
+						case 0x0F: return "Monobear";
+						case 0x10: return "Junko";
+						case 0x11: return "AlterEgo";
+						case 0x12: return "Syo";
+						case 0x13: return "Headmaster";
+						case 0x14: return "Mom";
+						case 0x15: return "Dad";
+						case 0x16: return "Sis";
+						case 0x18: return "Mondo/Ishimaru";
+						case 0x19: return "Daiya";
+						case 0x1E: return "???";
+						case 0x1F: return "None";
+						default: return "Unknown-" + id.ToString( "X2" );
+					}
+				case 2:
+					switch ( id ) {
+						case 0:  return "SDR2-Hinata";
+						case 1:  return "SDR2-Nagito";
+						case 2:  return "SDR2-Togami-Fat";
+						case 3:  return "SDR2-Gundam";
+						case 4:  return "SDR2-Souda";
+						case 5:  return "SDR2-Hanamura";
+						case 6:  return "SDR2-Nidai";
+						case 7:  return "SDR2-Kuzuryuu";
+						case 8:  return "SDR2-Akane";
+						case 9:  return "SDR2-Nanami";
+						case 10: return "SDR2-Sonia";
+						case 11: return "SDR2-Saionji";
+						case 12: return "SDR2-Mahiru";
+						case 13: return "SDR2-Mikan";
+						case 14: return "SDR2-Ibuki";
+						case 15: return "SDR2-Pekoyama";
+						case 16: return "SDR2-Monobear";
+						case 17: return "SDR2-Monomi";
+						case 18: return "SDR2-Junko";
+						case 19: return "SDR2-Nidai-Robot";
+						case 20: return "SDR2-Naegi";
+						case 21: return "SDR2-Kirigiri";
+						case 22: return "SDR2-Togami";
+						case 23: return "SDR2-Hanamura-Mother";
+						case 24: return "SDR2-AlterEgo";
+						case 25: return "SDR2-Mini-Nidai";
+						case 26: return "SDR2-Monobear/Monomi";
+						case 27: return "SDR2-Narrator";
+						case 39: return "SDR2-Usami";
+						case 40: return "SDR2-Kirakira";
+						case 41: return "SDR2-???";
+						case 48: return "SDR2-Junko-2";
+						case 50: return "SDR2-Twilight-Syndrome-Child-A";
+						case 51: return "SDR2-Twilight-Syndrome-Child-B";
+						case 52: return "SDR2-Twilight-Syndrome-Child-C";
+						case 53: return "SDR2-Twilight-Syndrome-Child-D";
+						case 54: return "SDR2-Twilight-Syndrome-Child-E";
+						case 55: return "SDR2-Twilight-Syndrome-Man-F";
+						case 56: return "SDR2-Twilight-Syndrome-???";
+						case 63: return "SDR2-Empty";
+						default: return "Unknown-" + id.ToString( "X2" );
+					}
+				default:
+					return "Unknown-" + id.ToString( "X2" );
 			}
 		}
 
