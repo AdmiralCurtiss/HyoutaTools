@@ -706,5 +706,84 @@ namespace HyoutaTools.DanganRonpa.Lin {
 
 
 
+
+		internal void ReinsertCodeIntoDatabase( string ConnectionString ) {
+			throw new NotImplementedException();
+									/*
+
+			SQLiteConnection Connection = new SQLiteConnection( ConnectionString );
+			Connection.Open();
+
+			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
+			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
+				SQLiteParameter EnglishIDParam = new SQLiteParameter();
+				SQLiteParameter IdentifyStringParam = new SQLiteParameter();
+
+				Command.CommandText = "UPDATE Text SET IdentifyString = ? WHERE ID = ?";
+				Command.Parameters.Add( IdentifyStringParam );
+				Command.Parameters.Add( EnglishIDParam );
+				int ENID = 1;
+
+				string TextToInsert = "";
+				foreach ( ScriptEntry s in lin.ScriptData ) {
+					if ( s.Type == 0x02 ) {
+						ExecuteInsert( TextToInsert, 1, "[Game Code]", 0, ref JapaneseSearchParam, CommandSearchJapanese, ref JPMaxID, ref ENID, ref JapaneseIDParam, ref JapaneseParam, CommandGracesJapanese, ref EnglishIDParam, ref StringIDParam, ref EnglishParam, ref EnglishStatusParam, ref PointerRefParam, Command, ref IdentifyStringParam, ref IdentifyPointerRefParam );
+						ENID++;
+						ExecuteInsert( s.Text, 2, s.IdentifyString, 0, ref JapaneseSearchParam, CommandSearchJapanese, ref JPMaxID, ref ENID, ref JapaneseIDParam, ref JapaneseParam, CommandGracesJapanese, ref EnglishIDParam, ref StringIDParam, ref EnglishParam, ref EnglishStatusParam, ref PointerRefParam, Command, ref IdentifyStringParam, ref IdentifyPointerRefParam );
+						ENID++;
+						TextToInsert = "";
+						continue;
+					}
+					TextToInsert = TextToInsert + s.FormatForGraceNote() + '\n';
+				}
+				if ( TextToInsert != null ) {
+					ExecuteInsert( TextToInsert, 1, "[Game Code]", 0, ref JapaneseSearchParam, CommandSearchJapanese, ref JPMaxID, ref ENID, ref JapaneseIDParam, ref JapaneseParam, CommandGracesJapanese, ref EnglishIDParam, ref StringIDParam, ref EnglishParam, ref EnglishStatusParam, ref PointerRefParam, Command, ref IdentifyStringParam, ref IdentifyPointerRefParam );
+					ENID++;
+				}
+
+				if ( lin.UnreferencedText != null ) {
+					foreach ( KeyValuePair<int, string> u in lin.UnreferencedText ) {
+						ExecuteInsert( u.Value, 3, "[Unreferenced Text]", u.Key, ref JapaneseSearchParam, CommandSearchJapanese, ref JPMaxID, ref ENID, ref JapaneseIDParam, ref JapaneseParam, CommandGracesJapanese, ref EnglishIDParam, ref StringIDParam, ref EnglishParam, ref EnglishStatusParam, ref PointerRefParam, Command, ref IdentifyStringParam, ref IdentifyPointerRefParam );
+						ENID++;
+					}
+				}
+
+				Transaction.Commit();
+			}
+			Connection.Close();
+								   */
+			return;
+		}
+
+		internal void ReinsertNamesIntoDatabase( string ConnectionString ) {
+			SQLiteConnection Connection = new SQLiteConnection( ConnectionString );
+			Connection.Open();
+
+			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
+			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
+				SQLiteParameter EnglishIDParam = new SQLiteParameter();
+				SQLiteParameter IdentifyStringParam = new SQLiteParameter();
+
+				Command.CommandText = "UPDATE Text SET IdentifyString = ? WHERE ID = ?";
+				Command.Parameters.Add( IdentifyStringParam );
+				Command.Parameters.Add( EnglishIDParam );
+				int ENID = 1;
+
+				foreach ( ScriptEntry s in this.ScriptData ) {
+					if ( s.Type == 0x02 ) {
+						ENID++;
+						EnglishIDParam.Value = ENID;
+						IdentifyStringParam.Value = s.IdentifyString;
+						Command.ExecuteNonQuery();
+						ENID++;
+						continue;
+					}
+				}
+				Transaction.Commit();
+			}
+			Connection.Close();
+
+			return;
+		}
 	}
 }

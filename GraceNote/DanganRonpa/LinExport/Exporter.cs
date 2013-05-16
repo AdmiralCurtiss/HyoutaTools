@@ -8,7 +8,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinExport {
 	public static class Exporter {
 		public static int Export( List<string> args ) {
 			if ( args.Count < 3 ) {
-				Console.WriteLine( "Usage: text.lin.orig text.lin.new database [alignment (default 1024)] [LIN version (default 1)]" );
+				Console.WriteLine( "Usage: text.lin.orig text.lin.new database [alignment (default 1024)] [LIN version (default 1)] [-refreshNames] [-refreshCode]" );
 				return -1;
 			}
 
@@ -21,12 +21,14 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinExport {
 				Version = 1;
 			}
 			HyoutaTools.DanganRonpa.DanganUtil.GameVersion = Version;
-			return LinExport.Exporter.Export( args[0], args[1], args[2], Alignment );
+			return LinExport.Exporter.Export( args[0], args[1], args[2], Alignment, args.Contains( "-refreshNames" ), args.Contains( "-refreshCode" ) );
 		}
-		public static int Export( String InFilename, String OutFilename, String DB, int Alignment ) {
+		public static int Export( String InFilename, String OutFilename, String DB, int Alignment, bool RefreshNames, bool RefreshCode ) {
 			LIN lin;
 			try {
 				lin = new LIN( InFilename );
+				if ( RefreshNames ) { lin.ReinsertNamesIntoDatabase( "Data Source=" + DB ); }
+				if ( RefreshCode ) { lin.ReinsertCodeIntoDatabase( "Data Source=" + DB ); }
 				lin.GetSQL( "Data Source=" + DB );
 			} catch ( Exception ex ) {
 				Console.WriteLine( ex.Message );

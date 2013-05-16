@@ -40,16 +40,16 @@ namespace HyoutaTools.DanganRonpa {
 					}
 				case 2:
 					switch ( id ) {
-						case 0:  return "SDR2-Hinata";
-						case 1:  return "SDR2-Nagito";
-						case 2:  return "SDR2-Togami-Fat";
-						case 3:  return "SDR2-Gundam";
-						case 4:  return "SDR2-Souda";
-						case 5:  return "SDR2-Hanamura";
-						case 6:  return "SDR2-Nidai";
-						case 7:  return "SDR2-Kuzuryuu";
-						case 8:  return "SDR2-Akane";
-						case 9:  return "SDR2-Nanami";
+						case 0: return "SDR2-Hinata";
+						case 1: return "SDR2-Nagito";
+						case 2: return "SDR2-Togami-Fat";
+						case 3: return "SDR2-Gundam";
+						case 4: return "SDR2-Souda";
+						case 5: return "SDR2-Hanamura";
+						case 6: return "SDR2-Nidai";
+						case 7: return "SDR2-Kuzuryuu";
+						case 8: return "SDR2-Akane";
+						case 9: return "SDR2-Nanami";
 						case 10: return "SDR2-Sonia";
 						case 11: return "SDR2-Saionji";
 						case 12: return "SDR2-Mahiru";
@@ -117,6 +117,46 @@ namespace HyoutaTools.DanganRonpa {
 				case "Daiya": return 0x19;
 				case "???": return 0x1E;
 				case "None": return 0x1F;
+				case "SDR2-Hinata": return 0;
+				case "SDR2-Nagito": return 1;
+				case "SDR2-Togami-Fat": return 2;
+				case "SDR2-Gundam": return 3;
+				case "SDR2-Souda": return 4;
+				case "SDR2-Hanamura": return 5;
+				case "SDR2-Nidai": return 6;
+				case "SDR2-Kuzuryuu": return 7;
+				case "SDR2-Akane": return 8;
+				case "SDR2-Nanami": return 9;
+				case "SDR2-Sonia": return 10;
+				case "SDR2-Saionji": return 11;
+				case "SDR2-Mahiru": return 12;
+				case "SDR2-Mikan": return 13;
+				case "SDR2-Ibuki": return 14;
+				case "SDR2-Pekoyama": return 15;
+				case "SDR2-Monobear": return 16;
+				case "SDR2-Monomi": return 17;
+				case "SDR2-Junko": return 18;
+				case "SDR2-Nidai-Robot": return 19;
+				case "SDR2-Naegi": return 20;
+				case "SDR2-Kirigiri": return 21;
+				case "SDR2-Togami": return 22;
+				case "SDR2-Hanamura-Mother": return 23;
+				case "SDR2-AlterEgo": return 24;
+				case "SDR2-Mini-Nidai": return 25;
+				case "SDR2-Monobear/Monomi": return 26;
+				case "SDR2-Narrator": return 27;
+				case "SDR2-Usami": return 39;
+				case "SDR2-Kirakira": return 40;
+				case "SDR2-???": return 41;
+				case "SDR2-Junko-2": return 48;
+				case "SDR2-Twilight-Syndrome-Child-A": return 50;
+				case "SDR2-Twilight-Syndrome-Child-B": return 51;
+				case "SDR2-Twilight-Syndrome-Child-C": return 52;
+				case "SDR2-Twilight-Syndrome-Child-D": return 53;
+				case "SDR2-Twilight-Syndrome-Child-E": return 54;
+				case "SDR2-Twilight-Syndrome-Man-F": return 55;
+				case "SDR2-Twilight-Syndrome-???": return 56;
+				case "SDR2-Empty": return 63;
 				default:
 					if ( name.StartsWith( "Unknown-" ) ) {
 						string idstr = name.Substring( "Unknown-".Length );
