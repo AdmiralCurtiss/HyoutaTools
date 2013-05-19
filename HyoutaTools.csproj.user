@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>DanganRonpa.Nonstop.Viewer</StartArguments>
+    <StartArguments>GraceNote.DanganRonpa.LinExport d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\jp\script\e00_000_001.lin d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\jp\script\e00_000_001.lin.new d:\_svn\GraceNote\GraceNote\SDR2db\e00_000_001.db 1 2 -refreshCode</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <StartArguments>DanganRonpa.Nonstop.Viewer d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\all\bin\nonstop_03_008.dat</StartArguments>
+    <StartArguments>GraceNote.DanganRonpa.LinExport d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\jp\script\e00_000_001.lin d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\jp\script\e00_000_001.lin.new d:\_svn\GraceNote\GraceNote\SDR2db\e00_000_001.db 1 2 -refreshCode</StartArguments>
   </PropertyGroup>
 </Project>

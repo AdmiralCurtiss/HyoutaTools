@@ -99,7 +99,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 							sb.Append( "WaitPlayerInput" );
 							if ( Arguments.Length != 0 ) { throw new Exception( "0x3A has arguments!" ); }
 						} else if ( DanganUtil.GameVersion >= 2 ) {
-							sb.Append( "0x3A: " );
+							sb.Append( "0x3A:" );
 							foreach ( byte a in Arguments ) { sb.Append( " " ).Append( "0x" ).Append( a.ToString( "X2" ) ); }
 						}
 						break;
@@ -108,7 +108,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 							sb.Append( "WaitFrame" );
 							if ( Arguments.Length != 0 ) { throw new Exception( "0x3B has arguments!" ); }
 						} else if ( DanganUtil.GameVersion >= 2 ) {
-							sb.Append( "0x3B: " );
+							sb.Append( "0x3B:" );
 							foreach ( byte a in Arguments ) { sb.Append( " " ).Append( "0x" ).Append( a.ToString( "X2" ) ); }
 						}
 						break;
@@ -632,6 +632,8 @@ namespace HyoutaTools.DanganRonpa.Lin {
 								switch ( cmd ) {
 									case "WaitPlayerInput": e.Type = 0x3A; break;
 									case "WaitFrame": e.Type = 0x3B; break;
+									case "SDR2-WaitPlayerInput": e.Type = 0x4B; break;
+									case "SDR2-WaitFrame": e.Type = 0x4C; break;
 									default: e.Type = Util.ParseDecOrHexToByte( cmd ); break;
 								}
 								e.Arguments = new byte[0];
