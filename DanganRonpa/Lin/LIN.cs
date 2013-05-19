@@ -99,7 +99,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 							sb.Append( "WaitPlayerInput" );
 							if ( Arguments.Length != 0 ) { throw new Exception( "0x3A has arguments!" ); }
 						} else if ( DanganUtil.GameVersion >= 2 ) {
-							sb.Append( "WaitPlayerInput: " );
+							sb.Append( "0x3A: " );
 							foreach ( byte a in Arguments ) { sb.Append( " " ).Append( "0x" ).Append( a.ToString( "X2" ) ); }
 						}
 						break;
@@ -108,11 +108,20 @@ namespace HyoutaTools.DanganRonpa.Lin {
 							sb.Append( "WaitFrame" );
 							if ( Arguments.Length != 0 ) { throw new Exception( "0x3B has arguments!" ); }
 						} else if ( DanganUtil.GameVersion >= 2 ) {
-							sb.Append( "WaitFrame: " );
+							sb.Append( "0x3B: " );
 							foreach ( byte a in Arguments ) { sb.Append( " " ).Append( "0x" ).Append( a.ToString( "X2" ) ); }
 						}
 						break;
 					//case 0x3C: entry.Arguments = new byte[0]; break;
+					// SDR2: 0x4C -> WaitFrame; 0x4B -> WaitPlayerInput
+					case 0x4B:
+						sb.Append( "SDR2-WaitPlayerInput" );
+						if ( Arguments.Length != 0 ) { throw new Exception( "0x4B has arguments!" ); }
+						break;
+					case 0x4C:
+						sb.Append( "SDR2-WaitFrame" );
+						if ( Arguments.Length != 0 ) { throw new Exception( "0x4C has arguments!" ); }
+						break;
 					default:
 						sb.Append( "0x" ).Append( Type.ToString( "X2" ) ).Append( ":" );
 						foreach ( byte a in Arguments ) { sb.Append( " " ).Append( "0x" ).Append( a.ToString( "X2" ) ); }
@@ -602,6 +611,8 @@ namespace HyoutaTools.DanganRonpa.Lin {
 									case "Speaker": e.Type = 0x21; break;
 									case "WaitPlayerInput": e.Type = 0x3A; break;
 									case "WaitFrame": e.Type = 0x3B; break;
+									case "SDR2-WaitPlayerInput": e.Type = 0x4B; break;
+									case "SDR2-WaitFrame": e.Type = 0x4C; break;
 									default: e.Type = Util.ParseDecOrHexToByte( typestr ); break;
 								}
 
