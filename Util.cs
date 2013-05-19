@@ -363,8 +363,11 @@ namespace HyoutaTools {
 		#endregion
 
 		#region TimeUtils
-		public static DateTime UnixTimeToDateTime( uint unixTime ) {
+		public static DateTime UnixTimeToDateTime( ulong unixTime ) {
 			return new DateTime( 1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).AddSeconds( unixTime ).ToLocalTime();
+		}
+		public static ulong DateTimeToUnixTime( DateTime time ) {
+			return (ulong)(time - new DateTime( 1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).ToLocalTime()).TotalSeconds;
 		}
 		public static DateTime PS3TimeToDateTime( ulong PS3Time ) {
 			return new DateTime( 1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).AddMilliseconds( PS3Time / 1000 ).ToLocalTime();
