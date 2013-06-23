@@ -169,6 +169,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 			if ( Type == 2 ) {
 				TextBlockLocation = BitConverter.ToInt32( Bytes, 0x8 );
 				Filesize = BitConverter.ToInt32( Bytes, 0xC );
+				if ( Filesize == 0 ) { Filesize = Bytes.Length; } // i'm honestly surprised the game even runs fine if you don't set this properly
 
 				ScriptData = CreateScriptDataFromOriginal();
 				TextAmount = BitConverter.ToInt32( Bytes, TextBlockLocation );
@@ -206,7 +207,11 @@ namespace HyoutaTools.DanganRonpa.Lin {
 					int TextLocation = BitConverter.ToInt32( OriginalFile, TextBlockLocation + ( ( TextId + 1 ) * 4 ) );
 					int NextTextLocation = BitConverter.ToInt32( OriginalFile, TextBlockLocation + ( ( TextId + 2 ) * 4 ) );
 					if ( TextId == TextAmount - 1 ) { NextTextLocation = this.Filesize - TextBlockLocation; }
-					ScriptData[i].Text = Encoding.Unicode.GetString( OriginalFile, TextBlockLocation + TextLocation, NextTextLocation - TextLocation );
+					//try {
+						ScriptData[i].Text = Encoding.Unicode.GetString( OriginalFile, TextBlockLocation + TextLocation, NextTextLocation - TextLocation );
+					//} catch ( Exception ex ) {
+					//	throw ex;
+					//}
 				} else {
 					ScriptData[i].Text = null;
 				}
@@ -219,7 +224,13 @@ namespace HyoutaTools.DanganRonpa.Lin {
 
 					int TextLocation = BitConverter.ToInt32( OriginalFile, TextBlockLocation + ( ( i + 1 ) * 4 ) );
 					int NextTextLocation = BitConverter.ToInt32( OriginalFile, TextBlockLocation + ( ( i + 2 ) * 4 ) );
-					string Text = Encoding.Unicode.GetString( OriginalFile, TextBlockLocation + TextLocation, NextTextLocation - TextLocation );
+					if ( i == TextAmount - 1 ) { NextTextLocation = Filesize - TextBlockLocation; } // and someone neglected to put the end-of-text pointer back here, which to be fair SDR2 doesn't seem to have anymore either but still!
+					string Text = null;
+					//try {
+						Text = Encoding.Unicode.GetString( OriginalFile, TextBlockLocation + TextLocation, NextTextLocation - TextLocation );
+					//} catch ( Exception ex ) {
+					//	throw ex;
+					//}
 
 					UnreferencedText.Add( new KeyValuePair<int, string>( i, Text ) );
 				}

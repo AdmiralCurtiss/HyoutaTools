@@ -145,6 +145,7 @@ namespace HyoutaTools.DanganRonpa.PakText {
 
 			// sanity check: After EOF no further bytes
 			int ProjectedEnd = BitConverter.ToInt32( Bytes, ( TextAmount + 1 ) * 4 );
+			if ( ProjectedEnd == 0 ) { ProjectedEnd = Bytes.Length; } // again, someone forgot to set the end pointer
 			//ProjectedEnd = Util.AlignToByteBoundary(ProjectedEnd, 4);
 			for ( int i = ProjectedEnd; i < Bytes.Length; ++i ) {
 				if ( Bytes[i] != 0x00 ) {
@@ -159,6 +160,7 @@ namespace HyoutaTools.DanganRonpa.PakText {
 				e.OffsetLocation = i * 4;
 				e.Offset = BitConverter.ToInt32( Bytes, e.OffsetLocation );
 				int NextOffset = BitConverter.ToInt32( Bytes, e.OffsetLocation + 4 );
+				if ( i == TextAmount ) { NextOffset = Bytes.Length; } // grr
 
 				e.Text = Encoding.Unicode.GetString( Bytes, e.Offset, NextOffset - e.Offset );
 				TextList.Add( e );
