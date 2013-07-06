@@ -9,7 +9,7 @@ namespace HyoutaTools {
 		public string Name;
 		public string Shortcut;
 		public ProgramName( string Name, string Shortcut ) { this.Name = Name; this.Shortcut = Shortcut; }
-		public bool Equals( string other ) { return Name == other || Shortcut == other; }
+		public bool Equals( string other ) { return Name.ToLowerInvariant() == other.ToLowerInvariant() || Shortcut.ToLowerInvariant() == other.ToLowerInvariant(); }
 		public int CompareTo( ProgramName other ) { return Name.CompareTo( other.Name ); }
 	}
 
@@ -26,6 +26,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.umdimagedat",                 "DrUmdImg"    ),  DanganRonpa.umdimagedat.umdimagedat.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.BlockCopy",                       "BlockCopy"   ),  Generic.BlockCopy.BlockCopy.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.ByteHotfix",                      "ByteFix"     ),  Generic.ByteHotfix.ByteHotfix.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.ByteSwap",                        "ByteSwap"    ),  Generic.ByteSwap.ByteSwap.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.LinImport",         "GNDRlinIm"   ),  GraceNote.DanganRonpa.LinImport.Importer.Import) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.LinExport",         "GNDRlinEx"   ),  GraceNote.DanganRonpa.LinExport.Exporter.Export) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.NonstopMetaIntoDb", "-"           ),  GraceNote.DanganRonpa.NonstopExistingDatabaseImport.Importer.AutoImport) },

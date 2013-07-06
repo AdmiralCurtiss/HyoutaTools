@@ -526,6 +526,9 @@ namespace HyoutaTools {
 			return f;
 		}
 
+		public static int Align( int Number, int Alignment ) {
+			return (int)Align( (uint)Number, (uint)Alignment );
+		}
 		public static uint Align( uint Number, uint Alignment ) {
 			uint diff = Number % Alignment;
 			if ( diff == 0 ) {
