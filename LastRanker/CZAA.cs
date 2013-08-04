@@ -19,12 +19,12 @@ namespace HyoutaTools.LastRanker {
 
 		public CZAA( String filename ) {
 			if ( !LoadFile( new System.IO.FileStream( filename, System.IO.FileMode.Open ) ) ) {
-				throw new Exception( "bscr: Load Failed!" );
+				throw new Exception( "CZAA: Load Failed!" );
 			}
 		}
 		public CZAA( System.IO.Stream Bytes ) {
 			if ( !LoadFile( Bytes ) ) {
-				throw new Exception( "bscr: Load Failed!" );
+				throw new Exception( "CZAA: Load Failed!" );
 			}
 		}
 
@@ -42,6 +42,8 @@ namespace HyoutaTools.LastRanker {
 
 			byte[] decompFile = Ionic.Zlib.ZlibStream.UncompressBuffer( compFile );
 			ExtractedFile = decompFile;
+
+			File.Close();
 			return true;
 		}
 

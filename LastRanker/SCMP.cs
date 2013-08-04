@@ -18,12 +18,12 @@ namespace HyoutaTools.LastRanker {
 
 		public SCMP( String filename ) {
 			if ( !LoadFile( System.IO.File.ReadAllBytes( filename ) ) ) {
-				throw new Exception( "bscr: Load Failed!" );
+				throw new Exception( "SCMP: Load Failed!" );
 			}
 		}
 		public SCMP( byte[] Bytes ) {
 			if ( !LoadFile( Bytes ) ) {
-				throw new Exception( "bscr: Load Failed!" );
+				throw new Exception( "SCMP: Load Failed!" );
 			}
 		}
 
