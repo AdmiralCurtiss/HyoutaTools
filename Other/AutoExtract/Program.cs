@@ -336,7 +336,23 @@ namespace HyoutaTools.Other.AutoExtract {
 							fs.Close();
 							List<string> strl = new List<string>();
 							strl.Add( f );
+							Console.WriteLine( strl[0] );
 							LastRanker.SCMP.ExecuteExtract( strl );
+						}
+						if ( firstbyte == 'C' && secondbyte == 'Z' && thirdbyte == 'A' && fourthbyte == 'A' ) {
+							fs.Close();
+							System.IO.File.WriteAllBytes( f + ".dec", new LastRanker.CZAA( f ).ExtractedFile );
+							queue.Enqueue( new FileStruct( f + ".dec", fstr.Indirection ) );
+							System.IO.File.Delete( f );
+						}
+						if ( f.EndsWith( ".NPK" ) ) {
+							fs.Close();
+							List<string> strl = new List<string>();
+							strl.Add( f );
+							Console.WriteLine( strl[0] );
+							LastRanker.NPK.ExecuteExtract( strl );
+							queue.Enqueue( new FileStruct( f + ".dec", fstr.Indirection ) );
+							System.IO.File.Delete( f );
 						}
 					}
 				} catch ( FileNotFoundException ) { } catch ( Exception ex ) {

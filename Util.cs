@@ -78,6 +78,13 @@ namespace HyoutaTools {
 			return val - ( val < 58 ? 48 : ( val < 97 ? 55 : 87 ) );
 		}
 
+		public static uint ToUInt24( byte[] File, int Pointer ) {
+			byte b1 = File[Pointer];
+			byte b2 = File[Pointer + 1];
+			byte b3 = File[Pointer + 2];
+
+			return (uint)(b3 << 16 | b2 << 8 | b1);
+		}
 
 		#endregion
 

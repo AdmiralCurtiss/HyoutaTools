@@ -4,6 +4,6 @@
     <StartArguments>GraceNote.DanganRonpa.LinExport d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\jp\script\e00_000_001.lin d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\jp\script\e00_000_001.lin.new d:\_svn\GraceNote\GraceNote\SDR2db\e00_000_001.db 1 2 -refreshCode</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <StartArguments>LastRanker.CZAAextract "e:\MENU_SYSTEM.NPK.ZZZ" "e:\MENU_SYSTEM.NPK.ZZZ.ex"</StartArguments>
+    <StartArguments>LastRanker.NPKextract "e:\Z0.NPK"</StartArguments>
   </PropertyGroup>
 </Project>
