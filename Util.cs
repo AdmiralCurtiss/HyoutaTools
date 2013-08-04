@@ -332,7 +332,11 @@ namespace HyoutaTools {
 			}
 		}
 		public static String GetTextUTF8( byte[] File, int Pointer ) {
-			if ( Pointer == -1 ) return null;
+			int tmp;
+			return GetTextUTF8( File, Pointer, out tmp );
+		}
+		public static String GetTextUTF8( byte[] File, int Pointer, out int NullLocation ) {
+			if ( Pointer == -1 ) { NullLocation = -1; return null; }
 
 			try {
 				int i = Pointer;
@@ -340,8 +344,10 @@ namespace HyoutaTools {
 					i++;
 				}
 				String Text = Encoding.UTF8.GetString( File, Pointer, i - Pointer );
+				NullLocation = i;
 				return Text;
 			} catch ( Exception ) {
+				NullLocation = -1;
 				return null;
 			}
 		}
