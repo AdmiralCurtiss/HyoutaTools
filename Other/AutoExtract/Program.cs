@@ -89,7 +89,9 @@ namespace HyoutaTools.Other.AutoExtract {
 				Console.WriteLine( "Include \"start\" in the arguments to confirm execution!" );
 				Console.WriteLine( "Other arguments to enable specific file types:" );
 				Console.WriteLine( "  comptoe     Tales Compressor files" );
-
+				Console.WriteLine( "  DRpak       Dangan Ronpa PAK files" );
+				Console.WriteLine( "Usage of these parameters could break unrelated files, be careful." );
+				return -1;
 			}
 
 
@@ -99,6 +101,7 @@ namespace HyoutaTools.Other.AutoExtract {
 			EnqueueDirectoryRecursively( queue, System.Environment.CurrentDirectory );
 
 			bool AllowComptoe = argumentsGiven.Contains( "comptoe" );
+			bool AllowDrPak = argumentsGiven.Contains( "DRpak" );
 
 			while ( queue.Count > 0 ) {
 				FileStruct fstr = queue.Dequeue();
@@ -303,14 +306,16 @@ namespace HyoutaTools.Other.AutoExtract {
 							f = RenameToWithExtension( f, ".llfs" );
 						}
 
-						if ( f.ToLowerInvariant().EndsWith( ".pak" ) || ( secondbyte < 0x10 && thirdbyte == 0x00 && fourthbyte == 0x00 ) ) {
-							// could maybe possibly be a PAK file who knows
-							fs.Close();
-							prog = @"HyoutaTools";
-							args = "DrPakE \"" + f + "\"";
-							if ( RunProgram( prog, args ) ) {
-								EnqueueDirectoryRecursively( queue, f + ".ex" );
-								System.IO.File.Delete( f );
+						if ( AllowDrPak ) {
+							if ( f.ToLowerInvariant().EndsWith( ".pak" ) || ( secondbyte < 0x10 && thirdbyte == 0x00 && fourthbyte == 0x00 ) ) {
+								// could maybe possibly be a PAK file who knows
+								fs.Close();
+								prog = @"HyoutaTools";
+								args = "DrPakE \"" + f + "\"";
+								if ( RunProgram( prog, args ) ) {
+									EnqueueDirectoryRecursively( queue, f + ".ex" );
+									System.IO.File.Delete( f );
+								}
 							}
 						}
 
@@ -345,13 +350,22 @@ namespace HyoutaTools.Other.AutoExtract {
 							queue.Enqueue( new FileStruct( f + ".dec", fstr.Indirection ) );
 							System.IO.File.Delete( f );
 						}
-						if ( f.EndsWith( ".NPK" ) ) {
+						if ( f.ToUpperInvariant().EndsWith( ".NPK" ) ) {
 							fs.Close();
 							List<string> strl = new List<string>();
 							strl.Add( f );
 							Console.WriteLine( strl[0] );
 							LastRanker.NPK.ExecuteExtract( strl );
-							queue.Enqueue( new FileStruct( f + ".dec", fstr.Indirection ) );
+							EnqueueDirectoryRecursively( queue, f + ".ex" );
+							System.IO.File.Delete( f );
+						}
+						if ( firstbyte == 'R' && secondbyte == 'T' && thirdbyte == 'D' && fourthbyte == 'P' ) {
+							fs.Close();
+							List<string> strl = new List<string>();
+							strl.Add( f );
+							Console.WriteLine( strl[0] );
+							LastRanker.RTDP.ExecuteExtract( strl );
+							EnqueueDirectoryRecursively( queue, f + ".ex" );
 							System.IO.File.Delete( f );
 						}
 					}

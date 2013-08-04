@@ -79,6 +79,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.SCMPextract",                  "-"           ),  LastRanker.SCMP.ExecuteExtract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.CZAAextract",                  "-"           ),  LastRanker.CZAA.ExecuteExtract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.NPKextract",                   "-"           ),  LastRanker.NPK.ExecuteExtract) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.RTDPextract",                  "-"           ),  LastRanker.RTDP.ExecuteExtract) },
 		};
 
 		[STAThread]

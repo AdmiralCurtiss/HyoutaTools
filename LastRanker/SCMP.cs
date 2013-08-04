@@ -51,7 +51,7 @@ namespace HyoutaTools.LastRanker {
 				uint end = FilePointers[i + 1];
 				uint count = end - start;
 
-				string extension = Encoding.ASCII.GetString( File, (int)start, 4 );
+				string extension = Encoding.ASCII.GetString( File, (int)start, 4 ).TrimEnd( '\0' );
 				string outfilename = i.ToString( "D4" ) + "." + extension;
 
 				string outpath = System.IO.Path.Combine( Outdir, outfilename );
