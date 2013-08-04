@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
+using System.IO;
 
 namespace HyoutaTools {
 	class Util {
@@ -475,7 +476,7 @@ namespace HyoutaTools {
 		#endregion
 
 		#region ProgramUtils
-		public static bool RunProgram( String prog, String args, bool displayCommandLine, bool displayOutput ) {
+		public static bool RunProgram( String prog, String args, bool displayCommandLine, bool displayOutput, bool useShell = false) {
 			if ( displayCommandLine ) {
 				Console.Write( prog );
 				Console.Write( " " );
@@ -485,17 +486,25 @@ namespace HyoutaTools {
 			// Use ProcessStartInfo class
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
 			startInfo.CreateNoWindow = false;
-			startInfo.UseShellExecute = false;
+			startInfo.UseShellExecute = useShell;
 			startInfo.FileName = prog;
 			startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
 			startInfo.Arguments = args;
-			startInfo.RedirectStandardOutput = true;
-			startInfo.RedirectStandardError = true;
+			startInfo.RedirectStandardOutput = !useShell;
+			startInfo.RedirectStandardError = !useShell;
+			//startInfo.RedirectStandardInput = !useShell;
+			//startInfo.UserName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
 
 			using ( System.Diagnostics.Process exeProcess = System.Diagnostics.Process.Start( startInfo ) ) {
 				exeProcess.WaitForExit();
-				string output = exeProcess.StandardOutput.ReadToEnd();
-				string err = exeProcess.StandardError.ReadToEnd();
+				if ( useShell ) {
+					return exeProcess.ExitCode == 0;
+				}
+
+				string output;
+				string err;
+				output = exeProcess.StandardOutput.ReadToEnd();
+				err = exeProcess.StandardError.ReadToEnd();
 				int exitCode = exeProcess.ExitCode;
 
 				if ( exitCode != 0 ) {

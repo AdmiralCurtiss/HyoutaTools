@@ -313,6 +313,31 @@ namespace HyoutaTools.Other.AutoExtract {
 								System.IO.File.Delete( f );
 							}
 						}
+
+						if ( firstbyte == 0x1F && secondbyte == 0x8B && thirdbyte == 0x08 ) {
+							// gzip compressed file
+							fs.Position = 0;
+							var outfile = new System.IO.FileStream( f + ".dec", System.IO.FileMode.Create );
+							using ( var decompressed = new System.IO.Compression.GZipStream( fs, System.IO.Compression.CompressionMode.Decompress ) ) {
+								byte[] buffer = new byte[4096];
+								int numRead;
+								while ( ( numRead = decompressed.Read( buffer, 0, buffer.Length ) ) != 0 ) {
+									outfile.Write( buffer, 0, numRead );
+								}
+							}
+							outfile.Close();
+
+							queue.Enqueue( new FileStruct( f + ".dec", fstr.Indirection ) );
+							System.IO.File.Delete( f );
+
+						}
+
+						if ( firstbyte == 'S' && secondbyte == 'C' && thirdbyte == 'M' && fourthbyte == 'P' ) {
+							fs.Close();
+							List<string> strl = new List<string>();
+							strl.Add( f );
+							LastRanker.SCMP.ExecuteExtract( strl );
+						}
 					}
 				} catch ( FileNotFoundException ) { } catch ( Exception ex ) {
 					Console.WriteLine( ex.ToString() );
