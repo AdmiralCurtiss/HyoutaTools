@@ -38,6 +38,9 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zlib.CF">
+      <HintPath>.\Ionic.Zlib.CF.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite">
@@ -97,6 +100,7 @@
     <Compile Include="GraceNote\Vesperia\To8chtxExport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
     <Compile Include="LastRanker\bscr.cs" />
+    <Compile Include="LastRanker\CZAA.cs" />
     <Compile Include="LastRanker\SCMP.cs" />
     <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
