@@ -90,6 +90,7 @@
     <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
     <Compile Include="GraceNote\GoogleTranslate\TranslateDatabase.cs" />
+    <Compile Include="GraceNote\LastRanker\bscrImport.cs" />
     <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
@@ -275,6 +276,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Files\todr_char_table_without_header.dat" />
+    <None Include="Files\gndb_template" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

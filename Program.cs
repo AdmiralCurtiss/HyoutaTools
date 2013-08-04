@@ -75,6 +75,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.N64.OoTSaveEditor",                 "OoTsaveedit" ),  Other.N64.OoTSaveEditor.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.GoogleTranslate",               "GNtranslate" ),  GraceNote.GoogleTranslate.TranslateDatabase.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.AutoFormat",        "-"           ),  GraceNote.DanganRonpa.AutoFormatting.AutoFormat.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LastRanker.bscrImport",         "-"           ),  GraceNote.LastRanker.bscrImport.Import) },
 
 		};
 
