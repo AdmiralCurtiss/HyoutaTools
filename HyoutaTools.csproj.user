@@ -4,6 +4,6 @@
     <StartArguments>GraceNote.DanganRonpa.LinExport d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\jp\script\e00_000_001.lin d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\jp\script\e00_000_001.lin.new d:\_svn\GraceNote\GraceNote\SDR2db\e00_000_001.db 1 2 -refreshCode</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <StartArguments>GraceNote.DanganRonpa.LinExport d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\jp\script\e00_000_001.lin d:\_svn\GraceNote\GraceNote\SDR2rebuild\data01\jp\script\e00_000_001.lin.new d:\_svn\GraceNote\GraceNote\SDR2db\e00_000_001.db 1 2 -refreshCode</StartArguments>
+    <StartArguments>LastRanker.SCMPextract "e:\aaa\MAP_D_SAL_03.BIN.ex"</StartArguments>
   </PropertyGroup>
 </Project>

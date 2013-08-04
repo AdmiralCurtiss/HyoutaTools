@@ -97,6 +97,7 @@
     <Compile Include="GraceNote\Vesperia\To8chtxExport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
     <Compile Include="LastRanker\bscr.cs" />
+    <Compile Include="LastRanker\SCMP.cs" />
     <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
     <Compile Include="Other\N64\OoTSaveEditor\OoTSaveEditForm.cs">
