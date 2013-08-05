@@ -22,13 +22,13 @@ namespace HyoutaTools.LastRanker {
 			return 0;
 		}
 		public static int ExecutePack( List<string> args ) {
-			if ( args.Count < 1 ) {
-				Console.WriteLine( "Usage: Dir NewRTDPfile" );
+			if ( args.Count < 3 ) {
+				Console.WriteLine( "Usage: Dir NewRTDPfile FileOrderList" );
 				return -1;
 			}
 
 
-			new RTDP().CreateFromDirectory( args[0], args[1] );
+			new RTDP().CreateFromDirectory( args[0], args[1], System.IO.File.ReadAllLines( args[2] ) );
 
 			return 0;
 		}
@@ -69,13 +69,16 @@ namespace HyoutaTools.LastRanker {
 			return true;
 		}
 
-		public void CreateFromDirectory( string Dir, string Outfile ) {
-			string[] Filepaths = System.IO.Directory.GetFiles( Dir );
+		public void CreateFromDirectory( string Dir, string Outfile, string[] FileOrder ) {
+			List<string> Filepaths = new List<string>();
+			foreach ( string f in FileOrder ) {
+				Filepaths.Add( System.IO.Path.Combine( Dir, f ) );
+			}
 			var Filestream = new System.IO.FileStream( Outfile, System.IO.FileMode.Create );
 
 
 			uint RequiredBytesForHeader;
-			uint Filecount = (uint)Filepaths.Length;
+			uint Filecount = (uint)Filepaths.Count;
 			uint TotalFilesize;
 			Xorbyte = 0x55;
 			//Xorbyte = 0x00;
@@ -152,6 +155,13 @@ namespace HyoutaTools.LastRanker {
 				}
 				fs.Close();
 			}
+
+			// write filename order
+			List<string> Filenames = new List<string>();
+			foreach ( RTDPfile r in FileData ) {
+				Filenames.Add( r.Name );
+			}
+			System.IO.File.WriteAllLines( Outdir + ".fileorder", Filenames.ToArray() );
 		}
 	}
 }
