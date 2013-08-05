@@ -83,6 +83,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.NPKpack",                      "-"           ),  LastRanker.NPK.ExecutePack) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.RTDPextract",                  "-"           ),  LastRanker.RTDP.ExecuteExtract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LastRanker.StringImport",       "-"           ),  GraceNote.LastRanker.StringImport.Import) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LastRanker.StringExport",       "-"           ),  GraceNote.LastRanker.StringExport.Export) },
 		};
 
 		[STAThread]

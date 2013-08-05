@@ -94,6 +94,7 @@
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
     <Compile Include="GraceNote\GoogleTranslate\TranslateDatabase.cs" />
     <Compile Include="GraceNote\LastRanker\bscrImport.cs" />
+    <Compile Include="GraceNote\LastRanker\StringExport.cs" />
     <Compile Include="GraceNote\LastRanker\StringImport.cs" />
     <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
