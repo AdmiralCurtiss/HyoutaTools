@@ -16,6 +16,17 @@ namespace HyoutaTools.LastRanker {
 
 			return 0;
 		}
+		public static int ExecutePack( List<string> args ) {
+			if ( args.Count < 2 ) {
+				Console.WriteLine( "Usage: infile outfile" );
+				return -1;
+			}
+
+			CZAA c = new CZAA();
+			System.IO.File.WriteAllBytes( args[1], c.CompressFile( System.IO.File.ReadAllBytes( args[0] ) ) );
+
+			return 0;
+		}
 
 		public CZAA( String filename ) {
 			if ( !LoadFile( new System.IO.FileStream( filename, System.IO.FileMode.Open ) ) ) {
@@ -27,6 +38,7 @@ namespace HyoutaTools.LastRanker {
 				throw new Exception( "CZAA: Load Failed!" );
 			}
 		}
+		public CZAA() { }
 
 		public byte[] ExtractedFile;
 
@@ -38,7 +50,7 @@ namespace HyoutaTools.LastRanker {
 
 			byte[] compFile = new byte[(int)File.Length - 0x10];
 			File.Seek( 0x10, System.IO.SeekOrigin.Begin );
-			File.Read(compFile, 0, (int)File.Length - 0x10);
+			File.Read( compFile, 0, (int)File.Length - 0x10 );
 
 			byte[] decompFile = Ionic.Zlib.ZlibStream.UncompressBuffer( compFile );
 			ExtractedFile = decompFile;
@@ -47,5 +59,15 @@ namespace HyoutaTools.LastRanker {
 			return true;
 		}
 
+		public byte[] CompressFile( byte[] File ) {
+			byte[] comp = Ionic.Zlib.ZlibStream.CompressBuffer( File );
+			byte[] NewFile = new byte[comp.Length + 0x10];
+
+			NewFile[0] = (byte)'C'; NewFile[1] = (byte)'Z'; NewFile[2] = (byte)'A'; NewFile[3] = (byte)'A';
+			Util.CopyByteArrayPart( BitConverter.GetBytes( (uint)File.Length ), 0, NewFile, 4, 4 );
+			Util.CopyByteArrayPart( comp, 0, NewFile, 0x10, comp.Length );
+
+			return NewFile;
+		}
 	}
 }
