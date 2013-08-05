@@ -83,7 +83,14 @@ namespace HyoutaTools {
 			byte b2 = File[Pointer + 1];
 			byte b3 = File[Pointer + 2];
 
-			return (uint)(b3 << 16 | b2 << 8 | b1);
+			return (uint)( b3 << 16 | b2 << 8 | b1 );
+		}
+		public static byte[] GetBytesForUInt24( uint Number ) {
+			byte[] b = new byte[3];
+			b[0] = (byte)( Number & 0xFF );
+			b[1] = (byte)( ( Number >> 8 ) & 0xFF );
+			b[2] = (byte)( ( Number >> 16 ) & 0xFF );
+			return b;
 		}
 
 		#endregion
@@ -532,7 +539,7 @@ namespace HyoutaTools {
 
 		#endregion
 
-		public static void CopyByteArrayPart( byte[] from, int locationFrom, byte[] to, int locationTo, int count ) {
+		public static void CopyByteArrayPart( IList<byte> from, int locationFrom, IList<byte> to, int locationTo, int count ) {
 			for ( int i = 0; i < count; i++ ) {
 				to[locationTo + i] = from[locationFrom + i];
 			}

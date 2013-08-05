@@ -15,6 +15,18 @@ namespace HyoutaTools.LastRanker {
 
 			return 0;
 		}
+		public static int ExecutePack( List<string> args ) {
+			if ( args.Count < 2 ) {
+				Console.WriteLine( "Usage: Dir NewNPKfile" );
+				return -1;
+			}
+
+			new NPK().CreateFromDirectory( args[0], args[1] );
+
+			return 0;
+		}
+
+		public NPK() { }
 
 		public NPK( String filename ) {
 			if ( !LoadFile( System.IO.File.ReadAllBytes( filename ) ) ) {
@@ -58,6 +70,36 @@ namespace HyoutaTools.LastRanker {
 				fs.Write( File, (int)start, (int)count );
 				fs.Close();
 			}
+		}
+
+		public void CreateFromDirectory( string Dir, string Outfile ) {
+			string[] Filepaths = System.IO.Directory.GetFiles( Dir );
+
+			ushort Filecount = (ushort)Filepaths.Length;
+			uint RequiredBytesForHeader = Util.Align( Filecount * 3u + 2u, 0x10u );
+			var Filestream = new System.IO.FileStream( Outfile, System.IO.FileMode.Create );
+
+			// header
+			int CurrentLocation = 0;
+			Filestream.Write( BitConverter.GetBytes( Filecount ), CurrentLocation, 2 ); CurrentLocation += 2;
+			Filestream.Write( Util.GetBytesForUInt24( RequiredBytesForHeader ), CurrentLocation, 3 ); CurrentLocation += 3;
+			uint TotalFilesize = RequiredBytesForHeader;
+			foreach ( string Path in Filepaths ) {
+				TotalFilesize += (uint)( new System.IO.FileInfo( Path ).Length );
+				Filestream.Write( Util.GetBytesForUInt24( TotalFilesize ), CurrentLocation, 3 ); CurrentLocation += 3;
+				TotalFilesize = Util.Align( TotalFilesize, 0x10u );
+			}
+			while ( Filestream.Length < RequiredBytesForHeader ) { Filestream.WriteByte( 0x00 ); }
+
+			// files
+			foreach ( string Path in Filepaths ) {
+				var File = new System.IO.FileStream( Path, System.IO.FileMode.Open );
+				Util.CopyStream( File, Filestream, (int)File.Length );
+				File.Close();
+				while ( Filestream.Length % 0x10 != 0 ) { Filestream.WriteByte( 0x00 ); }
+			}
+
+			Filestream.Close();
 		}
 	}
 }
