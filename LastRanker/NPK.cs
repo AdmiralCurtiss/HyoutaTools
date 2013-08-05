@@ -76,7 +76,7 @@ namespace HyoutaTools.LastRanker {
 			string[] Filepaths = System.IO.Directory.GetFiles( Dir );
 
 			ushort Filecount = (ushort)Filepaths.Length;
-			uint RequiredBytesForHeader = Util.Align( Filecount * 3u + 2u, 0x10u );
+			uint RequiredBytesForHeader = Util.Align( Filecount * 3u + 5u, 0x10u ); // 3 bytes per filesize + 3 bytes for an extra pointer to first file + 2 bytes for filecount
 			var Filestream = new System.IO.FileStream( Outfile, System.IO.FileMode.Create );
 
 			// header
