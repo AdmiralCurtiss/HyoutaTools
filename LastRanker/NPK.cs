@@ -80,13 +80,12 @@ namespace HyoutaTools.LastRanker {
 			var Filestream = new System.IO.FileStream( Outfile, System.IO.FileMode.Create );
 
 			// header
-			int CurrentLocation = 0;
-			Filestream.Write( BitConverter.GetBytes( Filecount ), CurrentLocation, 2 ); CurrentLocation += 2;
-			Filestream.Write( Util.GetBytesForUInt24( RequiredBytesForHeader ), CurrentLocation, 3 ); CurrentLocation += 3;
+			Filestream.Write( BitConverter.GetBytes( Filecount ), 0, 2 );
+			Filestream.Write( Util.GetBytesForUInt24( RequiredBytesForHeader ), 0, 3 );
 			uint TotalFilesize = RequiredBytesForHeader;
 			foreach ( string Path in Filepaths ) {
 				TotalFilesize += (uint)( new System.IO.FileInfo( Path ).Length );
-				Filestream.Write( Util.GetBytesForUInt24( TotalFilesize ), CurrentLocation, 3 ); CurrentLocation += 3;
+				Filestream.Write( Util.GetBytesForUInt24( TotalFilesize ), 0, 3 );
 				TotalFilesize = Util.Align( TotalFilesize, 0x10u );
 			}
 			while ( Filestream.Length < RequiredBytesForHeader ) { Filestream.WriteByte( 0x00 ); }
