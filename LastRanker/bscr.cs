@@ -39,12 +39,12 @@ namespace HyoutaTools.LastRanker {
 
 		private uint TextCount;
 		private uint StartOfTextSection;
-		private uint Unknown5;
-		private uint StartOfTextureSection;
+		private uint ScriptSize;
+		private uint StartOfScriptSection;
 
 		private List<bscrFunc> FunctionCalls;
 		public List<bscrString> Strings;
-		private byte[] TexturesProbably;
+		private List<uint> Script;
 
 		private bool LoadFile( byte[] File ) {
 			FunctionCalls = new List<bscrFunc>();
@@ -57,8 +57,8 @@ namespace HyoutaTools.LastRanker {
 			StartOfFunctionSection = BitConverter.ToUInt32( File, 0x2C );
 			TextCount = BitConverter.ToUInt32( File, 0x30 );
 			StartOfTextSection = BitConverter.ToUInt32( File, 0x34 );
-			Unknown5 = BitConverter.ToUInt32( File, 0x38 );
-			StartOfTextureSection = BitConverter.ToUInt32( File, 0x3C );
+			ScriptSize = BitConverter.ToUInt32( File, 0x38 );
+			StartOfScriptSection = BitConverter.ToUInt32( File, 0x3C );
 
 			int pos;
 			for ( pos = (int)StartOfFunctionSection; pos < StartOfTextSection; ) {
@@ -86,8 +86,11 @@ namespace HyoutaTools.LastRanker {
 				pos = nullLoc + 1;
 			}
 
-			TexturesProbably = new byte[Filesize - StartOfTextureSection];
-			Util.CopyByteArrayPart( File, (int)StartOfTextureSection, TexturesProbably, 0, TexturesProbably.Length );
+			Script = new List<uint>( (int)ScriptSize );
+			for ( int i = 0; i < ScriptSize; i += 4 ) {
+				Script.Add( BitConverter.ToUInt32( File, (int)( StartOfScriptSection + i ) ) );
+			}
+
 
 			return true;
 		}
@@ -122,9 +125,11 @@ namespace HyoutaTools.LastRanker {
 			}
 			while ( File.Count % 0x4 != 0 ) { File.Add( 0x00 ); }
 
-			// textures
-			StartOfTextureSection = (uint)File.Count;
-			File.AddRange( TexturesProbably );
+			// script
+			StartOfScriptSection = (uint)File.Count;
+			foreach ( uint u in Script ) {
+				File.AddRange( BitConverter.GetBytes( u ) );
+			}
 
 			Filesize = (uint)File.Count;
 
@@ -133,7 +138,7 @@ namespace HyoutaTools.LastRanker {
 
 			FunctionCount = (uint)FunctionCalls.Count;
 			TextCount = (uint)Strings.Count;
-			//Unknown5;
+			ScriptSize = (uint)( Script.Count * 4 );
 
 			// header
 			File[0] = (byte)'b'; File[1] = (byte)'s'; File[2] = (byte)'c'; File[3] = (byte)'r';
@@ -145,8 +150,8 @@ namespace HyoutaTools.LastRanker {
 			Util.CopyByteArrayPart( BitConverter.GetBytes( StartOfFunctionSection ), 0, File, 0x2C, 4 );
 			Util.CopyByteArrayPart( BitConverter.GetBytes( TextCount ), 0, File, 0x30, 4 );
 			Util.CopyByteArrayPart( BitConverter.GetBytes( StartOfTextSection ), 0, File, 0x34, 4 );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( Unknown5 ), 0, File, 0x38, 4 );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( StartOfTextureSection ), 0, File, 0x3C, 4 );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( ScriptSize ), 0, File, 0x38, 4 );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( StartOfScriptSection ), 0, File, 0x3C, 4 );
 
 			System.IO.File.WriteAllBytes( Path, File.ToArray() );
 		}
