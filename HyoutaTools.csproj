@@ -108,6 +108,7 @@
     <Compile Include="LastRanker\SCMP.cs" />
     <Compile Include="LastRanker\StringFile.cs" />
     <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
+    <Compile Include="Other\GZip\GZipHandler.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
     <Compile Include="Other\N64\OoTSaveEditor\OoTSaveEditForm.cs">
       <SubType>Form</SubType>
