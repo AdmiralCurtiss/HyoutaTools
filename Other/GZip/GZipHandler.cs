@@ -44,7 +44,7 @@ namespace HyoutaTools.Other.GZip {
 		public static void Compress( FileStream fs, string outpath ) {
 			fs.Position = 0;
 			var outfile = new FileStream( outpath, System.IO.FileMode.Create );
-			using ( var compressed = new GZipStream( outfile, CompressionMode.Compress ) ) {
+			using ( var compressed = new Ionic.Zlib.GZipStream( outfile, Ionic.Zlib.CompressionMode.Compress ) ) {
 				byte[] buffer = new byte[4096];
 				int numRead;
 				while ( ( numRead = fs.Read( buffer, 0, buffer.Length ) ) != 0 ) {
