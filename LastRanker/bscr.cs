@@ -120,16 +120,17 @@ namespace HyoutaTools.LastRanker {
 				File.AddRange( b );
 				File.Add( 0x00 );
 			}
+			while ( File.Count % 0x4 != 0 ) { File.Add( 0x00 ); }
 
 			// textures
 			StartOfTextureSection = (uint)File.Count;
-			while ( File.Count % 0x4 != 0 ) { File.Add( 0x00 ); }
 			File.AddRange( TexturesProbably );
+
+			Filesize = (uint)File.Count;
 
 			// pad
 			while ( File.Count % 0x10 != 0 ) { File.Add( 0x00 ); }
 
-			Filesize = (uint)File.Count;
 			FunctionCount = (uint)FunctionCalls.Count;
 			TextCount = (uint)Strings.Count;
 			//Unknown5;
