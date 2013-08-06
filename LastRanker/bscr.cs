@@ -66,9 +66,9 @@ namespace HyoutaTools.LastRanker {
 				f.Size = BitConverter.ToUInt16( File, pos );
 				f.Unknown = BitConverter.ToUInt16( File, pos + 2 );
 				f.Name = Util.GetTextUTF8( File, pos + 4 );
-				f.Params = new uint[ (f.Size - 0x24) / 4 ];
+				f.Params = new uint[( f.Size - 0x24 ) / 4];
 				for ( int i = 0; i < f.Params.Length; ++i ) {
-					f.Params[i] = BitConverter.ToUInt32( File, pos + 0x24 + i*4 );
+					f.Params[i] = BitConverter.ToUInt32( File, pos + 0x24 + i * 4 );
 				}
 
 				FunctionCalls.Add( f );
@@ -87,9 +87,67 @@ namespace HyoutaTools.LastRanker {
 			}
 
 			TexturesProbably = new byte[Filesize - StartOfTextureSection];
-			Util.CopyByteArrayPart(File, (int)StartOfTextureSection, TexturesProbably, 0, TexturesProbably.Length);
+			Util.CopyByteArrayPart( File, (int)StartOfTextureSection, TexturesProbably, 0, TexturesProbably.Length );
 
 			return true;
+		}
+
+		public void CreateFile( string Path ) {
+			List<byte> File = new List<byte>();
+
+			// header, populate later
+			for ( int i = 0; i < 0x40; ++i ) { File.Add( 0x00 ); }
+
+			// function calls
+			StartOfFunctionSection = (uint)File.Count;
+			foreach ( bscrFunc f in FunctionCalls ) {
+				File.AddRange( BitConverter.GetBytes( f.Size ) );
+				File.AddRange( BitConverter.GetBytes( f.Unknown ) );
+
+				byte[] NameBytes = Encoding.UTF8.GetBytes( f.Name );
+				File.AddRange( NameBytes );
+				for ( int i = NameBytes.Length; i < 0x20; ++i ) { File.Add( 0x00 ); }
+
+				foreach ( uint param in f.Params ) {
+					File.AddRange( BitConverter.GetBytes( param ) );
+				}
+			}
+
+			// text
+			StartOfTextSection = (uint)File.Count;
+			foreach ( bscrString s in Strings ) {
+				byte[] b = Encoding.UTF8.GetBytes( s.String );
+				File.AddRange( b );
+				File.Add( 0x00 );
+			}
+
+			// textures
+			StartOfTextureSection = (uint)File.Count;
+			while ( File.Count % 0x4 != 0 ) { File.Add( 0x00 ); }
+			File.AddRange( TexturesProbably );
+
+			// pad
+			while ( File.Count % 0x10 != 0 ) { File.Add( 0x00 ); }
+
+			Filesize = (uint)File.Count;
+			FunctionCount = (uint)FunctionCalls.Count;
+			TextCount = (uint)Strings.Count;
+			//Unknown5;
+
+			// header
+			File[0] = (byte)'b'; File[1] = (byte)'s'; File[2] = (byte)'c'; File[3] = (byte)'r';
+			Util.CopyByteArrayPart( BitConverter.GetBytes( UnknownMaybeType ), 0, File, 0x04, 2 );
+			byte[] FilenameBytes = Encoding.UTF8.GetBytes( Filename );
+			Util.CopyByteArrayPart( FilenameBytes, 0, File, 0x06, FilenameBytes.Length );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( Filesize ), 0, File, 0x24, 4 );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( FunctionCount ), 0, File, 0x28, 4 );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( StartOfFunctionSection ), 0, File, 0x2C, 4 );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( TextCount ), 0, File, 0x30, 4 );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( StartOfTextSection ), 0, File, 0x34, 4 );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( Unknown5 ), 0, File, 0x38, 4 );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( StartOfTextureSection ), 0, File, 0x3C, 4 );
+
+			System.IO.File.WriteAllBytes( Path, File.ToArray() );
 		}
 	}
 }

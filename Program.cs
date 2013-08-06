@@ -76,6 +76,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.GoogleTranslate",               "GNtranslate" ),  GraceNote.GoogleTranslate.TranslateDatabase.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.DanganRonpa.AutoFormat",        "-"           ),  GraceNote.DanganRonpa.AutoFormatting.AutoFormat.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LastRanker.bscrImport",         "-"           ),  GraceNote.LastRanker.bscrImport.Import) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LastRanker.bscrExport",         "-"           ),  GraceNote.LastRanker.bscrExport.Export) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.SCMPextract",                  "-"           ),  LastRanker.SCMP.ExecuteExtract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.SCMPpack",                     "-"           ),  LastRanker.SCMP.ExecutePack) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.CZAAextract",                  "-"           ),  LastRanker.CZAA.ExecuteExtract) },
