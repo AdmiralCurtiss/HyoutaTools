@@ -14,6 +14,7 @@ namespace HyoutaTools.LastRanker {
 	public class bscrString {
 		public string String;
 		public uint Position;
+		public uint NewPosition;
 		public override string ToString() { return String; }
 	}
 
@@ -88,7 +89,8 @@ namespace HyoutaTools.LastRanker {
 
 			Script = new List<uint>( (int)ScriptSize );
 			for ( int i = 0; i < ScriptSize; i += 4 ) {
-				Script.Add( BitConverter.ToUInt32( File, (int)( StartOfScriptSection + i ) ) );
+				uint val = BitConverter.ToUInt32( File, (int)( StartOfScriptSection + i ) );
+				Script.Add( val );
 			}
 
 
@@ -117,9 +119,11 @@ namespace HyoutaTools.LastRanker {
 			}
 
 			// text
+			uint OldStartOfTextSectio = StartOfTextSection;
 			StartOfTextSection = (uint)File.Count;
 			foreach ( bscrString s in Strings ) {
 				byte[] b = Encoding.UTF8.GetBytes( s.String );
+				s.NewPosition = (uint)File.Count;
 				File.AddRange( b );
 				File.Add( 0x00 );
 			}
@@ -127,8 +131,28 @@ namespace HyoutaTools.LastRanker {
 
 			// script
 			StartOfScriptSection = (uint)File.Count;
-			foreach ( uint u in Script ) {
+			for ( int i = 0; i < Script.Count; ++i ) {
+				uint u = Script[i];
 				File.AddRange( BitConverter.GetBytes( u ) );
+
+				// 1A F0 F1 5A seems to indicate the next uint is a pointer to text, this is hacky but might work
+				if ( u == 0x5AF1F01A ) {
+					++i;
+					uint OldPointer = Script[i];
+					uint OldPointerAdjusted = OldPointer + OldStartOfTextSectio;
+					bool Found = false;
+					foreach ( bscrString s in Strings ) {
+						if ( s.Position == OldPointerAdjusted ) {
+							uint NewPtr = s.NewPosition - StartOfTextSection;
+							File.AddRange( BitConverter.GetBytes( NewPtr ) );
+							Found = true;
+							break;
+						}
+					}
+					if ( !Found ) {
+						throw new Exception( "Didn't find pointer for text!\nbscr at 0x" + File.Count.ToString( "X8" ) );
+					}
+				}
 			}
 
 			Filesize = (uint)File.Count;
