@@ -15,6 +15,16 @@ namespace HyoutaTools.LastRanker {
 
 			return 0;
 		}
+		public static int ExecutePack( List<string> args ) {
+			if ( args.Count < 2 ) {
+				Console.WriteLine( "Usage: Dir NewSCMPfile" );
+				return -1;
+			}
+
+			new SCMP().CreateFromDirectory( args[0], args[1] );
+
+			return 0;
+		}
 
 		public SCMP( String filename ) {
 			if ( !LoadFile( System.IO.File.ReadAllBytes( filename ) ) ) {
@@ -26,6 +36,7 @@ namespace HyoutaTools.LastRanker {
 				throw new Exception( "SCMP: Load Failed!" );
 			}
 		}
+		public SCMP() { }
 
 		public byte[] File;
 		public List<uint> FilePointers;
@@ -60,6 +71,35 @@ namespace HyoutaTools.LastRanker {
 				fs.Write( File, (int)start, (int)count );
 				fs.Close();
 			}
+		}
+
+		public void CreateFromDirectory( string Dir, string Outfile ) {
+			string[] Filepaths = System.IO.Directory.GetFiles( Dir );
+
+			ushort Filecount = (ushort)Filepaths.Length;
+			uint RequiredBytesForHeader = Util.Align( Filecount * 4u + 4u, 0x50u ); // pretty sure this is not right but should work
+			var Filestream = new System.IO.FileStream( Outfile, System.IO.FileMode.Create );
+
+			// header
+			Filestream.WriteByte( (byte)'S' ); Filestream.WriteByte( (byte)'C' );
+			Filestream.WriteByte( (byte)'M' ); Filestream.WriteByte( (byte)'P' );
+			uint TotalFilesize = RequiredBytesForHeader;
+			foreach ( string Path in Filepaths ) {
+				Filestream.Write( BitConverter.GetBytes( TotalFilesize ), 0, 4 );
+				TotalFilesize += (uint)( new System.IO.FileInfo( Path ).Length );
+				TotalFilesize = Util.Align( TotalFilesize, 0x10u );
+			}
+			while ( Filestream.Length < RequiredBytesForHeader ) { Filestream.WriteByte( 0x00 ); }
+
+			// files
+			foreach ( string Path in Filepaths ) {
+				var File = new System.IO.FileStream( Path, System.IO.FileMode.Open );
+				Util.CopyStream( File, Filestream, (int)File.Length );
+				File.Close();
+				while ( Filestream.Length % 0x10 != 0 ) { Filestream.WriteByte( 0x00 ); }
+			}
+
+			Filestream.Close();
 		}
 	}
 }
