@@ -85,6 +85,8 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.RTDPpack",                     "-"           ),  LastRanker.RTDP.ExecutePack) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LastRanker.StringImport",       "-"           ),  GraceNote.LastRanker.StringImport.Import) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LastRanker.StringExport",       "-"           ),  GraceNote.LastRanker.StringExport.Export) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.GZip.Extract",                      "-"           ),  Other.GZip.GZipHandler.ExecuteExtract) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.GZip.Compress",                     "-"           ),  Other.GZip.GZipHandler.ExecuteCompress) },
 		};
 
 		[STAThread]
@@ -97,7 +99,7 @@ namespace HyoutaTools {
 			//StringBuilder b = new StringBuilder(res.Length);
 
 
-			
+
 
 
 

@@ -7,6 +7,27 @@ using System.IO.Compression;
 
 namespace HyoutaTools.Other.GZip {
 	class GZipHandler {
+		public static int ExecuteExtract( List<string> args ) {
+			if ( args.Count < 2 ) {
+				Console.WriteLine( "Usage: infile outfile" );
+				return -1;
+			}
+
+			Extract( new FileStream( args[0], FileMode.Open ), args[1] );
+
+			return 0;
+		}
+		public static int ExecuteCompress( List<string> args ) {
+			if ( args.Count < 2 ) {
+				Console.WriteLine( "Usage: infile outfile" );
+				return -1;
+			}
+
+			Compress( new FileStream( args[0], FileMode.Open ), args[1] );
+
+			return 0;
+		}
+
 		public static void Extract( FileStream fs, string outpath ) {
 			fs.Position = 0;
 			var outfile = new FileStream( outpath, System.IO.FileMode.Create );
@@ -14,6 +35,19 @@ namespace HyoutaTools.Other.GZip {
 				byte[] buffer = new byte[4096];
 				int numRead;
 				while ( ( numRead = decompressed.Read( buffer, 0, buffer.Length ) ) != 0 ) {
+					outfile.Write( buffer, 0, numRead );
+				}
+			}
+			outfile.Close();
+		}
+
+		public static void Compress( FileStream fs, string outpath ) {
+			fs.Position = 0;
+			var outfile = new FileStream( outpath, System.IO.FileMode.Create );
+			using ( var compressed = new GZipStream( fs, CompressionMode.Compress ) ) {
+				byte[] buffer = new byte[4096];
+				int numRead;
+				while ( ( numRead = compressed.Read( buffer, 0, buffer.Length ) ) != 0 ) {
 					outfile.Write( buffer, 0, numRead );
 				}
 			}
