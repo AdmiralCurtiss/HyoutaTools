@@ -39,6 +39,7 @@ namespace HyoutaTools.LastRanker {
 		public uint ImageWidth;
 		public uint BitPerPixel;
 		public bool Greyscale;
+		public bool Paletted;
 
 		private bool LoadFile( byte[] File ) {
 			Magic = BitConverter.ToUInt32( File, 0x00 );
@@ -54,9 +55,10 @@ namespace HyoutaTools.LastRanker {
 
 			// i'm sure there's a better way to identify this stuff...
 			switch ( PaletteBytes.Length ) {
-				case 0x400: BitPerPixel = 8; Greyscale = false; break;
-				case 0x40: BitPerPixel = 4; Greyscale = false; break;
-				case 0x20: BitPerPixel = 4; Greyscale = true; break;
+				case 0x400: BitPerPixel = 8; Greyscale = false; Paletted = true; break;
+				case 0x40: BitPerPixel = 4; Greyscale = false; Paletted = true; break;
+				case 0x20: BitPerPixel = 4; Greyscale = true; Paletted = true; break;
+				case 0x0: BitPerPixel = 16; Greyscale = false; Paletted = false; break;
 				default: throw new Exception( "PTMD: Unknown bit per pixel: " + PaletteBytes.Length + " Bytes in Palette" );
 			}
 
@@ -71,16 +73,22 @@ namespace HyoutaTools.LastRanker {
 
 			switch ( BitPerPixel ) {
 				case 8:
-					ImageHeight = ImageBytes.Length / (int)ImageWidth;
+					TotalPixels = ImageBytes.Length;
+					ImageHeight = TotalPixels / (int)ImageWidth;
 					w = 16;
 					h = 8;
-					TotalPixels = ImageBytes.Length;
 					break;
 				case 4:
-					ImageHeight = ( ImageBytes.Length * 2 ) / (int)ImageWidth;
+					TotalPixels = ImageBytes.Length * 2;
+					ImageHeight = TotalPixels / (int)ImageWidth;
 					w = 32;
 					h = 8;
-					TotalPixels = ImageBytes.Length * 2;
+					break;
+				case 16:
+					TotalPixels = ImageBytes.Length / 2;
+					ImageHeight = TotalPixels / (int)ImageWidth;
+					w = 8;
+					h = 8;
 					break;
 			}
 			int wh = w * h;
@@ -92,27 +100,36 @@ namespace HyoutaTools.LastRanker {
 			for ( int i = 0; i < TotalPixels; ++i ) {
 				byte r, g, b, a;
 				int idx = 0;
-				switch ( BitPerPixel ) {
-					case 8:
-						idx = ImageBytes[i];
-						break;
-					case 4:
-						if ( i % 2 == 1 ) {
-							idx = ( ImageBytes[i / 2] >> 4 ) & 0x0F;
-						} else {
-							idx = ImageBytes[i / 2] & 0x0F;
-						}
-						break;
-				}
 
-				if ( Greyscale ) {
-					r = g = b = PaletteBytes[idx * 2 + 1];
-					a = PaletteBytes[idx * 2];
+				if ( Paletted ) {
+					switch ( BitPerPixel ) {
+						case 8:
+							idx = ImageBytes[i];
+							break;
+						case 4:
+							if ( i % 2 == 1 ) {
+								idx = ( ImageBytes[i / 2] >> 4 ) & 0x0F;
+							} else {
+								idx = ImageBytes[i / 2] & 0x0F;
+							}
+							break;
+					}
+
+					if ( Greyscale ) {
+						r = g = b = PaletteBytes[idx * 2 + 1];
+						a = PaletteBytes[idx * 2];
+					} else {
+						r = PaletteBytes[idx * 4];
+						g = PaletteBytes[idx * 4 + 1];
+						b = PaletteBytes[idx * 4 + 2];
+						a = PaletteBytes[idx * 4 + 3];
+					}
 				} else {
-					r = PaletteBytes[idx * 4];
-					g = PaletteBytes[idx * 4 + 1];
-					b = PaletteBytes[idx * 4 + 2];
-					a = PaletteBytes[idx * 4 + 3];
+					int col = ImageBytes[i * 2] | ImageBytes[i * 2 + 1] << 8;
+					r = (byte)( ( col & 0x1F ) << 3 );
+					g = (byte)( ( ( col >> 5 ) & 0x1F ) << 3 );
+					b = (byte)( ( ( col >> 10 ) & 0x1F ) << 3 );
+					a = ( ( col >> 15 ) & 0x01 ) == 0 ? (byte)0x00 : (byte)0xFF;
 				}
 
 				int CurrentBlock = i / wh;
