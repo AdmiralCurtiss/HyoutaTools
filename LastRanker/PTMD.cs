@@ -38,6 +38,7 @@ namespace HyoutaTools.LastRanker {
 
 		public uint ImageWidth;
 		public uint BitPerPixel;
+		public bool Greyscale;
 
 		private bool LoadFile( byte[] File ) {
 			Magic = BitConverter.ToUInt32( File, 0x00 );
@@ -51,10 +52,12 @@ namespace HyoutaTools.LastRanker {
 			PaletteBytes = new byte[File.Length - PalettePointer];
 			Util.CopyByteArrayPart( File, (int)PalettePointer, PaletteBytes, 0, PaletteBytes.Length );
 
+			// i'm sure there's a better way to identify this stuff...
 			switch ( PaletteBytes.Length ) {
-				case 0x400: BitPerPixel = 8; break;
-				case 0x40: BitPerPixel = 4; break;
-				default: throw new Exception( "PTMD: Unknown bit per pixel" );
+				case 0x400: BitPerPixel = 8; Greyscale = false; break;
+				case 0x40: BitPerPixel = 4; Greyscale = false; break;
+				case 0x20: BitPerPixel = 4; Greyscale = true; break;
+				default: throw new Exception( "PTMD: Unknown bit per pixel: " + PaletteBytes.Length + " Bytes in Palette" );
 			}
 
 			return true;
@@ -101,10 +104,16 @@ namespace HyoutaTools.LastRanker {
 						}
 						break;
 				}
-				r = PaletteBytes[idx * 4];
-				g = PaletteBytes[idx * 4 + 1];
-				b = PaletteBytes[idx * 4 + 2];
-				a = PaletteBytes[idx * 4 + 3];
+
+				if ( Greyscale ) {
+					r = g = b = PaletteBytes[idx * 2 + 1];
+					a = PaletteBytes[idx * 2];
+				} else {
+					r = PaletteBytes[idx * 4];
+					g = PaletteBytes[idx * 4 + 1];
+					b = PaletteBytes[idx * 4 + 2];
+					a = PaletteBytes[idx * 4 + 3];
+				}
 
 				int CurrentBlock = i / wh;
 				int InBlockX = i % w;
