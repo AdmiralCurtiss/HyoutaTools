@@ -90,6 +90,7 @@ namespace HyoutaTools.Other.AutoExtract {
 				Console.WriteLine( "Other arguments to enable specific file types:" );
 				Console.WriteLine( "  comptoe     Tales Compressor files" );
 				Console.WriteLine( "  DRpak       Dangan Ronpa PAK files" );
+				Console.WriteLine( "  LRNPK       Last Ranker NPK files (aggressive)" );
 				Console.WriteLine( "Usage of these parameters could break unrelated files, be careful." );
 				return -1;
 			}
@@ -102,6 +103,7 @@ namespace HyoutaTools.Other.AutoExtract {
 
 			bool AllowComptoe = argumentsGiven.Contains( "comptoe" );
 			bool AllowDrPak = argumentsGiven.Contains( "DRpak" );
+			bool AggressiveLastRankerNPK = argumentsGiven.Contains( "LRNPK" );
 
 			while ( queue.Count > 0 ) {
 				FileStruct fstr = queue.Dequeue();
@@ -339,7 +341,13 @@ namespace HyoutaTools.Other.AutoExtract {
 							queue.Enqueue( new FileStruct( f + ".dec", fstr.Indirection ) );
 							System.IO.File.Delete( f );
 						}
-						if ( f.ToUpperInvariant().EndsWith( ".NPK" ) ) {
+						if ( f.ToUpperInvariant().EndsWith( ".NPK" )
+						 || (
+								AggressiveLastRankerNPK && (
+									Util.Align( ( ( firstbyte | ( secondbyte << 8 ) ) * 3 + 2 ), 0x10 )
+									== ( thirdbyte | ( fourthbyte << 8 ) | ( fifthbyte << 16 ) )
+								)
+							) ) {
 							fs.Close();
 							List<string> strl = new List<string>();
 							strl.Add( f );
@@ -356,6 +364,12 @@ namespace HyoutaTools.Other.AutoExtract {
 							LastRanker.RTDP.ExecuteExtract( strl );
 							EnqueueDirectoryRecursively( queue, f + ".ex" );
 							System.IO.File.Delete( f );
+						}
+
+						if ( firstbyte == 'P' && secondbyte == 'T' && thirdbyte == 'M' && fourthbyte == 'D' ) {
+							fs.Close();
+							new LastRanker.PTMD( f ).SaveAsPNG( f + ".png" );
+							//System.IO.File.Delete( f );
 						}
 					}
 				} catch ( FileNotFoundException ) { } catch ( Exception ex ) {

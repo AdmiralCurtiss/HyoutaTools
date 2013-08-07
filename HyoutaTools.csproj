@@ -105,6 +105,7 @@
     <Compile Include="LastRanker\bscr.cs" />
     <Compile Include="LastRanker\CZAA.cs" />
     <Compile Include="LastRanker\NPK.cs" />
+    <Compile Include="LastRanker\PTMD.cs" />
     <Compile Include="LastRanker\RTDP.cs" />
     <Compile Include="LastRanker\SCMP.cs" />
     <Compile Include="LastRanker\StringFile.cs" />
