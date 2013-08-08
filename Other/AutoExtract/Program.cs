@@ -91,6 +91,8 @@ namespace HyoutaTools.Other.AutoExtract {
 				Console.WriteLine( "  comptoe     Tales Compressor files" );
 				Console.WriteLine( "  DRpak       Dangan Ronpa PAK files" );
 				Console.WriteLine( "  LRNPK       Last Ranker NPK files (aggressive)" );
+				Console.WriteLine( "  LRSCMP      Last Ranker SCMP files" );
+				Console.WriteLine( "  LRPTMDdeep  Last Ranker PTMD textues, deep scan" );
 				Console.WriteLine( "Usage of these parameters could break unrelated files, be careful." );
 				return -1;
 			}
@@ -104,6 +106,8 @@ namespace HyoutaTools.Other.AutoExtract {
 			bool AllowComptoe = argumentsGiven.Contains( "comptoe" );
 			bool AllowDrPak = argumentsGiven.Contains( "DRpak" );
 			bool AggressiveLastRankerNPK = argumentsGiven.Contains( "LRNPK" );
+			bool AllowLastRankerSCMP = argumentsGiven.Contains( "LRSCMP" );
+			bool DeepSearchForPTMD = argumentsGiven.Contains( "LRPTMDdeep" );
 
 			while ( queue.Count > 0 ) {
 				FileStruct fstr = queue.Dequeue();
@@ -137,6 +141,8 @@ namespace HyoutaTools.Other.AutoExtract {
 						int fourthbyte = fs.ReadByte();
 						int fifthbyte = fs.ReadByte();
 
+						bool HasBeenProcessed = false;
+
 						// maybe a comptoe file
 						if ( AllowComptoe ) {
 							if ( firstbyte == 0x01 || firstbyte == 0x03 ) {
@@ -161,6 +167,7 @@ namespace HyoutaTools.Other.AutoExtract {
 										FileInfo decInfo = new FileInfo( f + ".d" );
 										if ( ( decInfo.Length == uncompressedfilesizeBigEndian ) || ( decInfo.Length == uncompressedfilesizeLitEndian ) ) {
 											System.IO.File.Delete( f );
+											HasBeenProcessed = true;
 										} else {
 											Console.WriteLine( "Uncompressed comptoe Filesize does not match!" );
 										}
@@ -176,6 +183,7 @@ namespace HyoutaTools.Other.AutoExtract {
 									if ( Tales.Abyss.PKF.Split.SplitPkf( System.IO.File.ReadAllBytes( f ), f + ".ex" ) ) {
 										EnqueueDirectoryRecursively( queue, f + ".ex" );
 										System.IO.File.Delete( f );
+										HasBeenProcessed = true;
 									}
 
 								}
@@ -193,6 +201,7 @@ namespace HyoutaTools.Other.AutoExtract {
 								if ( RunProgram( prog, args ) ) {
 									queue.Enqueue( new FileStruct( f + ".dec", fstr.Indirection ) );
 									System.IO.File.Delete( f );
+									HasBeenProcessed = true;
 								}
 							}
 						}
@@ -211,6 +220,7 @@ namespace HyoutaTools.Other.AutoExtract {
 								if ( 0 == Tales.Vesperia.FPS4.Program.Execute( argList ) ) {
 									EnqueueDirectoryRecursively( queue, f + ".ext" );
 									System.IO.File.Delete( f );
+									HasBeenProcessed = true;
 								}
 							}
 
@@ -223,6 +233,7 @@ namespace HyoutaTools.Other.AutoExtract {
 								if ( 0 == Tales.Abyss.FPS2.Program.Execute( argList ) ) {
 									EnqueueDirectoryRecursively( queue, f + ".ext" );
 									System.IO.File.Delete( f );
+									HasBeenProcessed = true;
 								}
 							}
 							if ( secondbyte == (int)'P' && thirdbyte == (int)'S' && fourthbyte == (int)'3' ) {
@@ -234,6 +245,7 @@ namespace HyoutaTools.Other.AutoExtract {
 								if ( 0 == Tales.Abyss.FPS3.Program.Execute( argList ) ) {
 									EnqueueDirectoryRecursively( queue, f + ".ext" );
 									System.IO.File.Delete( f );
+									HasBeenProcessed = true;
 								}
 							}
 						}
@@ -248,6 +260,7 @@ namespace HyoutaTools.Other.AutoExtract {
 								if ( RunProgram( prog, args ) ) {
 									EnqueueDirectoryRecursively( queue, f + ".ext" );
 									System.IO.File.Delete( f );
+									HasBeenProcessed = true;
 								}
 							}
 						}
@@ -270,6 +283,8 @@ namespace HyoutaTools.Other.AutoExtract {
 								System.IO.File.Move( nextname, txv );
 
 								queue.Enqueue( new FileStruct( txv, fstr.Indirection ) );
+
+								HasBeenProcessed = true;
 							}
 						}
 
@@ -285,12 +300,14 @@ namespace HyoutaTools.Other.AutoExtract {
 								Console.WriteLine( prog + " " + args );
 								if ( RunProgram( prog, args ) ) {
 									System.IO.File.Delete( f );
+									HasBeenProcessed = true;
 								}
 							}
 						}
 						if ( firstbyte == 'O' && secondbyte == 'M' && thirdbyte == 'G' && fourthbyte == 0x2E ) {
 							fs.Close();
 							f = RenameToWithExtension( f, ".gmo" );
+							HasBeenProcessed = true;
 
 							/*
 							prog = @"d:\_svn\Dangan Ronpa\GimConv\GimConv.exe";
@@ -306,6 +323,7 @@ namespace HyoutaTools.Other.AutoExtract {
 						if ( firstbyte == 'L' && secondbyte == 'L' && thirdbyte == 'F' && fourthbyte == 'S' ) {
 							fs.Close();
 							f = RenameToWithExtension( f, ".llfs" );
+							HasBeenProcessed = true;
 						}
 
 						if ( AllowDrPak ) {
@@ -317,6 +335,7 @@ namespace HyoutaTools.Other.AutoExtract {
 								if ( RunProgram( prog, args ) ) {
 									EnqueueDirectoryRecursively( queue, f + ".ex" );
 									System.IO.File.Delete( f );
+									HasBeenProcessed = true;
 								}
 							}
 						}
@@ -325,26 +344,32 @@ namespace HyoutaTools.Other.AutoExtract {
 							// gzip compressed file
 							GZip.GZipHandler.Extract( fs, f + ".dec" );
 							queue.Enqueue( new FileStruct( f + ".dec", fstr.Indirection ) );
+							fs.Close();
 							System.IO.File.Delete( f );
+							HasBeenProcessed = true;
 						}
 
-						if ( firstbyte == 'S' && secondbyte == 'C' && thirdbyte == 'M' && fourthbyte == 'P' ) {
-							fs.Close();
-							List<string> strl = new List<string>();
-							strl.Add( f );
-							Console.WriteLine( strl[0] );
-							LastRanker.SCMP.ExecuteExtract( strl );
+						if ( AllowLastRankerSCMP ) {
+							if ( firstbyte == 'S' && secondbyte == 'C' && thirdbyte == 'M' && fourthbyte == 'P' ) {
+								fs.Close();
+								List<string> strl = new List<string>();
+								strl.Add( f );
+								Console.WriteLine( strl[0] );
+								LastRanker.SCMP.ExecuteExtract( strl );
+								HasBeenProcessed = true;
+							}
 						}
 						if ( firstbyte == 'C' && secondbyte == 'Z' && thirdbyte == 'A' && fourthbyte == 'A' ) {
 							fs.Close();
 							System.IO.File.WriteAllBytes( f + ".dec", new LastRanker.CZAA( f ).ExtractedFile );
 							queue.Enqueue( new FileStruct( f + ".dec", fstr.Indirection ) );
 							System.IO.File.Delete( f );
+							HasBeenProcessed = true;
 						}
 						if ( f.ToUpperInvariant().EndsWith( ".NPK" )
 						 || (
 								AggressiveLastRankerNPK && (
-									Util.Align( ( ( firstbyte | ( secondbyte << 8 ) ) * 3 + 2 ), 0x10 )
+									Util.Align( ( ( firstbyte | ( secondbyte << 8 ) ) * 3 + 3 + 2 ), 0x10 )
 									== ( thirdbyte | ( fourthbyte << 8 ) | ( fifthbyte << 16 ) )
 								)
 							) ) {
@@ -355,6 +380,7 @@ namespace HyoutaTools.Other.AutoExtract {
 							LastRanker.NPK.ExecuteExtract( strl );
 							EnqueueDirectoryRecursively( queue, f + ".ex" );
 							System.IO.File.Delete( f );
+							HasBeenProcessed = true;
 						}
 						if ( firstbyte == 'R' && secondbyte == 'T' && thirdbyte == 'D' && fourthbyte == 'P' ) {
 							fs.Close();
@@ -364,12 +390,33 @@ namespace HyoutaTools.Other.AutoExtract {
 							LastRanker.RTDP.ExecuteExtract( strl );
 							EnqueueDirectoryRecursively( queue, f + ".ex" );
 							System.IO.File.Delete( f );
+							HasBeenProcessed = true;
 						}
 
 						if ( firstbyte == 'P' && secondbyte == 'T' && thirdbyte == 'M' && fourthbyte == 'D' ) {
 							fs.Close();
 							new LastRanker.PTMD( f ).SaveAsPNG( f + ".png" );
 							//System.IO.File.Delete( f );
+							HasBeenProcessed = true;
+						}
+
+						if ( !HasBeenProcessed && DeepSearchForPTMD ) {
+							fs.Close();
+
+							byte[] file = System.IO.File.ReadAllBytes( f );
+
+							for ( int i = 0; i < file.Length - 3; ++i ) {
+								if ( file[i] == 'P' && file[i + 1] == 'T' && file[i + 2] == 'M' && file[i + 3] == 'D' ) {
+									byte[] temp = new byte[file.Length - i];
+									Util.CopyByteArrayPart( file, i, temp, 0, temp.Length );
+									try {
+										new LastRanker.PTMD( temp ).SaveAsPNG( f + "." + i.ToString( "X8" ) + ".png" );
+									} catch ( Exception ex ) { Console.WriteLine( ex.ToString() ); }
+								}
+							}
+
+
+							HasBeenProcessed = true;
 						}
 					}
 				} catch ( FileNotFoundException ) { } catch ( Exception ex ) {
