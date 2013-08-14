@@ -32,7 +32,9 @@ namespace HyoutaTools.Tales.Xillia.TldatExtract {
 			foreach ( TOFHDBEntry e in header.EntryList ) {
 				fs.Position = (long)e.Offset;
 				fs.Read( buffer, 0, (int)e.CompressedSize );
-				String Path = ExtractFolder + counter.ToString( "D8" ) + '.' + e.Extension;
+				String ExtensionFolder = ExtractFolder + e.Extension + '/';
+				Directory.CreateDirectory( ExtensionFolder );
+				String Path = ExtensionFolder + counter.ToString( "D8" ) + '.' + e.Extension;
 
 				FileStream os = File.OpenWrite( Path );
 				os.Write( buffer, 0, (int)e.CompressedSize );
