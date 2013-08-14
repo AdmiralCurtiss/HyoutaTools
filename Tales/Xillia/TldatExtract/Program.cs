@@ -7,14 +7,14 @@ using System.IO;
 namespace HyoutaTools.Tales.Xillia.TldatExtract {
 	class Program {
 		public static int Execute( List<string> args ) {
-			if ( args.Count != 4 ) {
-				Console.WriteLine( "Usage: TLDATextract TLDAT TOFHDB ExtractFolder" );
+			if ( args.Count != 3 ) {
+				Console.WriteLine( "Usage: TLDAT TOFHDB ExtractFolder" );
 				return -1;
 			}
 
-			String TLDAT = @"c:\Users\Georg\Downloads\XilliaStuff\USRDIR\TLFILE.TLDAT";
-			String TOFHDB = @"c:\Users\Georg\Downloads\XilliaStuff\USRDIR\FILEHEADER.TOFHDB";
-			String ExtractFolder = @"c:\Users\Georg\Downloads\XilliaStuff\USRDIR\ex";
+			String TLDAT = args[0];
+			String TOFHDB = args[1];
+			String ExtractFolder = args[2];
 			if ( !( ExtractFolder.EndsWith( "/" ) || ExtractFolder.EndsWith( "\\" ) ) ) {
 				ExtractFolder = ExtractFolder + '/';
 			}

@@ -34,7 +34,7 @@ namespace HyoutaTools.Tales.Xillia.TldatExtract {
 		private bool Load( Byte[] Bytes ) {
 			FileAmount = Util.SwapEndian( BitConverter.ToUInt32( Bytes, 0xC ) );
 
-			UInt32 FileListStart = 0x10 + Util.SwapEndian( BitConverter.ToUInt32( Bytes, 0x10 ) );
+			UInt32 FileListStart = 0x18 + Util.SwapEndian( BitConverter.ToUInt32( Bytes, 0x18 ) );
 
 			EntryList = new List<TOFHDBEntry>( (int)FileAmount );
 
