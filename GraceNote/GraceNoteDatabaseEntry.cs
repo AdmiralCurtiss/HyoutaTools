@@ -21,6 +21,7 @@ namespace HyoutaTools.GraceNote {
 		public int NewLineCount;
 		public bool NewLineAtEnd;
 
+		public GraceNoteDatabaseEntry() { }
 		public GraceNoteDatabaseEntry( string TextJP, string TextEN, string Comment, int Status, int PointerRef, string IdentifyString, int IdentifyPointerRef ) {
 			this.TextJP = TextJP;
 			this.TextEN = TextEN;
