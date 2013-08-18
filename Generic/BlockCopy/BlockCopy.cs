@@ -18,16 +18,19 @@ namespace HyoutaTools.Generic.BlockCopy {
 			}
 
 			byte[] Source = File.ReadAllBytes( args[0] );
-			byte[] Destination = File.ReadAllBytes( args[2] );
-
+			byte[] Destination;
 			int SourceStart = Int32.Parse( args[1], NumberStyles.AllowHexSpecifier );
 			int DestinationStart = Int32.Parse( args[3], NumberStyles.AllowHexSpecifier );
+
 			int Size;
 			if ( args[4].ToLowerInvariant() == "auto" ) {
 				Size = Source.Length;
 			} else {
 				Size = Int32.Parse( args[4], NumberStyles.AllowHexSpecifier );
 			}
+
+			try { Destination = File.ReadAllBytes( args[2] ); }
+			catch ( FileNotFoundException ) { Destination = new byte[DestinationStart + Size]; }
 
 			for ( int i = 0; i < Size; i++ ) {
 				Destination[DestinationStart + i] = Source[SourceStart + i];
