@@ -95,6 +95,7 @@
     <Compile Include="GraceNote\GoogleTranslate\TranslateDatabase.cs" />
     <Compile Include="GraceNote\LastRanker\bscrExport.cs" />
     <Compile Include="GraceNote\LastRanker\bscrImport.cs" />
+    <Compile Include="GraceNote\LastRanker\SscrExport.cs" />
     <Compile Include="GraceNote\LastRanker\SscrImport.cs" />
     <Compile Include="GraceNote\LastRanker\StringExport.cs" />
     <Compile Include="GraceNote\LastRanker\StringImport.cs" />

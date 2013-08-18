@@ -588,5 +588,10 @@ namespace HyoutaTools {
 			}
 		}
 
+		public static void FillNull( IList<byte> Array, int Location, int Count ) {
+			for ( int i = 0; i < Count; ++i ) {
+				Array[Location + i] = 0x00;
+			}
+		}
 	}
 }
