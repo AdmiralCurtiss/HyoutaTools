@@ -95,6 +95,7 @@
     <Compile Include="GraceNote\GoogleTranslate\TranslateDatabase.cs" />
     <Compile Include="GraceNote\LastRanker\bscrExport.cs" />
     <Compile Include="GraceNote\LastRanker\bscrImport.cs" />
+    <Compile Include="GraceNote\LastRanker\SscrImport.cs" />
     <Compile Include="GraceNote\LastRanker\StringExport.cs" />
     <Compile Include="GraceNote\LastRanker\StringImport.cs" />
     <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="LastRanker\PTMD.cs" />
     <Compile Include="LastRanker\RTDP.cs" />
     <Compile Include="LastRanker\SCMP.cs" />
+    <Compile Include="LastRanker\SSCR.cs" />
     <Compile Include="LastRanker\StringFile.cs" />
     <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
     <Compile Include="Other\GZip\GZipHandler.cs" />
@@ -295,6 +297,10 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /b "$(TargetPath)" "$(SolutionDir)\..\..\Tools\$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

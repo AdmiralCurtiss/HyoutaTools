@@ -90,6 +90,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.GZip.Extract",                      "-"           ),  Other.GZip.GZipHandler.ExecuteExtract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.GZip.Compress",                     "-"           ),  Other.GZip.GZipHandler.ExecuteCompress) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.PtmdToPng",                    "-"           ),  LastRanker.PTMD.PtmdToPng) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LastRanker.SscrImport",         "-"           ),  GraceNote.LastRanker.SscrImport.Import) },
 		};
 
 		[STAThread]
