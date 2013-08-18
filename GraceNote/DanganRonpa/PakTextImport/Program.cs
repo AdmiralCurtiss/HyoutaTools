@@ -6,18 +6,6 @@ using System.Data.SQLite;
 using HyoutaTools.DanganRonpa.PakText;
 
 namespace HyoutaTools.GraceNote.DanganRonpa.PakTextImport {
-	class ScenarioString {
-		public int Pointer;
-		public String Jpn;
-		public String Eng;
-
-		public ScenarioString( int Pointer, String Jpn, String Eng ) {
-			this.Pointer = Pointer;
-			this.Jpn = Jpn;
-			this.Eng = Eng;
-		}
-	}
-
 	class Program {
 		public static int Execute( List<string> args ) {
 			if ( args.Count != 3 ) {

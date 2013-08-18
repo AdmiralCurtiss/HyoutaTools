@@ -28,8 +28,8 @@ namespace HyoutaTools.Tales.Vesperia.To8chtx {
 	}
 
 	class ChatFile {
-		ChatFileHeader Header;
-		ChatFileLine[] Lines;
+		public ChatFileHeader Header;
+		public ChatFileLine[] Lines;
 
 		public ChatFile( byte[] TO8CHTX ) {
 			Header = new ChatFileHeader();
@@ -51,9 +51,9 @@ namespace HyoutaTools.Tales.Vesperia.To8chtx {
 				Lines[i].ENG = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x28 + i * 0x10 ) );
 				Lines[i].Unknown = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x2C + i * 0x10 ) );
 
-				Lines[i].SName = Util.GetTextShiftJis( TO8CHTX, (int)(Lines[i].Name + Header.TextStart) );
-				Lines[i].SJPN = Util.GetTextShiftJis( TO8CHTX, (int)(Lines[i].JPN + Header.TextStart) );
-				Lines[i].SENG = Util.GetTextShiftJis( TO8CHTX, (int)(Lines[i].ENG + Header.TextStart) ).Replace( '@', ' ' );
+				Lines[i].SName = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].Name + Header.TextStart ) );
+				Lines[i].SJPN = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].JPN + Header.TextStart ) );
+				Lines[i].SENG = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].ENG + Header.TextStart ) ).Replace( '@', ' ' );
 			}
 		}
 
@@ -134,109 +134,6 @@ namespace HyoutaTools.Tales.Vesperia.To8chtx {
 			}
 
 			Header.Filesize = Size;
-		}
-
-		public bool InsertSQL( String ConnectionString, String ConnectionStringGracesJapanese ) {
-			SQLiteConnection Connection = new SQLiteConnection( ConnectionString );
-			SQLiteConnection ConnectionGracesJapanese = new SQLiteConnection( ConnectionStringGracesJapanese );
-			Connection.Open();
-			ConnectionGracesJapanese.Open();
-
-			SQLiteCommand EraseCommand = new SQLiteCommand( Connection );
-			EraseCommand.CommandText = "DELETE FROM Text";
-			EraseCommand.ExecuteNonQuery();
-
-			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
-			using ( SQLiteTransaction TransactionGracesJapanese = ConnectionGracesJapanese.BeginTransaction() )
-			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) )
-			using ( SQLiteCommand CommandGracesJapanese = new SQLiteCommand( ConnectionGracesJapanese ) )
-			using ( SQLiteCommand CommandJapaneseID = new SQLiteCommand( ConnectionGracesJapanese ) )
-			using ( SQLiteCommand CommandSearchJapanese = new SQLiteCommand( ConnectionGracesJapanese ) ) {
-				SQLiteParameter JapaneseIDParam = new SQLiteParameter();
-				SQLiteParameter JapaneseParam = new SQLiteParameter();
-				SQLiteParameter EnglishIDParam = new SQLiteParameter();
-				SQLiteParameter StringIDParam = new SQLiteParameter();
-				SQLiteParameter EnglishParam = new SQLiteParameter();
-				SQLiteParameter LocationParam = new SQLiteParameter();
-				SQLiteParameter JapaneseSearchParam = new SQLiteParameter();
-				SQLiteParameter EnglishStatusParam = new SQLiteParameter();
-
-				CommandGracesJapanese.CommandText = "INSERT INTO Japanese (ID, string, debug) VALUES (?, ?, 0)";
-				CommandGracesJapanese.Parameters.Add( JapaneseIDParam );
-				CommandGracesJapanese.Parameters.Add( JapaneseParam );
-
-				Command.CommandText = "INSERT INTO Text (ID, StringID, english, comment, updated, status, PointerRef) VALUES (?, ?, ?, null, 0, ?, ?)";
-				Command.Parameters.Add( EnglishIDParam );
-				Command.Parameters.Add( StringIDParam );
-				Command.Parameters.Add( EnglishParam );  // Line.SENG
-				Command.Parameters.Add( EnglishStatusParam );
-				Command.Parameters.Add( LocationParam ); // Line.Location
-
-				CommandJapaneseID.CommandText = "SELECT MAX(ID)+1 FROM Japanese";
-
-				CommandSearchJapanese.CommandText = "SELECT ID FROM Japanese WHERE string = ?";
-				CommandSearchJapanese.Parameters.Add( JapaneseSearchParam );
-
-				int JPID;
-				object JPMaxIDObject = CommandJapaneseID.ExecuteScalar();
-				int JPMaxID = Int32.Parse( JPMaxIDObject.ToString() ); // wtf why doesn't this work directly?
-				int ENID = 1;
-
-				foreach ( ChatFileLine Line in Lines ) {
-					// Name
-					JapaneseSearchParam.Value = Line.SName;
-					object JPIDobj = CommandSearchJapanese.ExecuteScalar();
-					if ( JPIDobj != null ) {
-						JPID = (int)JPIDobj;
-					} else {
-						JPID = JPMaxID++;
-						JapaneseIDParam.Value = JPID;
-						JapaneseParam.Value = Line.SName;
-						CommandGracesJapanese.ExecuteNonQuery();
-					}
-
-					EnglishIDParam.Value = ENID;
-					StringIDParam.Value = JPID;
-					EnglishParam.Value = Line.SName;
-					EnglishStatusParam.Value = 1;
-					LocationParam.Value = Line.Location;
-					Command.ExecuteNonQuery();
-
-					ENID++;
-
-					// Text; also fuck DRY
-					JapaneseSearchParam.Value = Line.SJPN;
-					JPIDobj = CommandSearchJapanese.ExecuteScalar();
-					if ( JPIDobj != null ) {
-						JPID = (int)JPIDobj;
-					} else {
-						JPID = JPMaxID++;
-						JapaneseIDParam.Value = JPID;
-						JapaneseParam.Value = Line.SJPN;
-						CommandGracesJapanese.ExecuteNonQuery();
-					}
-
-					EnglishIDParam.Value = ENID;
-					StringIDParam.Value = JPID;
-					if ( Line.SENG == "Dummy" || Line.SENG == "" ) {
-						EnglishParam.Value = null;
-						EnglishStatusParam.Value = 0;
-					} else {
-						EnglishParam.Value = Line.SENG;
-						EnglishStatusParam.Value = 1;
-					}
-					LocationParam.Value = Line.Location + 4;
-					Command.ExecuteNonQuery();
-
-					ENID++;
-				}
-				Transaction.Commit();
-				TransactionGracesJapanese.Commit();
-			}
-			ConnectionGracesJapanese.Close();
-			Connection.Close();
-
-			return true;
 		}
 	}
 }

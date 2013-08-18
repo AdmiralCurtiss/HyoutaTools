@@ -18,9 +18,26 @@ namespace HyoutaTools.GraceNote.Vesperia.To8chtxImport {
 
 			ChatFile c = new ChatFile( System.IO.File.ReadAllBytes( Filename ) );
 
-			System.IO.File.Copy( "VTemplate", NewDB, true );
+			System.IO.File.WriteAllBytes( NewDB, Properties.Resources.gndb_template );
 
-			c.InsertSQL( "Data Source=" + NewDB, "Data Source=" + GracesDB );
+			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( c.Lines.Length * 2 );
+			foreach ( ChatFileLine Line in c.Lines ) {
+
+				String EnglishText;
+				int EnglishStatus;
+				if ( Line.SENG == "Dummy" || Line.SENG == "" ) {
+					EnglishText = Line.SJPN;
+					EnglishStatus = 0;
+				} else {
+					EnglishText = Line.SENG;
+					EnglishStatus = 1;
+				}
+
+				Entries.Add( new GraceNoteDatabaseEntry( Line.SName, Line.SName, "", 1, Line.Location, "", 0 ) );
+				Entries.Add( new GraceNoteDatabaseEntry( Line.SJPN, EnglishText, "", EnglishStatus, Line.Location + 4, "", 0 ) );
+			}
+
+			GraceNoteDatabaseEntry.InsertSQL( Entries.ToArray(), "Data Source=" + NewDB, "Data Source=" + GracesDB );
 			return 0;
 		}
 	}

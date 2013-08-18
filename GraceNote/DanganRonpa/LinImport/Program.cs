@@ -17,7 +17,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 				return Check( args[1] );
 			} else if ( args[0] == "-dumpinsertcheck" ) {
 				int Alignment = 16;
-				LinImport.Importer.Import( args[1], args[2], args[3], args[4] );
+				LinImport.Importer.Import( args[1], args[2], args[3] );
 				LinExport.Exporter.Export( args[1], args[1] + ".new", args[2], Alignment, false, false );
 
 

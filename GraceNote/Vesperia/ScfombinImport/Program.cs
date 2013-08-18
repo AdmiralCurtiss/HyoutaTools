@@ -19,27 +19,15 @@ namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 
 	class Program {
 		public static int Execute( List<string> args ) {
-			if ( args.Count != 5 ) {
-				Console.WriteLine( "Usage: btlpack_GraceNote btlpackexFile NewDBFile TemplateDBFile GracesJapanese StartOfTextpointersInHex" );
+			if ( args.Count != 4 ) {
+				Console.WriteLine( "Usage: btlpack_GraceNote btlpackexFile NewDBFile GracesJapanese StartOfTextpointersInHex" );
 				return -1;
 			}
 
-			//*
 			String Filename = args[0];
 			String NewDB = args[1];
-			String TemplateDB = args[2];
-			String GracesDB = args[3];
-			int TextPointersAddress = Int32.Parse( args[4], System.Globalization.NumberStyles.AllowHexSpecifier );
-			//*/
-
-			/*
-			String Filename = @"c:\Users\Georg\Documents\Tales of Vesperia\#gracenote_tov_repacks\btlpack_btl_ep\154.ex";
-			String NewDB = @"c:\Users\Georg\Documents\Tales of Vesperia\#gracenote_tov_repacks\btlpack_btl_ep\VBattle154";
-			String TemplateDB = @"c:\Users\Georg\Documents\Tales of Vesperia\#gracenote_tov_repacks\btlpack_btl_ep\VTemplate";
-			String GracesDB = @"c:\Users\Georg\Documents\Tales of Vesperia\#gracenote_tov_repacks\GNDB_ToV_Repack_v7\GNDB_ToV_Repack_v7\db\GracesJapanese";
-			int TextPointersAddress = 0x4ED0;
-			//*/
-
+			String GracesDB = args[2];
+			int TextPointersAddress = Int32.Parse( args[3], System.Globalization.NumberStyles.AllowHexSpecifier );
 
 			byte[] btlpack = System.IO.File.ReadAllBytes( Filename );
 			byte[] PointerDifferenceBytes = { btlpack[0x27], btlpack[0x26], btlpack[0x25], btlpack[0x24] };
@@ -48,102 +36,17 @@ namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 
 
 			ScenarioString[] AllStrings = FindAllStrings( btlpack, TextPointersAddress, PointerDifference );
-			System.IO.File.Copy( TemplateDB, NewDB );
-			InsertSQL( AllStrings, "Data Source=" + NewDB, "Data Source=" + GracesDB );
+			System.IO.File.WriteAllBytes( NewDB, Properties.Resources.gndb_template );
+
+			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( AllStrings.Length );
+			foreach ( ScenarioString str in AllStrings ) {
+				GraceNoteDatabaseEntry gn = new GraceNoteDatabaseEntry( str.Jpn, str.Eng, "", str.Eng == str.Jpn ? 1 : 0, str.Pointer, "", 0 );
+				Entries.Add( gn );
+			}
+			GraceNoteDatabaseEntry.InsertSQL( Entries.ToArray(), "Data Source=" + NewDB, "Data Source=" + GracesDB );
 
 			return 0;
 		}
-
-
-
-
-
-
-
-		public static bool InsertSQL( ScenarioString[] NewStrings, String ConnectionString, String ConnectionStringGracesJapanese ) {
-			SQLiteConnection Connection = new SQLiteConnection( ConnectionString );
-			SQLiteConnection ConnectionGracesJapanese = new SQLiteConnection( ConnectionStringGracesJapanese );
-			Connection.Open();
-			ConnectionGracesJapanese.Open();
-
-			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
-			using ( SQLiteTransaction TransactionGracesJapanese = ConnectionGracesJapanese.BeginTransaction() )
-			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) )
-			using ( SQLiteCommand CommandGracesJapanese = new SQLiteCommand( ConnectionGracesJapanese ) )
-			using ( SQLiteCommand CommandJapaneseID = new SQLiteCommand( ConnectionGracesJapanese ) )
-			using ( SQLiteCommand CommandSearchJapanese = new SQLiteCommand( ConnectionGracesJapanese ) ) {
-				SQLiteParameter JapaneseIDParam = new SQLiteParameter();
-				SQLiteParameter JapaneseParam = new SQLiteParameter();
-				SQLiteParameter EnglishIDParam = new SQLiteParameter();
-				SQLiteParameter StringIDParam = new SQLiteParameter();
-				SQLiteParameter EnglishParam = new SQLiteParameter();
-				SQLiteParameter LocationParam = new SQLiteParameter();
-				SQLiteParameter JapaneseSearchParam = new SQLiteParameter();
-				SQLiteParameter EnglishStatusParam = new SQLiteParameter();
-
-				CommandGracesJapanese.CommandText = "INSERT INTO Japanese (ID, string, debug) VALUES (?, ?, 0)";
-				CommandGracesJapanese.Parameters.Add( JapaneseIDParam );
-				CommandGracesJapanese.Parameters.Add( JapaneseParam );
-
-				Command.CommandText = "INSERT INTO Text (ID, StringID, english, comment, updated, status, PointerRef) VALUES (?, ?, ?, null, 0, ?, ?)";
-				Command.Parameters.Add( EnglishIDParam );
-				Command.Parameters.Add( StringIDParam );
-				Command.Parameters.Add( EnglishParam );  // Line.SENG
-				Command.Parameters.Add( EnglishStatusParam );
-				Command.Parameters.Add( LocationParam ); // Line.Location
-
-				CommandJapaneseID.CommandText = "SELECT MAX(ID)+1 FROM Japanese";
-
-				CommandSearchJapanese.CommandText = "SELECT ID FROM Japanese WHERE string = ? AND debug = 0";
-				CommandSearchJapanese.Parameters.Add( JapaneseSearchParam );
-
-				int JPID;
-				object JPMaxIDObject = CommandJapaneseID.ExecuteScalar();
-				int JPMaxID = Int32.Parse( JPMaxIDObject.ToString() ); // wtf why doesn't this work directly?
-				int ENID = 1;
-
-				foreach ( ScenarioString str in NewStrings ) {
-					// Name
-					JapaneseSearchParam.Value = str.Jpn;
-					object JPIDobj = CommandSearchJapanese.ExecuteScalar();
-					if ( JPIDobj != null ) {
-						JPID = (int)JPIDobj;
-					} else {
-						JPID = JPMaxID++;
-						JapaneseIDParam.Value = JPID;
-						JapaneseParam.Value = str.Jpn;
-						CommandGracesJapanese.ExecuteNonQuery();
-					}
-
-					EnglishIDParam.Value = ENID;
-					StringIDParam.Value = JPID;
-					EnglishParam.Value = str.Eng;
-					if ( str.Eng == str.Jpn ) {
-						EnglishStatusParam.Value = 1;
-					} else {
-						EnglishStatusParam.Value = 0;
-					}
-					LocationParam.Value = str.Pointer;
-					Command.ExecuteNonQuery();
-
-					ENID++;
-				}
-				Transaction.Commit();
-				TransactionGracesJapanese.Commit();
-			}
-			ConnectionGracesJapanese.Close();
-			Connection.Close();
-
-			return true;
-		}
-
-
-
-
-
-
-
-
 
 		private static ScenarioString[] FindAllStrings( byte[] File, int StartLocation, int PointerDifference ) {
 			List<ScenarioString> AllStrings = new List<ScenarioString>();

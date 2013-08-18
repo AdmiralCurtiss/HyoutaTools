@@ -5,22 +5,9 @@ using System.Text;
 using HyoutaTools.Tales.Vesperia.TSS;
 using System.Text.RegularExpressions;
 using System.Data.SQLite;
+using HyoutaTools.GraceNote.Vesperia.ScfombinImport;
 
 namespace HyoutaTools.GraceNote.Vesperia.StringDicNpcCompare360 {
-	class ScenarioString {
-		public int Pointer;
-		public String Jpn;
-		public String Eng;
-
-		public ScenarioString( int Pointer, String Jpn, String Eng ) {
-			this.Pointer = Pointer;
-			this.Jpn = Jpn;
-			this.Eng = Eng;
-		}
-	}
-
-
-
 
 	static class Program {
 
