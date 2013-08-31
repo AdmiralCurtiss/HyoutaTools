@@ -67,6 +67,13 @@ namespace HyoutaTools.Properties {
             }
         }
         
+        internal static byte[] gngj_template {
+            get {
+                object obj = ResourceManager.GetObject("gngj_template", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
         internal static byte[] todr_char_table_without_header {
             get {
                 object obj = ResourceManager.GetObject("todr_char_table_without_header", resourceCulture);

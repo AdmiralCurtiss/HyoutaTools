@@ -15,20 +15,34 @@ namespace HyoutaTools.GraceNote.Narisokonai {
 			string OutDatabase = args[1];
 			string GracesJapanese = args[2];
 			var bscrFile = new HyoutaTools.Narisokonai.scr( System.IO.File.ReadAllBytes( InFile ) );
-			//System.IO.File.WriteAllBytes( OutDatabase, Properties.Resources.gndb_template );
+			System.IO.File.WriteAllBytes( OutDatabase, Properties.Resources.gndb_template );
+			if ( !System.IO.File.Exists( GracesJapanese ) ) { System.IO.File.WriteAllBytes( GracesJapanese, Properties.Resources.gngj_template ); }
 
-			//List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( bscrFile.Strings.Count );
-			//foreach ( HyoutaTools.LastRanker.bscrString e in bscrFile.Strings ) {
-			//    int status = 0;
-			//    if ( e.String.StartsWith( "func" ) || e.String.StartsWith( "■" ) || e.String.Trim() == "" ) {
-			//        status = -1;
-			//    }
+			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>();
+			foreach ( var sec in bscrFile.Sections ) {
+				if ( sec.Elements == null ) continue; // dummy section
+				GraceNoteDatabaseEntry gn;
 
-			//    GraceNoteDatabaseEntry gn = new GraceNoteDatabaseEntry( e.String, e.String, "", status, (int)e.Position, "", 0 );
-			//    Entries.Add( gn );
-			//}
+				foreach ( var e in sec.Elements ) {
+					switch ( e.Type ) {
+						case HyoutaTools.Narisokonai.scrElement.scrElementType.Code:
+							StringBuilder sb = new StringBuilder();
+							for ( int i = 0; i < e.Code.Length; ++i ) {
+								sb.Append( '<' ).Append( e.Code[i].ToString( "X2" ) ).Append( "> " );
+							}
+							gn = new GraceNoteDatabaseEntry( sb.ToString(), sb.ToString(), "", -1, (int)sec.Location, e.Type.ToString(), sec.PointerIndex );
+							break;
+						case HyoutaTools.Narisokonai.scrElement.scrElementType.Text:
+							gn = new GraceNoteDatabaseEntry( e.Text, e.Text, "", 0, (int)sec.Location, e.Type.ToString(), sec.PointerIndex );
+							break;
+						default:
+							throw new Exception("scrImport: Unknown Element Type!");
+					}
+					Entries.Add( gn );
+				}
+			}
 
-			//GraceNoteDatabaseEntry.InsertSQL( Entries.ToArray(), "Data Source=" + OutDatabase, "Data Source=" + GracesJapanese );
+			GraceNoteDatabaseEntry.InsertSQL( Entries.ToArray(), "Data Source=" + OutDatabase, "Data Source=" + GracesJapanese );
 
 			return 0;
 		}

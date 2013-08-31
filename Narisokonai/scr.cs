@@ -13,7 +13,7 @@ namespace HyoutaTools.Narisokonai {
 		public override string ToString() {
 			switch ( Type ) {
 				case scrElementType.Text: return Text;
-				case scrElementType.Code: return Code.Length.ToString();
+				case scrElementType.Code: return BitConverter.ToString( Code );
 			}
 			return "[NONE]";
 		}
@@ -33,6 +33,7 @@ namespace HyoutaTools.Narisokonai {
 							byte[] Code = new byte[Current - Start];
 							Util.CopyByteArrayPart( File, (int)Start, Code, 0, Code.Length );
 							newElement.Code = Code;
+							newElement.Text = Util.ShiftJISEncoding.GetString( File, (int)Start, (int)( Current - Start ) ); // just checking something...
 							NextType = scrElementType.Text;
 							break;
 						case scrElementType.Text:
@@ -56,10 +57,17 @@ namespace HyoutaTools.Narisokonai {
 		}
 	}
 
-	public class scrSection {
-		public int PointerLocation;
+	public class scrSection : IComparable<scrSection> {
+		public int PointerIndex;
 		public uint Location;
 		public List<scrElement> Elements;
+
+		public int CompareTo( scrSection other ) {
+			return this.Location.CompareTo( other.Location );
+		}
+		public override string ToString() {
+			return "Idx: " + PointerIndex + " / Ptr: " + Location.ToString( "X6" ) + " / ElementCount: " + Elements.Count;
+		}
 	}
 
 	public class scr {
@@ -74,7 +82,7 @@ namespace HyoutaTools.Narisokonai {
 			}
 		}
 
-		List<scrSection> Sections;
+		public List<scrSection> Sections;
 
 		private bool LoadFile( byte[] File ) {
 			uint PointerCount = Util.ToUInt24( File, 0 );
@@ -84,37 +92,39 @@ namespace HyoutaTools.Narisokonai {
 				Pointers.Add( Util.ToUInt24( File, 0x03 + i * 0x03 ) );
 			}
 
-			uint[] OriginalPointerOrder = new uint[ Pointers.Count ];
-			Pointers.CopyTo(OriginalPointerOrder);
-
-
-			Pointers.Add( 0 ); // make sure we get the start
-			Pointers.Sort();
-			uint HeaderEnd = PointerCount * 0x03 + 0x03;
-			Pointers.Add( (uint)File.Length - HeaderEnd );	// make sure we go until the end
-
-			// read the file into code and strings
+			// create sections we fill in later, so we can remember the original order
 			Sections = new List<scrSection>();
-			for ( int i = 0; i < Pointers.Count - 1; ++i ) {
-				uint Pointer = Pointers[i] + HeaderEnd;
-				uint EndPointer = Pointers[i + 1] + HeaderEnd;
-				List<scrElement> l = scrElement.LoadAt( File, Pointer, EndPointer );
 
-				scrSection sec = new scrSection();
+			// one dummy at the start for anything before the first pointer
+			scrSection sec = new scrSection();
+			sec.PointerIndex = -1;
+			sec.Location = 0;
+			Sections.Add( sec );
+
+			for ( int i = 0; i < Pointers.Count; ++i ) {
+				sec = new scrSection();
+				sec.PointerIndex = i;
 				sec.Location = Pointers[i];
-				sec.Elements = l;
 				Sections.Add( sec );
 			}
 
-			// figure out the original locations for the pointers and re-sort
-			foreach ( scrSection sec in Sections ) {
-				sec.PointerLocation = -1;
-				for ( int i = 0; i < OriginalPointerOrder.Length; ++i ) {
-					if ( OriginalPointerOrder[i] == sec.Location ) {
-						if ( sec.PointerLocation != -1 ) throw new Exception( "scr: Found duplicate pointer!" );
-						sec.PointerLocation = i;
-					}
-				}
+			// sort by Location so we don't read any code/text more than once
+			Sections.Sort();
+
+			// one dummy section at end to make the next loop simpler
+			uint HeaderEnd = PointerCount * 0x03 + 0x03;
+			sec = new scrSection();
+			sec.PointerIndex = Pointers.Count;
+			sec.Location = (uint)File.Length - HeaderEnd;
+			Sections.Add( sec );
+
+			// read the file into code and strings
+			for ( int i = 0; i < Sections.Count - 1; ++i ) {
+				uint Pointer = Sections[i].Location + HeaderEnd;
+				uint EndPointer = Sections[i + 1].Location + HeaderEnd;
+				List<scrElement> l = scrElement.LoadAt( File, Pointer, EndPointer );
+
+				Sections[i].Elements = l;
 			}
 
 			return true;
