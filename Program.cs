@@ -92,6 +92,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "LastRanker.PtmdToPng",                    "-"           ),  LastRanker.PTMD.PtmdToPng) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LastRanker.SscrImport",         "-"           ),  GraceNote.LastRanker.SscrImport.Import) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.LastRanker.SscrExport",         "-"           ),  GraceNote.LastRanker.SscrExport.Export) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Narisokonai.scrImport",         "-"           ),  GraceNote.Narisokonai.scrImport.Import) },
 		};
 
 		[STAThread]

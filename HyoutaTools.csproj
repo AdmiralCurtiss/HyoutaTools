@@ -100,6 +100,7 @@
     <Compile Include="GraceNote\LastRanker\StringExport.cs" />
     <Compile Include="GraceNote\LastRanker\StringImport.cs" />
     <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
+    <Compile Include="GraceNote\Narisokonai\scrImport.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\To8chtxExport\Program.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="LastRanker\SCMP.cs" />
     <Compile Include="LastRanker\SSCR.cs" />
     <Compile Include="LastRanker\StringFile.cs" />
+    <Compile Include="Narisokonai\scr.cs" />
     <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
     <Compile Include="Other\GZip\GZipHandler.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
