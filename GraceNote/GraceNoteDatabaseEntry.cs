@@ -18,13 +18,26 @@ namespace HyoutaTools.GraceNote {
 		public string IdentifyString;
 		public int IdentifyPointerRef;
 
+		public int UpdatedTimestamp;
+		public string UpdatedBy;
+
 		public int NewLineCount;
 		public bool NewLineAtEnd;
 
 		public GraceNoteDatabaseEntry() { }
-		public GraceNoteDatabaseEntry( string TextJP, string TextEN, string Comment, int Status, int PointerRef, string IdentifyString, int IdentifyPointerRef ) {
+
+		/// <summary>
+		/// Creates a GNDB Entry suitable for inserting into a fresh database.
+		/// All arguments except the original Japanese string are optional.
+		/// TextEN defaults to a copy of TextJP if not provided.
+		/// </summary>
+		public GraceNoteDatabaseEntry( string TextJP, string TextEN = null, string Comment = "", int Status = 0, int PointerRef = 0, string IdentifyString = "", int IdentifyPointerRef = 0 ) {
 			this.TextJP = TextJP;
-			this.TextEN = TextEN;
+			if ( TextEN == null ) {
+				this.TextEN = TextJP;
+			} else {
+				this.TextEN = TextEN;
+			}
 			this.Comment = Comment;
 			this.Status = Status;
 			this.PointerRef = PointerRef;
@@ -106,6 +119,8 @@ namespace HyoutaTools.GraceNote {
 					de.PointerRef = PointerRef;
 					de.IdentifyString = IdentifyString;
 					de.IdentifyPointerRef = IdentifyPointerRef;
+					de.UpdatedBy = UpdatedBy;
+					de.UpdatedTimestamp = UpdatedTimestamp;
 
 					Entries.Add( de );
 				}

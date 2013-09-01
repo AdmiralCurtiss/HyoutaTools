@@ -50,6 +50,7 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			foreach ( GraceNoteDatabaseEntry e in entries ) {
 				entryCount++;
 				if ( e.Status == -1 ) { continue; }
+				if ( e.UpdatedBy == "GoogleTranslate" ) { continue; }
 				try {
 					Console.WriteLine( "Processing Entry " + entryCount + "/" + entries.Length + "..." );
 					webClient.Encoding = Encoding.UTF8;
@@ -134,7 +135,7 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 
 			param[0] = e.TextEN;
 			param[1] = e.ID;
-			Util.GenericSqliteUpdate( conn, "UPDATE Text SET english = ? WHERE ID = ?", param );
+			Util.GenericSqliteUpdate( conn, "UPDATE Text SET english = ?, UpdatedBy = 'GoogleTranslate', UpdatedTimestamp = " + Util.DateTimeToUnixTime( DateTime.Now ) + " WHERE ID = ?", param );
 		}
 
 
