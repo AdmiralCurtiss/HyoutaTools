@@ -100,6 +100,7 @@
     <Compile Include="GraceNote\LastRanker\StringExport.cs" />
     <Compile Include="GraceNote\LastRanker\StringImport.cs" />
     <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
+    <Compile Include="GraceNote\Narisokonai\scrExport.cs" />
     <Compile Include="GraceNote\Narisokonai\scrImport.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />

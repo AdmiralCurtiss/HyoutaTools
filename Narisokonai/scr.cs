@@ -57,6 +57,9 @@ namespace HyoutaTools.Narisokonai {
 		}
 	}
 
+	public class scrSectionPointerIndexComparer : IComparer<scrSection> {
+		public int Compare( scrSection x, scrSection y ) { return x.PointerIndex.CompareTo( y.PointerIndex ); }
+	}
 	public class scrSection : IComparable<scrSection> {
 		public int PointerIndex;
 		public uint Location;
@@ -64,6 +67,9 @@ namespace HyoutaTools.Narisokonai {
 
 		public int CompareTo( scrSection other ) {
 			return this.Location.CompareTo( other.Location );
+		}
+		public int CompareToByPointerIndex( scrSection other ) {
+			return this.PointerIndex.CompareTo( other.PointerIndex );
 		}
 		public override string ToString() {
 			return "Idx: " + PointerIndex + " / Ptr: " + Location.ToString( "X6" ) + " / ElementCount: " + Elements.Count;
@@ -81,6 +87,7 @@ namespace HyoutaTools.Narisokonai {
 				throw new Exception( "scr: Load Failed!" );
 			}
 		}
+		public scr() { }
 
 		public List<scrSection> Sections;
 
@@ -128,6 +135,58 @@ namespace HyoutaTools.Narisokonai {
 			}
 
 			return true;
+		}
+
+		public void CreateFile( string Filename ) {
+
+			// make sure it's sorted by pointer
+			Sections.Sort();
+
+			List<byte> b = new List<byte>();
+
+			for ( int i = 0; i < Sections.Count; ++i ) {
+				scrSection s = Sections[i];
+
+				s.Location = (uint)b.Count;
+
+				foreach ( scrElement e in s.Elements ) {
+
+					switch ( e.Type ) {
+						case HyoutaTools.Narisokonai.scrElement.scrElementType.Code:
+							b.AddRange( e.Code );
+							break;
+						case HyoutaTools.Narisokonai.scrElement.scrElementType.Text:
+							b.AddRange( Util.StringToBytesShiftJis( e.Text ) );
+							break;
+					}
+					b.Add( 0xFE );
+					b.Add( 0xFE );
+				}
+				// remove the last 0xFEFE, it's not in the original files, just makes the code easier to do it this way
+				b.RemoveAt( b.Count - 1 );
+				b.RemoveAt( b.Count - 1 );
+			}
+
+			// sort by pointer index to get the original pointer order back
+			Sections.Sort( new scrSectionPointerIndexComparer() );
+
+			// create the header
+			List<byte> Header = new List<byte>();
+			uint ptrCount = 0;
+			foreach ( scrSection s in Sections ) {
+				if ( s.PointerIndex == -1 ) continue;
+				Header.AddRange( Util.GetBytesForUInt24( s.Location ) );
+				++ptrCount;
+			}
+
+			// and combine all this
+			List<byte> File = new List<byte>( 3 + Header.Count + b.Count );
+			File.AddRange( Util.GetBytesForUInt24( ptrCount ) );
+			File.AddRange( Header );
+			File.AddRange( b );
+
+			System.IO.File.WriteAllBytes( Filename, File.ToArray() );
+
 		}
 	}
 }

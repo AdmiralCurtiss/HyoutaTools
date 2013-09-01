@@ -44,7 +44,7 @@ namespace HyoutaTools.GraceNote {
 			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) )
 			using ( SQLiteTransaction TransactionGJ = ConnectionGJ.BeginTransaction() )
 			using ( SQLiteCommand CommandGJ = new SQLiteCommand( ConnectionGJ ) ) {
-				Command.CommandText = "SELECT english, ID, StringID, status " +
+				Command.CommandText = "SELECT english, ID, StringID, status, comment, updated, PointerRef, IdentifyString, IdentifyPointerRef, UpdatedBy, UpdatedTimestamp " +
 									  "FROM Text ORDER BY ID";
 				CommandGJ.CommandText = "SELECT string FROM Japanese WHERE ID = ?";
 				SQLiteParameter StringIdParam = new SQLiteParameter();
@@ -63,6 +63,28 @@ namespace HyoutaTools.GraceNote {
 					int ID = r.GetInt32( 1 );
 					int StringID = r.GetInt32( 2 );
 					int Status = r.GetInt32( 3 );
+					String Comment;
+					try {
+						Comment = r.GetString( 4 );
+					} catch ( System.InvalidCastException ) {
+						Comment = null;
+					}
+					int Updated = r.GetInt32( 5 );
+					int PointerRef = r.GetInt32( 6 );
+					String IdentifyString;
+					try {
+						IdentifyString = r.GetString( 7 );
+					} catch ( System.InvalidCastException ) {
+						IdentifyString = null;
+					}
+					int IdentifyPointerRef = r.GetInt32( 8 );
+					String UpdatedBy;
+					try {
+						UpdatedBy = r.GetString( 9 );
+					} catch ( System.InvalidCastException ) {
+						UpdatedBy = null;
+					}
+					int UpdatedTimestamp = r.GetInt32( 10 );
 
 
 					StringIdParam.Value = StringID;
@@ -80,6 +102,10 @@ namespace HyoutaTools.GraceNote {
 					de.ID = ID;
 					de.JPID = StringID;
 					de.Status = Status;
+					de.Comment = Comment;
+					de.PointerRef = PointerRef;
+					de.IdentifyString = IdentifyString;
+					de.IdentifyPointerRef = IdentifyPointerRef;
 
 					Entries.Add( de );
 				}
