@@ -28,9 +28,10 @@ namespace HyoutaTools.Narisokonai {
 				if ( Current == EndLocation || ( File[Current] == 0xFE && File[Current + 1] == 0xFE ) ) {
 					scrElement newElement = new scrElement();
 					newElement.Type = NextType;
+					byte[] Code;
 					switch ( NextType ) {
 						case scrElementType.Code:
-							byte[] Code = new byte[Current - Start];
+							Code = new byte[Current - Start];
 							Util.CopyByteArrayPart( File, (int)Start, Code, 0, Code.Length );
 							newElement.Code = Code;
 							newElement.Text = Util.ShiftJISEncoding.GetString( File, (int)Start, (int)( Current - Start ) ); // just checking something...
@@ -39,6 +40,16 @@ namespace HyoutaTools.Narisokonai {
 						case scrElementType.Text:
 							newElement.Text = Util.ShiftJISEncoding.GetString( File, (int)Start, (int)( Current - Start ) );
 							NextType = scrElementType.Code;
+							// original byte array must equal back-converted text, otherwise we just read a code section as text
+							byte[] check = Util.StringToBytesShiftJis( newElement.Text );
+							if ( (int)( Current - Start ) != check.Length || !Util.IsByteArrayPartEqual( check, 0, File, (int)Start, check.Length ) ) {
+								// well guess this is not actually text!
+								Code = new byte[Current - Start];
+								Util.CopyByteArrayPart( File, (int)Start, Code, 0, Code.Length );
+								newElement.Code = Code;
+								newElement.Type = scrElementType.Code;
+								NextType = scrElementType.Text;
+							}
 							break;
 					}
 					l.Add( newElement );
@@ -147,6 +158,7 @@ namespace HyoutaTools.Narisokonai {
 			uint OriginalLocation = 0xFFFFFFFF;
 			for ( int i = 0; i < Sections.Count; ++i ) {
 				scrSection s = Sections[i];
+				if ( s.Elements == null ) continue;
 
 
 				// okay, so we have an issue here: if multiple sections originally pointed to the same thing,
@@ -186,7 +198,7 @@ namespace HyoutaTools.Narisokonai {
 			List<byte> Header = new List<byte>();
 			uint ptrCount = 0;
 			foreach ( scrSection s in Sections ) {
-				if ( s.PointerIndex == -1 ) continue;
+				if ( s.PointerIndex == -1 || s.Elements == null ) continue;
 				Header.AddRange( Util.GetBytesForUInt24( s.Location ) );
 				++ptrCount;
 			}

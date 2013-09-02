@@ -593,5 +593,14 @@ namespace HyoutaTools {
 				Array[Location + i] = 0x00;
 			}
 		}
+
+		public static bool IsByteArrayPartEqual( IList<byte> Array1, int Location1, IList<byte> Array2, int Location2, int count ) {
+			for ( int i = 0; i < count; ++i ) {
+				if ( Array1[i + Location1] != Array2[i + Location2] ) {
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 }
