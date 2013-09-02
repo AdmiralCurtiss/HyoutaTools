@@ -144,13 +144,22 @@ namespace HyoutaTools.Narisokonai {
 
 			List<byte> b = new List<byte>();
 
+			uint OriginalLocation = 0xFFFFFFFF;
 			for ( int i = 0; i < Sections.Count; ++i ) {
 				scrSection s = Sections[i];
 
-				s.Location = (uint)b.Count;
+
+				// okay, so we have an issue here: if multiple sections originally pointed to the same thing,
+				// all pointers that come here after the section that has the elements will point to the wrong (next) thing
+				// so we need to compare the original location, and match it if it matched before
+				if ( OriginalLocation == s.Location ) {
+					s.Location = Sections[i - 1].Location;
+				} else {
+					OriginalLocation = s.Location;
+					s.Location = (uint)b.Count;
+				}
 
 				foreach ( scrElement e in s.Elements ) {
-
 					switch ( e.Type ) {
 						case HyoutaTools.Narisokonai.scrElement.scrElementType.Code:
 							b.AddRange( e.Code );
@@ -162,9 +171,12 @@ namespace HyoutaTools.Narisokonai {
 					b.Add( 0xFE );
 					b.Add( 0xFE );
 				}
-				// remove the last 0xFEFE, it's not in the original files, just makes the code easier to do it this way
-				b.RemoveAt( b.Count - 1 );
-				b.RemoveAt( b.Count - 1 );
+
+				if ( s.Elements.Count > 0 ) {
+					// remove the last 0xFEFE, it's not in the original files, just makes the code easier to do it this way
+					b.RemoveAt( b.Count - 1 );
+					b.RemoveAt( b.Count - 1 );
+				}
 			}
 
 			// sort by pointer index to get the original pointer order back

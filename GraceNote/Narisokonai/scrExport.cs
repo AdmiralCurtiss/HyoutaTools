@@ -92,7 +92,7 @@ namespace HyoutaTools.GraceNote.Narisokonai {
 
 			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
 			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
-				Command.CommandText = "SELECT english, PointerRef, IdentifyString, IdentifyPointerRef FROM Text ORDER BY PointerRef";
+				Command.CommandText = "SELECT english, PointerRef, IdentifyString, IdentifyPointerRef FROM Text ORDER BY PointerRef ASC, IdentifyPointerRef ASC";
 				SQLiteDataReader r = Command.ExecuteReader();
 				while ( r.Read() ) {
 					String SQLText;
