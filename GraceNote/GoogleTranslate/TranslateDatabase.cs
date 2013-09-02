@@ -11,31 +11,100 @@ using System.Data.SQLite;
 namespace HyoutaTools.GraceNote.GoogleTranslate {
 	public class TranslateDatabase {
 
+		public static List<string> ReplacementOriginals;
+		public static List<string> ReplacementSubstitutes;
+
+		public static void SetupReplacements() {
+			ReplacementOriginals = new List<string>();
+			ReplacementSubstitutes = new List<string>();
+
+			// Nari variable stuff, with %
+			for ( int i = 99; i >= 0; --i ) {
+				ReplacementOriginals.Add( "%NT" + i.ToString() );
+				ReplacementSubstitutes.Add( "VARIABLE_NT_" + i.ToString() + "__" );
+			}
+			for ( int i = 99; i >= 0; --i ) {
+				ReplacementOriginals.Add( "%PN" + i.ToString("D2") );
+				ReplacementSubstitutes.Add( "VARIABLE_PN_" + i.ToString() + "__" );
+			}
+			for ( int i = 99; i >= 0; --i ) {
+				ReplacementOriginals.Add( "%H" + i.ToString() );
+				ReplacementSubstitutes.Add( "VARIABLE_H_" + i.ToString() + "__" );
+			}
+			for ( int i = 9; i >= 0; --i ) {
+				ReplacementOriginals.Add( "%P" + i.ToString() );
+				ReplacementSubstitutes.Add( "__VARIABLE_P_" + i.ToString() + "__" );
+			}
+			for ( int i = 99; i >= 0; --i ) {
+				ReplacementOriginals.Add( "%N" + i.ToString() );
+				ReplacementSubstitutes.Add( "__VARIABLE_N_" + i.ToString() + "__" );
+			}
+
+			ReplacementOriginals.Add( "%NA" );
+			ReplacementSubstitutes.Add( "__VARIABLE_NA__" );
+			ReplacementOriginals.Add( "%NE" );
+			ReplacementSubstitutes.Add( "__VARIABLE_NE__" );
+			ReplacementOriginals.Add( "%S" );
+			ReplacementSubstitutes.Add( "__VARIABLE_S__" );
+			ReplacementOriginals.Add( "%GH" );
+			ReplacementSubstitutes.Add( "__VARIABLE_GH__" );
+			ReplacementOriginals.Add( "%GT" );
+			ReplacementSubstitutes.Add( "__VARIABLE_GT__" );
+			ReplacementOriginals.Add( "%G" );
+			ReplacementSubstitutes.Add( "__VARIABLE_G__" );
+			ReplacementOriginals.Add( "%C" );
+			ReplacementSubstitutes.Add( "__VARIABLE_C__" );
+			ReplacementOriginals.Add( "%L" );
+			ReplacementSubstitutes.Add( "__VARIABLE_L__" );
+			ReplacementOriginals.Add( "%r" );
+			ReplacementSubstitutes.Add( "__VARIABLE_r__" );
+
+		}
+
 		public static int Execute( List<string> args ) {
 			Translate( args[0], args[1] );
 			return 0;
 		}
 
 		public static void Translate( string Filename, string FilenameGracesJapanese ) {
+			SetupReplacements();
 			CleanGoogleTranslatedString( "" );
 
-			GraceNoteDatabaseEntry[] entries = GraceNoteDatabaseEntry.GetAllEntriesFromDatabase( "Data Source=" + Filename, "Data Source=" + FilenameGracesJapanese );
+			GraceNoteDatabaseEntry[] rawEntries = GraceNoteDatabaseEntry.GetAllEntriesFromDatabase( "Data Source=" + Filename, "Data Source=" + FilenameGracesJapanese );
+			TranslatableGraceNoteEntry[] entries = new TranslatableGraceNoteEntry[rawEntries.Length];
+			for ( int i = 0; i < entries.Length; ++i ) {
+				entries[i] = new TranslatableGraceNoteEntry();
+				entries[i].Entry = rawEntries[i];
+			}
 
 			WebClient webClient = new WebClient();
 			webClient.BaseAddress = "http://translate.google.com";
 
 			System.Random rng = new System.Random();
 
-			foreach ( GraceNoteDatabaseEntry e in entries ) {
+			foreach ( TranslatableGraceNoteEntry e in entries ) {
 				// THIS IS CERTAINLY EASIER TO SOLVE WITH A REGEX
 				// but I've been fucked by greedy regexes ( "a<b>c<d>e".Remove("<*>") -> "ae" instead of "ace" ) so bleeh
-				string VariableLess = e.TextJP.Replace("<CLT>", "");
+				string VariableLess = e.Entry.TextJP.Replace( "<CLT>", "" );
 				for ( int i = 0; i < 100; ++i ) {
-					VariableLess = VariableLess.Replace( "<CLT " + i.ToString("D2") + ">", "" );
+					VariableLess = VariableLess.Replace( "<CLT " + i.ToString( "D2" ) + ">", "" );
 				}
 				e.NewLineAtEnd = VariableLess.EndsWith( "\n" );
 				e.NewLineCount = VariableLess.Count( ch => ch == '\n' );
-				e.TextJP = e.TextJP.Replace( "\n", "" );
+				e.Entry.TextJP = e.Entry.TextJP.Replace( "\n", "" );
+
+				if ( e.Entry.TextJP.Length >= 2 && e.Entry.TextJP[e.Entry.TextJP.Length - 2] == '\\' ) {
+					e.PreserveStringAtEnd = e.Entry.TextJP.Substring( e.Entry.TextJP.Length - 2 );
+					e.Entry.TextJP = e.Entry.TextJP.Substring( 0, e.Entry.TextJP.Length - 2 );
+				}
+				if ( e.Entry.TextJP.StartsWith( "#" ) ) {
+					e.PreserveStringAtStart = "#";
+					e.Entry.TextJP = e.Entry.TextJP.Substring( 1 );
+				}
+
+				for ( int i = 0; i < ReplacementOriginals.Count; ++i ) {
+					e.Entry.TextJP = e.Entry.TextJP.Replace( ReplacementOriginals[i], ReplacementSubstitutes[i] );
+				}
 			}
 
 
@@ -47,10 +116,10 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			StreamWriter LogWriter = new StreamWriter( FailLog );
 
 			int entryCount = 0;
-			foreach ( GraceNoteDatabaseEntry e in entries ) {
+			foreach ( TranslatableGraceNoteEntry e in entries ) {
 				entryCount++;
-				if ( e.Status == -1 ) { continue; }
-				if ( e.UpdatedBy == "GoogleTranslate" ) { continue; }
+				if ( e.Entry.Status == -1 ) { continue; }
+				if ( e.Entry.UpdatedBy == "GoogleTranslate" ) { continue; }
 				try {
 					Console.WriteLine( "Processing Entry " + entryCount + "/" + entries.Length + "..." );
 					webClient.Encoding = Encoding.UTF8;
@@ -59,16 +128,16 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 					webClient.QueryString["client"] = "t";
 					webClient.QueryString["sl"] = "ja";
 					webClient.QueryString["tl"] = "en";
-					webClient.QueryString["text"] = e.TextJP;
+					webClient.QueryString["text"] = e.Entry.TextJP;
 					string translateResult = webClient.DownloadString( "/translate_a/t" );
 					string english = CleanGoogleTranslatedString( translateResult );
-					e.TextEN = english;
+					e.Entry.TextEN = english;
 
 					ReinsertEntry( conn, e, param );
 				} catch ( WebException ex ) {
 					LogWriter.WriteLine( "Failure in File " + Filename + ":" );
-					LogWriter.WriteLine( "ID: " + e.ID );
-					LogWriter.WriteLine( e.TextJP );
+					LogWriter.WriteLine( "ID: " + e.Entry.ID );
+					LogWriter.WriteLine( e.Entry.TextJP );
 					LogWriter.WriteLine( ex.ToString() );
 					LogWriter.WriteLine();
 					Console.WriteLine( ex.ToString() );
@@ -85,10 +154,10 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			return;
 		}
 
-		public static void ReinsertEntry( SQLiteConnection conn, GraceNoteDatabaseEntry e, Object[] param ) {
+		public static void ReinsertEntry( SQLiteConnection conn, TranslatableGraceNoteEntry e, Object[] param ) {
 
 			Console.WriteLine( "ENGLISH WITHOUT LINEBREAKS:" );
-			Console.WriteLine( e.TextEN );
+			Console.WriteLine( e.Entry.TextEN );
 
 			int NewLineCount = e.NewLineCount;
 			if ( e.NewLineAtEnd ) { NewLineCount--; }
@@ -96,45 +165,46 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 
 			if ( NewLineCount != 0 ) {
 
-				int approxCharsPerLine = e.TextEN.Length / ( NewLineCount + 1 );
+				int approxCharsPerLine = e.Entry.TextEN.Length / ( NewLineCount + 1 );
 
 				List<string> parts = new List<string>( NewLineCount + 1 );
 				int loc = 0;
-				while ( loc < e.TextEN.Length ) {
+				while ( loc < e.Entry.TextEN.Length ) {
 					int start = loc;
 					loc += approxCharsPerLine;
-					while ( loc < e.TextEN.Length && e.TextEN[loc] != ' ' ) {
+					while ( loc < e.Entry.TextEN.Length && e.Entry.TextEN[loc] != ' ' ) {
 						loc++;
 					}
 
-					if ( loc >= e.TextEN.Length ) {
-						loc = e.TextEN.Length;
+					if ( loc >= e.Entry.TextEN.Length ) {
+						loc = e.Entry.TextEN.Length;
 					}
 
-					string sub = e.TextEN.Substring( start, loc - start );
+					string sub = e.Entry.TextEN.Substring( start, loc - start );
 					parts.Add( sub );
 					loc++;
 				}
 
-				e.TextEN = "";
+				e.Entry.TextEN = "";
 				foreach ( string part in parts ) {
-					e.TextEN = e.TextEN + part + "\n";
+					e.Entry.TextEN = e.Entry.TextEN + part + "\n";
 				}
-				e.TextEN = e.TextEN.TrimEnd( '\n' );
+				e.Entry.TextEN = e.Entry.TextEN.TrimEnd( '\n' );
 			}
 
 
-			if ( e.NewLineAtEnd ) { e.TextEN = e.TextEN + '\n'; }
+			if ( e.NewLineAtEnd ) { e.Entry.TextEN = e.Entry.TextEN + '\n'; }
+			e.Entry.TextEN = e.PreserveStringAtStart + e.Entry.TextEN + e.PreserveStringAtEnd;
 
 			Console.WriteLine( "JAPANESE:" );
-			Console.WriteLine( e.TextJP );
+			Console.WriteLine( e.Entry.TextJP );
 			Console.WriteLine( "ENGLISH WITH LINEBREAKS:" );
-			Console.WriteLine( e.TextEN );
+			Console.WriteLine( e.Entry.TextEN );
 			Console.WriteLine( "----------------------------------------" );
 			Console.WriteLine();
 
-			param[0] = e.TextEN;
-			param[1] = e.ID;
+			param[0] = e.Entry.TextEN;
+			param[1] = e.Entry.ID;
 			Util.GenericSqliteUpdate( conn, "UPDATE Text SET english = ?, UpdatedBy = 'GoogleTranslate', UpdatedTimestamp = " + Util.DateTimeToUnixTime( DateTime.Now ) + " WHERE ID = ?", param );
 		}
 
@@ -191,7 +261,7 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 				str = str.Replace( "\\\\", "\\" );
 				str = str.Replace( "\\u003c", "<" );
 				str = str.Replace( "\\u003e", ">" );
-				
+
 				newstr = newstr + str + " ";
 			}
 
@@ -204,10 +274,22 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			while ( newstr.Contains( "' " ) ) { newstr = newstr.Replace( "' ", "'" ); }
 			while ( newstr.Contains( "- " ) ) { newstr = newstr.Replace( "- ", "-" ); }
 			while ( newstr.Contains( " -" ) ) { newstr = newstr.Replace( " -", "-" ); }
+			while ( newstr.Contains( "\\ " ) ) { newstr = newstr.Replace( "\\ ", "\\" ); }
+			while ( newstr.Contains( " \\" ) ) { newstr = newstr.Replace( " \\", "\\" ); }
+			while ( newstr.Contains( "/ " ) ) { newstr = newstr.Replace( "/ ", "/" ); }
+			while ( newstr.Contains( " /" ) ) { newstr = newstr.Replace( " /", "/" ); }
+			while ( newstr.Contains( "% " ) ) { newstr = newstr.Replace( "% ", "%" ); }
+			while ( newstr.Contains( " %" ) ) { newstr = newstr.Replace( " %", "%" ); }
+			while ( newstr.Contains( "# " ) ) { newstr = newstr.Replace( "# ", "#" ); }
+			while ( newstr.Contains( " #" ) ) { newstr = newstr.Replace( " #", "#" ); }
 
 			while ( newstr.Contains( "...." ) ) { newstr = newstr.Replace( "....", "..." ); }
 			while ( newstr.Contains( "  " ) ) { newstr = newstr.Replace( "  ", " " ); }
 
+
+			for ( int i = 0; i < ReplacementOriginals.Count; ++i ) {
+				newstr = newstr.Replace( ReplacementSubstitutes[i], ReplacementOriginals[i] );
+			}
 
 			return newstr;
 		}

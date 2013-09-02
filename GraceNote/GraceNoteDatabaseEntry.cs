@@ -21,9 +21,6 @@ namespace HyoutaTools.GraceNote {
 		public int UpdatedTimestamp;
 		public string UpdatedBy;
 
-		public int NewLineCount;
-		public bool NewLineAtEnd;
-
 		public GraceNoteDatabaseEntry() { }
 
 		/// <summary>
