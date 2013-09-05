@@ -20,6 +20,8 @@ namespace HyoutaTools.GraceNote {
 
 		public int UpdatedTimestamp;
 		public string UpdatedBy;
+		
+		public string Database;
 
 		public GraceNoteDatabaseEntry() { }
 
@@ -87,14 +89,27 @@ namespace HyoutaTools.GraceNote {
 					} catch ( System.InvalidCastException ) {
 						IdentifyString = null;
 					}
-					int IdentifyPointerRef = r.GetInt32( 8 );
+					
+					int IdentifyPointerRef;
+					try {
+						IdentifyPointerRef = r.GetInt32( 8 );
+					} catch ( System.InvalidCastException ) {
+						IdentifyPointerRef = 0;
+					}
+
 					String UpdatedBy;
 					try {
 						UpdatedBy = r.GetString( 9 );
 					} catch ( System.InvalidCastException ) {
 						UpdatedBy = null;
 					}
-					int UpdatedTimestamp = r.GetInt32( 10 );
+					
+					int UpdatedTimestamp;
+					try {
+						UpdatedTimestamp = r.GetInt32( 10 );
+					} catch ( System.InvalidCastException ) {
+						UpdatedTimestamp = 0;
+					}
 
 
 					StringIdParam.Value = StringID;
@@ -118,6 +133,7 @@ namespace HyoutaTools.GraceNote {
 					de.IdentifyPointerRef = IdentifyPointerRef;
 					de.UpdatedBy = UpdatedBy;
 					de.UpdatedTimestamp = UpdatedTimestamp;
+					de.Database = ConnectionString;
 
 					Entries.Add( de );
 				}

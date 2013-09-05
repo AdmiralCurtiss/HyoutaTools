@@ -88,6 +88,7 @@
     <Compile Include="GraceNote\DanganRonpa\NonstopExistingDatabaseImport\Importer.cs" />
     <Compile Include="GraceNote\DanganRonpa\PakTextExport\Program.cs" />
     <Compile Include="GraceNote\DanganRonpa\PakTextImport\Program.cs" />
+    <Compile Include="GraceNote\FindIdenticalEntries\Finder.cs" />
     <Compile Include="GraceNote\GoogleTranslate\TranslatableGraceNoteEntry.cs" />
     <Compile Include="GraceNote\GraceNoteDatabaseEntry.cs" />
     <Compile Include="GraceNote\DumpDatabase\Program.cs" />
