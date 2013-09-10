@@ -303,7 +303,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /b "$(TargetPath)" "$(SolutionDir)\..\..\Tools\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" copy /b "$(TargetPath)" "$(SolutionDir)\..\..\Tools\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

@@ -120,6 +120,7 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 				entryCount++;
 				if ( e.Entry.Status == -1 ) { continue; }
 				if ( e.Entry.UpdatedBy == "GoogleTranslate" ) { continue; }
+				if ( e.Entry.TextJP.Trim() == "" ) { continue; }
 				try {
 					Console.WriteLine( "Processing Entry " + entryCount + "/" + entries.Length + "..." );
 					webClient.Encoding = Encoding.UTF8;
