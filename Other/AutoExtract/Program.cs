@@ -400,6 +400,17 @@ namespace HyoutaTools.Other.AutoExtract {
 							HasBeenProcessed = true;
 						}
 
+						// Tales of Xillia texture
+						if ( firstbyte == 'M' && secondbyte == 'T' && thirdbyte == 'E' && fourthbyte == 'X' ) {
+							fs.Close();
+							prog = @"Graceful";
+							args = "6 \"" + f + "\"";
+							if ( RunProgram( prog, args ) ) {
+								//System.IO.File.Delete( f );
+								HasBeenProcessed = true;
+							}
+						}
+
 						if ( !HasBeenProcessed && DeepSearchForPTMD ) {
 							fs.Close();
 
