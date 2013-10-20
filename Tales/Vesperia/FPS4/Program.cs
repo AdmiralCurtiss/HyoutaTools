@@ -14,33 +14,37 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			string file = args[0];
 
-			byte[] b;
+			FileStream infile;
 			try {
-				b = System.IO.File.ReadAllBytes( file );
+				infile = new FileStream( file, FileMode.Open );
 			} catch ( Exception ) {
 				Console.WriteLine( "ERROR: can't open " + file );
 				return -1;
 			}
 
-			uint filecount = Util.SwapEndian( BitConverter.ToUInt32( b, 0x04 ) );
-			uint headersize = Util.SwapEndian( BitConverter.ToUInt32( b, 0x08 ) );
-			uint entrysize = Util.SwapEndian( BitConverter.ToUInt16( b, 0x10 ) );
+			infile.Seek( 0x04, SeekOrigin.Begin );
+			uint filecount = infile.ReadUInt32().SwapEndian();
+			uint headersize = infile.ReadUInt32().SwapEndian();
+			uint unknown = infile.ReadUInt32().SwapEndian();
+			ushort entrysize = infile.ReadUInt16().SwapEndian();
 
 			string dirname = file + ".ext";
 			System.IO.Directory.CreateDirectory( dirname );
 
 			for ( uint i = 0; i < filecount; ++i ) {
-				uint fileloc = Util.SwapEndian( BitConverter.ToUInt32( b, (int)( headersize + ( i * entrysize ) + 0x00 ) ) );
-				uint fileend = fileloc + Util.SwapEndian( BitConverter.ToUInt32( b, (int)( headersize + ( i * entrysize ) + 0x04 ) ) );
-				uint filesize = Util.SwapEndian( BitConverter.ToUInt32( b, (int)( headersize + ( i * entrysize ) + 0x08 ) ) );
-				string filename = Util.GetTextAscii( b, (int)( headersize + ( i * entrysize ) + 0x0C ) );
+				infile.Seek( headersize + ( i * entrysize ), SeekOrigin.Begin );
+
+				uint fileloc = infile.ReadUInt32().SwapEndian();
+				uint fileend = fileloc + infile.ReadUInt32().SwapEndian();
+				uint filesize = infile.ReadUInt32().SwapEndian();
+				string filename = infile.ReadAsciiNullterm();
 				if ( fileloc == 0xFFFFFFFF || fileend < fileloc || filesize == 0 ) continue;
 
 				//string description = Util.GetText((int)(Util.SwapEndian(BitConverter.ToUInt32(b, (int)(headersize + (i * entrysize) + 0x2C)))), b);
 
 
 				if ( filename == "DMY" || filename == "SCR" || filename == "MDL" || filename == "TEX" ) {
-					filename = i.ToString( "D4" );
+					filename = i.ToString( "D4" ) + '.' + filename;
 				}
 
 
@@ -51,11 +55,15 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					outfile = new FileStream( dirname + '/' + i.ToString( "D4" ), FileMode.Create );
 				}
 
+				Console.WriteLine( "Extracting: " + System.IO.Path.GetFileName( outfile.Name ) );
+
 				try {
-					outfile.Write( b, (int)fileloc, (int)filesize );
+					infile.Seek( fileloc, SeekOrigin.Begin );
+					Util.CopyStream( infile, outfile, (int)filesize );
 				} catch ( Exception ) {
 					try {
-						outfile.Write( b, (int)fileloc, (int)( fileend - fileloc ) );
+						infile.Seek( fileloc, SeekOrigin.Begin );
+						Util.CopyStream( infile, outfile, (int)( fileend - fileloc ) );
 					} catch ( Exception ) {
 						Console.WriteLine( "ERROR on file " + outfile.Name );
 						outfile.Close();
@@ -64,6 +72,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 				outfile.Close();
 			}
+			infile.Close();
 
 			return 0;
 		}
