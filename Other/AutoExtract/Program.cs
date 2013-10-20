@@ -268,24 +268,22 @@ namespace HyoutaTools.Other.AutoExtract {
 						uint filenum;
 						string fname = System.IO.Path.GetFileName( f );
 						if ( firstbyte == 0x00 && secondbyte == 0x02 && thirdbyte == 0x00 && fourthbyte == 0x00 &&
-							!isTexture && fname.Length == 4 && UInt32.TryParse( fname, out filenum ) ) {
-							string nextname = Path.Combine(
-								System.IO.Path.GetDirectoryName( f ), ( filenum + 1 ).ToString( "D4" ) );
-							if ( System.IO.File.Exists( nextname ) ) {
-								fs.Close();
+							!isTexture /* && fname.Length == 4 && UInt32.TryParse( fname, out filenum ) */ ) {
 
-								string txm = f + ".TXM";
-								string txv = f + ".TXV";
+							FileStruct nextfile = queue.Peek();
+							fs.Close();
 
-								Console.WriteLine( "ren " + f + " " + txm );
-								Console.WriteLine( "ren " + nextname + " " + txv );
-								System.IO.File.Move( f, txm );
-								System.IO.File.Move( nextname, txv );
+							string txm = f + ".TXM";
+							string txv = f + ".TXV";
 
-								queue.Enqueue( new FileStruct( txv, fstr.Indirection ) );
+							Console.WriteLine( "ren " + f + " " + txm );
+							Console.WriteLine( "ren " + nextfile.Filename + " " + txv );
+							System.IO.File.Move( f, txm );
+							System.IO.File.Move( nextfile.Filename, txv );
 
-								HasBeenProcessed = true;
-							}
+							queue.Enqueue( new FileStruct( txv, fstr.Indirection ) );
+
+							HasBeenProcessed = true;
 						}
 
 

@@ -366,7 +366,7 @@ namespace HyoutaTools {
 				return null;
 			}
 		}
-		public static String TrimNull( String s ) {
+		public static String TrimNull( this String s ) {
 			int n = s.IndexOf( '\0', 0 );
 			if ( n >= 0 ) {
 				return s.Substring( 0, n );
@@ -614,13 +614,23 @@ namespace HyoutaTools {
 		public static ushort ReadUInt16( this Stream s ) {
 			int b1 = s.ReadByte();
 			int b2 = s.ReadByte();
-
+												  
 			return (ushort)( b2 << 8 | b1 );
 		}
 		public static string ReadAsciiNullterm( this Stream s ) {
 			StringBuilder sb = new StringBuilder();
+			int b = s.ReadByte();
+			while ( b != 0 && b != -1 ) {
+				sb.Append( (char)( b ) );
+				b = s.ReadByte();
+			}
+			return sb.ToString();
+		}
+		public static string ReadAscii( this Stream s, int count ) {
+			StringBuilder sb = new StringBuilder( count );
 			int b;
-			while ( ( b = s.ReadByte() ) != 0 ) {
+			for ( int i = 0; i < count; ++i ) {
+				b = s.ReadByte();
 				sb.Append( (char)( b ) );
 			}
 			return sb.ToString();
