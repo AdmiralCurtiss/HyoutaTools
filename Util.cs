@@ -6,32 +6,32 @@ using System.Data.SQLite;
 using System.IO;
 
 namespace HyoutaTools {
-	class Util {
+	public static class Util {
 
 		#region SwapEndian
-		public static Int16 SwapEndian( Int16 x ) {
+		public static Int16 SwapEndian( this Int16 x ) {
 			return (Int16)SwapEndian( (UInt16)x );
 		}
-		public static UInt16 SwapEndian( UInt16 x ) {
+		public static UInt16 SwapEndian( this UInt16 x ) {
 			return x = (UInt16)
 					   ( ( x << 8 ) |
 						( x >> 8 ) );
 		}
 
-		public static Int32 SwapEndian( Int32 x ) {
+		public static Int32 SwapEndian( this Int32 x ) {
 			return (Int32)SwapEndian( (UInt32)x );
 		}
-		public static UInt32 SwapEndian( UInt32 x ) {
+		public static UInt32 SwapEndian( this UInt32 x ) {
 			return x = ( x << 24 ) |
 					  ( ( x << 8 ) & 0x00FF0000 ) |
 					  ( ( x >> 8 ) & 0x0000FF00 ) |
 					   ( x >> 24 );
 		}
 
-		public static Int64 SwapEndian( Int64 x ) {
+		public static Int64 SwapEndian( this Int64 x ) {
 			return (Int64)SwapEndian( (UInt64)x );
 		}
-		public static UInt64 SwapEndian( UInt64 x ) {
+		public static UInt64 SwapEndian( this UInt64 x ) {
 			return x = ( x << 56 ) |
 						( ( x << 40 ) & 0x00FF000000000000 ) |
 						( ( x << 24 ) & 0x0000FF0000000000 ) |
@@ -601,6 +601,29 @@ namespace HyoutaTools {
 				}
 			}
 			return true;
+		}
+
+		public static uint ReadUInt32( this Stream s ) {
+			int b1 = s.ReadByte();
+			int b2 = s.ReadByte();
+			int b3 = s.ReadByte();
+			int b4 = s.ReadByte();
+
+			return (uint)( b4 << 24 | b3 << 16 | b2 << 8 | b1 );
+		}
+		public static ushort ReadUInt16( this Stream s ) {
+			int b1 = s.ReadByte();
+			int b2 = s.ReadByte();
+
+			return (ushort)( b2 << 8 | b1 );
+		}
+		public static string ReadAsciiNullterm( this Stream s ) {
+			StringBuilder sb = new StringBuilder();
+			int b;
+			while ( ( b = s.ReadByte() ) != 0 ) {
+				sb.Append( (char)( b ) );
+			}
+			return sb.ToString();
 		}
 	}
 }
