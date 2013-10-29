@@ -95,6 +95,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Narisokonai.scrImport",         "-"           ),  GraceNote.Narisokonai.scrImport.Import) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Narisokonai.scrExport",         "-"           ),  GraceNote.Narisokonai.scrExport.Export) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.FindIdenticalEntries",          "GNident"     ),  GraceNote.FindIdenticalEntries.Finder.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "AceAttorney.PrintScriptForLP",            "-"           ),  AceAttorney.Script.DumpTextForLP) },
 		};
 
 		[STAThread]

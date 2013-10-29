@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AceAttorney\Script.cs" />
     <Compile Include="DanganRonpa\DanganUtil.cs" />
     <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
     <Compile Include="DanganRonpa\Font\Viewer\FontViewer.cs">
