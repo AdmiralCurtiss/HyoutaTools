@@ -144,7 +144,7 @@ namespace HyoutaTools.AceAttorney {
 		public ushort[] Data;
 
 		private static int[] _argCount = null;
-		private static int[] ArgCount {
+		protected static int[] ArgCount {
 			get {
 				if ( _argCount == null ) {
 					_argCount = new int[] {
@@ -162,7 +162,7 @@ namespace HyoutaTools.AceAttorney {
 			}
 		}
 		private static char[] _glyphTable = null;
-		private static char[] GlyphTable {
+		protected static char[] GlyphTable {
 			get {
 				if ( _glyphTable == null ) {
 					_glyphTable = new char[] {
@@ -369,7 +369,7 @@ namespace HyoutaTools.AceAttorney {
 			}
 		}
 
-
+		protected ScriptEntry() { }
 		public ScriptEntry( Stream File ) {
 			Type = (ScriptEntryEnum)File.ReadUInt16();
 
@@ -382,17 +382,30 @@ namespace HyoutaTools.AceAttorney {
 
 			}
 		}
-		public static bool PrintEntryForLP( Stream File, StreamWriter Output ) {
+	}
+	class DummyScriptEntry : ScriptEntry {
+		public string Name = "NONE SET";
+		public string Sprite = "NONE SET";
+		public bool NewTextbox = true;
+
+		public DummyScriptEntry() { }
+		public bool PrintEntryForLP( Stream File, StreamWriter Output ) {
 			ushort Type = File.ReadUInt16();
 			ushort tmp, tmp2;
 
 			if ( Type < 0x80 ) {
 				switch ( (ScriptEntryEnum)Type ) {
-					case ScriptEntryEnum.B: Output.Write( ' ' ); break;
-					case ScriptEntryEnum.P: Output.Write( '\n' ); break;
-					case ScriptEntryEnum.NextpageButton: Output.Write( '\n' ); break;
-					case ScriptEntryEnum.NextpageNobutton: Output.Write( '\n' ); break;
-					case ScriptEntryEnum.EndJmp: return false;
+					case ScriptEntryEnum.B:
+						Output.Write( ' ' ); break;
+					case ScriptEntryEnum.P:
+					case ScriptEntryEnum.NextpageButton:
+					case ScriptEntryEnum.NextpageNobutton:
+						Output.Write( '\n' );
+						NewTextbox = true;
+						break;
+					case ScriptEntryEnum.EndJmp:
+						NewTextbox = true;
+						return false;
 					case ScriptEntryEnum.ReJmp:
 						Output.Write( "\n[REJOIN SCRIPT AT: Section 0x" + ( File.ReadUInt16() - 0x80 ).ToString( "X2" ) + "]" );
 						break;
@@ -418,13 +431,17 @@ namespace HyoutaTools.AceAttorney {
 						tmp = File.ReadUInt16();
 						tmp2 = File.ReadUInt16();
 						Output.Write( "[UPDATE COURT RECORD ENTRY: 0x" + ( tmp & 0x3fff ).ToString( "X2" ) );
-						Output.Write( " TO 0x" + ( tmp2 & 0x3fff ).ToString( "X2" ));
+						Output.Write( " TO 0x" + ( tmp2 & 0x3fff ).ToString( "X2" ) );
 						Output.Write( " (" + ( ( tmp & 0x8000 ) == 0x8000 ? "PERSON" : "EVIDENCE" ) + ")" );
 						if ( ( tmp & 0x4000 ) != 0x4000 ) Output.Write( " (SILENT)" );
 						Output.Write( "]\n" );
 						break;
 					case ScriptEntryEnum.TestimonyBox:
 						Output.WriteLine( "[ON PRESS JUMP TO: Section 0x" + ( File.ReadUInt16() - 0x80 ).ToString( "X2" ) + " (?: " + ( File.ReadUInt16() ).ToString( "X2" ) + ")]" );
+						break;
+					case ScriptEntryEnum.Name:
+						tmp = File.ReadUInt16();
+						Name = GetName( tmp );
 						break;
 					default:
 						for ( int i = 0; i < ArgCount[(int)Type]; ++i ) {
@@ -434,10 +451,39 @@ namespace HyoutaTools.AceAttorney {
 				}
 			} else {
 				if ( Type >= GlyphTable.Length ) { return true; }
+				if ( NewTextbox ) {
+					Output.Write( "[" + Name + "] " );
+					NewTextbox = false;
+				}
 				Output.Write( GlyphTable[Type] );
 			}
 
 			return true;
+		}
+
+		public string GetName( ushort NameArg ) {
+			byte b1 = (byte)( NameArg >> 8 );
+			byte b2 = (byte)( NameArg & 0xFF );
+
+			switch ( b1 ) {
+				case 0x00: return "NONAME";
+				case 0x01: return "???m";
+				case 0x02: return "Phoenix";
+				case 0x03: return "Police";
+				case 0x04: return "Maya";
+				case 0x08: return "Judge";
+				case 0x09: return "Edgeworth";
+				case 0x0C: return "Grossberg";
+				case 0x0F: return "???f";
+				case 0x13: return "TV";
+				case 0x14: return "Gumshoe";
+				case 0x19: return "Larry";
+				case 0x1F: return "Lotta";
+				case 0x21: return "Karma";
+				case 0x2B: return "Chief";
+
+				default: return b1.ToString( "X2" );
+			}
 		}
 	}
 
@@ -451,7 +497,7 @@ namespace HyoutaTools.AceAttorney {
 			var File = new FileStream( Filename, FileMode.Open );
 			var OutfileStream = new FileStream( Outfilename, FileMode.Create );
 			var OutfileWriter = new StreamWriter( OutfileStream );
-				
+
 
 			var script = new Script();
 			script.LoadFile( File );
@@ -473,12 +519,12 @@ namespace HyoutaTools.AceAttorney {
 		}
 
 		public void PrintForLP( Stream File, StreamWriter Outfile ) {
-			Entries = new List<List<ScriptEntry>>();
+			DummyScriptEntry d = new DummyScriptEntry();
 			for ( int i = 0; i < Pointers.Count; ++i ) {
 				Outfile.WriteLine( "[Section 0x" + i.ToString( "X2" ) + ']' );
 				File.Position = Pointers[i];
 				if ( File.Position >= File.Length ) { continue; }
-				while ( ScriptEntry.PrintEntryForLP( File, Outfile ) ) {
+				while ( d.PrintEntryForLP( File, Outfile ) ) {
 					if ( File.Position >= File.Length ) { break; }
 				}
 				Outfile.WriteLine();
