@@ -385,13 +385,15 @@ namespace HyoutaTools.AceAttorney {
 	}
 	class DummyScriptEntry : ScriptEntry {
 		public string Name = "NONE SET";
-		public string Sprite = "NONE SET";
+		public string SpriteCharacter = "NONE SET";
+		public string SpriteTalking = "NONE SET";
+		public string SpriteIdle = "NONE SET";
 		public bool NewTextbox = true;
 
 		public DummyScriptEntry() { }
 		public bool PrintEntryForLP( Stream File, StreamWriter Output ) {
 			ushort Type = File.ReadUInt16();
-			ushort tmp, tmp2;
+			ushort tmp, tmp2, tmp3;
 
 			if ( Type < 0x80 ) {
 				switch ( (ScriptEntryEnum)Type ) {
@@ -441,7 +443,15 @@ namespace HyoutaTools.AceAttorney {
 						break;
 					case ScriptEntryEnum.Name:
 						tmp = File.ReadUInt16();
-						Name = GetName( tmp );
+						Name = GetName( tmp.SwapEndian() );
+						break;
+					case ScriptEntryEnum.Person:
+						tmp = File.ReadUInt16();
+						tmp2 = File.ReadUInt16();
+						tmp3 = File.ReadUInt16();
+						SpriteCharacter = GetName( tmp );
+						SpriteTalking = tmp2.ToString( "X2" );
+						SpriteIdle = tmp3.ToString( "X2" );
 						break;
 					default:
 						for ( int i = 0; i < ArgCount[(int)Type]; ++i ) {
@@ -452,7 +462,12 @@ namespace HyoutaTools.AceAttorney {
 			} else {
 				if ( Type >= GlyphTable.Length ) { return true; }
 				if ( NewTextbox ) {
-					Output.Write( "[" + Name + "] " );
+					if ( Name == SpriteCharacter ) {
+						//Output.Write( "[" + SpriteCharacter + ", " + SpriteTalking + " -> " + SpriteIdle + "] " );
+						Output.Write( "[" + SpriteCharacter + " " + SpriteTalking + "] " );
+					} else {
+						Output.Write( "[" + Name + "] " );
+					}
 					NewTextbox = false;
 				}
 				Output.Write( GlyphTable[Type] );
@@ -462,11 +477,11 @@ namespace HyoutaTools.AceAttorney {
 		}
 
 		public string GetName( ushort NameArg ) {
-			byte b1 = (byte)( NameArg >> 8 );
-			byte b2 = (byte)( NameArg & 0xFF );
+			byte b1 = (byte)( NameArg & 0xFF );
+			byte b2 = (byte)( NameArg >> 8 );
 
 			switch ( b1 ) {
-				case 0x00: return "NONAME";
+				case 0x00: return "NONE";
 				case 0x01: return "???m";
 				case 0x02: return "Phoenix";
 				case 0x03: return "Police";
