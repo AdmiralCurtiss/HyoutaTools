@@ -467,6 +467,8 @@ namespace HyoutaTools.AceAttorney {
 					case ScriptEntryEnum.Color:
 						tmp = File.ReadUInt16();
 
+						if ( tmp > 3 ) break;
+
 						StringBuilder sb = new StringBuilder();
 
 						if ( tmp == 0 ) { // new color is white, close previous color
@@ -492,17 +494,17 @@ namespace HyoutaTools.AceAttorney {
 						tmp = File.ReadUInt16();
 						tmp2 = File.ReadUInt16();
 						CurrentMusic = GetMusicName( tmp );
-						Output.Write( "\n\n[b]MUSIC ~ " + CurrentMusic + ( tmp == 0xFF ? " (RESUME)" : "" ) + ", " + tmp2.ToString( "X2" ) + "[/b]\n\n" );
+						Output.Write( "\n\n[b]MUSIC ~ " + CurrentMusic + ( tmp == 0xFF ? " (RESUME)" : "" ) + /* ", " + tmp2.ToString( "X2" ) + */ "[/b]\n\n" );
 						break;
 					case ScriptEntryEnum.Unk23:
 						tmp = File.ReadUInt16();
 						tmp2 = File.ReadUInt16();
-						Output.Write( "\n\n[b]SUSPEND MUSIC (" + GetMusicName( tmp ) + "), " + tmp2.ToString( "X2" ) + "[/b]\n\n" );
+						Output.Write( "\n\n[b]SUSPEND MUSIC (" + GetMusicName( tmp ) + ")" /* + ", " + tmp2.ToString( "X2" ) */ + "[/b]\n\n" );
 						break;
 					case ScriptEntryEnum.FadeMusic:
 						tmp = File.ReadUInt16();
 						tmp2 = File.ReadUInt16();
-						Output.Write( "\n\n[b]Music " + ( tmp2 < 0x20 ? "Cuts" : "Fades" ) + " into Silence...[/b]" + tmp.ToString( "X2" ) + ", " + tmp2.ToString( "X2" ) + "\n\n" );
+						Output.Write( "\n\n[b]Music " + ( tmp2 < 0x20 ? "Cuts" : "Fades" ) + " into Silence...[/b]" /* + tmp.ToString( "X2" ) + ", " + tmp2.ToString( "X2" ) */ + "\n\n" );
 						break;
 					case ScriptEntryEnum.Animation:
 						tmp = File.ReadUInt16();
@@ -531,8 +533,11 @@ namespace HyoutaTools.AceAttorney {
 			} else {
 				if ( Type >= GlyphTable.Length ) { return true; }
 				if ( NewTextbox ) {
-					if ( Name == SpriteCharacter ) {
+					if ( Name == SpriteCharacter || Name.StartsWith( "?" ) ) {
 						//Output.Write( "[" + SpriteCharacter + ", " + SpriteTalking + " -> " + SpriteIdle + "] " );
+						if ( Name.StartsWith( "?" ) ) {
+							Output.Write( "[" + Name + "] " );
+						}
 						Output.Write( "[" + SpriteCharacter + " " + SpriteTalking + "] " );
 					} else {
 						Output.Write( "[" + Name + "] " );
@@ -575,7 +580,7 @@ namespace HyoutaTools.AceAttorney {
 				case 0x20: return "Yogi";
 				case 0x21: return "Karma";
 				case 0x22: return "Parrot";
-				case 0x24: return "Uncle";
+				case 0x24: return "Yogi"; //"Uncle";
 				case 0x26: return "Teacher";
 				case 0x27: return "Edgeworth (Young)";
 				case 0x28: return "Larry (Young)";
