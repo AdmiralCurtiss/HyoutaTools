@@ -80,7 +80,7 @@ namespace HyoutaTools.AceAttorney {
 		Guilty = 0x44, // 1
 		Unk45 = 0x45, // 0
 		BGTile = 0x46, // 1
-		Unk47 = 0x47, // 2
+		ChangeMusicVolume = 0x47, // 2
 		Unk48 = 0x48, // 2
 		WinGame = 0x49, // 0
 		Unk4A = 0x4A, // -1
@@ -203,7 +203,7 @@ namespace HyoutaTools.AceAttorney {
 						'』', '“', '”', '▼', '▲', ':', '、', ',',
 						'＋', '／', '*', '\'', '―', '・', '。', '％',
 						'‥', '～', '《', '》', '&', '☆', '♪', ' ',
-　 						'-', '"', '存', '現', '在', '状', '況', '中', 
+　 						'-', '"', '[', ']', '$', '状', '況', '中', 
 						'断', '選', 'é', '失', '敗', '消', '去', '初',
 						'期', '態', '戻', '追', '加', '思', '出', '逆',
 						'転', '第', '一', '回', '法', '廷', '前', '編',
@@ -388,6 +388,9 @@ namespace HyoutaTools.AceAttorney {
 		public string SpriteCharacter = "NONE SET";
 		public string SpriteTalking = "NONE SET";
 		public string SpriteIdle = "NONE SET";
+		public string CurrentMusic = "NONE SET";
+		public ushort CurrentColor = 0;
+		public char LastCharWritten;
 		public bool NewTextbox = true;
 
 		public DummyScriptEntry() { }
@@ -398,7 +401,15 @@ namespace HyoutaTools.AceAttorney {
 			if ( Type < 0x80 ) {
 				switch ( (ScriptEntryEnum)Type ) {
 					case ScriptEntryEnum.B:
-						Output.Write( ' ' ); break;
+						switch ( LastCharWritten ) {
+							case ' ':
+							case '-':
+								break;
+							default:
+								Output.Write( ' ' );
+								break;
+						}
+						break;
 					case ScriptEntryEnum.P:
 					case ScriptEntryEnum.NextpageButton:
 					case ScriptEntryEnum.NextpageNobutton:
@@ -453,6 +464,64 @@ namespace HyoutaTools.AceAttorney {
 						SpriteTalking = tmp2.ToString( "X2" );
 						SpriteIdle = tmp3.ToString( "X2" );
 						break;
+					case ScriptEntryEnum.Color:
+						tmp = File.ReadUInt16();
+
+						StringBuilder sb = new StringBuilder();
+
+						if ( tmp == 0 ) { // new color is white, close previous color
+							sb.Append( "[/col" + CurrentColor + "]" );
+						} else { // open new color
+							if ( CurrentColor != 0 ) { // if previous color is not white then also close it
+								sb.Append( "[/col" + CurrentColor + "]" );
+							}
+							sb.Append( "[col" + tmp + "]" );
+						}
+
+						sb.Replace( "col1", "u" );
+						sb.Replace( "[col2]", "" );
+						sb.Replace( "[/col2]", "" );
+						sb.Replace( "[col3]", "" );
+						sb.Replace( "[/col3]", "" );
+						Output.Write( sb.ToString() );
+
+						CurrentColor = tmp;
+
+						break;
+					case ScriptEntryEnum.Music:
+						tmp = File.ReadUInt16();
+						tmp2 = File.ReadUInt16();
+						CurrentMusic = GetMusicName( tmp );
+						Output.Write( "\n\n[b]MUSIC ~ " + CurrentMusic + ( tmp == 0xFF ? " (RESUME)" : "" ) + ", " + tmp2.ToString( "X2" ) + "[/b]\n\n" );
+						break;
+					case ScriptEntryEnum.Unk23:
+						tmp = File.ReadUInt16();
+						tmp2 = File.ReadUInt16();
+						Output.Write( "\n\n[b]SUSPEND MUSIC (" + GetMusicName( tmp ) + "), " + tmp2.ToString( "X2" ) + "[/b]\n\n" );
+						break;
+					case ScriptEntryEnum.FadeMusic:
+						tmp = File.ReadUInt16();
+						tmp2 = File.ReadUInt16();
+						Output.Write( "\n\n[b]Music " + ( tmp2 < 0x20 ? "Cuts" : "Fades" ) + " into Silence...[/b]" + tmp.ToString( "X2" ) + ", " + tmp2.ToString( "X2" ) + "\n\n" );
+						break;
+					case ScriptEntryEnum.Animation:
+						tmp = File.ReadUInt16();
+						tmp2 = File.ReadUInt16();
+						switch ( tmp ) {
+							case 2: Output.Write( "\nOBJECTION! (Defense)\n\n" ); break;
+							case 3: Output.Write( "\nOBJECTION! (Prosecution)\n\n" ); break;
+							case 11: Output.Write( "\nOBJECTION! (Other)\n\n" ); break;
+							case 149: Output.Write( "\nGAVEL\n\n" ); break;
+							case 150: Output.Write( "\nGAVEL x3\n\n" ); break;
+							case 170: Output.Write( "\nCROWD SHOT\n\n" ); break;
+						}
+						break;
+					case ScriptEntryEnum.Guilty:
+						tmp = File.ReadUInt16();
+						Output.Write( "\n" );
+						if ( tmp == 0 ) { Output.Write( "NOT " ); }
+						Output.Write( "GUILTY\n\n" );
+						break;
 					default:
 						for ( int i = 0; i < ArgCount[(int)Type]; ++i ) {
 							File.ReadUInt16(); // just purge data, we don't really care in most cases
@@ -470,7 +539,9 @@ namespace HyoutaTools.AceAttorney {
 					}
 					NewTextbox = false;
 				}
-				Output.Write( GlyphTable[Type] );
+				char ch = GlyphTable[Type];
+				Output.Write( ch );
+				LastCharWritten = ch;
 			}
 
 			return true;
@@ -488,16 +559,60 @@ namespace HyoutaTools.AceAttorney {
 				case 0x04: return "Maya";
 				case 0x08: return "Judge";
 				case 0x09: return "Edgeworth";
+				case 0x0A: return "Payne";
 				case 0x0C: return "Grossberg";
+				case 0x0D: return "Cellular";
 				case 0x0F: return "???f";
+				case 0x10: return "Penny";
+				case 0x11: return "Oldbag";
 				case 0x13: return "TV";
 				case 0x14: return "Gumshoe";
+				case 0x17: return "Bellboy";
 				case 0x19: return "Larry";
+				case 0x1B: return "Powers";
+				case 0x1C: return "Cody";
 				case 0x1F: return "Lotta";
+				case 0x20: return "Yogi";
 				case 0x21: return "Karma";
+				case 0x22: return "Parrot";
+				case 0x24: return "Uncle";
+				case 0x26: return "Teacher";
+				case 0x27: return "Edgeworth (Young)";
+				case 0x28: return "Larry (Young)";
 				case 0x2B: return "Chief";
 
 				default: return b1.ToString( "X2" );
+			}
+		}
+		public string GetMusicName( ushort MusicID ) {
+			switch ( MusicID ) {
+				case 0x00: return "Police Cell ~ Jailers' Elegy";
+				case 0x01: return "Dick Gumshoe";
+				case 0x02: return "Investigation ~ Cornered";
+				case 0x03: return "Investigation ~ Cornered (Variation)";
+				case 0x04: return "Phoenix Wright ~ Objection! 2001";
+				case 0x05: return "Logic and Trick";
+				case 0x06: return "Turnabout Sisters' Theme 2001";
+				case 0x07: return "Ace Attorney - End";
+				case 0x08: return "Courtroom Lounge ~ Beginning Prologue";
+				case 0x0A: return "Examination ~ Moderate 2001";
+				case 0x0B: return "Examination ~ Allegro 2001";
+				case 0x0C: return "Search ~ Core 2001";
+				case 0x0D: return "Ace Attorney - Trial";
+				case 0x12: return "Suspense";
+				case 0x13: return "Turnabout Sisters' Ballade";
+				case 0x14: return "Won the Lawsuit! ~ The First Success";
+				case 0x15: return "The Steel Samurai";
+				case 0x16: return "Congratulations Everybody";
+				case 0x18: return "Announce the Truth 2001";
+				case 0x1A: return "Age, Regret, Reward";
+				case 0x1B: return "Reminiscence ~ DL6 Case";
+				case 0x1C: return "Reminiscence ~ True Evening of Grief";
+				case 0x1D: return "Reminiscence ~ Classroom Trial";
+				case 0x1F: return "[nature sounds?]";
+				case 0xFF: return CurrentMusic;
+
+				default: return "UNKNOWN" + MusicID.ToString( "X2" );
 			}
 		}
 	}
