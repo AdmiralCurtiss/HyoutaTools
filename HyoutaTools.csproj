@@ -117,6 +117,7 @@
     <Compile Include="LastRanker\SCMP.cs" />
     <Compile Include="LastRanker\SSCR.cs" />
     <Compile Include="LastRanker\StringFile.cs" />
+    <Compile Include="MyWorldMyWay\Tbl.cs" />
     <Compile Include="Narisokonai\scr.cs" />
     <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
     <Compile Include="Other\GZip\GZipHandler.cs" />

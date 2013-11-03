@@ -635,5 +635,17 @@ namespace HyoutaTools {
 			}
 			return sb.ToString();
 		}
+		public static string ReadUTF16Nullterm( this Stream s ) {
+			StringBuilder sb = new StringBuilder();
+			byte[] b = new byte[2];
+			int b0 = s.ReadByte();
+			int b1 = s.ReadByte();
+			while ( !( b0 == 0 && b1 == 0 ) && b1 != -1 ) {
+				b[0] = (byte)b0; b[1] = (byte)b1;
+				sb.Append( Encoding.Unicode.GetString(b, 0, 2) );
+				b0 = s.ReadByte(); b1 = s.ReadByte();
+			}
+			return sb.ToString();
+		}
 	}
 }
