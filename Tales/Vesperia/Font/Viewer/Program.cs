@@ -29,6 +29,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 			FontDisplay
 			-fontinfofile tov.elf
 			-fontinfofiletype elf/fontinfo
+			-fontpngdir FontTex
 			-textfile text.txt
 			-mode gui/png
 			-font FONTTEX10
@@ -45,6 +46,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 			String Outfile = "out.png";
 			bool BoxByBox = false;
 			bool DialogueBoxColor = false;
+			String FontPngDir = @"FontTex";
 
 			try {
 				for ( int i = 0; i < args.Count; i++ ) {
@@ -64,6 +66,9 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 							break;
 						case "-textfile":
 							Textfile = args[++i];
+							break;
+						case "-fontpngdir":
+							FontPngDir = args[++i];
 							break;
 						case "-mode":
 							switch ( args[++i].ToLowerInvariant() ) {
@@ -117,7 +122,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault( false );
-				FontViewer form = new FontViewer( f, Font, Fontblock, TextLines, BoxByBox, DialogueBoxColor );
+				FontViewer form = new FontViewer( f, Font, FontPngDir, Fontblock, TextLines, BoxByBox, DialogueBoxColor );
 				form.Filepath = Filepath;
 				form.FontInfoOffset = FontInfoOffset;
 

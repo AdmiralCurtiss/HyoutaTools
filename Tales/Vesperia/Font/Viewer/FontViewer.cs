@@ -19,16 +19,19 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 
 		public int FontInfoOffset;
 		public string Filepath;
+		public string FontPngDir;
 
 		public FontViewer() {
 			InitializeComponent();
+			this.FontPngDir = @"FontTex";
 		}
 
-		public FontViewer( FontInfo[] f, String Font, int Fontblock, String[] Textlines, bool BoxByBox, bool ApproxDialogueColor ) {
+		public FontViewer( FontInfo[] f, String Font, String FontPngDir, int Fontblock, String[] Textlines, bool BoxByBox, bool ApproxDialogueColor ) {
 			InitializeComponent();
 			this.FontInfos = f;
 			this.BoxByBox = BoxByBox;
 			this.checkBoxApproxDialogue.Checked = ApproxDialogueColor;
+			this.FontPngDir = FontPngDir;
 
 			numericUpDownTileNumber.Value = Fontblock;
 			comboBoxFilename.Text = Font;
@@ -94,11 +97,7 @@ namespace HyoutaTools.Tales.Vesperia.Font.Viewer {
 			try {
 				Textures = new Bitmap[16];
 				for ( int i = 0; i < 16; i++ ) {
-					try {
-						Textures[i] = new System.Drawing.Bitmap( @"FontTex/" + Filename + "_" + i.ToString() + ".png" );
-					} catch ( Exception ) {
-						Textures[i] = new System.Drawing.Bitmap( @"../../FontTex/" + Filename + "_" + i.ToString() + ".png" );
-					}
+					Textures[i] = new System.Drawing.Bitmap( FontPngDir + "/" + Filename + "_" + i.ToString() + ".png" );
 				}
 			} catch ( Exception ex ) {
 				Console.WriteLine( "Failed loading Textures: " + ex.ToString() );
