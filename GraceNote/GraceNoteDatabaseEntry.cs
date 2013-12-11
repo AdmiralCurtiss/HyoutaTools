@@ -11,6 +11,8 @@ namespace HyoutaTools.GraceNote {
 		public string TextJP;
 		public string Comment;
 		public int ID;
+
+		/// <summary>Also known as StringID. References the corresponding GracesJapanese entry.</summary>
 		public int JPID;
 		public int Status;
 

@@ -17,38 +17,62 @@ namespace HyoutaTools.GraceNote.FindEarliestGracesJapaneseEntry {
 				using ( SQLiteCommand CommandEFetch = new SQLiteCommand( ConnectionE ) )
 				using ( SQLiteCommand CommandEUpdate = new SQLiteCommand( ConnectionE ) )
 				using ( SQLiteCommand CommandJ = new SQLiteCommand( ConnectionJ ) ) {
+
+					// fetch, from the individual game file Database, all IDs and corresponding GracesJapanese StringIDs
 					CommandEFetch.CommandText = "SELECT ID, StringID FROM Text ORDER BY ID";
 					SQLiteDataReader r = CommandEFetch.ExecuteReader();
-
-					List<KeyValuePair<int, int>> DatabaseEntries = new List<KeyValuePair<int, int>>();
+					List<GraceNoteDatabaseEntry> DatabaseEntries = new List<GraceNoteDatabaseEntry>();
 					while ( r.Read() ) {
 						int ID = r.GetInt32( 0 );
 						int StringID = r.GetInt32( 1 );
-						DatabaseEntries.Add( new KeyValuePair<int, int>( ID, StringID ) );
+
+						var gn = new GraceNoteDatabaseEntry();
+						gn.ID = ID;
+						gn.JPID = StringID;
+						DatabaseEntries.Add( gn );
 					}
 					r.Close();
 
 					CommandJ.CommandText = "PRAGMA case_sensitive_like = ON";
 					int affected = CommandJ.ExecuteNonQuery();
 
-					CommandEUpdate.CommandText = "UPDATE Text SET StringID = ? WHERE ID = ?";
+					// This finds all entries in GracesJapanese that have the same Japanese text as the current game file DB entry
 					CommandJ.CommandText =
 						"SELECT ID FROM Japanese WHERE CAST(string AS BLOB) = "
 						+ "( SELECT CAST(string AS BLOB) FROM Japanese WHERE ID = ? ) ORDER BY ID ASC";
-					SQLiteParameter ParamEStringId = new SQLiteParameter();
-					SQLiteParameter ParamEId = new SQLiteParameter();
 					SQLiteParameter ParamJId = new SQLiteParameter();
-					CommandEUpdate.Parameters.Add( ParamEStringId );
-					CommandEUpdate.Parameters.Add( ParamEId );
 					CommandJ.Parameters.Add( ParamJId );
 
-					foreach ( KeyValuePair<int, int> e in DatabaseEntries ) {
-						ParamJId.Value = e.Value;
+					// This updates the game file DB with the new StringID
+					CommandEUpdate.CommandText = "UPDATE Text SET StringID = ? WHERE ID = ?";
+					SQLiteParameter ParamEStringId = new SQLiteParameter();
+					SQLiteParameter ParamEId = new SQLiteParameter();
+					CommandEUpdate.Parameters.Add( ParamEStringId );
+					CommandEUpdate.Parameters.Add( ParamEId );
+
+					int entryCounter = 0;
+					int alreadyCorrectChainCounter = 0;
+					foreach ( var e in DatabaseEntries ) {
+						++entryCounter;
+
+						// get the lowest StringID
+						ParamJId.Value = e.JPID;
 						int? EarliestStringId = (int?)CommandJ.ExecuteScalar();
-						if ( EarliestStringId != null ) {
-							ParamEId.Value = e.Key;
+
+						// and put it into the game file DB, if needed
+						if ( EarliestStringId != null && EarliestStringId != e.JPID ) {
+							alreadyCorrectChainCounter = 0;
+							Console.WriteLine( "Changing Entry #" + e.ID + " from StringID " + e.JPID + " to " + EarliestStringId );
+
+							ParamEId.Value = e.ID;
 							ParamEStringId.Value = EarliestStringId;
 							CommandEUpdate.ExecuteNonQuery();
+						} else {
+							++alreadyCorrectChainCounter;
+							if ( alreadyCorrectChainCounter >= 10 ) {
+								Console.WriteLine( "Processing Entry " + entryCounter + " of " + DatabaseEntries.Count );
+								alreadyCorrectChainCounter = 0;
+							}
 						}
 					}
 
