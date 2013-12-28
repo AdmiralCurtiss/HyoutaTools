@@ -268,7 +268,9 @@ namespace HyoutaTools.Other.AutoExtract {
 						uint filenum;
 						string fname = System.IO.Path.GetFileName( f );
 						if ( firstbyte == 0x00 && secondbyte == 0x02 && thirdbyte == 0x00 && fourthbyte == 0x00 &&
-							!isTexture /* && fname.Length == 4 && UInt32.TryParse( fname, out filenum ) */ ) {
+							!isTexture
+							&& ! ( fname.EndsWith( ".TXM" ) || fname.EndsWith(".TXV") )
+							/* && fname.Length == 4 && UInt32.TryParse( fname, out filenum ) */ ) {
 
 							FileStruct nextfile = queue.Peek();
 							fs.Close();
