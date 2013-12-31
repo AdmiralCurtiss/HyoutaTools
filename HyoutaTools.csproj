@@ -107,6 +107,7 @@
     <Compile Include="GraceNote\Narisokonai\scrImport.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\StringDicImport\Importer.cs" />
     <Compile Include="GraceNote\Vesperia\To8chtxExport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
     <Compile Include="LastRanker\bscr.cs" />
