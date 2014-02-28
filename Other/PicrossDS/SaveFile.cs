@@ -42,5 +42,10 @@ namespace HyoutaTools.Other.PicrossDS {
 				Util.CopyByteArrayPart( BitConverter.GetBytes( checksum[i] ), 0, File, 0x39E00 + i * 4, 4 );
 			}
 		}
+
+		public void WriteFile( string Filename ) {
+			RecalculateChecksum();
+			System.IO.File.WriteAllBytes( Filename, File );
+		}
 	}
 }
