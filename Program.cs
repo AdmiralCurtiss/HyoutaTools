@@ -98,6 +98,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.FindIdenticalEntries",          "GNident"     ),  GraceNote.FindIdenticalEntries.Finder.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "AceAttorney.PrintScriptForLP",            "-"           ),  AceAttorney.Script.DumpTextForLP) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "MyWorldMyWay.Tbl.Dump",                   "-"           ),  MyWorldMyWay.Tbl.DumpText) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PicrossDS.SaveEditor",              "-"           ),  Other.PicrossDS.SaveEditor.Execute) },
 		};
 
 		[STAThread]

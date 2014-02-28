@@ -133,6 +133,8 @@
     <Compile Include="Other\N64\OoTSaveEditor\OoTSaveHeader.cs" />
     <Compile Include="Other\N64\OoTSaveEditor\OoTSingleSave.cs" />
     <Compile Include="Other\N64\OoTSaveEditor\Program.cs" />
+    <Compile Include="Other\PicrossDS\SaveEditor.cs" />
+    <Compile Include="Other\PicrossDS\SaveFile.cs" />
     <Compile Include="Other\PSP\GIM\EndOfFileSection.cs" />
     <Compile Include="Other\PSP\GIM\EndOfImageSection.cs" />
     <Compile Include="Other\PSP\GIM\FileInfoSection.cs" />
