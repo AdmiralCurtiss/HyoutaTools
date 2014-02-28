@@ -99,11 +99,29 @@ namespace HyoutaTools.Other.PicrossDS {
 		}
 
 		private void buttonExport_Click( object sender, EventArgs e ) {
-
+			var puzzle = (ClassicPuzzle)comboBoxPuzzleSlot.SelectedItem;
+			SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog();
+			dialog.Filter = "Picross Puzzle (*.picross)|*.picross|Any File|*.*";
+			dialog.FileName = puzzle.ToString() + ".picross";
+			DialogResult result = dialog.ShowDialog();
+			if ( result == DialogResult.OK ) {
+				var outfile = new byte[0xC0];
+				puzzle.Write( outfile, 0x0 );
+				System.IO.File.WriteAllBytes( dialog.FileName, outfile );
+			}
 		}
 
 		private void buttonImport_Click( object sender, EventArgs e ) {
-
+			OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+			dialog.Filter = "Picross Puzzle (*.picross)|*.picross|Any File|*.*";
+			DialogResult result = dialog.ShowDialog();
+			if ( result == DialogResult.OK ) {
+				var infile = System.IO.File.ReadAllBytes( dialog.FileName );
+				var puzzle = new ClassicPuzzle( infile, 0x0 );
+				Save.ClassicPuzzles[comboBoxPuzzleSlot.SelectedIndex] = puzzle;
+				PopulateGuiWithPuzzle( puzzle );
+				WriteGuiPuzzleDataToSave( sender, e );
+			}
 		}
 
 		private void buttonSave_Click( object sender, EventArgs e ) {
