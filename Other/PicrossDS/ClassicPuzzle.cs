@@ -43,8 +43,35 @@ namespace HyoutaTools.Other.PicrossDS {
 			}
 		}
 
+		public void Write( byte[] File, uint Offset ) {
+			File[Offset] = Unknown1;
+			File[Offset + 0x01] = Unknown2;
+			File[Offset + 0x02] = Width;
+			File[Offset + 0x03] = Height;
+			BitConverter.GetBytes( ClearTime ).CopyTo( File, Offset + 0x04 );
+			File[Offset + 0x08] = Mode;
+			File[Offset + 0x09] = Unknown3;
+
+			// this technically might overflow, but will get overwritten by the packnumber/letter so whatev
+			byte[] puzzleNameBytes = Encoding.Unicode.GetBytes( PuzzleName + '\0' );
+			puzzleNameBytes.CopyTo( File, Offset + 0x0A );
+
+			File[Offset + 0x3C] = PackNumber;
+			File[Offset + 0x3D] = PackLetter;
+
+			// same, except it'll get overwritten by the puzzle data
+			byte[] packNameBytes = Encoding.Unicode.GetBytes( PackName + '\0' );
+			packNameBytes.CopyTo( File, Offset + 0x3E );
+
+			for ( int i = 0; i < 20; ++i ) {
+				BitConverter.GetBytes( PuzzleData[i] ).CopyTo( File, Offset + 0x70 + i * 4 );
+			}
+		}
+
 		public override string ToString() {
-			return "Classic Puzzle #" + IndexForGui + ": " + PuzzleName.Trim( '\0' ) + " (" + PackName.Trim( '\0' ) + ")";
+			string pzlName = PuzzleName.Contains( '\0' ) ? PuzzleName.Substring( 0, PuzzleName.IndexOf( '\0' ) ) : PuzzleName;
+			string pckName = PackName.Contains( '\0' ) ? PackName.Substring( 0, PackName.IndexOf( '\0' ) ) : PackName;
+			return "Classic Puzzle #" + IndexForGui + ": " + pzlName + " (" + pckName + ")";
 		}
 	}
 }

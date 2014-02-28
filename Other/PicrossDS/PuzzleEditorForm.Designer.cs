@@ -119,14 +119,7 @@
             "Q",
             "R",
             "S",
-            "T",
-            "U",
-            "V",
-            "W",
-            "X",
-            "Y",
-            "Z",
-            "AA"});
+            "T"});
 			this.comboBoxPackLetter.Location = new System.Drawing.Point(456, 27);
 			this.comboBoxPackLetter.Name = "comboBoxPackLetter";
 			this.comboBoxPackLetter.Size = new System.Drawing.Size(34, 21);
@@ -150,20 +143,21 @@
             "9",
             "10",
             "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20",
-            "21",
-            "22",
-            "23",
-            "24",
-            "25"});
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O"});
 			this.comboBoxPackNumber.Location = new System.Drawing.Point(418, 27);
 			this.comboBoxPackNumber.Name = "comboBoxPackNumber";
 			this.comboBoxPackNumber.Size = new System.Drawing.Size(34, 21);
@@ -175,7 +169,7 @@
 			this.textBoxPack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxPack.Location = new System.Drawing.Point(249, 28);
-			this.textBoxPack.MaxLength = 25;
+			this.textBoxPack.MaxLength = 24;
 			this.textBoxPack.Name = "textBoxPack";
 			this.textBoxPack.Size = new System.Drawing.Size(163, 20);
 			this.textBoxPack.TabIndex = 6;
@@ -186,7 +180,7 @@
 			this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxName.Location = new System.Drawing.Point(249, 6);
-			this.textBoxName.MaxLength = 25;
+			this.textBoxName.MaxLength = 24;
 			this.textBoxName.Name = "textBoxName";
 			this.textBoxName.Size = new System.Drawing.Size(241, 20);
 			this.textBoxName.TabIndex = 5;
@@ -201,6 +195,7 @@
 			this.checkBoxFreeMode.TabIndex = 4;
 			this.checkBoxFreeMode.Text = "Free Mode";
 			this.checkBoxFreeMode.UseVisualStyleBackColor = true;
+			this.checkBoxFreeMode.CheckedChanged += new System.EventHandler(this.WriteGuiPuzzleDataToSave);
 			// 
 			// label1
 			// 
@@ -228,6 +223,7 @@
 			this.checkBoxCleared.TabIndex = 1;
 			this.checkBoxCleared.Text = "Cleared";
 			this.checkBoxCleared.UseVisualStyleBackColor = true;
+			this.checkBoxCleared.CheckedChanged += new System.EventHandler(this.WriteGuiPuzzleDataToSave);
 			// 
 			// comboBoxPuzzleDimensions
 			// 

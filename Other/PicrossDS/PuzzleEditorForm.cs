@@ -11,6 +11,7 @@ namespace HyoutaTools.Other.PicrossDS {
 	public partial class PuzzleEditorForm : Form {
 		private SaveFile Save;
 		private String OriginalFilename;
+		private bool PuzzleLoaded = false;
 
 		public PuzzleEditorForm() {
 			InitializeComponent();
@@ -43,6 +44,8 @@ namespace HyoutaTools.Other.PicrossDS {
 		}
 
 		void PopulateGuiWithPuzzle( ClassicPuzzle puzzle ) {
+			PuzzleLoaded = false;
+
 			try {
 				comboBoxPuzzleDimensions.SelectedIndex = ( puzzle.Width / 5 ) - 1; // there's only five valid dimensions, this should always get the right one
 			} catch ( ArgumentOutOfRangeException ) {
@@ -54,7 +57,7 @@ namespace HyoutaTools.Other.PicrossDS {
 			textBoxCleartime.Text = puzzle.ClearTime.ToString();
 			textBoxName.Text = puzzle.PuzzleName.Trim( '\0' );
 			textBoxPack.Text = puzzle.PackName.Trim( '\0' );
-			
+
 			try {
 				comboBoxPackLetter.SelectedIndex = puzzle.PackLetter;
 			} catch ( ArgumentOutOfRangeException ) {
@@ -65,10 +68,30 @@ namespace HyoutaTools.Other.PicrossDS {
 			} catch ( ArgumentOutOfRangeException ) {
 				comboBoxPackNumber.SelectedIndex = 0;
 			}
+
+			PuzzleLoaded = true;
 		}
 
 		private void WriteGuiPuzzleDataToSave( object sender, EventArgs e ) {
+			if ( !PuzzleLoaded ) return;
+			var puzzle = (ClassicPuzzle)comboBoxPuzzleSlot.SelectedItem;
 
+			var dimensionsString = comboBoxPuzzleDimensions.Text.Split( 'x' );
+			puzzle.Width = Byte.Parse( dimensionsString[0] );
+			puzzle.Height = Byte.Parse( dimensionsString[1] );
+
+			puzzle.Mode = (byte)( checkBoxFreeMode.Checked ? 0x02 : 0x01 );
+			puzzle.ClearTime = UInt32.Parse( textBoxCleartime.Text );
+			//puzzle.Unknown2 = 0x59; // leave this until further investigation
+			puzzle.PuzzleName = textBoxName.Text;
+			puzzle.PackName = textBoxPack.Text;
+			puzzle.PackLetter = (byte)comboBoxPackLetter.SelectedIndex;
+			puzzle.PackNumber = (byte)comboBoxPackNumber.SelectedIndex;
+
+			// figure out some way to update the name in the puzzle slot box
+			//comboBoxPuzzleSlot.Refresh();
+
+			return;
 		}
 
 		private void comboBoxPuzzleSlot_SelectedIndexChanged( object sender, EventArgs e ) {
@@ -88,7 +111,14 @@ namespace HyoutaTools.Other.PicrossDS {
 		}
 
 		private void buttonSaveAs_Click( object sender, EventArgs e ) {
-
+			SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog();
+			dialog.Filter = "NDS Save (*.sav, *.dsv)|*.sav;*.dsv|Any File|*.*";
+			dialog.FileName = System.IO.Path.GetFileName( OriginalFilename );
+			DialogResult result = dialog.ShowDialog();
+			if ( result == DialogResult.OK ) {
+				OriginalFilename = dialog.FileName;
+				Save.WriteFile( OriginalFilename );
+			}
 		}
 	}
 }

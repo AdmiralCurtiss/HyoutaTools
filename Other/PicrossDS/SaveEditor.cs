@@ -9,7 +9,10 @@ namespace HyoutaTools.Other.PicrossDS {
 		public static int Execute( List<string> args ) {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
-			Application.Run( new PuzzleEditorForm() );
+			var form = new PuzzleEditorForm();
+			if ( !form.IsDisposed ) {
+				Application.Run( form );
+			}
 			return 0;
 		}
 	}

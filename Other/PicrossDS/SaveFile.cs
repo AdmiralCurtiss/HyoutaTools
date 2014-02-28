@@ -70,6 +70,29 @@ namespace HyoutaTools.Other.PicrossDS {
 			ClassicPuzzles = puzzleList.ToArray();
 		}
 
+		public void WriteClassicPuzzles() {
+			for ( uint i = 0; i < 100; ++i ) {
+				ClassicPuzzles[i].Write( File, ClassicPuzzleOffset + i * 0xC0 );
+			}
+
+			// and write the new puzzle map
+			List<byte> puzzleMap = new List<byte>();
+			for ( uint i = 0; i < 100; ++i ) {
+				// might need a better detection or something
+				if ( ClassicPuzzles[i].Unknown1 != 0xFF ) {
+					puzzleMap.Add( (byte)i );
+				}
+			}
+
+			int puzzleCount = puzzleMap.Count;
+			while ( puzzleMap.Count < 100 ) {
+				puzzleMap.Add( 0xFF );
+			}
+
+			puzzleMap.CopyTo( File, (int)ClassicPuzzleMappingTableOffset );
+			File[0x358A4] = (byte)puzzleCount;
+		}
+
 		public void RecalculateChecksum() {
 			byte[] checksumTable = new byte[] { 1, 2, 4, 8,
 											    2, 4, 8, 1,
@@ -90,6 +113,7 @@ namespace HyoutaTools.Other.PicrossDS {
 		}
 
 		public void WriteFile( string Filename ) {
+			WriteClassicPuzzles();
 			RecalculateChecksum();
 			System.IO.File.WriteAllBytes( Filename, File );
 		}
