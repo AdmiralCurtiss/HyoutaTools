@@ -7,19 +7,23 @@ namespace HyoutaTools.Other.PicrossDS {
 	class ClassicPuzzle {
 
 		// should be a total of 0xC0 bytes, starts at 0x30DA4
-		byte Unknown1;
-		byte Unknown2; // 0x11 unsolved 0x59 solved ???
-		byte Width;
-		byte Height;
-		uint ClearTime; // in frames at 60 fps
-		byte Mode; // 0x01 = Normal, 0x02 = Free
-		byte Unknown3;
-		string PuzzleName; // 0x32 bytes
-		byte PackNumber;
-		byte PackLetter;
-		string PackName; // 0x32 bytes
-		uint[] PuzzleData; // 20 lines, 4 bytes each, first 7 bits always 0, rest left-to-right 0 empty 1 filled
+		public byte Unknown1;
+		public byte Unknown2; // 0x11 unsolved 0x59 solved ???
+		public byte Width;
+		public byte Height;
+		public uint ClearTime; // in frames at 60 fps
+		public byte Mode; // 0x01 = Normal, 0x02 = Free
+		public byte Unknown3;
+		public string PuzzleName; // 0x32 bytes
+		public byte PackNumber;
+		public byte PackLetter;
+		public string PackName; // 0x32 bytes
+		public uint[] PuzzleData; // 20 lines, 4 bytes each, first 7 bits always 0, rest left-to-right 0 empty 1 filled
 
+		public bool Deleted = false;
+		public int IndexForGui = 0;
+
+		public ClassicPuzzle() { }
 		public ClassicPuzzle( byte[] File, uint Offset ) {
 			Unknown1 = File[Offset];
 			Unknown2 = File[Offset + 0x01];
@@ -37,6 +41,10 @@ namespace HyoutaTools.Other.PicrossDS {
 			for ( int i = 0; i < 20; ++i ) {
 				PuzzleData[i] = BitConverter.ToUInt32( File, (int)Offset + 0x70 + i * 4 );
 			}
+		}
+
+		public override string ToString() {
+			return "Classic Puzzle #" + IndexForGui + ": " + PuzzleName.Trim( '\0' ) + " (" + PackName.Trim( '\0' ) + ")";
 		}
 	}
 }

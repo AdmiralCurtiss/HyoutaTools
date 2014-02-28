@@ -18,10 +18,56 @@ namespace HyoutaTools.Other.PicrossDS {
 		}
 
 		byte[] File;
+		public ClassicPuzzle[] ClassicPuzzles;
+		public OriginalPuzzle[] OriginalPuzzles;
 
 		private bool LoadFile( byte[] File ) {
 			this.File = File;
 			return true;
+		}
+
+		static uint ClassicPuzzleMappingTableOffset = 0x30DA4 - 0x64;
+		static uint ClassicPuzzleOffset = 0x30DA4;
+		public void LoadClassicPuzzles() {
+			HashSet<uint> mappedPuzzles = new HashSet<uint>();
+			List<ClassicPuzzle> puzzleList = new List<ClassicPuzzle>();
+
+			// read all existing puzzles in ingame order
+			for ( uint i = 0; i < 100; ++i ) {
+				uint index = File[ClassicPuzzleMappingTableOffset + i];
+				if ( index > 0x63 ) {
+					continue;	
+				}
+
+				var puzzle = new ClassicPuzzle( File, ClassicPuzzleOffset + index * 0xC0 );
+				puzzleList.Add( puzzle );
+				mappedPuzzles.Add( index );
+			}
+
+			// find deleted puzzles, add those too
+			for ( uint i = 0; i < 100; ++i ) {
+				if ( !mappedPuzzles.Contains( i ) ) {
+					var puzzle = new ClassicPuzzle( File, ClassicPuzzleOffset + i * 0xC0 );
+					puzzle.Deleted = true;
+					puzzleList.Add( puzzle );
+				}
+			}
+
+			// and fill the rest with garbage if needed
+			while ( puzzleList.Count < 100 ) {
+				puzzleList.Add( new ClassicPuzzle() );
+			}
+
+			// and cut off if somehow more than 100 were added
+			if ( puzzleList.Count > 100 ) {
+				puzzleList.RemoveRange( 100, puzzleList.Count - 100 );
+			}
+
+			for ( int i = 0; i < puzzleList.Count; ++i ) {
+				puzzleList[i].IndexForGui = i + 1;
+			}
+
+			ClassicPuzzles = puzzleList.ToArray();
 		}
 
 		public void RecalculateChecksum() {
