@@ -88,10 +88,16 @@ namespace HyoutaTools.Other.PicrossDS {
 			puzzle.PackLetter = (byte)comboBoxPackLetter.SelectedIndex;
 			puzzle.PackNumber = (byte)comboBoxPackNumber.SelectedIndex;
 
-			// figure out some way to update the name in the puzzle slot box
-			//comboBoxPuzzleSlot.Refresh();
+			RefreshPuzzleSlotText();
 
 			return;
+		}
+
+		private void RefreshPuzzleSlotText() {
+			// bleeeh this is ugly
+			try {
+				typeof( ComboBox ).InvokeMember( "RefreshItems", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.InvokeMethod, null, comboBoxPuzzleSlot, new object[] { } );
+			} catch ( Exception ) { } // if it fails (maybe someone changes the internal functions in the future) just do nothing, it's not *that* important to refresh the text
 		}
 
 		private void comboBoxPuzzleSlot_SelectedIndexChanged( object sender, EventArgs e ) {
