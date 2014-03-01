@@ -7,15 +7,15 @@ namespace HyoutaTools.Other.PicrossDS {
 	class ClassicPuzzle {
 
 		// should be a total of 0xC0 bytes, starts at 0x30DA4
-		public byte Unknown1;
-		public byte Unknown2; // 0x11 unsolved 0x59 solved ???
+		public byte Type; // 0x02 = Classic, 0x03 = Original. SET THIS CORRECTLY OR THE GAME GETS CONFUSED
+		public byte Unknown2; // seems to be a bitmask, 0x01 = uncleared
 		public byte Width;
 		public byte Height;
 		public uint ClearTime; // in frames at 60 fps
 		public byte Mode; // 0x01 = Normal, 0x02 = Free
 		public byte Unknown3;
 		public string PuzzleName; // 0x32 bytes
-		public byte PackNumber;
+		public byte PackNumber;	// seems also to be used for difficulty in original puzzles
 		public byte PackLetter;
 		public string PackName; // 0x32 bytes
 		public uint[] PuzzleData; // 20 lines, 4 bytes each, first 7 bits always 0, rest left-to-right 0 empty 1 filled
@@ -25,7 +25,7 @@ namespace HyoutaTools.Other.PicrossDS {
 
 		public ClassicPuzzle() { }
 		public ClassicPuzzle( byte[] File, uint Offset ) {
-			Unknown1 = File[Offset];
+			Type = File[Offset];
 			Unknown2 = File[Offset + 0x01];
 			Width = File[Offset + 0x02];
 			Height = File[Offset + 0x03];
@@ -43,8 +43,8 @@ namespace HyoutaTools.Other.PicrossDS {
 			}
 		}
 
-		public void Write( byte[] File, uint Offset ) {
-			File[Offset] = Unknown1;
+		public virtual void Write( byte[] File, uint Offset ) {
+			File[Offset] = Type;
 			File[Offset + 0x01] = Unknown2;
 			File[Offset + 0x02] = Width;
 			File[Offset + 0x03] = Height;

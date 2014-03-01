@@ -29,8 +29,10 @@ namespace HyoutaTools.Other.PicrossDS {
 				this.SuspendLayout();
 				OriginalFilename = dialog.FileName;
 				Save = new SaveFile( OriginalFilename );
-				Save.LoadClassicPuzzles();
 				foreach ( var puzzle in Save.ClassicPuzzles ) {
+					comboBoxPuzzleSlot.Items.Add( puzzle );
+				}
+				foreach ( var puzzle in Save.OriginalPuzzles ) {
 					comboBoxPuzzleSlot.Items.Add( puzzle );
 				}
 				comboBoxPuzzleSlot.SelectedIndex = 0;
@@ -53,7 +55,7 @@ namespace HyoutaTools.Other.PicrossDS {
 			}
 
 			checkBoxFreeMode.Checked = puzzle.Mode == 0x02;
-			checkBoxCleared.Checked = puzzle.Unknown2 == 0x59; // almost definitely wrong, should look at this more
+			checkBoxCleared.Checked = ( puzzle.Unknown2 & 0x01 ) == 0x00;
 			textBoxCleartime.Text = puzzle.ClearTime.ToString();
 			textBoxName.Text = puzzle.PuzzleName.Trim( '\0' );
 			textBoxPack.Text = puzzle.PackName.Trim( '\0' );
@@ -82,7 +84,12 @@ namespace HyoutaTools.Other.PicrossDS {
 
 			puzzle.Mode = (byte)( checkBoxFreeMode.Checked ? 0x02 : 0x01 );
 			puzzle.ClearTime = UInt32.Parse( textBoxCleartime.Text );
-			//puzzle.Unknown2 = 0x59; // leave this until further investigation
+			if ( checkBoxCleared.Checked ) {
+				// seriously, C#? I can't invert a byte in a single statement?
+				byte tmp = 0x01; puzzle.Unknown2 &= (byte)~tmp;
+			} else {
+				puzzle.Unknown2 |= 0x01;
+			}
 			puzzle.PuzzleName = textBoxName.Text;
 			puzzle.PackName = textBoxPack.Text;
 			puzzle.PackLetter = (byte)comboBoxPackLetter.SelectedIndex;
@@ -104,6 +111,12 @@ namespace HyoutaTools.Other.PicrossDS {
 			PopulateGuiWithPuzzle( (ClassicPuzzle)comboBoxPuzzleSlot.SelectedItem );
 		}
 
+		private bool IsSelectedPuzzleOriginalPuzzle {
+			get {
+				return comboBoxPuzzleSlot.SelectedIndex >= 100;
+			}
+		}
+
 		private void buttonExport_Click( object sender, EventArgs e ) {
 			var puzzle = (ClassicPuzzle)comboBoxPuzzleSlot.SelectedItem;
 			SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog();
@@ -111,7 +124,7 @@ namespace HyoutaTools.Other.PicrossDS {
 			dialog.FileName = puzzle.ToString() + ".picross";
 			DialogResult result = dialog.ShowDialog();
 			if ( result == DialogResult.OK ) {
-				var outfile = new byte[0xC0];
+				var outfile = new byte[IsSelectedPuzzleOriginalPuzzle ? 0x7C8 : 0xC0];
 				puzzle.Write( outfile, 0x0 );
 				System.IO.File.WriteAllBytes( dialog.FileName, outfile );
 			}
@@ -123,9 +136,21 @@ namespace HyoutaTools.Other.PicrossDS {
 			DialogResult result = dialog.ShowDialog();
 			if ( result == DialogResult.OK ) {
 				var infile = System.IO.File.ReadAllBytes( dialog.FileName );
-				var puzzle = new ClassicPuzzle( infile, 0x0 );
-				Save.ClassicPuzzles[comboBoxPuzzleSlot.SelectedIndex] = puzzle;
-				PopulateGuiWithPuzzle( puzzle );
+
+				if ( IsSelectedPuzzleOriginalPuzzle ) {
+					var puzzle = new OriginalPuzzle( infile, 0x0 );
+					puzzle.Type = 0x03;
+					Save.OriginalPuzzles[comboBoxPuzzleSlot.SelectedIndex - 100] = puzzle;
+					comboBoxPuzzleSlot.Items[comboBoxPuzzleSlot.SelectedIndex] = puzzle;
+					PopulateGuiWithPuzzle( puzzle );
+				} else {
+					var puzzle = new ClassicPuzzle( infile, 0x0 );
+					puzzle.Type = 0x02;
+					Save.ClassicPuzzles[comboBoxPuzzleSlot.SelectedIndex] = puzzle;
+					comboBoxPuzzleSlot.Items[comboBoxPuzzleSlot.SelectedIndex] = puzzle;
+					PopulateGuiWithPuzzle( puzzle );
+				}
+
 				WriteGuiPuzzleDataToSave( sender, e );
 			}
 		}

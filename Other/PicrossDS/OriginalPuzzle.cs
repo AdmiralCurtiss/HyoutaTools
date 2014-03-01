@@ -4,15 +4,28 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Other.PicrossDS {
-	class OriginalPuzzle {
+	class OriginalPuzzle : ClassicPuzzle {
 		// starts at 0x64, 0x7C8 bytes per puzzle
-		ClassicPuzzle PuzzleData;
 		byte[] Picture; // 0x708 bytes, 60x60 image, half a byte per color (4bpp, pre-existing palette)
 
-		public OriginalPuzzle( byte[] File, uint Offset ) {
-			PuzzleData = new ClassicPuzzle( File, Offset );
+		public OriginalPuzzle() : base() { }
+		public OriginalPuzzle( byte[] File, uint Offset )
+			: base( File, Offset ) {
 			Picture = new byte[0x708];
-			Util.CopyByteArrayPart( File, (int)Offset + 0xC0, Picture, 0, 0x708 );
+			if ( File.Length >= Offset + 0x7C8 ) {
+				Util.CopyByteArrayPart( File, (int)Offset + 0xC0, Picture, 0, 0x708 );
+			}
+		}
+
+		public override void Write( byte[] File, uint Offset ) {
+			base.Write( File, Offset );
+			Picture.CopyTo( File, Offset + 0xC0 );
+		}
+
+		public override string ToString() {
+			string pzlName = PuzzleName.Contains( '\0' ) ? PuzzleName.Substring( 0, PuzzleName.IndexOf( '\0' ) ) : PuzzleName;
+			string pckName = PackName.Contains( '\0' ) ? PackName.Substring( 0, PackName.IndexOf( '\0' ) ) : PackName;
+			return "Original Puzzle #" + IndexForGui + " - " + pzlName + " (" + pckName + ")";
 		}
 	}
 }
