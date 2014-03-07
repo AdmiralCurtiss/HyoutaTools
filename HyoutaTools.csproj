@@ -197,6 +197,9 @@
       <DependentUpon>ItemForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Tales\Vesperia\ItemDat\RunItemViewer.cs" />
+    <Compile Include="Tales\Vesperia\T8BTMA\Arte.cs" />
+    <Compile Include="Tales\Vesperia\T8BTMA\Program.cs" />
+    <Compile Include="Tales\Vesperia\T8BTMA\T8BTMA.cs" />
     <Compile Include="Tales\Vesperia\To8chtx\ChatFile.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />

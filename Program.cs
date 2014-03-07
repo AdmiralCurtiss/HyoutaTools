@@ -99,6 +99,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "AceAttorney.PrintScriptForLP",            "-"           ),  AceAttorney.Script.DumpTextForLP) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "MyWorldMyWay.Tbl.Dump",                   "-"           ),  MyWorldMyWay.Tbl.DumpText) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PicrossDS.SaveEditor",              "-"           ),  Other.PicrossDS.SaveEditor.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.T8BTMA",                   "ToVartes"    ),  Tales.Vesperia.T8BTMA.Program.Execute) },
 		};
 
 		[STAThread]
