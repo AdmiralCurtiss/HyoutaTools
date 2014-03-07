@@ -71,7 +71,7 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 				//ItemStartInTss = 17763 + 216; // 360 with PS3 string_dic
 				return TSS.Entries[ptr - 340000 + ItemStartInTss];
 			} catch ( Exception ) {
-				return new TSSEntry( new uint[0], "", "", 0, 0 );
+				return new TSSEntry( new uint[0], "", "", 0, 0, -1 );
 			}
 		}
 

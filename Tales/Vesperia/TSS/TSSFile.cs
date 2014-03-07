@@ -58,6 +58,15 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 				int ENGPointer = -1;
 				int JPNIndex = -1;
 				int ENGIndex = -1;
+				int inGameStringId = -1;
+
+				// get in-game string id
+				for ( i = 0; i < OneEntry.Length; i++ ) {
+					if ( OneEntry[i] == 0x02070000 ) {
+						inGameStringId = (int)OneEntry[i + 1];
+						break;
+					}
+				}
 
 				// get JPN pointer
 				for ( i = 0; i < OneEntry.Length; i++ ) {
@@ -88,7 +97,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 					}
 				}
 
-				EntryList.Add( new TSSEntry( OneEntry, Util.GetTextShiftJis( File, JPNPointer ), Util.GetTextShiftJis( File, ENGPointer ), JPNIndex, ENGIndex ) );
+				EntryList.Add( new TSSEntry( OneEntry, Util.GetTextShiftJis( File, JPNPointer ), Util.GetTextShiftJis( File, ENGPointer ), JPNIndex, ENGIndex, inGameStringId ) );
 				//CurrentLocation += OneEntry.Length;
 				CurrentLocation++;
 			}
@@ -294,6 +303,9 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 				while ( Reader.Read() ) {
 					String English = Reader.GetString( 0 );
 					int PointerRef = Reader.GetInt32( 1 );
+
+					//UpdateDatabaseWithInGameStringId( Connection, PointerRef, Entries[PointerRef + 1].inGameStringId );
+
 					if ( Entries[PointerRef + 1].StringJPN != null
 						 && !String.IsNullOrEmpty( English )
 					   ) {
@@ -315,6 +327,16 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			}
 
 			return true;
+		}
+
+		private static void UpdateDatabaseWithInGameStringId( SQLiteConnection conn, int pointerref, int ingameid ) {
+			if ( ingameid > -1 ) {
+				string UPDATE = "UPDATE Text SET IdentifyString = IdentifyString || \" [" + ingameid + " / 0x" + ingameid.ToString( "X6" ) + "]\" WHERE PointerRef = " + pointerref;
+				Console.WriteLine( UPDATE );
+				SQLiteCommand command = new SQLiteCommand( UPDATE, conn );
+				command.ExecuteNonQuery();
+				command.Dispose();
+			}
 		}
 
 		private static String RemoveTags( String s ) {

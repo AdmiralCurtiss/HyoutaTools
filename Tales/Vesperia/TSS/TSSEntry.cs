@@ -10,13 +10,15 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public String StringENG;
 		public int StringJPNIndex;
 		public int StringENGIndex;
+		public int inGameStringId;
 
-		public TSSEntry( uint[] Entry, String StringJPN, String StringENG, int StringJPNIndex, int StringENGIndex ) {
+		public TSSEntry( uint[] Entry, String StringJPN, String StringENG, int StringJPNIndex, int StringENGIndex, int inGameStringId ) {
 			this.Entry = Entry;
 			this.StringJPN = StringJPN;
 			this.StringENG = StringENG;
 			this.StringJPNIndex = StringJPNIndex;
 			this.StringENGIndex = StringENGIndex;
+			this.inGameStringId = inGameStringId;
 		}
 
 		private void SetPointer( int index, uint Pointer ) {
