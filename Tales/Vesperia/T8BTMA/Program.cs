@@ -28,6 +28,8 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 
 			System.IO.File.WriteAllText( args[0] + ".txt", sb.ToString() );
 
+			arteFile.UpdateDatabaseWithArteProps( "Data Source=" + args[2] );
+
 			return 0;
 		}
 	}
