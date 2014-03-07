@@ -25,7 +25,7 @@ namespace HyoutaTools.Other.PicrossDS {
 		public override string ToString() {
 			string pzlName = PuzzleName.Contains( '\0' ) ? PuzzleName.Substring( 0, PuzzleName.IndexOf( '\0' ) ) : PuzzleName;
 			string pckName = PackName.Contains( '\0' ) ? PackName.Substring( 0, PackName.IndexOf( '\0' ) ) : PackName;
-			return "Original Puzzle #" + IndexForGui + " - " + pzlName + " (" + pckName + ")";
+			return "Original Puzzle #" + IndexForGui.ToString( "D3" ) + " - " + pckName + " - " + pzlName;
 		}
 	}
 }
