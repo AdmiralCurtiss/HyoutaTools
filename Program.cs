@@ -100,6 +100,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "MyWorldMyWay.Tbl.Dump",                   "-"           ),  MyWorldMyWay.Tbl.DumpText) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PicrossDS.SaveEditor",              "-"           ),  Other.PicrossDS.SaveEditor.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.T8BTMA",                   "ToVartes"    ),  Tales.Vesperia.T8BTMA.Program.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "HalfMinuteHeroSecond.S2AR.Extract",       "-"           ),  HalfMinuteHeroSecond.S2AR.ExecuteExtract) },
 		};
 
 		[STAThread]
