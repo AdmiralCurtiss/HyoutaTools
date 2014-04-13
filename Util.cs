@@ -603,6 +603,27 @@ namespace HyoutaTools {
 			return true;
 		}
 
+		public static string GuessFileExtension( Stream s ) {
+			uint magic32 = s.PeekUInt32();
+			uint magic24 = s.PeekUInt24();
+			uint magic16 = s.PeekUInt16();
+
+			switch ( magic32 ) {
+				case 0x46464952:
+					return ".wav";
+				case 0x474E5089:
+					return ".png";
+				case 0x5367674F:
+					return ".ogg";
+			}
+			switch ( magic16 ) {
+				case 0x4D42:
+					return ".bmp";
+			}
+
+			return "";
+		}
+
 		public static uint ReadUInt32( this Stream s ) {
 			int b1 = s.ReadByte();
 			int b2 = s.ReadByte();
@@ -611,11 +632,36 @@ namespace HyoutaTools {
 
 			return (uint)( b4 << 24 | b3 << 16 | b2 << 8 | b1 );
 		}
+		public static uint PeekUInt32( this Stream s ) {
+			long pos = s.Position;
+			uint retval = s.ReadUInt32();
+			s.Position = pos;
+			return retval;
+		}
+		public static uint ReadUInt24( this Stream s ) {
+			int b1 = s.ReadByte();
+			int b2 = s.ReadByte();
+			int b3 = s.ReadByte();
+
+			return (uint)( b3 << 16 | b2 << 8 | b1 );
+		}
+		public static uint PeekUInt24( this Stream s ) {
+			long pos = s.Position;
+			uint retval = s.ReadUInt24();
+			s.Position = pos;
+			return retval;
+		}
 		public static ushort ReadUInt16( this Stream s ) {
 			int b1 = s.ReadByte();
 			int b2 = s.ReadByte();
-												  
+
 			return (ushort)( b2 << 8 | b1 );
+		}
+		public static ushort PeekUInt16( this Stream s ) {
+			long pos = s.Position;
+			ushort retval = s.ReadUInt16();
+			s.Position = pos;
+			return retval;
 		}
 		public static string ReadAsciiNullterm( this Stream s ) {
 			StringBuilder sb = new StringBuilder();
