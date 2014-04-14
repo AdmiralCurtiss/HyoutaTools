@@ -8,12 +8,15 @@ using HyoutaTools.Tales.Vesperia.TSS;
 namespace HyoutaTools.Tales.Vesperia.Credits {
 	public class RunCreditsViewer {
 		public static int Execute( List<string> args ) {
-
+			if ( args.Count < 2 ) {
+				Console.WriteLine( "Usage: credits.dat STRING_DIC.SO" );
+				return -1;
+			}
 
 			Console.WriteLine( "Opening STRING_DIC.SO..." );
 			TSSFile TSS;
 			try {
-				TSS = new TSSFile( System.IO.File.ReadAllBytes( @"e:\___rebuild\STRING_DIC.SO" ) );
+				TSS = new TSSFile( System.IO.File.ReadAllBytes( args[1] ) );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
 				return -1;
