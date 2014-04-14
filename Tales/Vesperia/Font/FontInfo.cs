@@ -71,9 +71,11 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			CharacterMap.Add( '、', 0x0001 );
 			CharacterMap.Add( '。', 0x0002 );
 			CharacterMap.Add( ',', 0x0003 );
+			CharacterMap.Add( '，', 0x0003 );
 			CharacterMap.Add( '.', 0x0004 );
 
 			CharacterMap.Add( ':', 0x0006 );
+			CharacterMap.Add( '：', 0x0006 );
 			CharacterMap.Add( ';', 0x0007 );
 			CharacterMap.Add( '?', 0x0008 );
 			CharacterMap.Add( '？', 0x0008 );
@@ -93,6 +95,7 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			CharacterMap.Add( '_', 0x0011 );
 			CharacterMap.Add( '々', 0x0018 );
 			CharacterMap.Add( '○', 0x001A );
+			//CharacterMap.Add( '○', 0x005B ); //??
 			CharacterMap.Add( '/', 0x001E );
 			CharacterMap.Add( '\\', 0x001F );
 
@@ -114,27 +117,55 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			CharacterMap.Add( '{', 0x002F );
 			CharacterMap.Add( '}', 0x0030 );
 
+			CharacterMap.Add( '「', 0x0035 );
+			CharacterMap.Add( '」', 0x0036 );
 			CharacterMap.Add( '『', 0x0037 );
 			CharacterMap.Add( '』', 0x0038 );
 
 			CharacterMap.Add( '+', 0x003B );
 			CharacterMap.Add( '＋', 0x003B );
 			CharacterMap.Add( '-', 0x003C );
+			CharacterMap.Add( '×', 0x003E );
 
 			CharacterMap.Add( '=', 0x0041 );
+			CharacterMap.Add( '＝', 0x0041 );
 			CharacterMap.Add( '<', 0x0043 );
 			CharacterMap.Add( '>', 0x0044 );
+
+			CharacterMap.Add( '∞', 0x0047 );
+
+			CharacterMap.Add( '°', 0x004B );
 
 			CharacterMap.Add( '%', 0x0053 );
 			CharacterMap.Add( '#', 0x0054 );
 			CharacterMap.Add( '&', 0x0055 );
 			CharacterMap.Add( '*', 0x0056 );
-
+											
 			CharacterMap.Add( '☆', 0x0059 );
+			CharacterMap.Add( '★', 0x005A );
+			
+			CharacterMap.Add( '◎', 0x005D );
+
+			CharacterMap.Add( '△', 0x0062 );
+			CharacterMap.Add( '∇', 0x0064 );
+			CharacterMap.Add( '※', 0x0066 );
+			CharacterMap.Add( '→', 0x0068 );
+			CharacterMap.Add( '←', 0x0069 );
+			CharacterMap.Add( '↑', 0x006A );
+			CharacterMap.Add( '↓', 0x006B );
+
+			CharacterMap.Add( '∈', 0x0078 );
 
 			CharacterMap.Add( '∀', 0x008D );
 
+			CharacterMap.Add( '∠', 0x009A );
+
+			CharacterMap.Add( '√', 0x00A3 );
+			CharacterMap.Add( '∫', 0x00A7 );   
 			CharacterMap.Add( '♪', 0x00B4 );
+			CharacterMap.Add( '†', 0x00B5 );
+			CharacterMap.Add( '‡', 0x00B6 );
+			
 
 			CharacterMap.Add( '0', 0x00CF );
 			CharacterMap.Add( '1', 0x00D0 );
@@ -150,12 +181,12 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			CharacterMap.Add( '１', 0x00D0 );
 			CharacterMap.Add( '２', 0x00D1 );
 			CharacterMap.Add( '３', 0x00D2 );
-			//CharacterMap.Add('4', 0x00D3);
+			CharacterMap.Add( '４', 0x00D3 );
 			CharacterMap.Add( '５', 0x00D4 );
-			//CharacterMap.Add('6', 0x00D5);
-			//CharacterMap.Add('7', 0x00D6);
+			CharacterMap.Add( '６', 0x00D5 );
+			CharacterMap.Add( '７', 0x00D6 );
 			CharacterMap.Add( '８', 0x00D7 );
-			//CharacterMap.Add('9', 0x00D8);
+			CharacterMap.Add( '９', 0x00D8 );
 
 			CharacterMap.Add( 'A', 0x00E0 );
 			CharacterMap.Add( 'B', 0x00E1 );
@@ -184,6 +215,34 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			CharacterMap.Add( 'Y', 0x00F8 );
 			CharacterMap.Add( 'Z', 0x00F9 );
 
+			CharacterMap.Add( 'Ａ', 0x00E0 );
+			CharacterMap.Add( 'Ｂ', 0x00E1 );
+			CharacterMap.Add( 'Ｃ', 0x00E2 );
+			CharacterMap.Add( 'Ｄ', 0x00E3 );
+			CharacterMap.Add( 'Ｅ', 0x00E4 );
+			CharacterMap.Add( 'Ｆ', 0x00E5 );
+			CharacterMap.Add( 'Ｇ', 0x00E6 );
+			CharacterMap.Add( 'Ｈ', 0x00E7 );
+			CharacterMap.Add( 'Ｉ', 0x00E8 );
+			CharacterMap.Add( 'Ｊ', 0x00E9 );
+			CharacterMap.Add( 'Ｋ', 0x00EA );
+			CharacterMap.Add( 'Ｌ', 0x00EB );
+			CharacterMap.Add( 'Ｍ', 0x00EC );
+			CharacterMap.Add( 'Ｎ', 0x00ED );
+			CharacterMap.Add( 'Ｏ', 0x00EE );
+			CharacterMap.Add( 'Ｐ', 0x00EF );
+			CharacterMap.Add( 'Ｑ', 0x00F0 );
+			CharacterMap.Add( 'Ｒ', 0x00F1 );
+			CharacterMap.Add( 'Ｓ', 0x00F2 );
+			CharacterMap.Add( 'Ｔ', 0x00F3 );
+			CharacterMap.Add( 'Ｕ', 0x00F4 );
+			CharacterMap.Add( 'Ｖ', 0x00F5 );
+			CharacterMap.Add( 'Ｗ', 0x00F6 );
+			CharacterMap.Add( 'Ｘ', 0x00F7 );
+			CharacterMap.Add( 'Ｙ', 0x00F8 );
+			CharacterMap.Add( 'Ｚ', 0x00F9 );
+
+
 			CharacterMap.Add( 'a', 0x0101 );
 			CharacterMap.Add( 'b', 0x0102 );
 			CharacterMap.Add( 'c', 0x0103 );
@@ -210,6 +269,34 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			CharacterMap.Add( 'x', 0x0118 );
 			CharacterMap.Add( 'y', 0x0119 );
 			CharacterMap.Add( 'z', 0x011A );
+
+			CharacterMap.Add( 'ａ', 0x0101 );
+			CharacterMap.Add( 'ｂ', 0x0102 );
+			CharacterMap.Add( 'ｃ', 0x0103 );
+			CharacterMap.Add( 'ｄ', 0x0104 );
+			CharacterMap.Add( 'ｅ', 0x0105 );
+			CharacterMap.Add( 'ｆ', 0x0106 );
+			CharacterMap.Add( 'ｇ', 0x0107 );
+			CharacterMap.Add( 'ｈ', 0x0108 );
+			CharacterMap.Add( 'ｉ', 0x0109 );
+			CharacterMap.Add( 'ｊ', 0x010A );
+			CharacterMap.Add( 'ｋ', 0x010B );
+			CharacterMap.Add( 'ｌ', 0x010C );
+			CharacterMap.Add( 'ｍ', 0x010D );
+			CharacterMap.Add( 'ｎ', 0x010E );
+			CharacterMap.Add( 'ｏ', 0x010F );
+			CharacterMap.Add( 'ｐ', 0x0110 );
+			CharacterMap.Add( 'ｑ', 0x0111 );
+			CharacterMap.Add( 'ｒ', 0x0112 );
+			CharacterMap.Add( 'ｓ', 0x0113 );
+			CharacterMap.Add( 'ｔ', 0x0114 );
+			CharacterMap.Add( 'ｕ', 0x0115 );
+			CharacterMap.Add( 'ｖ', 0x0116 );
+			CharacterMap.Add( 'ｗ', 0x0117 );
+			CharacterMap.Add( 'ｘ', 0x0118 );
+			CharacterMap.Add( 'ｙ', 0x0119 );
+			CharacterMap.Add( 'ｚ', 0x011A );
+
 
 			CharacterMap.Add( 'Α', 0x01DF );
 			CharacterMap.Add( 'Β', 0x01E0 );
