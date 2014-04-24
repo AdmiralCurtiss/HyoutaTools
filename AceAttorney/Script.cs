@@ -203,7 +203,7 @@ namespace HyoutaTools.AceAttorney {
 						'』', '“', '”', '▼', '▲', ':', '、', ',',
 						'＋', '／', '*', '\'', '―', '・', '。', '％',
 						'‥', '～', '《', '》', '&', '☆', '♪', ' ',
-　 						'-', '"', '[', ']', '$', '状', '況', '中', 
+　 						'-', '"', '[', ']', '$', '#', '況', '中', 
 						'断', '選', 'é', '失', '敗', '消', '去', '初',
 						'期', '態', '戻', '追', '加', '思', '出', '逆',
 						'転', '第', '一', '回', '法', '廷', '前', '編',
@@ -393,6 +393,7 @@ namespace HyoutaTools.AceAttorney {
 		public char LastCharWritten;
 		public bool NewTextbox = true;
 
+
 		public DummyScriptEntry() { }
 		public bool PrintEntryForLP( Stream File, StreamWriter Output ) {
 			ushort Type = File.ReadUInt16();
@@ -426,10 +427,10 @@ namespace HyoutaTools.AceAttorney {
 						Output.Write( "\n[JUMP TO: Section 0x" + ( File.ReadUInt16() - 0x80 ).ToString( "X2" ) + "]" );
 						break;
 					case ScriptEntryEnum.FingerChoice2argsJmp:
-						Output.Write( "\n[MULTIPLE CHOICE: Sections 0x" + ( File.ReadUInt16() - 0x80 ).ToString( "X2" ) + ", 0x" + ( File.ReadUInt16() - 0x80 ).ToString( "X2" ) + "]" );
+						Output.Write( "\n[MULTIPLE CHOICE: Sections 0x" + ( (short)( File.ReadUInt16() - 0x80 ) ).ToString( "X2" ) + ", 0x" + ( (short)( File.ReadUInt16() - 0x80 ) ).ToString( "X2" ) + "]" );
 						break;
 					case ScriptEntryEnum.FingerChoice3argsJmp:
-						Output.Write( "\n[MULTIPLE CHOICE: Sections 0x" + ( File.ReadUInt16() - 0x80 ).ToString( "X2" ) + ", 0x" + ( File.ReadUInt16() - 0x80 ).ToString( "X2" ) + ", 0x" + ( File.ReadUInt16() - 0x80 ).ToString( "X2" ) + "]" );
+						Output.Write( "\n[MULTIPLE CHOICE: Sections 0x" + ( (short)( File.ReadUInt16() - 0x80 ) ).ToString( "X2" ) + ", 0x" + ( (short)( File.ReadUInt16() - 0x80 ) ).ToString( "X2" ) + ", 0x" + ( (short)( File.ReadUInt16() - 0x80 ) ).ToString( "X2" ) + "]" );
 						break;
 					case ScriptEntryEnum.Penalty:
 						Output.Write( "\n[PENALTY]" );
@@ -562,18 +563,26 @@ namespace HyoutaTools.AceAttorney {
 				case 0x02: return "Phoenix";
 				case 0x03: return "Police";
 				case 0x04: return "Maya";
+				case 0x06: return "The Thinker";
+				case 0x07: return "Mia";
 				case 0x08: return "Judge";
 				case 0x09: return "Edgeworth";
 				case 0x0A: return "Payne";
+				case 0x0B: return "Secretary";
 				case 0x0C: return "Grossberg";
 				case 0x0D: return "Cellular";
 				case 0x0F: return "???f";
 				case 0x10: return "Penny";
 				case 0x11: return "Oldbag";
+				case 0x12: return "Manella";
 				case 0x13: return "TV";
 				case 0x14: return "Gumshoe";
+				case 0x15: return "White";
+				case 0x16: return "May";
 				case 0x17: return "Bellboy";
+				case 0x18: return "Vasquez";
 				case 0x19: return "Larry";
+				case 0x1A: return "Sahwit";
 				case 0x1B: return "Powers";
 				case 0x1C: return "Cody";
 				case 0x1F: return "Lotta";
@@ -585,6 +594,15 @@ namespace HyoutaTools.AceAttorney {
 				case 0x27: return "Edgeworth (Young)";
 				case 0x28: return "Larry (Young)";
 				case 0x2B: return "Chief";
+				case 0x2C: return "Ema";
+				case 0x2D: return "Lana";
+				case 0x2E: return "Marshall";
+				case 0x2F: return "Meekins";
+				case 0x30: return "Goodman";
+				case 0x31: return "Gant";
+				case 0x32: return "Angel";
+				case 0x33: return "Guard";
+				case 0x34: return "Officer";
 
 				default: return b1.ToString( "X2" );
 			}
@@ -609,13 +627,25 @@ namespace HyoutaTools.AceAttorney {
 				case 0x14: return "Won the Lawsuit! ~ The First Success";
 				case 0x15: return "The Steel Samurai";
 				case 0x16: return "Congratulations Everybody";
+				case 0x17: return "Ace Attorney - Prologue";
 				case 0x18: return "Announce the Truth 2001";
+				case 0x19: return "Search ~ Opening 2001";
 				case 0x1A: return "Age, Regret, Reward";
 				case 0x1B: return "Reminiscence ~ DL6 Case";
 				case 0x1C: return "Reminiscence ~ True Evening of Grief";
 				case 0x1D: return "Reminiscence ~ Classroom Trial";
+				case 0x1E: return "Reminiscence ~ Light and Shadow at the Film Studio";
 				case 0x1F: return "[nature sounds?]";
+				//case 0x97: return "(lock music command?)";
 				case 0xFF: return CurrentMusic;
+
+				case 0x17C: return "Ema Skye ~ Turnabout Sisters' Theme 2005";
+				case 0x17D: return "Jake Marshall ~ The Detective that came from the Wild West";
+				case 0x17E: return "Recollection ~ SL9 Incident";
+				case 0x17F: return "Damon Gant ~ Swimming, anyone?";
+				case 0x180: return "Rise From The Ashes - Introduction";
+				case 0x181: return "Rise From The Ashes - End";
+
 
 				default: return "UNKNOWN" + MusicID.ToString( "X2" );
 			}
