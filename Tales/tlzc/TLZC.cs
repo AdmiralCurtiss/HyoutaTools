@@ -22,13 +22,13 @@ namespace HyoutaTools.Tales.tlzc {
 			throw new InvalidDataException( "unknown TLZC compression type" );
 		}
 
-		public static byte[] Compress( byte[] data, byte compressionType ) {
+		public static byte[] Compress( byte[] data, byte compressionType, int numFastBytes = 64 ) {
 			if ( compressionType != 4 )
 				throw new ArgumentException( "only compressionType 4 is supported currently", "compressionType" );
 
 			switch ( compressionType ) {
 				case 4:
-					return new Compression4().Compress( data );
+					return new Compression4().Compress( data, numFastBytes );
 			}
 
 			throw new Exception();
@@ -49,7 +49,7 @@ namespace HyoutaTools.Tales.tlzc {
 		}
 
 		class Compression4 {
-			public byte[] Compress( byte[] buffer ) {
+			public byte[] Compress( byte[] buffer, int numFastBytes = 64, int litContextBits = 3, int litPosBits = 0, int posStateBits = 2, int blockSize = 0, int matchFinderCycles = 32 ) {
 				MemoryStream result = new MemoryStream();
 				int inSize = buffer.Length;
 				int streamCount = ( inSize + 0xffff ) >> 16;
@@ -72,6 +72,19 @@ namespace HyoutaTools.Tales.tlzc {
 				var props = new Dictionary<SevenZip.CoderPropID, object>();
 				props[SevenZip.CoderPropID.DictionarySize] = 0x10000;
 				props[SevenZip.CoderPropID.MatchFinder] = "BT4";
+				props[SevenZip.CoderPropID.NumFastBytes] = numFastBytes;
+				props[SevenZip.CoderPropID.LitContextBits] = litContextBits;
+				props[SevenZip.CoderPropID.LitPosBits] = litPosBits;
+				props[SevenZip.CoderPropID.PosStateBits] = posStateBits;
+				//props[SevenZip.CoderPropID.BlockSize] = blockSize; // this always throws an exception when set
+				//props[SevenZip.CoderPropID.MatchFinderCycles] = matchFinderCycles; // ^ same here
+				//props[SevenZip.CoderPropID.DefaultProp] = 0;
+				//props[SevenZip.CoderPropID.UsedMemorySize] = 100000;
+				//props[SevenZip.CoderPropID.Order] = 1;
+				//props[SevenZip.CoderPropID.NumPasses] = 10;
+				//props[SevenZip.CoderPropID.Algorithm] = 0;
+				//props[SevenZip.CoderPropID.NumThreads] = ;
+				//props[SevenZip.CoderPropID.EndMarker] = ;
 
 				encoder.SetCoderProperties( props.Keys.ToArray(), props.Values.ToArray() );
 

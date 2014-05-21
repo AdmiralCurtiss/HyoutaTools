@@ -10,33 +10,38 @@ namespace HyoutaTools.Tales.tlzc {
 
 			bool ForceDecompress = false;
 			bool ForceCompress = false;
-			String Filename;
+			String Filename = null;
 			String FilenameOut = null;
+
+			int compressionNumFastBytes = 64;
 
 			if ( args.Count < 1 ) {
 				Console.WriteLine( Usage );
 				return -1;
 			}
 
-			// the most convoluted argument checking
-			if ( args[0] == "-c" || args[0] == "-d" ) {
-				if ( args.Count < 2 ) {
-					Console.WriteLine( Usage );
-					return -1;
-				}
-				if ( args[0] == "-c" ) ForceCompress = true;
-				else ForceDecompress = true;
-				Filename = args[1];
-				if ( args.Count > 2 ) {
-					FilenameOut = args[2];
-				}
-			} else {
-				Filename = args[0];
-				if ( args.Count > 1 ) {
-					FilenameOut = args[1];
+			int namecounter = 0;
+			for ( int i = 0; i < args.Count; ++i ) {
+				string arg = args[i];
+				if ( arg.StartsWith( "-" ) ) {
+					switch ( arg ) {
+						case "-c": ForceCompress = true; break;
+						case "-d": ForceDecompress = true; break;
+						case "--fastbytes": compressionNumFastBytes = Int32.Parse( args[++i] ); break;
+					}
+				} else {
+					++namecounter;
+					switch ( namecounter ) {
+						case 1: Filename = arg; break;
+						case 2: FilenameOut = arg; break;
+					}
 				}
 			}
-			// args end
+
+			if ( Filename == null ) {
+				Console.WriteLine( Usage );
+				return -1;
+			}
 
 			byte[] input = File.ReadAllBytes( Filename );
 			byte[] output;
@@ -58,11 +63,11 @@ namespace HyoutaTools.Tales.tlzc {
 			} else {
 				try {
 					Console.WriteLine( "compressing {0}", Filename );
-					output = TLZC.Compress( input, 4 );
+					output = TLZC.Compress( input, 4, compressionNumFastBytes );
 					if ( FilenameOut == null ) FilenameOut = Filename + ".tlzc";
 					File.WriteAllBytes( FilenameOut, output );
 				} catch ( Exception ex ) {
-					Console.WriteLine( "Decompression failed: " + ex.ToString() );
+					Console.WriteLine( "Compression failed: " + ex.ToString() );
 					return -1;
 				}
 			}
