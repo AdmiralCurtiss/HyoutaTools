@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Data.SQLite;
 using System.IO;
 
 namespace HyoutaTools {
@@ -43,7 +42,7 @@ namespace HyoutaTools {
 		}
 		#endregion
 
-		#region NumberUtils
+		#region HexUtils
 		public static byte ParseDecOrHexToByte( string s ) {
 			s = s.Trim();
 
@@ -77,7 +76,9 @@ namespace HyoutaTools {
 			//Or the two combined, but a bit slower:
 			return val - ( val < 58 ? 48 : ( val < 97 ? 55 : 87 ) );
 		}
+		#endregion
 
+		#region NumberUtils
 		public static uint ToUInt24( byte[] File, int Pointer ) {
 			byte b1 = File[Pointer];
 			byte b2 = File[Pointer + 1];
@@ -93,15 +94,33 @@ namespace HyoutaTools {
 			return b;
 		}
 
-		#endregion
-
-		public static void DisplayException( Exception e ) {
-			Console.WriteLine( "Exception occurred:" );
-			Console.WriteLine( e.Message );
+		/// <summary>
+		/// converts a 32-bit int that's actually a byte representation of a float
+		/// to an actual float for use in calculations or whatever
+		/// </summary>
+		public static float UIntToFloat( uint integer ) {
+			byte[] b = BitConverter.GetBytes( integer );
+			float f = BitConverter.ToSingle( b, 0 );
+			return f;
 		}
 
+		public static int Align( this int Number, int Alignment ) {
+			return (int)Align( (uint)Number, (uint)Alignment );
+		}
+		public static uint Align( this uint Number, uint Alignment ) {
+			uint diff = Number % Alignment;
+			if ( diff == 0 ) {
+				return Number;
+			} else {
+				return ( Number + ( Alignment - diff ) );
+			}
+		}
+
+		#endregion
+
 		#region TextUtils
-		public static Encoding ShiftJISEncoding = Encoding.GetEncoding( 932 );
+		private static Encoding _ShiftJISEncoding = null;
+		public static Encoding ShiftJISEncoding { get { if ( _ShiftJISEncoding == null ) { _ShiftJISEncoding = Encoding.GetEncoding( 932 ); } return _ShiftJISEncoding; } }
 		public static String GetTextShiftJis( byte[] File, int Pointer ) {
 			if ( Pointer == -1 ) return null;
 
@@ -165,6 +184,15 @@ namespace HyoutaTools {
 		public static byte[] StringToBytesUTF16( String s ) {
 			return Encoding.Unicode.GetBytes( s );
 		}
+
+		public static string XmlEscape( string s ) {
+			s = s.Replace( "&", "&amp;" );
+			s = s.Replace( "\"", "&quot;" );
+			s = s.Replace( "'", "&apos;" );
+			s = s.Replace( "<", "&lt;" );
+			s = s.Replace( ">", "&gt;" );
+			return s;
+		}
 		#endregion
 
 		#region TimeUtils
@@ -176,100 +204,6 @@ namespace HyoutaTools {
 		}
 		public static DateTime PS3TimeToDateTime( ulong PS3Time ) {
 			return new DateTime( 1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc ).AddMilliseconds( PS3Time / 1000 ).ToLocalTime();
-		}
-		#endregion
-
-		#region SqliteUtils
-		public static object GenericSqliteSelectScalar( string connString, string statement ) {
-			return GenericSqliteSelectScalar( connString, statement, new object[0] );
-		}
-		public static object GenericSqliteSelectScalar( string connString, string statement, IEnumerable<object> parameters ) {
-			object retval = null;
-			SQLiteConnection Connection = new SQLiteConnection( connString );
-			Connection.Open();
-
-			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
-			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
-				Command.CommandText = statement;
-				foreach ( object p in parameters ) {
-					SQLiteParameter sqp = new SQLiteParameter();
-					sqp.Value = p;
-					Command.Parameters.Add( sqp );
-				}
-				retval = Command.ExecuteScalar();
-				Transaction.Commit();
-			}
-			Connection.Close();
-
-			return retval;
-		}
-
-		public static List<Object[]> GenericSqliteSelectArray( string connString, string statement, IEnumerable<object> parameters ) {
-			List<Object[]> rows = null;
-			SQLiteConnection Connection = new SQLiteConnection( connString );
-			Connection.Open();
-
-			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
-			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
-				Command.CommandText = statement;
-				foreach ( object p in parameters ) {
-					SQLiteParameter sqp = new SQLiteParameter();
-					sqp.Value = p;
-					Command.Parameters.Add( sqp );
-				}
-
-				SQLiteDataReader rd = Command.ExecuteReader();
-
-				rows = new List<object[]>();
-				if ( rd.Read() ) {
-					Object[] fields = new Object[rd.FieldCount];
-					do {
-						rd.GetValues( fields );
-						rows.Add( fields );
-						fields = new Object[rd.FieldCount];
-					} while ( rd.Read() );
-				}
-
-				Transaction.Commit();
-			}
-			Connection.Close();
-
-			return rows;
-		}
-
-		public static int GenericSqliteUpdate( string connString, string statement ) {
-			return GenericSqliteUpdate( connString, statement, new object[0] );
-		}
-		public static int GenericSqliteUpdate( string connString, string statement, IEnumerable<object> parameters ) {
-			SQLiteConnection Connection = new SQLiteConnection( connString );
-			Connection.Open();
-			int retval = GenericSqliteUpdate( Connection, statement, parameters );
-			Connection.Close();
-			return retval;
-		}
-		public static int GenericSqliteUpdate( SQLiteConnection Connection, string statement, IEnumerable<object> parameters ) {
-			int affected = -1;
-			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() ) {
-				affected = GenericSqliteUpdate( Transaction, statement, parameters );
-				Transaction.Commit();
-			}
-			return affected;
-		}
-		public static int GenericSqliteUpdate( SQLiteTransaction transaction, string statement, IEnumerable<object> parameters ) {
-			int affected = -1;
-
-			using ( SQLiteCommand Command = new SQLiteCommand() ) {
-				Command.Connection = transaction.Connection;
-				Command.CommandText = statement;
-				foreach ( object p in parameters ) {
-					SQLiteParameter sqp = new SQLiteParameter();
-					sqp.Value = p;
-					Command.Parameters.Add( sqp );
-				}
-				affected = Command.ExecuteNonQuery();
-			}
-
-			return affected;
 		}
 		#endregion
 
@@ -323,52 +257,10 @@ namespace HyoutaTools {
 
 		#endregion
 
+		#region ArrayUtils
 		public static void CopyByteArrayPart( IList<byte> from, int locationFrom, IList<byte> to, int locationTo, int count ) {
 			for ( int i = 0; i < count; i++ ) {
 				to[locationTo + i] = from[locationFrom + i];
-			}
-		}
-
-		/// <summary>
-		/// converts a 32-bit int that's actually a byte representation of a float
-		/// to an actual float for use in calculations or whatever
-		/// </summary>
-		public static float UIntToFloat( uint integer ) {
-			byte[] b = BitConverter.GetBytes( integer );
-			float f = BitConverter.ToSingle( b, 0 );
-			return f;
-		}
-
-		public static int Align( int Number, int Alignment ) {
-			return (int)Align( (uint)Number, (uint)Alignment );
-		}
-		public static uint Align( uint Number, uint Alignment ) {
-			uint diff = Number % Alignment;
-			if ( diff == 0 ) {
-				return Number;
-			} else {
-				return ( Number + ( Alignment - diff ) );
-			}
-		}
-
-		public static string XmlEscape( string s ) {
-			s = s.Replace( "&", "&amp;" );
-			s = s.Replace( "\"", "&quot;" );
-			s = s.Replace( "'", "&apos;" );
-			s = s.Replace( "<", "&lt;" );
-			s = s.Replace( ">", "&gt;" );
-			return s;
-		}
-
-		public static void CopyStream( System.IO.Stream input, System.IO.Stream output, int count ) {
-			byte[] buffer = new byte[4096];
-			int read;
-
-			int bytesLeft = count;
-			while ( ( read = input.Read( buffer, 0, Math.Min( buffer.Length, bytesLeft ) ) ) > 0 ) {
-				output.Write( buffer, 0, read );
-				bytesLeft -= read;
-				if ( bytesLeft <= 0 ) return;
 			}
 		}
 
@@ -386,26 +278,19 @@ namespace HyoutaTools {
 			}
 			return true;
 		}
+		#endregion
 
-		public static string GuessFileExtension( Stream s ) {
-			uint magic32 = s.PeekUInt32();
-			uint magic24 = s.PeekUInt24();
-			uint magic16 = s.PeekUInt16();
+		#region StreamUtils
+		public static void CopyStream( System.IO.Stream input, System.IO.Stream output, int count ) {
+			byte[] buffer = new byte[4096];
+			int read;
 
-			switch ( magic32 ) {
-				case 0x46464952:
-					return ".wav";
-				case 0x474E5089:
-					return ".png";
-				case 0x5367674F:
-					return ".ogg";
+			int bytesLeft = count;
+			while ( ( read = input.Read( buffer, 0, Math.Min( buffer.Length, bytesLeft ) ) ) > 0 ) {
+				output.Write( buffer, 0, read );
+				bytesLeft -= read;
+				if ( bytesLeft <= 0 ) return;
 			}
-			switch ( magic16 ) {
-				case 0x4D42:
-					return ".bmp";
-			}
-
-			return "";
 		}
 
 		public static uint ReadUInt32( this Stream s ) {
@@ -447,6 +332,7 @@ namespace HyoutaTools {
 			s.Position = pos;
 			return retval;
 		}
+
 		public static string ReadAsciiNullterm( this Stream s ) {
 			StringBuilder sb = new StringBuilder();
 			int b = s.ReadByte();
@@ -472,10 +358,33 @@ namespace HyoutaTools {
 			int b1 = s.ReadByte();
 			while ( !( b0 == 0 && b1 == 0 ) && b1 != -1 ) {
 				b[0] = (byte)b0; b[1] = (byte)b1;
-				sb.Append( Encoding.Unicode.GetString(b, 0, 2) );
+				sb.Append( Encoding.Unicode.GetString( b, 0, 2 ) );
 				b0 = s.ReadByte(); b1 = s.ReadByte();
 			}
 			return sb.ToString();
 		}
+		#endregion
+
+		public static string GuessFileExtension( Stream s ) {
+			uint magic32 = s.PeekUInt32();
+			uint magic24 = s.PeekUInt24();
+			uint magic16 = s.PeekUInt16();
+
+			switch ( magic32 ) {
+				case 0x46464952:
+					return ".wav";
+				case 0x474E5089:
+					return ".png";
+				case 0x5367674F:
+					return ".ogg";
+			}
+			switch ( magic16 ) {
+				case 0x4D42:
+					return ".bmp";
+			}
+
+			return "";
+		}
+
 	}
 }

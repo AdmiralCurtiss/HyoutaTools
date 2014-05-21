@@ -106,7 +106,7 @@ namespace HyoutaTools.GraceNote.FindIdenticalEntries {
 							MatchLogWriter.WriteLine();
 							MatchLogWriter.WriteLine( "------------------------------------------------------" );
 							MatchLogWriter.WriteLine();
-							Util.GenericSqliteUpdate( e1.Database, "UPDATE Text SET updated = 1, status = 4 WHERE ID = " + e1.ID );
+							SqliteUtil.Update( e1.Database, "UPDATE Text SET updated = 1, status = 4 WHERE ID = " + e1.ID );
 						}
 					}
 				}

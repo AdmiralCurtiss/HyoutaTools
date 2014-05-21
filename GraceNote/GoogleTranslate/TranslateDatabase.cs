@@ -206,7 +206,7 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 
 			param[0] = e.Entry.TextEN;
 			param[1] = e.Entry.ID;
-			Util.GenericSqliteUpdate( conn, "UPDATE Text SET english = ?, UpdatedBy = 'GoogleTranslate', UpdatedTimestamp = " + Util.DateTimeToUnixTime( DateTime.Now ) + " WHERE ID = ?", param );
+			SqliteUtil.Update( conn, "UPDATE Text SET english = ?, UpdatedBy = 'GoogleTranslate', UpdatedTimestamp = " + Util.DateTimeToUnixTime( DateTime.Now ) + " WHERE ID = ?", param );
 		}
 
 

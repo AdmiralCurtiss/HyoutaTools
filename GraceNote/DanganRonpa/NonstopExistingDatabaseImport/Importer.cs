@@ -62,7 +62,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.NonstopExistingDatabaseImport {
 
 
 					// --- insert comment info ---
-					string comment = (string)Util.GenericSqliteSelectScalar(
+					string comment = (string)SqliteUtil.SelectScalar(
 						"Data Source=" + databaseFile,
 						"SELECT comment FROM Text WHERE id = ?",
 						new object[] { correspondingTextEntry } );
@@ -79,14 +79,14 @@ namespace HyoutaTools.GraceNote.DanganRonpa.NonstopExistingDatabaseImport {
 						+ ( item.data[(int)NonstopSingleStructure.Type] == 0 ? "" : "Appears around Entry #" + lastScriptEntry + "\n" )
 						+ ( item.data[(int)NonstopSingleStructure.Type] == 0 ? "Sprite: " + DanganUtil.CharacterIdToName( (byte)item.data[(int)NonstopSingleStructure.Character] ) + " " + item.data[(int)NonstopSingleStructure.Sprite] + "\n" : "" )
 						;
-					Util.GenericSqliteUpdate(
+					SqliteUtil.Update(
 						"Data Source=" + databaseFile,
 						"UPDATE Text SET comment = ?, updated = 1 WHERE id = ?",
 						new object[] { comment, correspondingTextEntry } );
 
 
 					// --- insert voice info ---
-					string script = (string)Util.GenericSqliteSelectScalar(
+					string script = (string)SqliteUtil.SelectScalar(
 						"Data Source=" + databaseFile,
 						"SELECT english FROM Text WHERE id = ?",
 						new object[] { correspondingScriptEntry } );
@@ -110,7 +110,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.NonstopExistingDatabaseImport {
 						script += "<__END__>\n"
 							+ "<Voice: " + voicename + ">"
 							;
-						Util.GenericSqliteUpdate(
+						SqliteUtil.Update(
 							"Data Source=" + databaseFile,
 							"UPDATE Text SET english = ?, updated = 1 WHERE id = ?",
 							new object[] { script, correspondingScriptEntry } );
@@ -118,13 +118,13 @@ namespace HyoutaTools.GraceNote.DanganRonpa.NonstopExistingDatabaseImport {
 
 						// update the header name thingy
 						string header = DanganUtil.CharacterIdToName( charid );
-						Util.GenericSqliteUpdate(
+						SqliteUtil.Update(
 							"Data Source=" + databaseFile,
 							"UPDATE Text SET IdentifyString = ?, updated = 1 WHERE id = ?",
 							new object[] { header, correspondingTextEntry } );
 					} else {
 						string header = "Background Noise";
-						Util.GenericSqliteUpdate(
+						SqliteUtil.Update(
 							"Data Source=" + databaseFile,
 							"UPDATE Text SET IdentifyString = ?, updated = 1 WHERE id = ?",
 							new object[] { header, correspondingTextEntry } );

@@ -22,7 +22,7 @@ namespace HyoutaTools.Generic.ByteSwap {
 			int BytesPerBlock;
 			try { BytesPerBlock = Int32.Parse( args[1] ); } catch ( Exception ) { BytesPerBlock = 4; }
 
-			int OutByteCount = Util.Align( File.Length, BytesPerBlock );
+			int OutByteCount = File.Length.Align( BytesPerBlock );
 			byte[] OutFile = new byte[OutByteCount];
 			for ( int i = 0; i < OutByteCount; i += BytesPerBlock ) {
 				for ( int j = 0; j < BytesPerBlock; ++j ) {

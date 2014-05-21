@@ -87,7 +87,7 @@ namespace HyoutaTools.LastRanker {
 			foreach ( string Path in Filepaths ) {
 				Filestream.Write( BitConverter.GetBytes( TotalFilesize ), 0, 4 );
 				TotalFilesize += (uint)( new System.IO.FileInfo( Path ).Length );
-				TotalFilesize = Util.Align( TotalFilesize, 0x10u );
+				TotalFilesize = TotalFilesize.Align( 0x10u );
 			}
 			while ( Filestream.Length < RequiredBytesForHeader ) { Filestream.WriteByte( 0x00 ); }
 

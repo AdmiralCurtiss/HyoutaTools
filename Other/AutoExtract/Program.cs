@@ -369,7 +369,7 @@ namespace HyoutaTools.Other.AutoExtract {
 						if ( f.ToUpperInvariant().EndsWith( ".NPK" )
 						 || (
 								AggressiveLastRankerNPK && (
-									Util.Align( ( ( firstbyte | ( secondbyte << 8 ) ) * 3 + 3 + 2 ), 0x10 )
+									( ( firstbyte | ( secondbyte << 8 ) ) * 3 + 3 + 2 ).Align( 0x10 )
 									== ( thirdbyte | ( fourthbyte << 8 ) | ( fifthbyte << 16 ) )
 								)
 							) ) {

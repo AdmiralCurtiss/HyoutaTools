@@ -162,6 +162,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SqliteUtil.cs" />
     <Compile Include="Tales\Abyss\FPS2\Program.cs" />
     <Compile Include="Tales\Abyss\FPS3\Program.cs" />
     <Compile Include="Tales\Abyss\PKF\Split.cs" />

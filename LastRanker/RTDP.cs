@@ -89,7 +89,7 @@ namespace HyoutaTools.LastRanker {
 			TotalFilesize = RequiredBytesForHeader;
 			foreach ( string Path in Filepaths ) {
 				TotalFilesize += (uint)( new System.IO.FileInfo( Path ).Length );
-				TotalFilesize = Util.Align( TotalFilesize, 0x20u );
+				TotalFilesize = TotalFilesize.Align( 0x20u );
 			}
 
 			// header

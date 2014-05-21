@@ -58,7 +58,7 @@ namespace HyoutaTools.LastRanker {
 		public void GenerateFiles( String Outdir ) {
 			System.IO.Directory.CreateDirectory( Outdir );
 			for ( int i = 0; i < FilePointers.Count - 1; ++i ) {
-				uint start = Util.Align( FilePointers[i], 0x10 );
+				uint start = FilePointers[i].Align( 0x10 );
 				uint end = FilePointers[i + 1];
 				uint count = end - start;
 
@@ -86,7 +86,7 @@ namespace HyoutaTools.LastRanker {
 			foreach ( string Path in Filepaths ) {
 				TotalFilesize += (uint)( new System.IO.FileInfo( Path ).Length );
 				Filestream.Write( Util.GetBytesForUInt24( TotalFilesize ), 0, 3 );
-				TotalFilesize = Util.Align( TotalFilesize, 0x10u );
+				TotalFilesize = TotalFilesize.Align( 0x10u );
 			}
 			while ( Filestream.Length < RequiredBytesForHeader ) { Filestream.WriteByte( 0x00 ); }
 

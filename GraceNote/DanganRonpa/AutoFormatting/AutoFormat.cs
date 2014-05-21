@@ -18,7 +18,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 
 		private static void CleanGracesJapanese( string p ) {
 			List<object[]> results =
-				Util.GenericSqliteSelectArray( p, "SELECT ID, string, debug FROM Japanese ORDER BY ID", new object[0] );
+				SqliteUtil.SelectArray( p, "SELECT ID, string, debug FROM Japanese ORDER BY ID", new object[0] );
 
 			SQLiteConnection conn = new SQLiteConnection( p );
 			conn.Open();
@@ -30,7 +30,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 				byte[] b = Encoding.Unicode.GetBytes( str );
 				if ( b.Length >= 2 && b[0] == '\xff' && b[1] == '\xfe' ) {
 					string fstr = Encoding.Unicode.GetString( b, 2, b.Length - 2 );
-					Util.GenericSqliteUpdate( transaction,
+					SqliteUtil.Update( transaction,
 						"UPDATE japanese SET string = ? WHERE id = ?",
 						new object[] { fstr, ID }
 					);
@@ -42,7 +42,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 		}
 		private static void CleanDatabase( string p ) {
 			List<object[]> results =
-				Util.GenericSqliteSelectArray( p,
+				SqliteUtil.SelectArray( p,
 				"SELECT ID, english FROM Text ORDER BY ID", new object[0] );
 
 			SQLiteConnection conn = new SQLiteConnection( p );
@@ -55,7 +55,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 				byte[] b = Encoding.Unicode.GetBytes( str );
 				if ( b.Length >= 2 && b[0] == '\xff' && b[1] == '\xfe' ) {
 					string fstr = Encoding.Unicode.GetString( b, 2, b.Length - 2 );
-					Util.GenericSqliteUpdate( transaction,
+					SqliteUtil.Update( transaction,
 						"UPDATE Text SET english = ? WHERE ID = ?",
 						new object[] { fstr, ID }
 					);
@@ -86,7 +86,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.AutoFormatting {
 
 				e.TextEN = FormatString( e.TextEN, maxCharsPerLine );
 
-				Util.GenericSqliteUpdate(
+				SqliteUtil.Update(
 					transaction,
 					"UPDATE Text SET english = ? WHERE ID = ?",
 					new object[] { e.TextEN, e.ID }
