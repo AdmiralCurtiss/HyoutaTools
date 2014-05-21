@@ -550,7 +550,11 @@ namespace HyoutaTools.AceAttorney {
 					//Output.Write( "[" + SpriteCharacter + ", " + SpriteTalking + " -> " + SpriteIdle + "] " );
 
 					if ( Name == "Phoenix" ) {
-						Output.Write( "[" + Name + "] " );
+						if ( Name == SpriteCharacter ) {
+							Output.Write( "[" + SpriteCharacter + " " + SpriteTalking + "] " );
+						} else {
+							Output.Write( "[" + Name + "] " );
+						}
 					} else if ( Name != SpriteCharacter ) {
 						Output.Write( "[" + Name + "] " );
 						Output.Write( "[" + SpriteCharacter + " " + SpriteTalking + "] " );
