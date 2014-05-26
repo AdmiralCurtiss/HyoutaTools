@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AceAttorney\Script.cs" />
+    <Compile Include="Checksum\Crc16Ccitt.cs" />
     <Compile Include="DanganRonpa\DanganUtil.cs" />
     <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
     <Compile Include="DanganRonpa\Font\Viewer\FontViewer.cs">
@@ -157,6 +158,9 @@
     <Compile Include="Other\TrailsInTheSkyScenarioDump\ScenarioBin.cs" />
     <Compile Include="Other\TrailsInTheSkyScenarioDump\DumpText.cs" />
     <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
+    <Compile Include="Pokemon\Gen5\PWT\DownloadFile.cs" />
+    <Compile Include="Pokemon\Gen5\PWT\Program.cs" />
+    <Compile Include="Pokemon\Gen5\PWT\Tournament.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
