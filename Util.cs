@@ -149,6 +149,15 @@ namespace HyoutaTools {
 				return null;
 			}
 		}
+		public static String GetTextUnicode( byte[] File, int Pointer, int MaxByteLength ) {
+			StringBuilder sb = new StringBuilder();
+			for ( int i = 0; i < MaxByteLength; i += 2 ) {
+				ushort ch = BitConverter.ToUInt16( File, Pointer + i );
+				if ( ch == 0 || ch == 0xFFFF ) { break; }
+				sb.Append( (char)ch );
+			}
+			return sb.ToString();
+		}
 		public static String GetTextUTF8( byte[] File, int Pointer ) {
 			int tmp;
 			return GetTextUTF8( File, Pointer, out tmp );
