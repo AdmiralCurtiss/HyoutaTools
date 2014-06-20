@@ -158,9 +158,11 @@
     <Compile Include="Other\TrailsInTheSkyScenarioDump\ScenarioBin.cs" />
     <Compile Include="Other\TrailsInTheSkyScenarioDump\DumpText.cs" />
     <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
+    <Compile Include="Pokemon\Gen4\String4.cs" />
     <Compile Include="Pokemon\Gen5\PWT\DownloadFile.cs" />
     <Compile Include="Pokemon\Gen5\PWT\Program.cs" />
     <Compile Include="Pokemon\Gen5\PWT\Tournament.cs" />
+    <Compile Include="Pokemon\Gen5\PWT\Trainer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
