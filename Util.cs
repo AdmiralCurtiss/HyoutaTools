@@ -302,6 +302,15 @@ namespace HyoutaTools {
 			}
 		}
 
+		public static bool IsIdentical( this Stream str, Stream other, long count ) {
+			for ( long i = 0; i < count; ++i ) {
+				if ( str.ReadByte() != other.ReadByte() ) {
+					return false;
+				}
+			}
+			return true;
+		}
+
 		public static uint ReadUInt32( this Stream s ) {
 			int b1 = s.ReadByte();
 			int b2 = s.ReadByte();
@@ -315,6 +324,9 @@ namespace HyoutaTools {
 			uint retval = s.ReadUInt32();
 			s.Position = pos;
 			return retval;
+		}
+		public static void WriteUInt32( this Stream s, uint num ) {
+			s.Write( BitConverter.GetBytes( num ), 0, 4 );
 		}
 		public static uint ReadUInt24( this Stream s ) {
 			int b1 = s.ReadByte();
@@ -340,6 +352,9 @@ namespace HyoutaTools {
 			ushort retval = s.ReadUInt16();
 			s.Position = pos;
 			return retval;
+		}
+		public static void WriteUInt16( this Stream s, ushort num ) {
+			s.Write( BitConverter.GetBytes( num ), 0, 2 );
 		}
 
 		public static string ReadAsciiNullterm( this Stream s ) {

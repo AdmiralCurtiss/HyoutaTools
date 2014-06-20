@@ -19,5 +19,21 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 
 			return 0;
 		}
+		
+		public static int ExecutePack( List<string> args ) {
+			if ( args.Count < 2 ) {
+				Console.WriteLine( "Usage: infolder outfile" );
+				return -1;
+			}
+			
+			string inPath = args[0];
+			string outPath = args[1];
+
+			var scenario = new ScenarioDat();
+			scenario.Import( inPath );
+			scenario.Write( outPath );
+
+			return 0;
+		}
 	}
 }
