@@ -14,44 +14,81 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			string file = args[0];
 
-			FileStream infile;
+			new FPS4( file ).Extract( file + ".ext" );
+
+			return 0;
+		}
+	}
+
+	public class FPS4Entry {
+		public FPS4Entry() { }
+	}
+	public class FPS4 {
+		public FPS4() { }
+		public FPS4( string inFilename ) {
+			if ( !LoadFile( inFilename ) ) {
+				throw new Exception( "Failed loading FPS4: " + inFilename );
+			}
+		}
+		~FPS4() {
+			if ( infile != null ) {
+				infile.Close();
+			}
+		}
+
+		FileStream infile = null;
+		uint FileCount;
+		uint HeaderSize;
+		uint FirstFileStart;
+		ushort EntrySize;
+		ushort ContentBitmask;
+		uint Unknown2;
+		uint ArchiveNameLocation;
+
+		// -- bitmask examples --
+		// 0x000F -> loc, end, size, name
+		// 0x0007 -> loc, end, size
+		// 0x0047 -> loc, end, size, ptr to path? attributes? something like that
+		public bool ContainsStartPointers { get { return ( ContentBitmask & 0x0001 ) == 0x0001; } }
+		public bool ContainsEndPointers { get { return ( ContentBitmask & 0x0002 ) == 0x0002; } }
+		public bool ContainsFileSizes { get { return ( ContentBitmask & 0x0004 ) == 0x0004; } }
+		public bool ContainsFilenames { get { return ( ContentBitmask & 0x0008 ) == 0x0008; } }
+		public bool ContainsFiletypes { get { return ( ContentBitmask & 0x0020 ) == 0x0020; } }
+		public bool ContainsFilepaths { get { return ( ContentBitmask & 0x0040 ) == 0x0040; } }
+
+		private bool LoadFile( string inFilename ) {
 			try {
-				infile = new FileStream( file, FileMode.Open );
+				infile = new FileStream( inFilename, FileMode.Open );
 			} catch ( Exception ) {
-				Console.WriteLine( "ERROR: can't open " + file );
-				return -1;
+				Console.WriteLine( "ERROR: can't open " + inFilename );
+				return false;
 			}
 
 			infile.Seek( 0x00, SeekOrigin.Begin );
 			string magic = infile.ReadAscii( 4 );
 			if ( magic != "FPS4" ) {
 				Console.WriteLine( "Not an FPS4 file!" );
-				return -1;
+				return false;
 			}
 
-			uint filecount = infile.ReadUInt32().SwapEndian();
-			uint headersize = infile.ReadUInt32().SwapEndian();
-			uint firstFileStart = infile.ReadUInt32().SwapEndian();
-			ushort entrysize = infile.ReadUInt16().SwapEndian();
-			ushort contentBitmask = infile.ReadUInt16().SwapEndian();
-			uint unknown2 = infile.ReadUInt32().SwapEndian();
-			uint archiveNameLocation = infile.ReadUInt32().SwapEndian();
+			FileCount = infile.ReadUInt32().SwapEndian();
+			HeaderSize = infile.ReadUInt32().SwapEndian();
+			FirstFileStart = infile.ReadUInt32().SwapEndian();
+			EntrySize = infile.ReadUInt16().SwapEndian();
+			ContentBitmask = infile.ReadUInt16().SwapEndian();
+			Unknown2 = infile.ReadUInt32().SwapEndian();
+			ArchiveNameLocation = infile.ReadUInt32().SwapEndian();
 
-			// -- bitmask examples --
-			// 0x000F -> loc, end, size, name
-			// 0x0007 -> loc, end, size
-			// 0x0047 -> loc, end, size, ptr to path? attributes? something like that
+			Console.WriteLine( "Content Bitmask: 0x" + ContentBitmask.ToString( "X4" ) );
 
-			bool contentFilename = ( contentBitmask & 0x0008 ) == 0x0008;
-			bool contentType = ( contentBitmask & 0x0020 ) == 0x0020;
-			bool contentPath = ( contentBitmask & 0x0040 ) == 0x0040;
-			Console.WriteLine( "Content Bitmask: 0x" + contentBitmask.ToString( "X4" ) );
+			return true;
+		}
 
-			string dirname = file + ".ext";
+		public void Extract( string dirname ) {
 			System.IO.Directory.CreateDirectory( dirname );
 
-			for ( uint i = 0; i < filecount - 1; ++i ) {
-				infile.Seek( headersize + ( i * entrysize ), SeekOrigin.Begin );
+			for ( uint i = 0; i < FileCount - 1; ++i ) {
+				infile.Seek( HeaderSize + ( i * EntrySize ), SeekOrigin.Begin );
 
 				uint fileloc = infile.ReadUInt32().SwapEndian();
 				uint fileend = fileloc + infile.ReadUInt32().SwapEndian();
@@ -62,17 +99,17 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				string filename = "";
-				if ( contentFilename ) {
+				if ( ContainsFilenames ) {
 					filename = infile.ReadAsciiNullterm();
 				}
 
 				string extension = "";
-				if ( contentType ) {
+				if ( ContainsFiletypes ) {
 					extension = '.' + infile.ReadAscii( 4 ).TrimNull();
 				}
 
 				string path = "";
-				if ( contentPath ) {
+				if ( ContainsFilepaths ) {
 					uint pathLocation = infile.ReadUInt32().SwapEndian();
 					if ( pathLocation != 0x00 ) {
 						long tmp = infile.Position;
@@ -127,15 +164,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						Util.CopyStream( infile, outfile, (int)( fileend - fileloc ) );
 					} catch ( Exception ) {
 						Console.WriteLine( "ERROR on file " + outfile.Name );
-						outfile.Close();
-						return -1;
 					}
 				}
 				outfile.Close();
 			}
-			infile.Close();
-
-			return 0;
 		}
 	}
 }
