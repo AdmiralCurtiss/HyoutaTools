@@ -217,7 +217,7 @@ namespace HyoutaTools.Other.AutoExtract {
 								Console.WriteLine( prog + " " + args );
 								List<string> argList = new List<string>( 1 );
 								argList.Add( f );
-								if ( 0 == Tales.Vesperia.FPS4.Program.Execute( argList ) ) {
+								if ( 0 == Tales.Vesperia.FPS4.Program.Extract( argList ) ) {
 									EnqueueDirectoryRecursively( queue, f + ".ext" );
 									System.IO.File.Delete( f );
 									HasBeenProcessed = true;

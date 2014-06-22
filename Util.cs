@@ -115,6 +115,17 @@ namespace HyoutaTools {
 				return ( Number + ( Alignment - diff ) );
 			}
 		}
+		public static long Align( this long Number, int Alignment ) {
+			return (long)Align( (ulong)Number, (uint)Alignment );
+		}
+		public static ulong Align( this ulong Number, uint Alignment ) {
+			ulong diff = Number % Alignment;
+			if ( diff == 0 ) {
+				return Number;
+			} else {
+				return ( Number + ( Alignment - diff ) );
+			}
+		}
 
 		#endregion
 
@@ -201,6 +212,11 @@ namespace HyoutaTools {
 			s = s.Replace( "<", "&lt;" );
 			s = s.Replace( ">", "&gt;" );
 			return s;
+		}
+
+		public static string Truncate( this string value, int maxLength ) {
+			if ( string.IsNullOrEmpty( value ) ) return value;
+			return value.Length <= maxLength ? value : value.Substring( 0, maxLength );
 		}
 		#endregion
 
@@ -384,6 +400,26 @@ namespace HyoutaTools {
 				b[0] = (byte)b0; b[1] = (byte)b1;
 				sb.Append( Encoding.Unicode.GetString( b, 0, 2 ) );
 				b0 = s.ReadByte(); b1 = s.ReadByte();
+			}
+			return sb.ToString();
+		}
+		public static string ReadShiftJisNullterm( this Stream s ) {
+			StringBuilder sb = new StringBuilder();
+			byte[] buffer = new byte[2];
+
+			int b = s.ReadByte();
+			while ( b != 0 && b != -1 ) {
+				if ( ( b >= 0 && b <= 0x80 ) || ( b >= 0xA0 && b <= 0xDF ) ) {
+					// is a single byte
+					buffer[0] = (byte)b;
+					sb.Append( ShiftJISEncoding.GetString( buffer, 0, 1 ) );
+				} else {
+					// is two bytes
+					buffer[0] = (byte)b;
+					buffer[1] = (byte)s.ReadByte();
+					sb.Append( ShiftJISEncoding.GetString( buffer ) );
+				}
+				b = s.ReadByte();
 			}
 			return sb.ToString();
 		}
