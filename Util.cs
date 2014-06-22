@@ -54,6 +54,17 @@ namespace HyoutaTools {
 			}
 		}
 
+		public static uint ParseDecOrHex( string s ) {
+			s = s.Trim();
+
+			if ( s.StartsWith( "0x" ) ) {
+				s = s.Substring( 2 );
+				return UInt32.Parse( s, System.Globalization.NumberStyles.HexNumber );
+			} else {
+				return UInt32.Parse( s );
+			}
+		}
+
 		public static byte[] HexStringToByteArray( string hex ) {
 			if ( hex.Length % 2 == 1 )
 				throw new Exception( "The binary key cannot have an odd number of digits" );

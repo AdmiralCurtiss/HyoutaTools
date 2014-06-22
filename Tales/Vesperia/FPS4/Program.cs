@@ -22,6 +22,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public static void PrintPackUsage() {
 			Console.WriteLine( "Usage: [args] DirectoryToPack OutputFilename" );
 			Console.WriteLine( "Possible Arguments:" );
+			Console.WriteLine( " -a alignment           Default: 0x0800" );
+			Console.WriteLine( "   Align files within the container to a specific boundary." );
 			Console.WriteLine( " -b bitmask             Default: 0x000F" );
 			Console.WriteLine( "   Set the bitmask to a specific value, to in- or exclude header data." );
 			Console.WriteLine( " -o filename.svo        Default: none" );
@@ -35,14 +37,19 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			string dir = null;
 			string outName = null;
-			ushort bitmask = 0x000F;
+			
+			ushort? bitmask = null;
+			uint? alignment = null;
 			string originalFps4 = null;
 
 			try {
 				for ( int i = 0; i < args.Count; ++i ) {
 					switch ( args[i] ) {
+						case "-a":
+							alignment = Util.ParseDecOrHex( args[++i] );
+							break;
 						case "-b":
-							bitmask = (ushort)Util.ParseDecOrHexToByte( args[++i] );
+							bitmask = (ushort)Util.ParseDecOrHex( args[++i] );
 							break;
 						case "-o":
 							originalFps4 = args[++i];
@@ -66,8 +73,11 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( originalFps4 != null ) {
 				fps4 = new FPS4( originalFps4 );
 			} else {
-				fps4 = new FPS4( bitmask );
+				fps4 = new FPS4();
 			}
+
+			if ( bitmask != null ) { fps4.ContentBitmask = (ushort)bitmask; }
+			if ( alignment != null ) { fps4.Alignment = (uint)alignment; }
 			
 			fps4.Pack( dir, outName );
 

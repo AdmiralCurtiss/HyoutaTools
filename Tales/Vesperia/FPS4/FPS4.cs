@@ -6,8 +6,8 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public class FPS4 {
-		public FPS4( ushort bitmask ) {
-			ContentBitmask = bitmask;
+		public FPS4() {
+			ContentBitmask = 0x000F;
 			Alignment = 0x800;
 		}
 		public FPS4( string inFilename ) {
@@ -24,12 +24,14 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		FileStream infile = null;
 		uint FileCount;
 		uint HeaderSize;
-		uint Alignment;
+		uint FirstFileStart;
 		ushort EntrySize;
-		ushort ContentBitmask;
+		public ushort ContentBitmask;
 		uint Unknown2;
 		uint ArchiveNameLocation;
+
 		string ArchiveName = "";
+		public uint Alignment;
 
 		// -- bitmask examples --
 		// 0x000F -> loc, end, size, name
@@ -59,7 +61,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			FileCount = infile.ReadUInt32().SwapEndian();
 			HeaderSize = infile.ReadUInt32().SwapEndian();
-			Alignment = infile.ReadUInt32().SwapEndian();
+			FirstFileStart = infile.ReadUInt32().SwapEndian();
 			EntrySize = infile.ReadUInt16().SwapEndian();
 			ContentBitmask = infile.ReadUInt16().SwapEndian();
 			Unknown2 = infile.ReadUInt32().SwapEndian();
@@ -68,6 +70,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( ArchiveNameLocation > 0 ) {
 				ArchiveName = infile.ReadShiftJisNullterm();
 			}
+
+			Alignment = FirstFileStart;
 
 			Console.WriteLine( "Content Bitmask: 0x" + ContentBitmask.ToString( "X4" ) );
 
@@ -177,21 +181,21 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( !String.IsNullOrEmpty( ArchiveName ) ) {
 				ArchiveNameLocation = HeaderEnd;
 			}
-			Alignment = HeaderEnd.Align( Alignment ); // probably not accurate to originals, fix later
+			FirstFileStart = HeaderEnd.Align( Alignment ); // probably not accurate to originals, fix later
 
 			using ( FileStream f = new FileStream( outFilename, FileMode.Create ) ) {
 				// header
 				f.Write( Encoding.ASCII.GetBytes( "FPS4" ), 0, 4 );
 				f.WriteUInt32( FileCount.SwapEndian() );
 				f.WriteUInt32( HeaderSize.SwapEndian() );
-				f.WriteUInt32( Alignment.SwapEndian() );
+				f.WriteUInt32( FirstFileStart.SwapEndian() );
 				f.WriteUInt16( EntrySize.SwapEndian() );
 				f.WriteUInt16( ContentBitmask.SwapEndian() );
 				f.WriteUInt32( Unknown2.SwapEndian() );
 				f.WriteUInt32( ArchiveNameLocation.SwapEndian() );
 
 				// file list
-				uint ptr = Alignment;
+				uint ptr = FirstFileStart;
 				for ( int i = 0; i < files.Length; ++i ) {
 					var fi = new System.IO.FileInfo( files[i] );
 					if ( ContainsStartPointers ) { f.WriteUInt32( ptr.SwapEndian() ); }
@@ -237,7 +241,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				// pad until files
-				for ( long i = f.Length; i < Alignment; ++i ) {
+				for ( long i = f.Length; i < FirstFileStart; ++i ) {
 					f.WriteByte( 0 );
 				}
 
