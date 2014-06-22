@@ -197,6 +197,7 @@
     </Compile>
     <Compile Include="Tales\Vesperia\Font\Viewer\Program.cs" />
     <Compile Include="Tales\Vesperia\FPS4\FPS4.cs" />
+    <Compile Include="Tales\Vesperia\FPS4\Program.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemDat.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemDatSingle.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemForm.cs">

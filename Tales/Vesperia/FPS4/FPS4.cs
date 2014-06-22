@@ -5,39 +5,6 @@ using System.Text;
 using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
-	public class Program {
-		public static int Extract( List<string> args ) {
-			if ( args.Count < 1 ) {
-				Console.WriteLine( "usage: fps4hack something.dat.dec" );
-				return -1;
-			}
-
-			string file = args[0];
-
-			new FPS4( file ).Extract( file + ".ext" );
-
-			return 0;
-		}
-
-		public static int Pack( List<string> args ) {
-			if ( args.Count < 2 ) {
-				Console.WriteLine( "Usage: DirectoryToPack OutputFilename [FPS4Bitmask = 0x000F]" );
-				return -1;
-			}
-
-			string dir = args[0];
-			string outName = args[1];
-			ushort bitmask = args.Count >= 3 ? (ushort)Util.ParseDecOrHexToByte( args[2] ) : (ushort)0x000F;
-
-			new FPS4( bitmask ).Pack( dir, outName );
-
-			return 0;
-		}
-	}
-
-	public class FPS4Entry {
-		public FPS4Entry() { }
-	}
 	public class FPS4 {
 		public FPS4( ushort bitmask ) {
 			ContentBitmask = bitmask;
