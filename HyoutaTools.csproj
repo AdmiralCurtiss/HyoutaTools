@@ -125,16 +125,6 @@
     <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
     <Compile Include="Other\GZip\GZipHandler.cs" />
     <Compile Include="Other\InvokeGimConv\Program.cs" />
-    <Compile Include="Other\N64\OoTSaveEditor\OoTSaveEditForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Other\N64\OoTSaveEditor\OoTSaveEditForm.Designer.cs">
-      <DependentUpon>OoTSaveEditForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Other\N64\OoTSaveEditor\OoTSaveFile.cs" />
-    <Compile Include="Other\N64\OoTSaveEditor\OoTSaveHeader.cs" />
-    <Compile Include="Other\N64\OoTSaveEditor\OoTSingleSave.cs" />
-    <Compile Include="Other\N64\OoTSaveEditor\Program.cs" />
     <Compile Include="Other\PicrossDS\ClassicPuzzle.cs" />
     <Compile Include="Other\PicrossDS\OriginalPuzzle.cs" />
     <Compile Include="Other\PicrossDS\PuzzleEditorForm.cs">
@@ -296,9 +286,6 @@
     <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
       <DependentUpon>NonstopForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Other\N64\OoTSaveEditor\OoTSaveEditForm.resx">
-      <DependentUpon>OoTSaveEditForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Other\PicrossDS\PuzzleEditorForm.resx">
       <DependentUpon>PuzzleEditorForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -331,7 +318,9 @@
     <None Include="Files\todr_char_table_without_header.dat" />
     <None Include="Files\gndb_template" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Other\N64\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" copy /b "$(TargetPath)" "$(SolutionDir)\..\..\Tools\$(TargetFileName)"</PostBuildEvent>
