@@ -8,6 +8,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public class FPS4 {
 		public FPS4( ushort bitmask ) {
 			ContentBitmask = bitmask;
+			Alignment = 0x800;
 		}
 		public FPS4( string inFilename ) {
 			if ( !LoadFile( inFilename ) ) {
@@ -23,7 +24,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		FileStream infile = null;
 		uint FileCount;
 		uint HeaderSize;
-		uint FirstFileStart;
+		uint Alignment;
 		ushort EntrySize;
 		ushort ContentBitmask;
 		uint Unknown2;
@@ -58,13 +59,15 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			FileCount = infile.ReadUInt32().SwapEndian();
 			HeaderSize = infile.ReadUInt32().SwapEndian();
-			FirstFileStart = infile.ReadUInt32().SwapEndian();
+			Alignment = infile.ReadUInt32().SwapEndian();
 			EntrySize = infile.ReadUInt16().SwapEndian();
 			ContentBitmask = infile.ReadUInt16().SwapEndian();
 			Unknown2 = infile.ReadUInt32().SwapEndian();
 			ArchiveNameLocation = infile.ReadUInt32().SwapEndian();
 			infile.Position = ArchiveNameLocation;
-			ArchiveName = infile.ReadShiftJisNullterm();
+			if ( ArchiveNameLocation > 0 ) {
+				ArchiveName = infile.ReadShiftJisNullterm();
+			}
 
 			Console.WriteLine( "Content Bitmask: 0x" + ContentBitmask.ToString( "X4" ) );
 
@@ -170,27 +173,29 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( ContainsFiletypes ) { EntrySize += 4; }
 			if ( ContainsFilepaths ) { EntrySize += 4; }
 
-			ArchiveNameLocation = HeaderSize + EntrySize * FileCount;
-			FirstFileStart = ( ArchiveNameLocation + 0x40 ).Align( 0x800 ); // probably not accurate to originals, fix later
+			uint HeaderEnd = HeaderSize + EntrySize * FileCount;
+			if ( !String.IsNullOrEmpty( ArchiveName ) ) {
+				ArchiveNameLocation = HeaderEnd;
+			}
+			Alignment = HeaderEnd.Align( Alignment ); // probably not accurate to originals, fix later
 
 			using ( FileStream f = new FileStream( outFilename, FileMode.Create ) ) {
 				// header
 				f.Write( Encoding.ASCII.GetBytes( "FPS4" ), 0, 4 );
 				f.WriteUInt32( FileCount.SwapEndian() );
 				f.WriteUInt32( HeaderSize.SwapEndian() );
-				f.WriteUInt32( FirstFileStart.SwapEndian() );
+				f.WriteUInt32( Alignment.SwapEndian() );
 				f.WriteUInt16( EntrySize.SwapEndian() );
 				f.WriteUInt16( ContentBitmask.SwapEndian() );
 				f.WriteUInt32( Unknown2.SwapEndian() );
 				f.WriteUInt32( ArchiveNameLocation.SwapEndian() );
 
-				// files align to 0x800
 				// file list
-				uint ptr = FirstFileStart;
+				uint ptr = Alignment;
 				for ( int i = 0; i < files.Length; ++i ) {
 					var fi = new System.IO.FileInfo( files[i] );
 					if ( ContainsStartPointers ) { f.WriteUInt32( ptr.SwapEndian() ); }
-					if ( ContainsEndPointers ) { f.WriteUInt32( ( (uint)( fi.Length.Align( 0x800 ) ) ).SwapEndian() ); }
+					if ( ContainsEndPointers ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).SwapEndian() ); }
 					if ( ContainsFileSizes ) { f.WriteUInt32( ( (uint)( fi.Length ) ).SwapEndian() ); }
 					if ( ContainsFilenames ) {
 						string filename = fi.Name.Truncate( 0x1F );
@@ -215,7 +220,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						// with the filepath
 						// strings should be after the filelist block but before the actual files
 					}
-					ptr += (uint)fi.Length.Align( 0x800 );
+					ptr += (uint)fi.Length.Align( (int)Alignment );
 				}
 
 				// at the end of the file list, a final entry pointing to the end of the container
@@ -225,12 +230,14 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				// write original archive filepath
-				byte[] archiveNameBytes = Util.ShiftJISEncoding.GetBytes( ArchiveName );
-				f.Write( archiveNameBytes, 0, archiveNameBytes.Length );
-				f.WriteByte( 0 );
+				if ( !String.IsNullOrEmpty( ArchiveName ) ) {
+					byte[] archiveNameBytes = Util.ShiftJISEncoding.GetBytes( ArchiveName );
+					f.Write( archiveNameBytes, 0, archiveNameBytes.Length );
+					f.WriteByte( 0 );
+				}
 
 				// pad until files
-				for ( long i = f.Length; i < FirstFileStart; ++i ) {
+				for ( long i = f.Length; i < Alignment; ++i ) {
 					f.WriteByte( 0 );
 				}
 
@@ -239,7 +246,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					using ( var fs = new System.IO.FileStream( files[i], FileMode.Open ) ) {
 						Console.WriteLine( "Packing #" + i.ToString( "D4" ) + ": " + files[i] );
 						Util.CopyStream( fs, f, (int)fs.Length );
-						while ( f.Length % 0x800 != 0 ) { f.WriteByte( 0 ); }
+						while ( f.Length % Alignment != 0 ) { f.WriteByte( 0 ); }
 					}
 				}
 			}
