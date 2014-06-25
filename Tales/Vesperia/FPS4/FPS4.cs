@@ -40,7 +40,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public bool ContainsFileSizes { get { return ( ContentBitmask & 0x0004 ) == 0x0004; } }
 		public bool ContainsFilenames { get { return ( ContentBitmask & 0x0008 ) == 0x0008; } }
 		public bool ContainsFiletypes { get { return ( ContentBitmask & 0x0020 ) == 0x0020; } }
-		public bool ContainsFilepaths { get { return ( ContentBitmask & 0x0040 ) == 0x0040; } }
+		public bool ContainsFileMetadata { get { return ( ContentBitmask & 0x0040 ) == 0x0040; } }
 
 		private bool LoadFile( string inFilename ) {
 			try {
@@ -76,7 +76,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			return true;
 		}
 
-		public void Extract( string dirname ) {
+		public void Extract( string dirname, bool noMetadataParsing = false ) {
 			System.IO.Directory.CreateDirectory( dirname );
 
 			for ( uint i = 0; i < FileCount - 1; ++i ) {
@@ -101,7 +101,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				string path = "";
-				if ( ContainsFilepaths ) {
+				if ( ContainsFileMetadata && !noMetadataParsing ) {
 					uint pathLocation = infile.ReadUInt32().SwapEndian();
 					if ( pathLocation != 0x00 ) {
 						long tmp = infile.Position;
@@ -162,7 +162,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 		}
 
-		public void Pack( string inPath, string outFilename ) {
+		public void Pack( string inPath, string outFilename, string metadata = null ) {
 			var files = System.IO.Directory.GetFiles( inPath );
 			FileCount = (uint)files.Length + 1;
 			HeaderSize = 0x1C;
@@ -173,13 +173,16 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( ContainsFileSizes ) { EntrySize += 4; }
 			if ( ContainsFilenames ) { EntrySize += 0x20; }
 			if ( ContainsFiletypes ) { EntrySize += 4; }
-			if ( ContainsFilepaths ) { EntrySize += 4; }
+			if ( ContainsFileMetadata ) { EntrySize += 4; }
 
 			uint HeaderEnd = HeaderSize + EntrySize * FileCount;
 			if ( !String.IsNullOrEmpty( ArchiveName ) ) {
 				ArchiveNameLocation = HeaderEnd;
 			}
-			FirstFileStart = HeaderEnd.Align( Alignment ); // probably not accurate to originals, fix later
+
+			if ( infile == null ) { // <- this is hacky and may create broken files when using -o with changed filenames/filecount/metadata/etc
+				FirstFileStart = HeaderEnd.Align( Alignment ); // <- this is inaccurate and will break with metadata
+			}
 
 			using ( FileStream f = new FileStream( outFilename, FileMode.Create ) ) {
 				// header
@@ -215,12 +218,23 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							f.WriteByte( 0 );
 						}
 					}
-					if ( ContainsFilepaths ) {
-						f.WriteUInt32( 0 );
-						// not yet implemented, but the idea is to write a pointer here
-						// and at the target of the pointer you have a nullterminated string
-						// with the filepath
-						// strings should be after the filelist block but before the actual files
+					if ( ContainsFileMetadata ) {
+						if ( infile != null ) {
+							// copy this from original file, very hacky when filenames/filecount/metadata changes
+							infile.Position = f.Position;
+							f.WriteUInt32( infile.ReadUInt32() );
+						} else {
+							if ( metadata == null ) {
+								f.WriteUInt32( 0 );
+							} else {
+								f.WriteUInt32( 0 );
+								// not yet implemented, but the idea is to write a pointer here
+								// and at the target of the pointer you have a nullterminated string
+								// with all the metadata in a param=data format separated by spaces
+								// maybe including a filepath at the start without a param=
+								// strings should be after the filelist block but before the actual files
+							}
+						}
 					}
 					ptr += (uint)fi.Length.Align( (int)Alignment );
 				}
@@ -239,8 +253,15 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				// pad until files
-				for ( long i = f.Length; i < FirstFileStart; ++i ) {
-					f.WriteByte( 0 );
+				if ( infile != null ) {
+					infile.Position = f.Position;
+					for ( long i = f.Length; i < FirstFileStart; ++i ) {
+						f.WriteByte( (byte)infile.ReadByte() );
+					}
+				} else {
+					for ( long i = f.Length; i < FirstFileStart; ++i ) {
+						f.WriteByte( 0 );
+					}
 				}
 
 				// actually write files
