@@ -209,19 +209,18 @@ namespace HyoutaTools.Other.AutoExtract {
 						if ( firstbyte == (int)'F' ) {
 							if ( secondbyte == (int)'P' && thirdbyte == (int)'S' && fourthbyte == (int)'4' ) {
 								fs.Close();
-								//prog = "Graceful";
-								//args = "1 \"" + f + "\"";
-								prog = "fps4hack";
+								prog = "tovfps4e";
 								args = "\"" + f + "\"";
 								Console.WriteLine();
 								Console.WriteLine( prog + " " + args );
-								List<string> argList = new List<string>( 1 );
-								argList.Add( f );
-								if ( 0 == Tales.Vesperia.FPS4.Program.Extract( argList ) ) {
-									EnqueueDirectoryRecursively( queue, f + ".ext" );
-									System.IO.File.Delete( f );
-									HasBeenProcessed = true;
-								}
+								
+								var fps4 = new Tales.Vesperia.FPS4.FPS4( f );
+								fps4.Extract( f + ".ext" );
+								fps4.Close();
+
+								EnqueueDirectoryRecursively( queue, f + ".ext" );
+								System.IO.File.Delete( f );
+								HasBeenProcessed = true;
 							}
 
 							if ( secondbyte == (int)'P' && thirdbyte == (int)'S' && fourthbyte == (int)'2' ) {
@@ -269,7 +268,7 @@ namespace HyoutaTools.Other.AutoExtract {
 						string fname = System.IO.Path.GetFileName( f );
 						if ( firstbyte == 0x00 && secondbyte == 0x02 && thirdbyte == 0x00 && fourthbyte == 0x00 &&
 							!isTexture
-							&& ! ( fname.EndsWith( ".TXM" ) || fname.EndsWith(".TXV") )
+							&& !( fname.EndsWith( ".TXM" ) || fname.EndsWith( ".TXV" ) )
 							/* && fname.Length == 4 && UInt32.TryParse( fname, out filenum ) */ ) {
 
 							FileStruct nextfile = queue.Peek();

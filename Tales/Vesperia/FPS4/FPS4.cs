@@ -16,9 +16,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 		}
 		~FPS4() {
-			if ( infile != null ) {
-				infile.Close();
-			}
+			Close();
 		}
 
 		FileStream infile = null;
@@ -253,6 +251,13 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						while ( f.Length % Alignment != 0 ) { f.WriteByte( 0 ); }
 					}
 				}
+			}
+		}
+
+		public void Close() {
+			if ( infile != null ) {
+				infile.Close();
+				infile = null;
 			}
 		}
 	}
