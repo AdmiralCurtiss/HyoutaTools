@@ -211,7 +211,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						}
 					}
 					if ( ContainsFiletypes ) {
-						string extension = fi.Extension.Truncate( 4 );
+						string extension = fi.Extension.TrimStart( '.' ).Truncate( 4 );
 						byte[] extbytes = Util.ShiftJISEncoding.GetBytes( extension );
 						f.Write( extbytes, 0, extbytes.Length );
 						for ( int j = extbytes.Length; j < 4; ++j ) {
