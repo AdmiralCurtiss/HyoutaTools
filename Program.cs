@@ -14,9 +14,7 @@ namespace HyoutaTools {
 	}
 
 	class Program {
-
 		public delegate int ExecuteProgramDelegate( List<string> args );
-
 
 		public static System.Collections.Generic.List<KeyValuePair<ProgramName, ExecuteProgramDelegate>> ProgramList = new List<KeyValuePair<ProgramName, ExecuteProgramDelegate>>() {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Font.Viewer",                 "DrFont"      ),  DanganRonpa.Font.Viewer.Program.Execute) },
@@ -108,24 +106,6 @@ namespace HyoutaTools {
 
 		[STAThread]
 		static int Main( string[] args ) {
-
-
-
-			//var das = System.IO.File.ReadAllBytes(@"c:\Users\Georg\Downloads\PCSX2_0.9.2_Brk_on_RW\sstates\TEST");
-			//var res = Util.GetTextPseudoShiftJis( das, 0 );
-			//StringBuilder b = new StringBuilder(res.Length);
-
-
-
-
-
-
-
-
-
-
-
-
 			if ( args.Length > 0 ) {
 				string ProgramName = args[0];
 				if ( ProgramName == "-" ) { PrintUsage(); return -1; }
@@ -138,7 +118,7 @@ namespace HyoutaTools {
 				if ( kvp.Value != null ) {
 					return kvp.Value( ProgramArguments );
 				} else {
-					PrintUsage();
+					PrintUsage( args[0] );
 				}
 
 			} else {
@@ -147,10 +127,19 @@ namespace HyoutaTools {
 			return -1;
 		}
 
-		private static void PrintUsage() {
+		private static void PrintUsage( string part = null ) {
+			bool programFound = false;
+			if ( part != null ) { part = part.ToLowerInvariant(); }
 			ProgramList.Sort( ( x, y ) => x.Key.CompareTo( y.Key ) );
 			foreach ( var p in ProgramList ) {
-				Console.WriteLine( String.Format( " {1,-12} {0}", p.Key.Name, p.Key.Shortcut ) );
+				if ( part == null || p.Key.Name.ToLowerInvariant().Contains( part ) || p.Key.Shortcut.ToLowerInvariant().Contains( part ) ) {
+					Console.WriteLine( String.Format( " {1,-12} {0}", p.Key.Name, p.Key.Shortcut ) );
+					programFound = true;
+				}
+			}
+
+			if ( !programFound ) {
+				Console.WriteLine( String.Format( " No tool matching '{0}' found!", part ) );
 			}
 		}
 	}
