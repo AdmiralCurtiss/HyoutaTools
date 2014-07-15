@@ -101,7 +101,8 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			switch ( item.Data[(int)ItemData.Category] ) {
 				case 2:
 				default:
-					sb.AppendLine( "~19: " + item.Data[(int)ItemData.PATK] );
+					// seems to be some kind of singletarget/multitarget flag maybe?
+					//sb.AppendLine( "~19: " + item.Data[(int)ItemData.PATK] );
 
 					// seems to be a bitfield regarding what stuff it heals, 1 == death, 2 = magical ailment, 4 == physical ailment
 					// this is already covered below so don't print it
@@ -203,9 +204,9 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				}
 			}
 
-			sb.AppendLine( "~3: " + item.Data[3] );
-			sb.AppendLine( "~5: " + item.Data[5] );
-			sb.AppendLine( "~18: " + item.Data[18] );
+			//sb.AppendLine( "~3: " + item.Data[3] );
+			//sb.AppendLine( "~5: " + item.Data[5] );
+			//sb.AppendLine( "~18: " + item.Data[18] );
 
 			/* all of these values make no sense to me, probably useless for the reader
 			sb.AppendLine( "~169: " + item.Data[169] );
