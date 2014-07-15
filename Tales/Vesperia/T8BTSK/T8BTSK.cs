@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTSK {
-	class T8BTSK {
+	public class T8BTSK {
 		public T8BTSK( String filename ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
 				if ( !LoadFile( stream ) ) {
@@ -21,6 +21,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 		}
 
 		public List<Skill> SkillList;
+		public Dictionary<uint, Skill> SkillIdDict;
 
 		private bool LoadFile( Stream stream ) {
 			string magic = stream.ReadAscii( 8 );
@@ -31,6 +32,11 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 			for ( uint i = 0; i < skillCount; ++i ) {
 				Skill s = new Skill( stream, refStringStart );
 				SkillList.Add( s );
+			}
+
+			SkillIdDict = new Dictionary<uint, Skill>( SkillList.Count );
+			foreach ( Skill s in SkillList ) {
+				SkillIdDict.Add( s.InGameID, s );
 			}
 
 			return true;

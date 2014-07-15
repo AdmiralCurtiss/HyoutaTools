@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTSK {
-	class Skill {
+	public class Skill {
 		public uint ID;
 		public uint InGameID;
 		public uint NameStringDicID;
@@ -18,9 +18,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 		public uint Category;
 		public uint SymbolValue;
 
-		public uint Unknown13;
-		public uint Unknown14;
-		public uint Unknown15;
+		public float Unknown13;
+		public float Unknown14;
+		public float Unknown15;
 		public uint Unknown16;
 
 		public string RefString;
@@ -42,9 +42,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 			// Game sums up this value per category, then figures out the OVL-symbol from the totals
 			SymbolValue = stream.ReadUInt32().SwapEndian();
 
-			Unknown13 = stream.ReadUInt32().SwapEndian();
-			Unknown14 = stream.ReadUInt32().SwapEndian();
-			Unknown15 = stream.ReadUInt32().SwapEndian();
+			Unknown13 = stream.ReadUInt32().SwapEndian().UIntToFloat();
+			Unknown14 = stream.ReadUInt32().SwapEndian().UIntToFloat();
+			Unknown15 = stream.ReadUInt32().SwapEndian().UIntToFloat();
 			Unknown16 = stream.ReadUInt32().SwapEndian();
 
 			long pos = stream.Position;

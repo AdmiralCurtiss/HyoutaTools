@@ -27,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 
-		public static string GetItemDataAsText( ItemDat items, ItemDatSingle item, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
+		public static string GetItemDataAsText( ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
 			var sb = new StringBuilder();
 
@@ -170,8 +170,13 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( (int)item.Data[(int)ItemData.AttrDark] != 0 ) { sb.AppendLine( "Attribute Darkness: " + (int)item.Data[(int)ItemData.AttrDark] ); }
 
 					for ( int i = 0; i < 3; ++i ) {
-						if ( item.Data[(int)ItemData.Skill1 + i * 2] != 0 ) {
-							sb.AppendLine( "Skill #" + ( i + 1 ) + " Name: " + item.Data[(int)ItemData.Skill1 + i * 2] );
+						uint skillId = item.Data[(int)ItemData.Skill1 + i * 2];
+						if ( skillId != 0 ) {
+							var skill = skills.SkillIdDict[skillId];
+							var skillNameEntry = dict[skill.NameStringDicID];
+							var skillDescEntry = dict[skill.DescStringDicID];
+							string skillName = String.IsNullOrEmpty( skillNameEntry.StringENG ) ? skillNameEntry.StringJPN : skillNameEntry.StringENG;
+							sb.AppendLine( "Skill #" + ( i + 1 ) + " Name: " + skillName );
 							sb.AppendLine( "Skill #" + ( i + 1 ) + " Metadata: " + item.Data[(int)ItemData.Skill1Metadata + i * 2] );
 						}
 					}
