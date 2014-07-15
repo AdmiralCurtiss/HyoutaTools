@@ -27,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 
-		public static string GetItemDataAsText( ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
+		public static string GetItemDataAsText( ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
 			var sb = new StringBuilder();
 
@@ -185,14 +185,15 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 
-			for ( int i = 0; i < 16; ++i ) {
-				if ( item.Data[(int)ItemData.Drop1Enemy + i] != 0 ) {
-					sb.AppendLine( "Enemy Drop #" + ( i + 1 ) + ": " + item.Data[(int)ItemData.Drop1Enemy + i] + ", " + item.Data[(int)ItemData.Drop1Chance + i] + "%" );
-				}
-			}
-			for ( int i = 0; i < 16; ++i ) {
-				if ( item.Data[(int)ItemData.Steal1Enemy + i] != 0 ) {
-					sb.AppendLine( "Enemy Steal #" + ( i + 1 ) + ": " + item.Data[(int)ItemData.Steal1Enemy + i] + ", " + item.Data[(int)ItemData.Steal1Chance + i] + "%" );
+			for ( int j = 0; j < 2; ++j ) {
+				for ( int i = 0; i < 16; ++i ) {
+					uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j*32];
+					if ( enemyId != 0 ) {
+						var enemy = enemies.EnemyIdDict[enemyId];
+						var enemyNameEntry = dict[enemy.NameStringDicID];
+						string enemyName = String.IsNullOrEmpty( enemyNameEntry.StringENG ) ? enemyNameEntry.StringJPN : enemyNameEntry.StringENG;
+						sb.AppendLine( "Enemy " + ( j == 0 ? "Drop" : "Steal" ) + " #" + ( i + 1 ) + ": " + enemyName + ", " + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
+					}
 				}
 			}
 

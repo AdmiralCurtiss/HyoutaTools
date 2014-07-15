@@ -14,16 +14,18 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		TSSFile TSS;
 		Dictionary<uint, TSSEntry> InGameIdDict;
 		T8BTSK.T8BTSK Skills;
+		T8BTEMST.T8BTEMST Enemies;
 
 		List<Label> labels;
 		List<TextBox> textboxes;
 
-		public ItemForm( ItemDat itemDat, TSSFile TSS, T8BTSK.T8BTSK skills ) {
+		public ItemForm( ItemDat itemDat, TSSFile TSS, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies ) {
 			InitializeComponent();
 
 			this.itemDat = itemDat;
 			this.TSS = TSS;
 			this.Skills = skills;
+			this.Enemies = enemies;
 			this.InGameIdDict = TSS.GenerateInGameIdDictionary();
 
 			labels = new List<Label>();
@@ -90,13 +92,13 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			labelDescription.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
 			entry = GetEntry( item.Data[(int)ItemData.UnknownTextPointer] );
 			labelUnknown.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
-			textBoxGeneratedText.Text = ItemDat.GetItemDataAsText( itemDat, item, Skills, TSS, InGameIdDict );
+			textBoxGeneratedText.Text = ItemDat.GetItemDataAsText( itemDat, item, Skills, Enemies, TSS, InGameIdDict );
 		}
 
 		private void buttonGenerateText_Click( object sender, EventArgs e ) {
 			var sb = new StringBuilder();
 			foreach ( var item in itemDat.items ) {
-				sb.AppendLine( ItemDat.GetItemDataAsText( itemDat, item, Skills, TSS, InGameIdDict ) );
+				sb.AppendLine( ItemDat.GetItemDataAsText( itemDat, item, Skills, Enemies, TSS, InGameIdDict ) );
 				sb.AppendLine();
 				sb.AppendLine();
 			}
