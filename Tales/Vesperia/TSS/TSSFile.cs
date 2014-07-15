@@ -104,6 +104,16 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			Entries = EntryList.ToArray();
 		}
 
+		public Dictionary<uint, TSSEntry> GenerateInGameIdDictionary() {
+			Dictionary<uint, TSSEntry> stringIdDict = new Dictionary<uint, TSSEntry>();
+			foreach ( var e in Entries ) {
+				if ( e.inGameStringId > -1 ) {
+					stringIdDict.Add( (uint)e.inGameStringId, e );
+				}
+			}
+			return stringIdDict;
+		}
+	
 		public byte[] ExportText() {
 			List<string> Lines = new List<string>( Entries.Length * 3 );
 

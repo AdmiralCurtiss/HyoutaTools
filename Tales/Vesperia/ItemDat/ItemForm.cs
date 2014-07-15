@@ -8,43 +8,41 @@ using System.Text;
 using System.Windows.Forms;
 using HyoutaTools.Tales.Vesperia.TSS;
 
-namespace HyoutaTools.Tales.Vesperia.ItemDat
-{
-    public partial class ItemForm : Form
-    {
-        ItemDat itemDat;
-        TSSFile TSS;
+namespace HyoutaTools.Tales.Vesperia.ItemDat {
+	public partial class ItemForm : Form {
+		ItemDat itemDat;
+		TSSFile TSS;
+		Dictionary<uint, TSSEntry> InGameIdDict;
 
-        List<Label> labels;
-        List<TextBox> textboxes;
+		List<Label> labels;
+		List<TextBox> textboxes;
 
-        public ItemForm(ItemDat itemDat, TSSFile TSS)
-        {
-            InitializeComponent();
+		public ItemForm( ItemDat itemDat, TSSFile TSS ) {
+			InitializeComponent();
 
-            this.itemDat = itemDat;
-            this.TSS = TSS;
+			this.itemDat = itemDat;
+			this.TSS = TSS;
+			this.InGameIdDict = TSS.GenerateInGameIdDictionary();
 
-            labels = new List<Label>();
-            textboxes = new List<TextBox>();
+			labels = new List<Label>();
+			textboxes = new List<TextBox>();
 
-            for ( int i = 0; i < ItemDatSingle.size / 4; ++i )
-            {
-                Label l = new Label();
-                l.Text = "";
-                l.Size = new System.Drawing.Size(100, 20);
-                TextBox b = new TextBox();
-				b.Size = new System.Drawing.Size(50, 20);
-                b.Text = "";
+			for ( int i = 0; i < ItemDatSingle.size / 4; ++i ) {
+				Label l = new Label();
+				l.Text = "";
+				l.Size = new System.Drawing.Size( 100, 20 );
+				TextBox b = new TextBox();
+				b.Size = new System.Drawing.Size( 50, 20 );
+				b.Text = "";
 
-                labels.Add(l);
-                textboxes.Add(b);
+				labels.Add( l );
+				textboxes.Add( b );
 
-                FlowLayoutPanel p = new FlowLayoutPanel();
-                p.Size = new System.Drawing.Size(200, 20);
-                p.FlowDirection = FlowDirection.LeftToRight;
-                p.Controls.Add(l);
-                p.Controls.Add(b);
+				FlowLayoutPanel p = new FlowLayoutPanel();
+				p.Size = new System.Drawing.Size( 200, 20 );
+				p.FlowDirection = FlowDirection.LeftToRight;
+				p.Controls.Add( l );
+				p.Controls.Add( b );
 
 				switch ( (ItemData)i ) {
 					case ItemData.NamePointer:
@@ -60,42 +58,47 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat
 					case ItemData.TextIDPart8:
 						break;
 					default:
-						flowLayoutPanel1.Controls.Add(p);
+						flowLayoutPanel1.Controls.Add( p );
 						break;
 				}
-            }
+			}
 
-            foreach (ItemDatSingle i in itemDat.items)
-            {
-				listBox1.Items.Add( GetEntry(i.UnknownRest[(int)ItemData.NamePointer]).StringENG );
-            }
+			foreach ( ItemDatSingle i in itemDat.items ) {
+				var entry = GetEntry( i.Data[(int)ItemData.NamePointer] );
+				listBox1.Items.Add( String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG );
+			}
 
-        }
-
-		private TSSEntry GetEntry( uint ptr ) {
-			int ItemStartInTss = 0x1A67; // 360
-			//int ItemStartInTss = 0x22C1; // PS3
-			return TSS.Entries[ptr - 110000 + ItemStartInTss];
 		}
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
+		private TSSEntry GetEntry( uint ptr ) {
+			return InGameIdDict[ptr];
+		}
+
+		private void listBox1_SelectedIndexChanged( object sender, EventArgs e ) {
 			ItemDatSingle item = itemDat.items[listBox1.SelectedIndex];
-            
-            for (int i = 0; i < ItemDatSingle.size / 4; ++i)
-            {
-                labels[i].Text = ((ItemData)i).ToString();
-                textboxes[i].Text = item.UnknownRest[i].ToString();
-            }
 
-			TSSEntry entry = GetEntry(item.UnknownRest[(int)ItemData.NamePointer]);
-            labelName.Text = String.IsNullOrEmpty(entry.StringENG) ? entry.StringJPN : entry.StringENG;
-			entry = GetEntry(item.UnknownRest[(int)ItemData.DescriptionPointer]);
-            labelDescription.Text = String.IsNullOrEmpty(entry.StringENG) ? entry.StringJPN : entry.StringENG;
-			entry = GetEntry(item.UnknownRest[(int)ItemData.UnknownTextPointer]);
-            labelUnknown.Text = String.IsNullOrEmpty(entry.StringENG) ? entry.StringJPN : entry.StringENG;
+			for ( int i = 0; i < ItemDatSingle.size / 4; ++i ) {
+				labels[i].Text = ( (ItemData)i ).ToString();
+				textboxes[i].Text = item.Data[i].ToString();
+			}
 
+			TSSEntry entry = GetEntry( item.Data[(int)ItemData.NamePointer] );
+			labelName.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
+			entry = GetEntry( item.Data[(int)ItemData.DescriptionPointer] );
+			labelDescription.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
+			entry = GetEntry( item.Data[(int)ItemData.UnknownTextPointer] );
+			labelUnknown.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
+			textBoxGeneratedText.Text = ItemDat.GetItemDataAsText( itemDat, item, TSS, InGameIdDict );
+		}
 
-        }
-    }
+		private void buttonGenerateText_Click( object sender, EventArgs e ) {
+			var sb = new StringBuilder();
+			foreach ( var item in itemDat.items ) {
+				sb.AppendLine( ItemDat.GetItemDataAsText( itemDat, item, TSS, InGameIdDict ) );
+				sb.AppendLine();
+				sb.AppendLine();
+			}
+			Clipboard.SetText( sb.ToString() );
+		}
+	}
 }
