@@ -102,9 +102,13 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				case 2:
 				default:
 					sb.AppendLine( "~19: " + item.Data[(int)ItemData.PATK] );
-					sb.AppendLine( "~20: " + item.Data[(int)ItemData.MATK] );
-					sb.AppendLine( "HP Heal %: " + item.Data[(int)ItemData.MDEF_or_HPHealPercent] );
-					sb.AppendLine( "TP Heal %: " + item.Data[(int)ItemData.AGL_TPHealPercent] );
+
+					// seems to be a bitfield regarding what stuff it heals, 1 == death, 2 = magical ailment, 4 == physical ailment
+					// this is already covered below so don't print it
+					//sb.AppendLine( "~20: " + item.Data[(int)ItemData.MATK] );
+
+					if ( item.Data[(int)ItemData.MDEF_or_HPHealPercent] > 0 ) { sb.AppendLine( "HP Heal %: " + item.Data[(int)ItemData.MDEF_or_HPHealPercent] ); }
+					if ( item.Data[(int)ItemData.AGL_TPHealPercent] > 0 ) { sb.AppendLine( "TP Heal %: " + item.Data[(int)ItemData.AGL_TPHealPercent] ); }
 
 					// why is this here twice?
 					uint physAilAlt = item.Data[(int)ItemData.PDEF];
@@ -146,7 +150,6 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( (int)item.Data[(int)ItemData.MATK] > 0 ) { sb.AppendLine( "MATK: " + (int)item.Data[(int)ItemData.MATK] ); }
 					if ( (int)item.Data[(int)ItemData.PDEF] > 0 ) { sb.AppendLine( "PDEF: " + (int)item.Data[(int)ItemData.PDEF] ); }
 					if ( (int)item.Data[(int)ItemData.MDEF_or_HPHealPercent] > 0 ) { sb.AppendLine( "MDEF: " + (int)item.Data[(int)ItemData.MDEF_or_HPHealPercent] ); }
-					if ( (int)item.Data[(int)ItemData._LUCK] > 0 ) { sb.AppendLine( "LUCK: " + (int)item.Data[(int)ItemData._LUCK] ); }
 
 					int agl1 = (int)item.Data[(int)ItemData.AGL_TPHealPercent];
 					int agl2 = (int)item.Data[(int)ItemData._AGL_Again];
@@ -157,8 +160,8 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 						if ( agl1 > 0 ) { sb.AppendLine( "AGL: " + agl1 ); }
 					}
 
-					sb.AppendLine( "~26: " + item.Data[26] );
-					sb.AppendLine( "~27: " + item.Data[27] );
+					if ( (int)item.Data[(int)ItemData._LUCK] > 0 ) { sb.AppendLine( "LUCK: " + (int)item.Data[(int)ItemData._LUCK] ); }
+
 					if ( (int)item.Data[(int)ItemData.AttrFire] != 0 ) { sb.AppendLine( "Attribute Fire: " + (int)item.Data[(int)ItemData.AttrFire] ); }
 					if ( (int)item.Data[(int)ItemData.AttrEarth] != 0 ) { sb.AppendLine( "Attribute Earth: " + (int)item.Data[(int)ItemData.AttrEarth] ); }
 					if ( (int)item.Data[(int)ItemData.AttrWind] != 0 ) { sb.AppendLine( "Attribute Wind: " + (int)item.Data[(int)ItemData.AttrWind] ); }
@@ -198,17 +201,23 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			sb.AppendLine( "~5: " + item.Data[5] );
 			sb.AppendLine( "~18: " + item.Data[18] );
 
+			/* all of these values make no sense to me, probably useless for the reader
 			sb.AppendLine( "~169: " + item.Data[169] );
 			sb.AppendLine( "~170: " + item.Data[170] );
 			sb.AppendLine( "~171: " + item.Data[171] );
 			sb.AppendLine( "~172: " + item.Data[172] );
 			sb.AppendLine( "~173: " + item.Data[173] );
 			sb.AppendLine( "~174: " + item.Data[174] );
-			sb.AppendLine( "~175: " + (int)item.Data[175] );
-			sb.AppendLine( "~176: " + item.Data[176] );
-			sb.AppendLine( "~177: " + item.Data[177] );
+			 */
 
-			if ( item.Data[178] == 0 ) { sb.AppendLine( "Does not show up in Collector's Book" ); }
+			// no idea, maybe related to what shows up on the character model?
+			//sb.AppendLine( "~175: " + (int)item.Data[175] );
+
+			// seems to be some sort of ID, useless for the reader
+			//sb.AppendLine( "~176: " + item.Data[176] );
+
+			if ( item.Data[177] > 0 ) { sb.AppendLine( "Usable in battle" ); };
+			if ( item.Data[178] == 0 ) { sb.AppendLine( "Not in Collector's Book" ); }
 
 			return sb.ToString();
 		}
