@@ -114,13 +114,17 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						}
 
 						int finaldir = path.LastIndexOf( '/' );
-						if ( finaldir == -1 ) { finaldir = 0; }
 						if ( filename == "" ) {
 							filename = path.Substring( finaldir + 1 ) + '.' + i.ToString( "D4" );
 						} else {
 							filename = path.Substring( finaldir + 1 ) + '.' + filename;
 						}
-						path = path.Substring( 0, finaldir );
+
+						if ( finaldir == -1 ) {
+							path = "";
+						} else {
+							path = path.Substring( 0, finaldir );
+						}
 					}
 				}
 				//string description = Util.GetText((int)(Util.SwapEndian(BitConverter.ToUInt32(b, (int)(headersize + (i * entrysize) + 0x2C)))), b);
