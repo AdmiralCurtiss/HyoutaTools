@@ -199,6 +199,8 @@
     <Compile Include="Tales\Vesperia\ItemDat\RunItemViewer.cs" />
     <Compile Include="Tales\Vesperia\Scenario\Program.cs" />
     <Compile Include="Tales\Vesperia\Scenario\ScenarioDat.cs" />
+    <Compile Include="Tales\Vesperia\T8BTEMST\Enemy.cs" />
+    <Compile Include="Tales\Vesperia\T8BTEMST\T8BTEMST.cs" />
     <Compile Include="Tales\Vesperia\T8BTMA\Arte.cs" />
     <Compile Include="Tales\Vesperia\T8BTMA\Program.cs" />
     <Compile Include="Tales\Vesperia\T8BTMA\T8BTMA.cs" />
