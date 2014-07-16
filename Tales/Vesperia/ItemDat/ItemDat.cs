@@ -136,7 +136,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( item.Data[26] > 0 ) { sb.AppendLine( "Permanent PATK increase: " + item.Data[26] ); }
 					if ( item.Data[27] > 0 ) { sb.AppendLine( "Permanent PDEF increase: " + item.Data[27] ); }
 					if ( item.Data[(int)ItemData.AttrFire] > 0 ) { sb.AppendLine( "Permanent MATK increase: " + item.Data[(int)ItemData.AttrFire] ); }
-					if ( item.Data[(int)ItemData.AttrEarth] > 0 ) { sb.AppendLine( "Permanent MDEF increase: " + item.Data[(int)ItemData.AttrEarth] ); }
+					if ( item.Data[(int)ItemData.AttrWater] > 0 ) { sb.AppendLine( "Permanent MDEF increase: " + item.Data[(int)ItemData.AttrWater] ); }
 					if ( item.Data[(int)ItemData.AttrWind] > 0 ) { sb.AppendLine( "Permanent AGL increase: " + item.Data[(int)ItemData.AttrWind] ); }
 					if ( item.Data[(int)ItemData.Skill1] > 0 ) { sb.AppendLine( "Max HP increase: " + item.Data[(int)ItemData.Skill1] ); }
 					if ( item.Data[(int)ItemData.Skill1Metadata] > 0 ) { sb.AppendLine( "Max TP increase: " + item.Data[(int)ItemData.Skill1Metadata] ); }
@@ -164,9 +164,9 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( (int)item.Data[(int)ItemData._LUCK] > 0 ) { sb.AppendLine( "LUCK: " + (int)item.Data[(int)ItemData._LUCK] ); }
 
 					if ( (int)item.Data[(int)ItemData.AttrFire] != 0 ) { sb.AppendLine( "Attribute Fire: " + (int)item.Data[(int)ItemData.AttrFire] ); }
-					if ( (int)item.Data[(int)ItemData.AttrEarth] != 0 ) { sb.AppendLine( "Attribute Earth: " + (int)item.Data[(int)ItemData.AttrEarth] ); }
-					if ( (int)item.Data[(int)ItemData.AttrWind] != 0 ) { sb.AppendLine( "Attribute Wind: " + (int)item.Data[(int)ItemData.AttrWind] ); }
 					if ( (int)item.Data[(int)ItemData.AttrWater] != 0 ) { sb.AppendLine( "Attribute Water: " + (int)item.Data[(int)ItemData.AttrWater] ); }
+					if ( (int)item.Data[(int)ItemData.AttrWind] != 0 ) { sb.AppendLine( "Attribute Wind: " + (int)item.Data[(int)ItemData.AttrWind] ); }
+					if ( (int)item.Data[(int)ItemData.AttrEarth] != 0 ) { sb.AppendLine( "Attribute Earth: " + (int)item.Data[(int)ItemData.AttrEarth] ); }
 					if ( (int)item.Data[(int)ItemData.AttrLight] != 0 ) { sb.AppendLine( "Attribute Light: " + (int)item.Data[(int)ItemData.AttrLight] ); }
 					if ( (int)item.Data[(int)ItemData.AttrDark] != 0 ) { sb.AppendLine( "Attribute Darkness: " + (int)item.Data[(int)ItemData.AttrDark] ); }
 
@@ -313,7 +313,8 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			sb.Append( "</td></tr><tr>" );
 
-			switch ( item.Data[(int)ItemData.Category] ) {
+			uint category = item.Data[(int)ItemData.Category]; 
+			switch ( category ) {
 				case 2:
 				default:
 					sb.Append( "<td colspan=\"2\">" );
@@ -345,7 +346,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( item.Data[26] > 0 ) { sb.Append( "Permanent PATK increase: " + item.Data[26] + "<br>" ); }
 					if ( item.Data[27] > 0 ) { sb.Append( "Permanent PDEF increase: " + item.Data[27] + "<br>" ); }
 					if ( item.Data[(int)ItemData.AttrFire] > 0 ) { sb.Append( "Permanent MATK increase: " + item.Data[(int)ItemData.AttrFire] + "<br>" ); }
-					if ( item.Data[(int)ItemData.AttrEarth] > 0 ) { sb.Append( "Permanent MDEF increase: " + item.Data[(int)ItemData.AttrEarth] + "<br>" ); }
+					if ( item.Data[(int)ItemData.AttrWater] > 0 ) { sb.Append( "Permanent MDEF increase: " + item.Data[(int)ItemData.AttrWater] + "<br>" ); }
 					if ( item.Data[(int)ItemData.AttrWind] > 0 ) { sb.Append( "Permanent AGL increase: " + item.Data[(int)ItemData.AttrWind] + "<br>" ); }
 					if ( item.Data[(int)ItemData.Skill1] > 0 ) { sb.Append( "Max HP increase: " + item.Data[(int)ItemData.Skill1] + "<br>" ); }
 					if ( item.Data[(int)ItemData.Skill1Metadata] > 0 ) { sb.Append( "Max TP increase: " + item.Data[(int)ItemData.Skill1Metadata] + "<br>" ); }
@@ -390,33 +391,14 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 					if ( attackElementCount > 0 || defenseElementCount > 0 ) {
 						int fire = (int)item.Data[(int)ItemData.AttrFire];
-						int eart = (int)item.Data[(int)ItemData.AttrEarth];
-						int wind = (int)item.Data[(int)ItemData.AttrWind];
 						int watr = (int)item.Data[(int)ItemData.AttrWater];
+						int wind = (int)item.Data[(int)ItemData.AttrWind];
+						int eart = (int)item.Data[(int)ItemData.AttrEarth];
 						int lght = (int)item.Data[(int)ItemData.AttrLight];
 						int dark = (int)item.Data[(int)ItemData.AttrDark];
-						if ( attackElementCount > 0 ) {
-							sb.Append( "<table class=\"element\"><tr>" );
-							sb.Append( "<td colspan=\"" + attackElementCount + "\">Attack Element</td>" );
-							sb.Append( "</tr><tr>" );
-							if ( fire > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-02.png\"></td>" ); }
-							if ( eart > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-04.png\"></td>" ); }
-							if ( wind > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-01.png\"></td>" ); }
-							if ( watr > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-05.png\"></td>" ); }
-							if ( lght > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-03.png\"></td>" ); }
-							if ( dark > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-06.png\"></td>" ); }
-							sb.Append( "</tr><tr>" );
-							if ( fire > 0 ) { sb.Append( "<td>" + fire + "</td>" ); }
-							if ( eart > 0 ) { sb.Append( "<td>" + eart + "</td>" ); }
-							if ( wind > 0 ) { sb.Append( "<td>" + wind + "</td>" ); }
-							if ( watr > 0 ) { sb.Append( "<td>" + watr + "</td>" ); }
-							if ( lght > 0 ) { sb.Append( "<td>" + lght + "</td>" ); }
-							if ( dark > 0 ) { sb.Append( "<td>" + dark + "</td>" ); }
-							sb.Append( "</tr></table>" );
-						}
 						if ( defenseElementCount > 0 ) {
 							sb.Append( "<table class=\"element\"><tr>" );
-							sb.Append( "<td colspan=\"" + defenseElementCount + "\">Resist Element</td>" );
+							sb.Append( "<td colspan=\"" + defenseElementCount + "\">Resistance</td>" );
 							sb.Append( "</tr><tr>" );
 							if ( fire < 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-02.png\"></td>" ); }
 							if ( eart < 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-04.png\"></td>" ); }
@@ -431,6 +413,31 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							if ( watr < 0 ) { sb.Append( "<td>" + -watr + "</td>" ); }
 							if ( lght < 0 ) { sb.Append( "<td>" + -lght + "</td>" ); }
 							if ( dark < 0 ) { sb.Append( "<td>" + -dark + "</td>" ); }
+							sb.Append( "</tr></table>" );
+						}
+						if ( attackElementCount > 0 ) {
+							sb.Append( "<table class=\"element\"><tr>" );
+							if ( category == 3 || category == 4 ) {
+								// weapons and sub-weapons add elemental attributes to your attack
+								sb.Append( "<td colspan=\"" + attackElementCount + "\">Attack Element</td>" );
+							} else {
+								// defensive equipment instead uses this field as a weak/resist, with weak as positive and resist as negative values
+								sb.Append( "<td colspan=\"" + attackElementCount + "\">Weakness</td>" );
+							}
+							sb.Append( "</tr><tr>" );
+							if ( fire > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-02.png\"></td>" ); }
+							if ( eart > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-04.png\"></td>" ); }
+							if ( wind > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-01.png\"></td>" ); }
+							if ( watr > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-05.png\"></td>" ); }
+							if ( lght > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-03.png\"></td>" ); }
+							if ( dark > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-06.png\"></td>" ); }
+							sb.Append( "</tr><tr>" );
+							if ( fire > 0 ) { sb.Append( "<td>" + fire + "</td>" ); }
+							if ( eart > 0 ) { sb.Append( "<td>" + eart + "</td>" ); }
+							if ( wind > 0 ) { sb.Append( "<td>" + wind + "</td>" ); }
+							if ( watr > 0 ) { sb.Append( "<td>" + watr + "</td>" ); }
+							if ( lght > 0 ) { sb.Append( "<td>" + lght + "</td>" ); }
+							if ( dark > 0 ) { sb.Append( "<td>" + dark + "</td>" ); }
 							sb.Append( "</tr></table>" );
 						}
 					}

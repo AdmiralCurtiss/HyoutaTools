@@ -163,9 +163,9 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		UsedInRecipe4 = 114,
 
 		AttrFire = 28,
-		AttrEarth = 29,
+		AttrWater = 29,
 		AttrWind = 30,
-		AttrWater = 31,
+		AttrEarth = 31,
 		AttrLight = 32,
 		AttrDark = 33,
 
