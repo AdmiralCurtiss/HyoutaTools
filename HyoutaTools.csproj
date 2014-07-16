@@ -169,6 +169,8 @@
     <Compile Include="Tales\DestinyRemake\TblBin\Execute.cs" />
     <Compile Include="Tales\DestinyRemake\TblBin\TBL.cs" />
     <Compile Include="Tales\DestinyRemake\ToDrUtil.cs" />
+    <Compile Include="Tales\Vesperia\COOKDAT\COOKDAT.cs" />
+    <Compile Include="Tales\Vesperia\COOKDAT\Recipe.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfo.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfoSingle.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsForm.cs">
