@@ -104,5 +104,39 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			}
 			Clipboard.SetText( sb.ToString() );
 		}
+
+		private void buttonGenerateHtml_Click( object sender, EventArgs e ) {
+			var sb = new StringBuilder();
+			sb.AppendLine( "<html><head>" );
+			sb.AppendLine( "<style>" );
+			sb.AppendLine( "body { background-color: #68504F; color: #EFD1AE; font-size: 16; }" );
+			sb.AppendLine( ".itemname { color: #FFEBD2; font-size: 20; }" );
+			sb.AppendLine( ".itemdesc { }" );
+			sb.AppendLine( ".equip { text-align: right; float: right; }" );
+			sb.AppendLine( ".special { text-align: right; float: right; }" );
+			sb.AppendLine( "table, tr, td, th { padding: 0px 4px 0px 0px; border-spacing: 0px; }" );
+			sb.AppendLine( "a:link, a:visited, a:hover, a:active { color: #FFEBD2; }" );
+			sb.AppendLine( "</style>" );
+			sb.AppendLine( "</head><body><table>" );
+			foreach ( var item in itemDat.items ) {
+				if ( item.Data[(int)ItemData.Category] == 0 ) { continue; }
+				sb.AppendLine( ItemDat.GetItemDataAsHtml( itemDat, item, Skills, Enemies, TSS, InGameIdDict ) );
+				sb.AppendLine( "<tr><td colspan=\"5\"><hr></td></tr>" );
+			}
+			sb.AppendLine( "</table></body></html>" );
+
+			string html = sb.ToString();
+			html = VesperiaUtil.RemoveTags( html );
+			html = html.Replace( "\x06(STA)", "[START]" );
+			html = html.Replace( "\x06(L3)", "[LEFT STICK]" );
+			html = html.Replace( "\x06(ST1)", "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" );
+			html = html.Replace( "\x06(ST2)", "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" );
+			html = html.Replace( "\x06(ST3)", "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" );
+			html = html.Replace( "\x06(ST4)", "<img src=\"text-icons/icon-status-04.png\" height=\"16\" width=\"16\">" );
+			html = html.Replace( "\x06(ST5)", "<img src=\"text-icons/icon-status-05.png\" height=\"16\" width=\"16\">" );
+			html = html.Replace( "\x06(ST6)", "<img src=\"text-icons/icon-status-06.png\" height=\"16\" width=\"16\">" );
+			html = html.Replace( "\x06(ST7)", "<img src=\"text-icons/icon-status-07.png\" height=\"16\" width=\"16\">" );
+			Clipboard.SetText( html );
+		}
 	}
 }

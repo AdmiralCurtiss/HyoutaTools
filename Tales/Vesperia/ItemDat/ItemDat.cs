@@ -188,7 +188,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			for ( int j = 0; j < 2; ++j ) {
 				for ( int i = 0; i < 16; ++i ) {
-					uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j*32];
+					uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j * 32];
 					if ( enemyId != 0 ) {
 						var enemy = enemies.EnemyIdDict[enemyId];
 						var enemyNameEntry = dict[enemy.NameStringDicID];
@@ -226,6 +226,229 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			if ( item.Data[177] > 0 ) { sb.AppendLine( "Usable in battle" ); };
 			if ( item.Data[178] == 0 ) { sb.AppendLine( "Not in Collector's Book" ); }
 
+			return sb.ToString();
+		}
+
+		public static string GetItemDataAsHtml( ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
+			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
+			var sb = new StringBuilder();
+
+			sb.Append( "<tr id=\"item" + item.Data[(int)ItemData.ID] + "\">" );
+			sb.Append( "<td rowspan=\"3\">" );
+
+			sb.Append( "<img src=\"items/U_" + item.ItemString.TrimNull() + ".png\" height=\"128\" width=\"128\">" );
+			sb.Append( "</td><td colspan=\"2\">" );
+
+			uint equip = item.Data[(int)ItemData.EquippableByBitfield];
+			if ( equip > 0 ) {
+				sb.Append( "<span class=\"equip\">" );
+				if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_YUR.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 2 ) == 2 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_EST.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 4 ) == 4 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_KAR.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 8 ) == 8 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RIT.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 16 ) == 16 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAV.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 32 ) == 32 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_JUD.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 64 ) == 64 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAP.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_FRE.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_PAT.gif\" height=\"32\" width=\"24\">" ); }
+				sb.Append( "</span>" );
+			}
+
+
+			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
+			var nameEntry = dict[item.NamePointer];
+			sb.Append( "<span class=\"itemname\">" );
+			sb.Append( String.IsNullOrEmpty( nameEntry.StringENG ) ? nameEntry.StringJPN : nameEntry.StringENG );
+			sb.Append( "</span>" );
+			sb.Append( "<br>" );
+			sb.Append( "<span class=\"itemdesc\">" );
+			var descEntry = dict[item.DescriptionPointer];
+			string desc = String.IsNullOrEmpty( descEntry.StringENG ) ? descEntry.StringJPN : descEntry.StringENG;
+			sb.Append( desc.Replace( "\n", "<br>" ) );
+			sb.Append( "</span>" );
+			sb.Append( "<span class=\"special\">" );
+			if ( item.Data[177] > 0 ) { sb.Append( "Usable in battle" ); };
+			if ( item.Data[178] == 0 ) { sb.Append( "Not in Collector's Book" ); }
+			sb.Append( "</span>" );
+
+			/*
+			switch ( item.Data[(int)ItemData.Category] ) {
+				case 2: sb.AppendLine( "<Tools>" ); break;
+				case 3: sb.AppendLine( "<Main>" ); break;
+				case 4: sb.AppendLine( "<Sub>" ); break;
+				case 5: sb.AppendLine( "<Head>" ); break;
+				case 6: sb.AppendLine( "<Body>" ); break;
+				case 7: sb.AppendLine( "<Accessories>" ); break;
+				case 8: sb.AppendLine( "<Ingredients>" ); break;
+				case 9: sb.AppendLine( "<Synthesis Materials>" ); break;
+				case 10: sb.AppendLine( "<Valuables>" ); break;
+				case 11: sb.AppendLine( "<DLC>" ); break;
+				default: sb.AppendLine( "<UNKNOWN>" ); break;
+			}
+			*/
+
+			sb.Append( "</td>" );
+
+			uint synthCount = item.Data[(int)ItemData.SynthRecipeCount];
+			switch ( synthCount ) {
+				case 0: break;
+				case 1: sb.Append( "<td colspan=\"2\">" ); break;
+				default: sb.Append( "<td>" ); break;
+			}
+			for ( int j = 0; j < synthCount; ++j ) {
+				uint synthItemCount = item.Data[(int)ItemData.Synth1ItemSlotCount + j * 16];
+				sb.Append( "Required Synthesis Level: " + item.Data[(int)ItemData._Synth1Level + j * 16] );
+				sb.Append( "<br>Price: " + item.Data[(int)ItemData.Synth1Price + j * 16] + " Gald" );
+				for ( int i = 0; i < synthItemCount; ++i ) {
+					sb.Append( "<br>" );
+					var otherItem = items.itemIdDict[item.Data[(int)ItemData.Synth1Item1Type + i * 2 + j * 16]];
+					var otherItemNameEntry = dict[otherItem.NamePointer];
+					string otherItemName = String.IsNullOrEmpty( otherItemNameEntry.StringENG ) ? otherItemNameEntry.StringJPN : otherItemNameEntry.StringENG;
+					sb.Append( "<img src=\"item-icons/ICON" + otherItem.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
+					sb.Append( "<a href=\"#item" + otherItem.Data[(int)ItemData.ID] + "\">" );
+					sb.Append( otherItemName + "</a> x" + item.Data[(int)ItemData.Synth1Item1Count + i * 2 + j * 16] );
+				}
+				if ( synthCount > 1 && j == 0 ) { sb.Append( "</td><td>" ); }
+			}
+
+			sb.Append( "</td></tr><tr>" );
+
+			switch ( item.Data[(int)ItemData.Category] ) {
+				case 2:
+				default:
+					sb.Append( "<td colspan=\"2\">" );
+					if ( item.Data[(int)ItemData.MDEF_or_HPHealPercent] > 0 ) { sb.Append( "<br>HP Heal %: " + item.Data[(int)ItemData.MDEF_or_HPHealPercent] ); }
+					if ( item.Data[(int)ItemData.AGL_TPHealPercent] > 0 ) { sb.Append( "<br>TP Heal %: " + item.Data[(int)ItemData.AGL_TPHealPercent] ); }
+
+					// why is this here twice?
+					uint physAilAlt = item.Data[(int)ItemData.PDEF];
+					uint physAil = item.Data[(int)ItemData._LUCK];
+					if ( physAil != physAilAlt ) { throw new Exception(); }
+
+					if ( physAil > 0 ) {
+						sb.Append( "<br>Cures physical ailments: " );
+						if ( ( physAil & 1 ) == 1 ) { sb.Append( "<img src=\"text-icons/icon-status-13.png\" height=\"32\" width=\"32\">" ); }
+						if ( ( physAil & 2 ) == 2 ) { sb.Append( "<img src=\"text-icons/icon-status-01.png\" height=\"32\" width=\"32\">" ); }
+						if ( ( physAil & 4 ) == 4 ) { sb.Append( "<img src=\"text-icons/icon-status-02.png\" height=\"32\" width=\"32\">" ); }
+						if ( ( physAil & 8 ) == 8 ) { sb.Append( "<img src=\"text-icons/icon-status-03.png\" height=\"32\" width=\"32\">" ); }
+						if ( ( physAil & 16 ) == 16 ) { sb.Append( "<img src=\"text-icons/icon-status-04.png\" height=\"32\" width=\"32\">" ); }
+						if ( ( physAil & 32 ) == 32 ) { sb.Append( "<img src=\"text-icons/icon-status-05.png\" height=\"32\" width=\"32\">" ); }
+						if ( ( physAil & 64 ) == 64 ) { sb.Append( "<img src=\"text-icons/icon-status-06.png\" height=\"32\" width=\"32\">" ); }
+						if ( ( physAil & 128 ) == 128 ) { sb.Append( "<img src=\"text-icons/icon-status-07.png\" height=\"32\" width=\"32\">" ); }
+					}
+
+					if ( item.Data[(int)ItemData._AGL_Again] > 0 ) {
+						sb.Append( "<br>Cures magical ailments" );
+					}
+
+					if ( item.Data[26] > 0 ) { sb.Append( "<br>Permanent PATK increase: " + item.Data[26] ); }
+					if ( item.Data[27] > 0 ) { sb.Append( "<br>Permanent PDEF increase: " + item.Data[27] ); }
+					if ( item.Data[(int)ItemData.AttrFire] > 0 ) { sb.Append( "<br>Permanent MATK increase: " + item.Data[(int)ItemData.AttrFire] ); }
+					if ( item.Data[(int)ItemData.AttrEarth] > 0 ) { sb.Append( "<br>Permanent MDEF increase: " + item.Data[(int)ItemData.AttrEarth] ); }
+					if ( item.Data[(int)ItemData.AttrWind] > 0 ) { sb.Append( "<br>Permanent AGL increase: " + item.Data[(int)ItemData.AttrWind] ); }
+					if ( item.Data[(int)ItemData.Skill1] > 0 ) { sb.Append( "<br>Max HP increase: " + item.Data[(int)ItemData.Skill1] ); }
+					if ( item.Data[(int)ItemData.Skill1Metadata] > 0 ) { sb.Append( "<br>Max TP increase: " + item.Data[(int)ItemData.Skill1Metadata] ); }
+
+					for ( int i = 0; i < 8; ++i ) {
+						if ( item.Data[(int)ItemData.UsedInRecipe1 + i] != 0 ) {
+							sb.Append( "<br>Used in Recipe #" + ( i + 1 ) + ": " + item.Data[(int)ItemData.UsedInRecipe1 + i] );
+						}
+					}
+
+					sb.Append( "</td>" );
+					break;
+
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+				case 7:
+					sb.Append( "<td>" );
+					if ( (int)item.Data[(int)ItemData.PATK] > 0 ) { sb.Append( "<br>PATK: " + (int)item.Data[(int)ItemData.PATK] ); }
+					if ( (int)item.Data[(int)ItemData.MATK] > 0 ) { sb.Append( "<br>MATK: " + (int)item.Data[(int)ItemData.MATK] ); }
+					if ( (int)item.Data[(int)ItemData.PDEF] > 0 ) { sb.Append( "<br>PDEF: " + (int)item.Data[(int)ItemData.PDEF] ); }
+					if ( (int)item.Data[(int)ItemData.MDEF_or_HPHealPercent] > 0 ) { sb.Append( "<br>MDEF: " + (int)item.Data[(int)ItemData.MDEF_or_HPHealPercent] ); }
+
+					int agl1 = (int)item.Data[(int)ItemData.AGL_TPHealPercent];
+					int agl2 = (int)item.Data[(int)ItemData._AGL_Again];
+
+					if ( agl2 > 0 ) { sb.Append( "<br>AGL: " + agl2 ); }
+
+					if ( (int)item.Data[(int)ItemData._LUCK] > 0 ) { sb.Append( "<br>LUCK: " + (int)item.Data[(int)ItemData._LUCK] ); }
+
+					if ( (int)item.Data[(int)ItemData.AttrFire] != 0 ) { sb.Append( "<br>Attribute Fire: " + (int)item.Data[(int)ItemData.AttrFire] ); }
+					if ( (int)item.Data[(int)ItemData.AttrEarth] != 0 ) { sb.Append( "<br>Attribute Earth: " + (int)item.Data[(int)ItemData.AttrEarth] ); }
+					if ( (int)item.Data[(int)ItemData.AttrWind] != 0 ) { sb.Append( "<br>Attribute Wind: " + (int)item.Data[(int)ItemData.AttrWind] ); }
+					if ( (int)item.Data[(int)ItemData.AttrWater] != 0 ) { sb.Append( "<br>Attribute Water: " + (int)item.Data[(int)ItemData.AttrWater] ); }
+					if ( (int)item.Data[(int)ItemData.AttrLight] != 0 ) { sb.Append( "<br>Attribute Light: " + (int)item.Data[(int)ItemData.AttrLight] ); }
+					if ( (int)item.Data[(int)ItemData.AttrDark] != 0 ) { sb.Append( "<br>Attribute Darkness: " + (int)item.Data[(int)ItemData.AttrDark] ); }
+
+					sb.Append( "</td><td>" );
+
+					for ( int i = 0; i < 3; ++i ) {
+						uint skillId = item.Data[(int)ItemData.Skill1 + i * 2];
+						if ( skillId != 0 ) {
+							var skill = skills.SkillIdDict[skillId];
+							var skillNameEntry = dict[skill.NameStringDicID];
+							var skillDescEntry = dict[skill.DescStringDicID];
+							string skillName = String.IsNullOrEmpty( skillNameEntry.StringENG ) ? skillNameEntry.StringJPN : skillNameEntry.StringENG;
+							string skillCat = "<img src=\"skill-icons/category-" + skill.Category.ToString() + ".png\" height=\"16\" width=\"16\">";
+							sb.Append( "<br>" + skillCat + skillName );
+							sb.Append( ", " + item.Data[(int)ItemData.Skill1Metadata + i * 2] );
+						}
+					}
+					sb.Append( "</td>" );
+					break;
+			}
+
+
+
+			sb.Append( "<td colspan=\"2\">" );
+
+
+			sb.Append( item.Data[(int)ItemData.ShopPrice] + " Gald" );
+
+			if ( item.Data[(int)ItemData.BuyableIn1] > 0 || item.Data[(int)ItemData.BuyableIn2] > 0 || item.Data[(int)ItemData.BuyableIn3] > 0 ) {
+				//sb.Append( "<br>Available at shops in:" );
+				if ( item.Data[(int)ItemData.BuyableIn1] > 0 ) { sb.Append( "<br>" + GetShopFromId( item.Data[(int)ItemData.BuyableIn1] ) ); }
+				if ( item.Data[(int)ItemData.BuyableIn2] > 0 ) { sb.Append( "<br>" + GetShopFromId( item.Data[(int)ItemData.BuyableIn2] ) ); }
+				if ( item.Data[(int)ItemData.BuyableIn3] > 0 ) { sb.Append( "<br>" + GetShopFromId( item.Data[(int)ItemData.BuyableIn3] ) ); }
+				sb.AppendLine();
+			}
+
+			sb.Append( "</td></tr><tr>" );
+
+
+
+
+			for ( int j = 0; j < 2; ++j ) {
+				sb.Append( "<td colspan=\"2\">" );
+				sb.Append( "<table>" );
+				for ( int i = 0; i < 16; ++i ) {
+					// ( j == 0 ? "Drop" : "Steal" )
+					if ( i % 4 == 0 ) {
+						if ( i != 0 ) { sb.Append( "</tr>" ); }
+						sb.Append( "<tr>" );
+					}
+					sb.Append( "<td>" );
+					uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j * 32];
+					if ( enemyId != 0 ) {
+						var enemy = enemies.EnemyIdDict[enemyId];
+						var enemyNameEntry = dict[enemy.NameStringDicID];
+						string enemyName = String.IsNullOrEmpty( enemyNameEntry.StringENG ) ? enemyNameEntry.StringJPN : enemyNameEntry.StringENG;
+						sb.Append( enemyName + ", " + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
+					}
+					sb.Append( "</td>" );
+					if ( i % 4 == 3 ) {
+						sb.Append( "</tr>" );
+						if ( i != 15 ) { sb.Append( "<tr>" ); }
+					}
+				}
+				sb.Append( "</table>" );
+				sb.Append( "</td>" );
+			}
+
+			sb.Append( "</tr>" );
 			return sb.ToString();
 		}
 
