@@ -12,6 +12,8 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public uint InGameID;
 		public string RefString;
 
+		public uint IconID;
+
 		public Enemy( System.IO.Stream stream, uint refStringStart ) {
 			uint entryLength = stream.ReadUInt32().SwapEndian();
 			Data = new uint[entryLength / 4];
@@ -25,6 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 
 			NameStringDicID = Data[2];
 			InGameID = Data[5];
+			IconID = Data[57];
 			
 			uint refStringLocation = Data[6];
 			long pos = stream.Position;

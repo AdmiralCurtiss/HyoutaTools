@@ -120,6 +120,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			sb.AppendLine( ".equip { text-align: right; float: right; }" );
 			sb.AppendLine( ".special { text-align: right; float: right; }" );
 			sb.AppendLine( "table, tr, td, th { padding: 0px 4px 0px 0px; border-spacing: 0px; }" );
+			sb.AppendLine( "td { vertical-align: top; }" );
 			sb.AppendLine( "a:link, a:visited, a:hover, a:active { color: #FFEBD2; }" );
 			sb.AppendLine( "table.element { display: inline-block; }" );
 			sb.AppendLine( "table.element td { text-align: center; }" );

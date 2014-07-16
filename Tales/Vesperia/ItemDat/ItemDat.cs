@@ -313,7 +313,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			sb.Append( "</td></tr><tr>" );
 
-			uint category = item.Data[(int)ItemData.Category]; 
+			uint category = item.Data[(int)ItemData.Category];
 			switch ( category ) {
 				case 2:
 				default:
@@ -482,31 +482,57 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 
+			int[] dropStealCount = new int[2];
+			for ( int j = 0; j < 2; ++j ) {
+				dropStealCount[j] = 0;
+				for ( int i = 0; i < 16; ++i ) {
+					uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j * 32];
+					if ( enemyId != 0 ) { dropStealCount[j]++; }
+				}
+			}
 
 			for ( int j = 0; j < 2; ++j ) {
 				sb.Append( "<td colspan=\"2\">" );
-				sb.Append( "<table>" );
-				for ( int i = 0; i < 16; ++i ) {
-					// ( j == 0 ? "Drop" : "Steal" )
-					if ( i % 4 == 0 ) {
-						if ( i != 0 ) { sb.Append( "</tr>" ); }
-						sb.Append( "<tr>" );
+				if ( dropStealCount[j] > 0 ) {
+					int colCount = Math.Min( 4, dropStealCount[j] );
+					int rowCount = ( dropStealCount[j] - 1 ) / 4 + 1;
+
+					sb.Append( "<table class=\"element\">" );
+					sb.Append( "<tr><td colspan=\"" + colCount + "\">" );
+					sb.Append( j == 0 ? "Drop" : "Steal" );
+					sb.Append( "</td></tr>" );
+
+					int cellCount = 0;
+					for ( int i = 0; i < 16; ++i ) {
+						uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j * 32];
+
+						if ( enemyId != 0 ) {
+							if ( cellCount % 4 == 0 ) {
+								sb.Append( "<tr>" );
+							}
+							sb.Append( "<td>" );
+							var enemy = enemies.EnemyIdDict[enemyId];
+							var enemyNameEntry = dict[enemy.NameStringDicID];
+							string enemyName = String.IsNullOrEmpty( enemyNameEntry.StringENG ) ? enemyNameEntry.StringJPN : enemyNameEntry.StringENG;
+							sb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\"><br>" );
+							sb.Append( enemyName + "<br>" + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
+							sb.Append( "</td>" );
+							if ( cellCount % 4 == 3 ) {
+								sb.Append( "</tr>" );
+							}
+							cellCount++;
+						}
 					}
-					sb.Append( "<td>" );
-					uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j * 32];
-					if ( enemyId != 0 ) {
-						var enemy = enemies.EnemyIdDict[enemyId];
-						var enemyNameEntry = dict[enemy.NameStringDicID];
-						string enemyName = String.IsNullOrEmpty( enemyNameEntry.StringENG ) ? enemyNameEntry.StringJPN : enemyNameEntry.StringENG;
-						sb.Append( enemyName + ", " + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
-					}
-					sb.Append( "</td>" );
-					if ( i % 4 == 3 ) {
+					if ( cellCount % 4 != 0 ) {
+						if ( cellCount > 4 ) {
+							for ( int i = cellCount % 4; i < 4; ++i ) {
+								sb.Append( "<td></td>" );
+							}
+						}
 						sb.Append( "</tr>" );
-						if ( i != 15 ) { sb.Append( "<tr>" ); }
 					}
+					sb.Append( "</table>" );
 				}
-				sb.Append( "</table>" );
 				sb.Append( "</td>" );
 			}
 
