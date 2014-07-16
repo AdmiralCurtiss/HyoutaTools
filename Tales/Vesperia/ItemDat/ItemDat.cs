@@ -27,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 
-		public static string GetItemDataAsText( ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
+		public static string GetItemDataAsText( ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
 			var sb = new StringBuilder();
 
@@ -229,7 +229,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			return sb.ToString();
 		}
 
-		public static string GetItemDataAsHtml( ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
+		public static string GetItemDataAsHtml( ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
 			var sb = new StringBuilder();
 
@@ -350,8 +350,11 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( item.Data[(int)ItemData.Skill1Metadata] > 0 ) { sb.Append( "<br>Max TP increase: " + item.Data[(int)ItemData.Skill1Metadata] ); }
 
 					for ( int i = 0; i < 8; ++i ) {
-						if ( item.Data[(int)ItemData.UsedInRecipe1 + i] != 0 ) {
-							sb.Append( "<br>Used in Recipe #" + ( i + 1 ) + ": " + item.Data[(int)ItemData.UsedInRecipe1 + i] );
+						int recipeId = (int)item.Data[(int)ItemData.UsedInRecipe1 + i];
+						if ( recipeId != 0 ) {
+							var recipe = Recipes.RecipeList[recipeId];
+							var recipeNameEntry = dict[recipe.NameStringDicID];
+							sb.Append( recipeNameEntry.StringEngOrJpn + "<br>" );
 						}
 					}
 

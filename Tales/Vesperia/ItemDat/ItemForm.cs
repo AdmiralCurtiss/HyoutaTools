@@ -15,17 +15,19 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		Dictionary<uint, TSSEntry> InGameIdDict;
 		T8BTSK.T8BTSK Skills;
 		T8BTEMST.T8BTEMST Enemies;
+		COOKDAT.COOKDAT Recipes;
 
 		List<Label> labels;
 		List<TextBox> textboxes;
 
-		public ItemForm( ItemDat itemDat, TSSFile TSS, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies ) {
+		public ItemForm( ItemDat itemDat, TSSFile TSS, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT cookdat ) {
 			InitializeComponent();
 
 			this.itemDat = itemDat;
 			this.TSS = TSS;
 			this.Skills = skills;
 			this.Enemies = enemies;
+			this.Recipes = cookdat;
 			this.InGameIdDict = TSS.GenerateInGameIdDictionary();
 
 			labels = new List<Label>();
@@ -92,13 +94,13 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			labelDescription.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
 			entry = GetEntry( item.Data[(int)ItemData.UnknownTextPointer] );
 			labelUnknown.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
-			textBoxGeneratedText.Text = ItemDat.GetItemDataAsText( itemDat, item, Skills, Enemies, TSS, InGameIdDict );
+			textBoxGeneratedText.Text = ItemDat.GetItemDataAsText( itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict );
 		}
 
 		private void buttonGenerateText_Click( object sender, EventArgs e ) {
 			var sb = new StringBuilder();
 			foreach ( var item in itemDat.items ) {
-				sb.AppendLine( ItemDat.GetItemDataAsText( itemDat, item, Skills, Enemies, TSS, InGameIdDict ) );
+				sb.AppendLine( ItemDat.GetItemDataAsText( itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict ) );
 				sb.AppendLine();
 				sb.AppendLine();
 			}
@@ -120,7 +122,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			sb.AppendLine( "</head><body><table>" );
 			foreach ( var item in itemDat.items ) {
 				if ( item.Data[(int)ItemData.Category] == 0 ) { continue; }
-				sb.AppendLine( ItemDat.GetItemDataAsHtml( itemDat, item, Skills, Enemies, TSS, InGameIdDict ) );
+				sb.AppendLine( ItemDat.GetItemDataAsHtml( itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict ) );
 				sb.AppendLine( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
 			sb.AppendLine( "</table></body></html>" );
