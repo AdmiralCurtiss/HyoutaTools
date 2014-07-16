@@ -317,8 +317,8 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				case 2:
 				default:
 					sb.Append( "<td colspan=\"2\">" );
-					if ( item.Data[(int)ItemData.MDEF_or_HPHealPercent] > 0 ) { sb.Append( "<br>HP Heal %: " + item.Data[(int)ItemData.MDEF_or_HPHealPercent] ); }
-					if ( item.Data[(int)ItemData.AGL_TPHealPercent] > 0 ) { sb.Append( "<br>TP Heal %: " + item.Data[(int)ItemData.AGL_TPHealPercent] ); }
+					if ( item.Data[(int)ItemData.MDEF_or_HPHealPercent] > 0 ) { sb.Append( "HP Heal %: " + item.Data[(int)ItemData.MDEF_or_HPHealPercent] + "<br>" ); }
+					if ( item.Data[(int)ItemData.AGL_TPHealPercent] > 0 ) { sb.Append( "TP Heal %: " + item.Data[(int)ItemData.AGL_TPHealPercent] + "<br>" ); }
 
 					// why is this here twice?
 					uint physAilAlt = item.Data[(int)ItemData.PDEF];
@@ -326,7 +326,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( physAil != physAilAlt ) { throw new Exception(); }
 
 					if ( physAil > 0 ) {
-						sb.Append( "<br>Cures physical ailments: " );
+						sb.Append( "Cures physical ailments: " );
 						if ( ( physAil & 1 ) == 1 ) { sb.Append( "<img src=\"text-icons/icon-status-13.png\" height=\"32\" width=\"32\">" ); }
 						if ( ( physAil & 2 ) == 2 ) { sb.Append( "<img src=\"text-icons/icon-status-01.png\" height=\"32\" width=\"32\">" ); }
 						if ( ( physAil & 4 ) == 4 ) { sb.Append( "<img src=\"text-icons/icon-status-02.png\" height=\"32\" width=\"32\">" ); }
@@ -335,19 +335,20 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 						if ( ( physAil & 32 ) == 32 ) { sb.Append( "<img src=\"text-icons/icon-status-05.png\" height=\"32\" width=\"32\">" ); }
 						if ( ( physAil & 64 ) == 64 ) { sb.Append( "<img src=\"text-icons/icon-status-06.png\" height=\"32\" width=\"32\">" ); }
 						if ( ( physAil & 128 ) == 128 ) { sb.Append( "<img src=\"text-icons/icon-status-07.png\" height=\"32\" width=\"32\">" ); }
+						sb.Append( "<br>" );
 					}
 
 					if ( item.Data[(int)ItemData._AGL_Again] > 0 ) {
-						sb.Append( "<br>Cures magical ailments" );
+						sb.Append( "Cures magical ailments<br>" );
 					}
 
-					if ( item.Data[26] > 0 ) { sb.Append( "<br>Permanent PATK increase: " + item.Data[26] ); }
-					if ( item.Data[27] > 0 ) { sb.Append( "<br>Permanent PDEF increase: " + item.Data[27] ); }
-					if ( item.Data[(int)ItemData.AttrFire] > 0 ) { sb.Append( "<br>Permanent MATK increase: " + item.Data[(int)ItemData.AttrFire] ); }
-					if ( item.Data[(int)ItemData.AttrEarth] > 0 ) { sb.Append( "<br>Permanent MDEF increase: " + item.Data[(int)ItemData.AttrEarth] ); }
-					if ( item.Data[(int)ItemData.AttrWind] > 0 ) { sb.Append( "<br>Permanent AGL increase: " + item.Data[(int)ItemData.AttrWind] ); }
-					if ( item.Data[(int)ItemData.Skill1] > 0 ) { sb.Append( "<br>Max HP increase: " + item.Data[(int)ItemData.Skill1] ); }
-					if ( item.Data[(int)ItemData.Skill1Metadata] > 0 ) { sb.Append( "<br>Max TP increase: " + item.Data[(int)ItemData.Skill1Metadata] ); }
+					if ( item.Data[26] > 0 ) { sb.Append( "Permanent PATK increase: " + item.Data[26] + "<br>" ); }
+					if ( item.Data[27] > 0 ) { sb.Append( "Permanent PDEF increase: " + item.Data[27] + "<br>" ); }
+					if ( item.Data[(int)ItemData.AttrFire] > 0 ) { sb.Append( "Permanent MATK increase: " + item.Data[(int)ItemData.AttrFire] + "<br>" ); }
+					if ( item.Data[(int)ItemData.AttrEarth] > 0 ) { sb.Append( "Permanent MDEF increase: " + item.Data[(int)ItemData.AttrEarth] + "<br>" ); }
+					if ( item.Data[(int)ItemData.AttrWind] > 0 ) { sb.Append( "Permanent AGL increase: " + item.Data[(int)ItemData.AttrWind] + "<br>" ); }
+					if ( item.Data[(int)ItemData.Skill1] > 0 ) { sb.Append( "Max HP increase: " + item.Data[(int)ItemData.Skill1] + "<br>" ); }
+					if ( item.Data[(int)ItemData.Skill1Metadata] > 0 ) { sb.Append( "Max TP increase: " + item.Data[(int)ItemData.Skill1Metadata] + "<br>" ); }
 
 					for ( int i = 0; i < 8; ++i ) {
 						int recipeId = (int)item.Data[(int)ItemData.UsedInRecipe1 + i];
@@ -367,24 +368,72 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				case 6:
 				case 7:
 					sb.Append( "<td>" );
-					if ( (int)item.Data[(int)ItemData.PATK] > 0 ) { sb.Append( "<br>PATK: " + (int)item.Data[(int)ItemData.PATK] ); }
-					if ( (int)item.Data[(int)ItemData.MATK] > 0 ) { sb.Append( "<br>MATK: " + (int)item.Data[(int)ItemData.MATK] ); }
-					if ( (int)item.Data[(int)ItemData.PDEF] > 0 ) { sb.Append( "<br>PDEF: " + (int)item.Data[(int)ItemData.PDEF] ); }
-					if ( (int)item.Data[(int)ItemData.MDEF_or_HPHealPercent] > 0 ) { sb.Append( "<br>MDEF: " + (int)item.Data[(int)ItemData.MDEF_or_HPHealPercent] ); }
+					if ( (int)item.Data[(int)ItemData.PATK] > 0 ) { sb.Append( "PATK: " + (int)item.Data[(int)ItemData.PATK] + "<br>" ); }
+					if ( (int)item.Data[(int)ItemData.MATK] > 0 ) { sb.Append( "MATK: " + (int)item.Data[(int)ItemData.MATK] + "<br>" ); }
+					if ( (int)item.Data[(int)ItemData.PDEF] > 0 ) { sb.Append( "PDEF: " + (int)item.Data[(int)ItemData.PDEF] + "<br>" ); }
+					if ( (int)item.Data[(int)ItemData.MDEF_or_HPHealPercent] > 0 ) { sb.Append( "MDEF: " + (int)item.Data[(int)ItemData.MDEF_or_HPHealPercent] + "<br>" ); }
 
 					int agl1 = (int)item.Data[(int)ItemData.AGL_TPHealPercent];
 					int agl2 = (int)item.Data[(int)ItemData._AGL_Again];
 
-					if ( agl2 > 0 ) { sb.Append( "<br>AGL: " + agl2 ); }
+					if ( agl2 > 0 ) { sb.Append( "AGL: " + agl2 + "<br>" ); }
 
-					if ( (int)item.Data[(int)ItemData._LUCK] > 0 ) { sb.Append( "<br>LUCK: " + (int)item.Data[(int)ItemData._LUCK] ); }
+					if ( (int)item.Data[(int)ItemData._LUCK] > 0 ) { sb.Append( "LUCK: " + (int)item.Data[(int)ItemData._LUCK] + "<br>" ); }
 
-					if ( (int)item.Data[(int)ItemData.AttrFire] != 0 ) { sb.Append( "<br>Attribute Fire: " + (int)item.Data[(int)ItemData.AttrFire] ); }
-					if ( (int)item.Data[(int)ItemData.AttrEarth] != 0 ) { sb.Append( "<br>Attribute Earth: " + (int)item.Data[(int)ItemData.AttrEarth] ); }
-					if ( (int)item.Data[(int)ItemData.AttrWind] != 0 ) { sb.Append( "<br>Attribute Wind: " + (int)item.Data[(int)ItemData.AttrWind] ); }
-					if ( (int)item.Data[(int)ItemData.AttrWater] != 0 ) { sb.Append( "<br>Attribute Water: " + (int)item.Data[(int)ItemData.AttrWater] ); }
-					if ( (int)item.Data[(int)ItemData.AttrLight] != 0 ) { sb.Append( "<br>Attribute Light: " + (int)item.Data[(int)ItemData.AttrLight] ); }
-					if ( (int)item.Data[(int)ItemData.AttrDark] != 0 ) { sb.Append( "<br>Attribute Darkness: " + (int)item.Data[(int)ItemData.AttrDark] ); }
+
+					int attackElementCount = 0;
+					int defenseElementCount = 0;
+					for ( int i = 0; i < 6; ++i ) {
+						if ( (int)item.Data[(int)ItemData.AttrFire + i] > 0 ) { attackElementCount++; }
+						if ( (int)item.Data[(int)ItemData.AttrFire + i] < 0 ) { defenseElementCount++; }
+					}
+
+					if ( attackElementCount > 0 || defenseElementCount > 0 ) {
+						int fire = (int)item.Data[(int)ItemData.AttrFire];
+						int eart = (int)item.Data[(int)ItemData.AttrEarth];
+						int wind = (int)item.Data[(int)ItemData.AttrWind];
+						int watr = (int)item.Data[(int)ItemData.AttrWater];
+						int lght = (int)item.Data[(int)ItemData.AttrLight];
+						int dark = (int)item.Data[(int)ItemData.AttrDark];
+						if ( attackElementCount > 0 ) {
+							sb.Append( "<table class=\"element\"><tr>" );
+							sb.Append( "<td colspan=\"" + attackElementCount + "\">Attack Element</td>" );
+							sb.Append( "</tr><tr>" );
+							if ( fire > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-02.png\"></td>" ); }
+							if ( eart > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-04.png\"></td>" ); }
+							if ( wind > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-01.png\"></td>" ); }
+							if ( watr > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-05.png\"></td>" ); }
+							if ( lght > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-03.png\"></td>" ); }
+							if ( dark > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-06.png\"></td>" ); }
+							sb.Append( "</tr><tr>" );
+							if ( fire > 0 ) { sb.Append( "<td>" + fire + "</td>" ); }
+							if ( eart > 0 ) { sb.Append( "<td>" + eart + "</td>" ); }
+							if ( wind > 0 ) { sb.Append( "<td>" + wind + "</td>" ); }
+							if ( watr > 0 ) { sb.Append( "<td>" + watr + "</td>" ); }
+							if ( lght > 0 ) { sb.Append( "<td>" + lght + "</td>" ); }
+							if ( dark > 0 ) { sb.Append( "<td>" + dark + "</td>" ); }
+							sb.Append( "</tr></table>" );
+						}
+						if ( defenseElementCount > 0 ) {
+							sb.Append( "<table class=\"element\"><tr>" );
+							sb.Append( "<td colspan=\"" + defenseElementCount + "\">Resist Element</td>" );
+							sb.Append( "</tr><tr>" );
+							if ( fire < 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-02.png\"></td>" ); }
+							if ( eart < 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-04.png\"></td>" ); }
+							if ( wind < 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-01.png\"></td>" ); }
+							if ( watr < 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-05.png\"></td>" ); }
+							if ( lght < 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-03.png\"></td>" ); }
+							if ( dark < 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-06.png\"></td>" ); }
+							sb.Append( "</tr><tr>" );
+							if ( fire < 0 ) { sb.Append( "<td>" + -fire + "</td>" ); }
+							if ( eart < 0 ) { sb.Append( "<td>" + -eart + "</td>" ); }
+							if ( wind < 0 ) { sb.Append( "<td>" + -wind + "</td>" ); }
+							if ( watr < 0 ) { sb.Append( "<td>" + -watr + "</td>" ); }
+							if ( lght < 0 ) { sb.Append( "<td>" + -lght + "</td>" ); }
+							if ( dark < 0 ) { sb.Append( "<td>" + -dark + "</td>" ); }
+							sb.Append( "</tr></table>" );
+						}
+					}
 
 					sb.Append( "</td><td>" );
 
@@ -396,8 +445,8 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							var skillDescEntry = dict[skill.DescStringDicID];
 							string skillName = String.IsNullOrEmpty( skillNameEntry.StringENG ) ? skillNameEntry.StringJPN : skillNameEntry.StringENG;
 							string skillCat = "<img src=\"skill-icons/category-" + skill.Category.ToString() + ".png\" height=\"16\" width=\"16\">";
-							sb.Append( "<br>" + skillCat + skillName );
-							sb.Append( ", " + item.Data[(int)ItemData.Skill1Metadata + i * 2] );
+							sb.Append( skillCat + skillName );
+							sb.Append( ", " + item.Data[(int)ItemData.Skill1Metadata + i * 2] + "<br>" );
 						}
 					}
 					sb.Append( "</td>" );
