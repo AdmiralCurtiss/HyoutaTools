@@ -431,13 +431,16 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							if ( watr > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-05.png\"></td>" ); }
 							if ( lght > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-03.png\"></td>" ); }
 							if ( dark > 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-06.png\"></td>" ); }
-							sb.Append( "</tr><tr>" );
-							if ( fire > 0 ) { sb.Append( "<td>" + fire + "</td>" ); }
-							if ( eart > 0 ) { sb.Append( "<td>" + eart + "</td>" ); }
-							if ( wind > 0 ) { sb.Append( "<td>" + wind + "</td>" ); }
-							if ( watr > 0 ) { sb.Append( "<td>" + watr + "</td>" ); }
-							if ( lght > 0 ) { sb.Append( "<td>" + lght + "</td>" ); }
-							if ( dark > 0 ) { sb.Append( "<td>" + dark + "</td>" ); }
+							if ( !( category == 3 || category == 4 ) ) {
+								// weapons always have a "1" here, don't print that, it's not useful
+								sb.Append( "</tr><tr>" );
+								if ( fire > 0 ) { sb.Append( "<td>" + fire + "</td>" ); }
+								if ( eart > 0 ) { sb.Append( "<td>" + eart + "</td>" ); }
+								if ( wind > 0 ) { sb.Append( "<td>" + wind + "</td>" ); }
+								if ( watr > 0 ) { sb.Append( "<td>" + watr + "</td>" ); }
+								if ( lght > 0 ) { sb.Append( "<td>" + lght + "</td>" ); }
+								if ( dark > 0 ) { sb.Append( "<td>" + dark + "</td>" ); }
+							}
 							sb.Append( "</tr></table>" );
 						}
 					}
