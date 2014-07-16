@@ -13,10 +13,12 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public string RefString;
 
 		public Enemy( System.IO.Stream stream, uint refStringStart ) {
-			Data = new uint[0x134 / 4];
-			DataFloat = new float[0x134 / 4];
+			uint entryLength = stream.ReadUInt32().SwapEndian();
+			Data = new uint[entryLength / 4];
+			DataFloat = new float[entryLength / 4];
+			Data[0] = entryLength;
 
-			for ( int i = 0; i < Data.Length; ++i ) {
+			for ( int i = 1; i < Data.Length; ++i ) {
 				Data[i] = stream.ReadUInt32().SwapEndian();
 				DataFloat[i] = Data[i].UIntToFloat();
 			}
