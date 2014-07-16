@@ -5,7 +5,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace HyoutaTools.Tales.Vesperia {
-	class VesperiaUtil {
+	public enum GameVersion {
+		None, X360, PS3
+	}
+	public class VesperiaUtil {
 		public static String RemoveTags( String s ) {
 			s = s.Replace( "''", "'" );
 			s = s.Replace( "(YUR)", "Yuri" );

@@ -27,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 
-		public static string GetItemDataAsText( ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
+		public static string GetItemDataAsText( GameVersion version, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
 			var sb = new StringBuilder();
 
@@ -73,7 +73,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				if ( ( equip & 32 ) == 32 ) { sb.Append( "[JUD]" ); }
 				if ( ( equip & 64 ) == 64 ) { sb.Append( "[RAP]" ); }
 				if ( ( equip & 128 ) == 128 ) { sb.Append( "[FRE]" ); }
-				if ( ( equip & 256 ) == 256 ) { sb.Append( "[PAT]" ); }
+				if ( version == GameVersion.PS3 && ( equip & 256 ) == 256 ) { sb.Append( "[PAT]" ); }
 				sb.AppendLine();
 			}
 
@@ -229,7 +229,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			return sb.ToString();
 		}
 
-		public static string GetItemDataAsHtml( ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
+		public static string GetItemDataAsHtml( GameVersion version, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
 			var sb = new StringBuilder();
 
@@ -250,7 +250,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				if ( ( equip & 32 ) == 32 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_JUD.gif\" height=\"32\" width=\"24\">" ); }
 				if ( ( equip & 64 ) == 64 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAP.gif\" height=\"32\" width=\"24\">" ); }
 				if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_FRE.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_PAT.gif\" height=\"32\" width=\"24\">" ); }
+				if ( version == GameVersion.PS3 && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_PAT.gif\" height=\"32\" width=\"24\">" ); }
 				sb.Append( "</span>" );
 			}
 

@@ -10,6 +10,8 @@ using HyoutaTools.Tales.Vesperia.TSS;
 
 namespace HyoutaTools.Tales.Vesperia.ItemDat {
 	public partial class ItemForm : Form {
+		GameVersion Version;
+
 		ItemDat itemDat;
 		TSSFile TSS;
 		Dictionary<uint, TSSEntry> InGameIdDict;
@@ -20,9 +22,10 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		List<Label> labels;
 		List<TextBox> textboxes;
 
-		public ItemForm( ItemDat itemDat, TSSFile TSS, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT cookdat ) {
+		public ItemForm( GameVersion version, ItemDat itemDat, TSSFile TSS, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT cookdat ) {
 			InitializeComponent();
 
+			this.Version = version;
 			this.itemDat = itemDat;
 			this.TSS = TSS;
 			this.Skills = skills;
@@ -94,13 +97,13 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			labelDescription.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
 			entry = GetEntry( item.Data[(int)ItemData.UnknownTextPointer] );
 			labelUnknown.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
-			textBoxGeneratedText.Text = ItemDat.GetItemDataAsText( itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict );
+			textBoxGeneratedText.Text = ItemDat.GetItemDataAsText( Version, itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict );
 		}
 
 		private void buttonGenerateText_Click( object sender, EventArgs e ) {
 			var sb = new StringBuilder();
 			foreach ( var item in itemDat.items ) {
-				sb.AppendLine( ItemDat.GetItemDataAsText( itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict ) );
+				sb.AppendLine( ItemDat.GetItemDataAsText( Version, itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict ) );
 				sb.AppendLine();
 				sb.AppendLine();
 			}
@@ -124,15 +127,15 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			sb.AppendLine( "</head><body><table>" );
 			foreach ( var item in itemDat.items ) {
 				if ( item.Data[(int)ItemData.Category] == 0 ) { continue; }
-				sb.AppendLine( ItemDat.GetItemDataAsHtml( itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict ) );
+				sb.AppendLine( ItemDat.GetItemDataAsHtml( Version, itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict ) );
 				sb.AppendLine( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
 			sb.AppendLine( "</table></body></html>" );
 
 			string html = sb.ToString();
 			html = VesperiaUtil.RemoveTags( html );
-			html = html.Replace( "\x06(STA)", "[START]" );
-			html = html.Replace( "\x06(L3)", "[LEFT STICK]" );
+			html = html.Replace( "\x06(STA)", "<img src=\"text-icons/" + Version.ToString() + "/button-Start.png\" height=\"16\">" );
+			html = html.Replace( "\x06(L3)", "<img src=\"text-icons/" + Version.ToString() + "/ls-push.png\" height=\"16\">" );
 			html = html.Replace( "\x06(ST1)", "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" );
 			html = html.Replace( "\x06(ST2)", "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" );
 			html = html.Replace( "\x06(ST3)", "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" );

@@ -8,28 +8,44 @@ using HyoutaTools.Tales.Vesperia.TSS;
 namespace HyoutaTools.Tales.Vesperia.ItemDat {
 	class RunItemViewer {
 		public static int Execute( List<string> args ) {
-			if ( args.Count < 4 ) {
-				Console.WriteLine( "Usage: ITEM.DAT STRING_DIC.SO T8BTSK T8BTEMST COOKDAT" );
+			if ( args.Count < 6 ) {
+				Console.WriteLine( "Usage: [360/PS3] ITEM.DAT STRING_DIC.SO T8BTSK T8BTEMST COOKDAT" );
 				return -1;
 			}
 
-			ItemDat items = new ItemDat( args[0] );
-			T8BTSK.T8BTSK skills = new T8BTSK.T8BTSK( args[2] );
-			T8BTEMST.T8BTEMST enemies = new T8BTEMST.T8BTEMST( args[3] );
-			COOKDAT.COOKDAT cookdat = new COOKDAT.COOKDAT( args[4] );
+			GameVersion version = GameVersion.None;
+			switch ( args[0].ToUpperInvariant() ) {
+				case "360":
+					version = GameVersion.X360;
+					break;
+				case "PS3":
+					version = GameVersion.PS3;
+					break;
+			}
 
-			Console.WriteLine( "Opening STRING_DIC.SO..." );
+			if ( version == GameVersion.None ) {
+				Console.WriteLine( "First parameter must indicate game version!" );
+				return -1;
+			}
+
+			ItemDat items = new ItemDat( args[1] );
+
 			TSSFile TSS;
 			try {
-				TSS = new TSSFile( System.IO.File.ReadAllBytes( args[1] ) );
+				TSS = new TSSFile( System.IO.File.ReadAllBytes( args[2] ) );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
 				return -1;
 			}
 
+			T8BTSK.T8BTSK skills = new T8BTSK.T8BTSK( args[3] );
+			T8BTEMST.T8BTEMST enemies = new T8BTEMST.T8BTEMST( args[4] );
+			COOKDAT.COOKDAT cookdat = new COOKDAT.COOKDAT( args[5] );
+
+			Console.WriteLine( "Initializing GUI..." );
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
-			ItemForm itemForm = new ItemForm( items, TSS, skills, enemies, cookdat );
+			ItemForm itemForm = new ItemForm( version, items, TSS, skills, enemies, cookdat );
 			Application.Run( itemForm );
 			return 0;
 		}
