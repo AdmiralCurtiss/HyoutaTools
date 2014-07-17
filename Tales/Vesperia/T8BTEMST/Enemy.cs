@@ -43,6 +43,8 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public uint StealItem;
 		public uint StealChance;
 
+		public static int[] KnownValues = new int[] { 0, 2, 5, 57, 7, 8, 9, 10, 11, 12, 13, 15, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 60, 61, 6, 24, 59 };
+
 		public Enemy( System.IO.Stream stream, uint refStringStart ) {
 			uint entryLength = stream.ReadUInt32().SwapEndian();
 			Data = new uint[entryLength / 4];
@@ -109,6 +111,59 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 
 		public override string ToString() {
 			return RefString;
+		}
+
+		public string GetDataAsHtml( ItemDat.ItemDat items, WRLDDAT.WRLDDAT locations, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			var sb = new StringBuilder();
+
+			sb.AppendLine( "<div>" );
+			sb.AppendLine( RefString );
+			sb.AppendLine( "<br>" );
+
+			var enemyNameEntry = inGameIdDict[NameStringDicID];
+			sb.Append( "<img src=\"monster-icons/44px/monster-" + IconID.ToString( "D3" ) + ".png\"><br>" );
+			sb.Append( enemyNameEntry.StringEngOrJpn + " / Category: " + Category + "<br>" );
+
+			sb.AppendLine( "Fire: " + AttrFire + " / " );
+			sb.AppendLine( "Earth: " + AttrEarth + " / " );
+			sb.AppendLine( "Wind: " + AttrWind + " / " );
+			sb.AppendLine( "Water: " + AttrWater + " / " );
+			sb.AppendLine( "Light: " + AttrLight + " / " );
+			sb.AppendLine( "Dark: " + AttrDark + "<br>" );
+
+
+			if ( Location != 0 ) {
+				var loc = locations.LocationIdDict[Location];
+				sb.AppendLine( "Location: " + inGameIdDict[loc.DefaultStringDicID].StringEngOrJpn + " / Weather: " + LocationWeather + "<br>" );
+			}
+
+			if ( InMonsterBook == 0 ) {
+				sb.AppendLine( "Not in Monster Book!<br>" );
+			}
+
+			for ( int i = 0; i < DropItems.Length; ++i ) {
+				if ( DropItems[i] != 0 ) {
+					var item = items.itemIdDict[DropItems[i]];
+					sb.AppendLine( inGameIdDict[item.NamePointer].StringEngOrJpn + ", " + DropChances[i] + "%<br>" );
+				}
+			}
+			if ( StealItem != 0 ) {
+				var item = items.itemIdDict[StealItem];
+				sb.AppendLine( inGameIdDict[item.NamePointer].StringEngOrJpn + ", " + StealChance + "%<br>" );
+			}
+
+			/*
+			for ( int i = 0; i < Data.Length; ++i ) {
+				if ( !KnownValues.Contains( i ) ) {
+					sb.AppendLine( i + ": " + Data[i] + " ---- " + DataFloat[i] + "<br>" );
+				}
+			}
+			 */
+
+			sb.AppendLine( "</div>" );
+
+
+			return sb.ToString();
 		}
 	}
 }

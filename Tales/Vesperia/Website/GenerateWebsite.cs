@@ -22,6 +22,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-X360.html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-X360.html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
 
 			site.Version = GameVersion.PS3;
 			site.Items = new ItemDat.ItemDat( @"d:\Dropbox\ToV\PS3\orig\item.svo.ext\ITEM.DAT" );
@@ -33,6 +34,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-PS3.html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-PS3.html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
 
 			return 0;
 		}
@@ -81,6 +83,24 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			html = html.Replace( "\x06(ST5)", "<img src=\"text-icons/icon-status-05.png\" height=\"16\" width=\"16\">" );
 			html = html.Replace( "\x06(ST6)", "<img src=\"text-icons/icon-status-06.png\" height=\"16\" width=\"16\">" );
 			html = html.Replace( "\x06(ST7)", "<img src=\"text-icons/icon-status-07.png\" height=\"16\" width=\"16\">" );
+			return html;
+		}
+		public string GenerateHtmlEnemies() {
+			var sb = new StringBuilder();
+			sb.AppendLine( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" );
+			sb.AppendLine( "<title>Tales of Vesperia (" + Version.ToString() + ") - Enemies</title>" );
+			sb.AppendLine( "<style>" );
+			sb.AppendLine( "body { background-color: #68504F; color: #EFD1AE; font-size: 16; }" );
+			sb.AppendLine( ".itemname { color: #FFEBD2; font-size: 20; }" );
+			sb.AppendLine( "</style>" );
+			sb.AppendLine( "</head><body>" );
+			foreach ( var enemy in Enemies.EnemyList ) {
+				sb.AppendLine( enemy.GetDataAsHtml( Items, Locations, StringDic, InGameIdDict ) );
+				sb.AppendLine( "<hr>" );
+			}
+			sb.AppendLine( "</body></html>" );
+
+			string html = sb.ToString();
 			return html;
 		}
 	}
