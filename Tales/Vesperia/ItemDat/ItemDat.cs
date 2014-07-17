@@ -27,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 
-		public static string GetItemDataAsText( GameVersion version, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
+		public static string GetItemDataAsText( GameVersion version, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, WRLDDAT.WRLDDAT Locations, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
 			var sb = new StringBuilder();
 
@@ -56,9 +56,9 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			if ( item.Data[(int)ItemData.BuyableIn1] > 0 || item.Data[(int)ItemData.BuyableIn2] > 0 || item.Data[(int)ItemData.BuyableIn3] > 0 ) {
 				sb.Append( "Available at shops in: " );
-				if ( item.Data[(int)ItemData.BuyableIn1] > 0 ) { sb.Append( GetShopFromId( item.Data[(int)ItemData.BuyableIn1] ) ); }
-				if ( item.Data[(int)ItemData.BuyableIn2] > 0 ) { sb.Append( "; " + GetShopFromId( item.Data[(int)ItemData.BuyableIn2] ) ); }
-				if ( item.Data[(int)ItemData.BuyableIn3] > 0 ) { sb.Append( "; " + GetShopFromId( item.Data[(int)ItemData.BuyableIn3] ) ); }
+				if ( item.Data[(int)ItemData.BuyableIn1] > 0 ) { sb.Append( dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1]].DefaultStringDicID].StringEngOrJpn ); }
+				if ( item.Data[(int)ItemData.BuyableIn2] > 0 ) { sb.Append( "; " + dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn2]].DefaultStringDicID].StringEngOrJpn ); }
+				if ( item.Data[(int)ItemData.BuyableIn3] > 0 ) { sb.Append( "; " + dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn3]].DefaultStringDicID].StringEngOrJpn ); }
 				sb.AppendLine();
 			}
 
@@ -229,7 +229,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			return sb.ToString();
 		}
 
-		public static string GetItemDataAsHtml( GameVersion version, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
+		public static string GetItemDataAsHtml( GameVersion version, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, WRLDDAT.WRLDDAT Locations, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
 			var sb = new StringBuilder();
 
@@ -472,9 +472,9 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			if ( item.Data[(int)ItemData.BuyableIn1] > 0 || item.Data[(int)ItemData.BuyableIn2] > 0 || item.Data[(int)ItemData.BuyableIn3] > 0 ) {
 				//sb.Append( "<br>Available at shops in:" );
-				if ( item.Data[(int)ItemData.BuyableIn1] > 0 ) { sb.Append( "<br>" + GetShopFromId( item.Data[(int)ItemData.BuyableIn1] ) ); }
-				if ( item.Data[(int)ItemData.BuyableIn2] > 0 ) { sb.Append( "<br>" + GetShopFromId( item.Data[(int)ItemData.BuyableIn2] ) ); }
-				if ( item.Data[(int)ItemData.BuyableIn3] > 0 ) { sb.Append( "<br>" + GetShopFromId( item.Data[(int)ItemData.BuyableIn3] ) ); }
+				if ( item.Data[(int)ItemData.BuyableIn1] > 0 ) { sb.Append( "<br>" + dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1]].DefaultStringDicID].StringEngOrJpn ); }
+				if ( item.Data[(int)ItemData.BuyableIn2] > 0 ) { sb.Append( "<br>" + dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn2]].DefaultStringDicID].StringEngOrJpn ); }
+				if ( item.Data[(int)ItemData.BuyableIn3] > 0 ) { sb.Append( "<br>" + dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn3]].DefaultStringDicID].StringEngOrJpn ); }
 				sb.AppendLine();
 			}
 
@@ -539,26 +539,5 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			sb.Append( "</tr>" );
 			return sb.ToString();
 		}
-
-		public static string GetShopFromId( uint id ) {
-			switch ( id ) {
-				case 3: return "The Imperial Capital, Zaphias";
-				case 4: return "The City of Blossoms, Halure";
-				case 6: return "Deidon Hold";
-				case 14: return "The Coliseum City, Nordopolica";
-				case 7: return "The Land of Hope, Aurnion";
-				case 1: return "The Fount of Warmth, Yumanju";
-				case 12: return "Port of Capua Torim";
-				case 11: return "Port of Capua Nor";
-				case 8: return "The Den of Guilds, Dahngrest";
-				case 5: return "The Home of the Kritya, Myorzo";
-				case 15: return "The Rising City, Heliord";
-				case 10: return "The Desert Oasis, Mantaic";
-				case 13: return "The Sealed City of Scholars, Aspio";
-				case 16: return "The Heartland Town, Yormgen";
-				default: return "UnknownShop" + id;
-			}
-		}
-
 	}
 }

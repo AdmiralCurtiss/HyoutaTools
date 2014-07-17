@@ -221,6 +221,8 @@
     <Compile Include="Tales\Vesperia\TownMap\Viewer\Program.cs" />
     <Compile Include="Tales\Vesperia\VesperiaUtil.cs" />
     <Compile Include="Tales\Vesperia\Website\GenerateWebsite.cs" />
+    <Compile Include="Tales\Vesperia\WRLDDAT\Location.cs" />
+    <Compile Include="Tales\Vesperia\WRLDDAT\WRLDDAT.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />
     <Compile Include="Trophy\TrophyNode.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicExport\Program.cs" />

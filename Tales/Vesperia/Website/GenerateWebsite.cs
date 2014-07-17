@@ -18,6 +18,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Skills = new T8BTSK.T8BTSK( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0010.ext\ALL.0000" );
 			site.Enemies = new T8BTEMST.T8BTEMST( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0005.ext\ALL.0000" );
 			site.Recipes = new COOKDAT.COOKDAT( @"d:\Dropbox\ToV\360\cook.svo.ext\COOKDATA.BIN" );
+			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\WORLDDATA.BIN" );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-X360.html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
@@ -28,6 +29,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Skills = new T8BTSK.T8BTSK( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0010.ext\ALL.0000" );
 			site.Enemies = new T8BTEMST.T8BTEMST( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000" );
 			site.Recipes = new COOKDAT.COOKDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\COOKDATA.BIN" );
+			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\WORLDDATA.BIN" );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-PS3.html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
@@ -41,6 +43,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public T8BTSK.T8BTSK Skills;
 		public T8BTEMST.T8BTEMST Enemies;
 		public COOKDAT.COOKDAT Recipes;
+		public WRLDDAT.WRLDDAT Locations;
 		public Dictionary<uint, TSS.TSSEntry> InGameIdDict;
 
 		public string GenerateHtmlItems() {
@@ -62,7 +65,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "</head><body><table>" );
 			foreach ( var item in Items.items ) {
 				if ( item.Data[(int)ItemData.Category] == 0 ) { continue; }
-				sb.AppendLine( ItemDat.ItemDat.GetItemDataAsHtml( Version, Items, item, Skills, Enemies, Recipes, StringDic, InGameIdDict ) );
+				sb.AppendLine( ItemDat.ItemDat.GetItemDataAsHtml( Version, Items, item, Skills, Enemies, Recipes, Locations, StringDic, InGameIdDict ) );
 				sb.AppendLine( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
 			sb.AppendLine( "</table></body></html>" );

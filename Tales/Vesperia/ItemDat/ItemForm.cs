@@ -19,11 +19,12 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		T8BTSK.T8BTSK Skills;
 		T8BTEMST.T8BTEMST Enemies;
 		COOKDAT.COOKDAT Recipes;
+		WRLDDAT.WRLDDAT Locations;
 
 		List<Label> labels;
 		List<TextBox> textboxes;
 
-		public ItemForm( GameVersion version, ItemDat itemDat, TSSFile TSS, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT cookdat ) {
+		public ItemForm( GameVersion version, ItemDat itemDat, TSSFile TSS, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT cookdat, WRLDDAT.WRLDDAT locations ) {
 			InitializeComponent();
 
 			this.Version = version;
@@ -32,6 +33,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			this.Skills = skills;
 			this.Enemies = enemies;
 			this.Recipes = cookdat;
+			this.Locations = locations;
 			this.InGameIdDict = TSS.GenerateInGameIdDictionary();
 
 			labels = new List<Label>();
@@ -98,13 +100,13 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			labelDescription.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
 			entry = GetEntry( item.Data[(int)ItemData.UnknownTextPointer] );
 			labelUnknown.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
-			textBoxGeneratedText.Text = ItemDat.GetItemDataAsText( Version, itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict );
+			textBoxGeneratedText.Text = ItemDat.GetItemDataAsText( Version, itemDat, item, Skills, Enemies, Recipes, Locations, TSS, InGameIdDict );
 		}
 
 		private void buttonGenerateText_Click( object sender, EventArgs e ) {
 			var sb = new StringBuilder();
 			foreach ( var item in itemDat.items ) {
-				sb.AppendLine( ItemDat.GetItemDataAsText( Version, itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict ) );
+				sb.AppendLine( ItemDat.GetItemDataAsText( Version, itemDat, item, Skills, Enemies, Recipes, Locations, TSS, InGameIdDict ) );
 				sb.AppendLine();
 				sb.AppendLine();
 			}

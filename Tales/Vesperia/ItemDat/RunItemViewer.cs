@@ -8,8 +8,8 @@ using HyoutaTools.Tales.Vesperia.TSS;
 namespace HyoutaTools.Tales.Vesperia.ItemDat {
 	class RunItemViewer {
 		public static int Execute( List<string> args ) {
-			if ( args.Count < 6 ) {
-				Console.WriteLine( "Usage: [360/PS3] ITEM.DAT STRING_DIC.SO T8BTSK T8BTEMST COOKDAT" );
+			if ( args.Count < 7 ) {
+				Console.WriteLine( "Usage: [360/PS3] ITEM.DAT STRING_DIC.SO T8BTSK T8BTEMST COOKDAT WRLDDAT" );
 				return -1;
 			}
 
@@ -41,11 +41,12 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			T8BTSK.T8BTSK skills = new T8BTSK.T8BTSK( args[3] );
 			T8BTEMST.T8BTEMST enemies = new T8BTEMST.T8BTEMST( args[4] );
 			COOKDAT.COOKDAT cookdat = new COOKDAT.COOKDAT( args[5] );
+			WRLDDAT.WRLDDAT locations = new WRLDDAT.WRLDDAT( args[6] );
 
 			Console.WriteLine( "Initializing GUI..." );
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
-			ItemForm itemForm = new ItemForm( version, items, TSS, skills, enemies, cookdat );
+			ItemForm itemForm = new ItemForm( version, items, TSS, skills, enemies, cookdat, locations );
 			Application.Run( itemForm );
 			return 0;
 		}
