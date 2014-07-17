@@ -24,27 +24,31 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			SkillAutomatic = 15
 		}
 
-		public byte[] Data;
+		public uint[] Data;
 		public uint StringIdName;
 		public uint StringIdDescription;
 		public ArteType Type;
 
-		public Arte( byte[] Bytes, uint Location, uint Size ) {
-			Data = new byte[Size];
-			Util.CopyByteArrayPart( Bytes, (int)Location, Data, 0, (int)Size );
+		//public float Something;
+		public string RefString;
 
-			StringIdName = BitConverter.ToUInt32( Data, 0x14 ).SwapEndian();
-			StringIdDescription = BitConverter.ToUInt32( Data, 0x18 ).SwapEndian();
-			Type = (ArteType)BitConverter.ToUInt32( Data, 0x1C ).SwapEndian();
+		public Arte( byte[] Bytes, uint Location, uint Size, uint refStringStart ) {
+			Data = new uint[Size / 4];
+			for ( int i = 0; i < Data.Length; ++i ) {
+				Data[i] = BitConverter.ToUInt32( Bytes, (int)( Location + i * 4 ) ).SwapEndian();
+			}
+
+			uint refStringLocaton = Data[3];
+			RefString = Util.GetTextAscii( Bytes, (int)( refStringStart + refStringLocaton ) );
+
+			StringIdName = Data[5];
+			StringIdDescription = Data[6];
+			Type = (ArteType)Data[7];
+			//Something = Data[170].UIntToFloat();
 		}
 
 		public override string ToString() {
-			StringBuilder sb = new StringBuilder();
-			foreach ( byte b in Data ) {
-				sb.Append( b.ToString( "X2" ) );
-				sb.Append( ' ' );
-			}
-			return sb.ToString();
+			return RefString;
 		}
 
 	}
