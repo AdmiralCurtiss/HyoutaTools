@@ -11,7 +11,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public TSSEntry[] Entries;
 		public byte[] File;
 
-		public TSSFile( byte[] File ) {
+		public TSSFile( byte[] File, bool isUtf8 = false ) {
 			this.File = File;
 			// set header
 			Header = new TSSHeader( File.Take( 0x20 ).ToArray() );
@@ -97,7 +97,15 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 					}
 				}
 
-				EntryList.Add( new TSSEntry( OneEntry, Util.GetTextShiftJis( File, JPNPointer ), Util.GetTextShiftJis( File, ENGPointer ), JPNIndex, ENGIndex, inGameStringId ) );
+				string jpn, eng;
+				if ( isUtf8 ) {
+					jpn = Util.GetTextUTF8( File, JPNPointer );
+					eng = Util.GetTextUTF8( File, ENGPointer );
+				} else {
+					jpn = Util.GetTextShiftJis( File, JPNPointer );
+					eng = Util.GetTextShiftJis( File, ENGPointer );
+				}
+				EntryList.Add( new TSSEntry( OneEntry, jpn, eng, JPNIndex, ENGIndex, inGameStringId ) );
 				//CurrentLocation += OneEntry.Length;
 				CurrentLocation++;
 			}

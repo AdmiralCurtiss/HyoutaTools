@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HyoutaTools.Tales.Vesperia.TSS;
+using HyoutaTools.Tales.Vesperia.Website;
 
 namespace HyoutaTools.Tales.Vesperia.ItemDat {
 	public partial class ItemForm : Form {
@@ -111,40 +112,16 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		}
 
 		private void buttonGenerateHtml_Click( object sender, EventArgs e ) {
-			var sb = new StringBuilder();
-			sb.AppendLine( "<html><head>" );
-			sb.AppendLine( "<style>" );
-			sb.AppendLine( "body { background-color: #68504F; color: #EFD1AE; font-size: 16; }" );
-			sb.AppendLine( ".itemname { color: #FFEBD2; font-size: 20; }" );
-			sb.AppendLine( ".itemdesc { }" );
-			sb.AppendLine( ".equip { text-align: right; float: right; }" );
-			sb.AppendLine( ".special { text-align: right; float: right; }" );
-			sb.AppendLine( "table, tr, td, th { padding: 0px 4px 0px 0px; border-spacing: 0px; }" );
-			sb.AppendLine( "td { vertical-align: top; }" );
-			sb.AppendLine( "a:link, a:visited, a:hover, a:active { color: #FFEBD2; }" );
-			sb.AppendLine( "table.element { display: inline-block; }" );
-			sb.AppendLine( "table.element td { text-align: center; }" );
-			sb.AppendLine( "</style>" );
-			sb.AppendLine( "</head><body><table>" );
-			foreach ( var item in itemDat.items ) {
-				if ( item.Data[(int)ItemData.Category] == 0 ) { continue; }
-				sb.AppendLine( ItemDat.GetItemDataAsHtml( Version, itemDat, item, Skills, Enemies, Recipes, TSS, InGameIdDict ) );
-				sb.AppendLine( "<tr><td colspan=\"5\"><hr></td></tr>" );
-			}
-			sb.AppendLine( "</table></body></html>" );
+			var site = new GenerateWebsite();
+			site.Version = Version;
+			site.Items = itemDat;
+			site.StringDic = TSS;
+			site.Skills = Skills;
+			site.Enemies = Enemies;
+			site.Recipes = Recipes;
+			site.InGameIdDict = InGameIdDict;
 
-			string html = sb.ToString();
-			html = VesperiaUtil.RemoveTags( html );
-			html = html.Replace( "\x06(STA)", "<img src=\"text-icons/" + Version.ToString() + "/button-Start.png\" height=\"16\">" );
-			html = html.Replace( "\x06(L3)", "<img src=\"text-icons/" + Version.ToString() + "/ls-push.png\" height=\"16\">" );
-			html = html.Replace( "\x06(ST1)", "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST2)", "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST3)", "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST4)", "<img src=\"text-icons/icon-status-04.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST5)", "<img src=\"text-icons/icon-status-05.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST6)", "<img src=\"text-icons/icon-status-06.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST7)", "<img src=\"text-icons/icon-status-07.png\" height=\"16\" width=\"16\">" );
-			Clipboard.SetText( html );
+			Clipboard.SetText( site.GenerateHtmlItems() );
 		}
 	}
 }

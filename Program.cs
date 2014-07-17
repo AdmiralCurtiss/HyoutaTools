@@ -102,6 +102,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Pokemon.Gen5.PWT.DownloadChecksum",       "-"           ),  Pokemon.Gen5.PWT.Program.ExecuteDownloadChecksumRecalc) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.Scenario.Extract",         "-"           ),  Tales.Vesperia.Scenario.Program.ExecuteExtract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.Scenario.Pack",            "-"           ),  Tales.Vesperia.Scenario.Program.ExecutePack) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.GenerateWebsite",          "-"           ),  Tales.Vesperia.Website.GenerateWebsite.Generate) },
 		};
 
 		[STAThread]
