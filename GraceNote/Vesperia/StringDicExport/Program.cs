@@ -8,11 +8,16 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 	class Program {
 		public static int Execute( List<string> args ) {
 			bool UseInsaneNames = false;
+			bool RealMode = false;
 
 			if ( args.Count == 1 ) {
 				if ( args[0] == "-insane" ) {
 					Console.WriteLine( "Wesker-Dumbledore Mode Activated!" );
 					UseInsaneNames = true;
+				}
+				if ( args[0] == "-real" ) {
+					Console.WriteLine( "Real Mode activated, resulting file will contain both English and Japanese data as expected by an unmodified game." );
+					RealMode = true;
 				}
 			}
 
@@ -39,20 +44,22 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 
 
 			Console.WriteLine( "Importing databases..." );
-			if ( !TSS.ImportSQL() ) {
+			if ( !TSS.ImportSQL( !RealMode ) ) {
 				Console.WriteLine( "Could not import all databases! Exiting..." );
 				return -1;
 			}
 
 
 			// Empty unused strings, alter names if wanted
-			foreach ( TSSEntry e in TSS.Entries ) {
-				if ( e.StringENG != null ) {
-					e.StringENG = "";
-				}
+			if ( !RealMode ) {
+				foreach ( TSSEntry e in TSS.Entries ) {
+					if ( e.StringENG != null ) {
+						e.StringENG = "";
+					}
 
-				if ( UseInsaneNames ) {
-					e.StringJPN = HyoutaTools.Tales.Vesperia.VesperiaUtil.ReplaceWithInsaneNames( e.StringJPN );
+					if ( UseInsaneNames ) {
+						e.StringJPN = HyoutaTools.Tales.Vesperia.VesperiaUtil.ReplaceWithInsaneNames( e.StringJPN );
+					}
 				}
 			}
 

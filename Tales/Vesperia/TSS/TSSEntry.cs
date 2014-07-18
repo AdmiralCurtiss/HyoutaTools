@@ -46,5 +46,9 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			}
 			return bytes.ToArray();
 		}
+
+		public override string ToString() {
+			return "[" + inGameStringId + "] " + StringEngOrJpn;
+		}
 	}
 }

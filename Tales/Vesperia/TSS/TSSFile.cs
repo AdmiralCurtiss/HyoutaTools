@@ -121,7 +121,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			}
 			return stringIdDict;
 		}
-	
+
 		public byte[] ExportText() {
 			List<string> Lines = new List<string>( Entries.Length * 3 );
 
@@ -252,14 +252,10 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 						e.SetENGPointer( ptr + StringLength );
 					}
 				}
-				// Only exporting JP and putting a pointer to that into both ENG and JPN slots
-				/* 
-				if (e.StringENG != null)
-				{
-					e.SetENGPointer(CurrentPointer - Header.TextStart);
-					CurrentPointer += (uint)Util.StringToBytes(e.StringENG).Length + 1;
+				if ( e.StringENG != null && e.StringENG != "" ) {
+					e.SetENGPointer( CurrentPointer - Header.TextStart );
+					CurrentPointer += (uint)Util.StringToBytesShiftJis( e.StringENG ).Length + 1;
 				}
-				//*/
 			}
 
 
@@ -282,19 +278,16 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 					Serialized.AddRange( Util.StringToBytesShiftJis( e.StringJPN ) );
 					Serialized.Add( 0x00 );
 				}
-				/* Only exporting JP and putting a pointer to that into both ENG and JPN slots
-				if (e.StringENG != null)
-				{
-					Serialized.AddRange(Util.StringToBytes(e.StringENG));
-					Serialized.Add(0x00);
+				if ( e.StringENG != null && e.StringENG != "" ) {
+					Serialized.AddRange( Util.StringToBytesShiftJis( e.StringENG ) );
+					Serialized.Add( 0x00 );
 				}
-				 * */
 			}
 
 			return Serialized.ToArray();
 		}
 
-		public bool ImportSQL() {
+		public bool ImportSQL( bool placeEnglishInJpnEntry = true ) {
 			String[] DBNames = {
                                    "VGeneral", "VMenu", "VArtes", "VSkills",
                                    "VStrategy", "VLocation Names", "VEnemies",
@@ -335,7 +328,11 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 							English = English.Replace(">", ")");
 						}
 						*/
-						Entries[PointerRef + 1].StringJPN = English;
+						if ( placeEnglishInJpnEntry ) {
+							Entries[PointerRef + 1].StringJPN = English;
+						} else {
+							Entries[PointerRef + 1].StringENG = English;
+						}
 					}
 				}
 				Reader.Close();
