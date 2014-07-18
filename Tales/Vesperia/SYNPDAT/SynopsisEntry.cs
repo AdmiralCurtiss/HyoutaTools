@@ -32,5 +32,23 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 		public override string ToString() {
 			return RefString1;
 		}
+
+		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			StringBuilder sb = new StringBuilder();
+
+			string[] text = inGameIdDict[TextStringDicId].StringEngOrJpn.Replace( "\n", "<br>" ).Split( '\f' );
+
+			sb.Append( "<table class=\"synopsis\"><tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + text.Length + "\">" );
+			if ( version == GameVersion.PS3 ) {
+				sb.Append( "<img src=\"synopsis/U_" + RefString1 + ".png\"><br>" );
+			}
+			sb.Append( inGameIdDict[NameStringDicId].StringEngOrJpn + "</td></tr><tr>" );
+
+			foreach ( string s in text ) {
+				sb.Append( "<td>" + s + "</td>" );
+			}
+			sb.Append( "</tr></table>" );
+			return sb.ToString();
+		}
 	}
 }

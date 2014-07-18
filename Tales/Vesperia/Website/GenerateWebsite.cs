@@ -20,6 +20,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Enemies = new T8BTEMST.T8BTEMST( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0005.ext\ALL.0000" );
 			site.Recipes = new COOKDAT.COOKDAT( @"d:\Dropbox\ToV\360\cook.svo.ext\COOKDATA.BIN" );
 			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\WORLDDATA.BIN" );
+			site.Synopsis = new SYNPDAT.SYNPDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\SYNOPSISDATA.BIN" );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
@@ -38,6 +39,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Enemies = new T8BTEMST.T8BTEMST( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000" );
 			site.Recipes = new COOKDAT.COOKDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\COOKDATA.BIN" );
 			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\WORLDDATA.BIN" );
+			site.Synopsis = new SYNPDAT.SYNPDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\SYNOPSISDATA.BIN" );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
@@ -59,6 +61,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public T8BTEMST.T8BTEMST Enemies;
 		public COOKDAT.COOKDAT Recipes;
 		public WRLDDAT.WRLDDAT Locations;
+		public SYNPDAT.SYNPDAT Synopsis;
+
 		public Dictionary<uint, TSS.TSSEntry> InGameIdDict;
 
 		public string GenerateHtmlItems() {
@@ -119,10 +123,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddHeader( sb, "Enemies" );
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
-			//foreach ( var entry in Synopsis ) {
-			//	sb.AppendLine( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
-			//	sb.AppendLine( "<hr>" );
-			//}
+			foreach ( var entry in Synopsis.SynopsisList ) {
+				if ( InGameIdDict[entry.NameStringDicId].StringEngOrJpn == "" ) { continue; }
+				sb.AppendLine( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.AppendLine( "<hr>" );
+			}
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
 		}
@@ -166,6 +171,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "a:link, a:visited, a:hover, a:active { color: #FFEBD2; }" );
 			sb.AppendLine( "table.element { display: inline-block; }" );
 			sb.AppendLine( "table.element td { text-align: center; }" );
+			sb.AppendLine( "table.synopsis { margin: 0px auto; }" );
+			sb.AppendLine( "table.synopsis td { padding: 0px 10px 0px 10px; border-spacing: 10px; }" );
+			sb.AppendLine( ".synopsistitle { text-align: center; color: #FFEBD2; font-size: 20; }" );
 			sb.AppendLine( "</style>" );
 			sb.AppendLine( "</head>" );
 		}
