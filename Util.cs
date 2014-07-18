@@ -380,6 +380,9 @@ namespace HyoutaTools {
 			s.Position = pos;
 			return retval;
 		}
+		public static void DiscardBytes( this Stream s, uint count ) {
+			s.Position = s.Position + count;
+		}
 		public static void WriteUInt16( this Stream s, ushort num ) {
 			s.Write( BitConverter.GetBytes( num ), 0, 2 );
 		}
