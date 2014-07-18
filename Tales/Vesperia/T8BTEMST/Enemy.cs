@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaTools.Tales.Vesperia.ItemDat;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 	public class Enemy {
@@ -35,6 +36,10 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public uint LP;
 		public uint Gald;
 
+		public float FatalBlue;
+		public float FatalGreen;
+		public float FatalRed;
+
 		public uint InMonsterBook;
 		public uint Location;
 		public int LocationWeather;
@@ -43,7 +48,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public uint StealItem;
 		public uint StealChance;
 
-		public static int[] KnownValues = new int[] { 0, 2, 5, 57, 7, 8, 9, 10, 11, 12, 13, 15, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 60, 61, 6, 24, 59 };
+		public static int[] KnownValues = new int[] { 0, 2, 5, 57, 7, 8, 9, 10, 11, 12, 13, 15, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 60, 61, 6, 24, 59, 17, 18, 19 };
 
 		public Enemy( System.IO.Stream stream, uint refStringStart ) {
 			uint entryLength = stream.ReadUInt32().SwapEndian();
@@ -70,6 +75,11 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			MATK = Data[12];
 			MDEF = Data[13];
 			AGL = Data[15];
+
+			// this is a total guess
+			FatalBlue = DataFloat[17];
+			FatalGreen = DataFloat[18];
+			FatalRed = DataFloat[19];
 
 			// > 100 weak, < 100 resist, 0 nullify, negative absorb
 			// effectively a damage multiplier in percent
@@ -113,43 +123,68 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			return RefString;
 		}
 
-		public string GetDataAsHtml( ItemDat.ItemDat items, WRLDDAT.WRLDDAT locations, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, WRLDDAT.WRLDDAT locations, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			var sb = new StringBuilder();
 
-			sb.AppendLine( "<div>" );
-			sb.AppendLine( RefString );
-			sb.AppendLine( "<br>" );
+			sb.AppendLine( "<div id=\"enemy" + InGameID + "\">" );
 
 			var enemyNameEntry = inGameIdDict[NameStringDicID];
-			sb.Append( "<img src=\"monster-icons/44px/monster-" + IconID.ToString( "D3" ) + ".png\"><br>" );
-			sb.Append( enemyNameEntry.StringEngOrJpn + " / Category: " + Category + "<br>" );
+			sb.Append( "<img src=\"monster-icons/44px/monster-" + IconID.ToString( "D3" ) + ".png\" title=\"" + RefString + "\"><br>" );
+			sb.Append( "<span class=\"itemname\">" + enemyNameEntry.StringEngOrJpn + "</span> / Category: " + Category + "<br>" );
 
-			sb.AppendLine( "Fire: " + AttrFire + " / " );
-			sb.AppendLine( "Earth: " + AttrEarth + " / " );
-			sb.AppendLine( "Wind: " + AttrWind + " / " );
-			sb.AppendLine( "Water: " + AttrWater + " / " );
-			sb.AppendLine( "Light: " + AttrLight + " / " );
-			sb.AppendLine( "Dark: " + AttrDark + "<br>" );
+			sb.Append( "Level: " + Level + "<br>" );
+			sb.Append( "HP: " + HP + "<br>" );
+			sb.Append( "TP: " + TP + "<br>" );
+			sb.Append( "PATK: " + PATK + "<br>" );
+			sb.Append( "PDEF: " + PDEF + "<br>" );
+			sb.Append( "MATK: " + MATK + "<br>" );
+			sb.Append( "MDEF: " + MDEF + "<br>" );
+			sb.Append( "AGL: " + AGL + "<br>" );
+			sb.Append( "EXP: " + EXP + "<br>" );
+			sb.Append( "LP: " + LP + "<br>" );
+			sb.Append( "Gald: " + Gald + "<br>" );
 
+			sb.Append( "<img src=\"menu-icons/artes-13.png\" width=\"16\" height=\"16\">" + FatalBlue );
+			sb.Append( " <img src=\"menu-icons/artes-14.png\" width=\"16\" height=\"16\">" + FatalGreen );
+			sb.Append( " <img src=\"menu-icons/artes-15.png\" width=\"16\" height=\"16\">" + FatalRed );
+			sb.Append( "<br>" );
+
+			if ( AttrFire != 100 ) { sb.Append( "<td><img src=\"text-icons/icon-element-02.png\"></td>: " + AttrFire + " " ); }
+			if ( AttrEarth != 100 ) { sb.Append( "<td><img src=\"text-icons/icon-element-04.png\"></td>: " + AttrEarth + " " ); }
+			if ( AttrWind != 100 ) { sb.Append( "<td><img src=\"text-icons/icon-element-01.png\"></td>: " + AttrWind + " " ); }
+			if ( AttrWater != 100 ) { sb.Append( "<td><img src=\"text-icons/icon-element-05.png\"></td>: " + AttrWater + " " ); }
+			if ( AttrLight != 100 ) { sb.Append( "<td><img src=\"text-icons/icon-element-03.png\"></td>: " + AttrLight + " " ); }
+			if ( AttrDark != 100 ) { sb.Append( "<td><img src=\"text-icons/icon-element-06.png\"></td>: " + AttrDark + " " ); }
+			sb.Append( "<br>" );
 
 			if ( Location != 0 ) {
 				var loc = locations.LocationIdDict[Location];
-				sb.AppendLine( "Location: " + inGameIdDict[loc.DefaultStringDicID].StringEngOrJpn + " / Weather: " + LocationWeather + "<br>" );
+				sb.Append( "<a href=\"locations-" + version + ".html#location" + loc.LocationID + "\">" );
+				if ( LocationWeather > -1 ) {
+					sb.AppendLine( "<img src=\"menu-icons/weather-" + LocationWeather + ".png\" width=\"16\" height=\"16\">" );
+				}
+				sb.AppendLine( inGameIdDict[loc.DefaultStringDicID].StringEngOrJpn + "</a><br>" );
 			}
 
 			if ( InMonsterBook == 0 ) {
 				sb.AppendLine( "Not in Monster Book!<br>" );
 			}
 
+			sb.AppendLine( "Drops:<br>" );
 			for ( int i = 0; i < DropItems.Length; ++i ) {
 				if ( DropItems[i] != 0 ) {
 					var item = items.itemIdDict[DropItems[i]];
-					sb.AppendLine( inGameIdDict[item.NamePointer].StringEngOrJpn + ", " + DropChances[i] + "%<br>" );
+					sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
+					sb.Append( "<a href=\"items-" + version + ".html#item" + item.Data[(int)ItemData.ID] + "\">" );
+					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpn + "</a>, " + DropChances[i] + "%<br>" );
 				}
 			}
+			sb.AppendLine( "Steal:<br>" );
 			if ( StealItem != 0 ) {
 				var item = items.itemIdDict[StealItem];
-				sb.AppendLine( inGameIdDict[item.NamePointer].StringEngOrJpn + ", " + StealChance + "%<br>" );
+				sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
+				sb.Append( "<a href=\"items-" + version + ".html#item" + item.Data[(int)ItemData.ID] + "\">" );
+				sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpn + "</a>, " + StealChance + "%<br>" );
 			}
 
 			/*

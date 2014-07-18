@@ -25,9 +25,11 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 		}
 
 		public uint[] Data;
-		public uint StringIdName;
-		public uint StringIdDescription;
+		public uint NameStringDicId;
+		public uint DescStringDicId;
 		public ArteType Type;
+
+		public uint ID;
 
 		//public float Something;
 		public string RefString;
@@ -38,11 +40,13 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 				Data[i] = BitConverter.ToUInt32( Bytes, (int)( Location + i * 4 ) ).SwapEndian();
 			}
 
+			ID = Data[1];
+
 			uint refStringLocaton = Data[3];
 			RefString = Util.GetTextAscii( Bytes, (int)( refStringStart + refStringLocaton ) );
 
-			StringIdName = Data[5];
-			StringIdDescription = Data[6];
+			NameStringDicId = Data[5];
+			DescStringDicId = Data[6];
 			Type = (ArteType)Data[7];
 			//Something = Data[170].UIntToFloat();
 		}
@@ -51,5 +55,15 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			return RefString;
 		}
 
+		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			StringBuilder sb = new StringBuilder();
+			sb.Append( "<div id=\"arte" + ID + "\">" );
+			sb.Append( RefString + "<br>" );
+			sb.Append( inGameIdDict[NameStringDicId].StringEngOrJpn + "<br>" );
+			sb.Append( inGameIdDict[DescStringDicId].StringEngOrJpn + "<br>" );
+			sb.Append( Type + "<br>" );
+			sb.Append( "</div>" );
+			return sb.ToString();
+		}
 	}
 }

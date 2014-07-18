@@ -42,17 +42,17 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			System.Data.SQLite.SQLiteCommand command = new System.Data.SQLite.SQLiteCommand( conn );
 			command.Transaction = transaction;
 			foreach ( var a in ArteList ) {
-				string UpdateNames = "UPDATE Text SET IdentifyString = \"" + a.Type.ToString() + ";\" || IdentifyString WHERE IdentifyString LIKE \"%[" + a.StringIdName + " / 0x" + a.StringIdName.ToString( "X6" ) + "]\"";
+				string UpdateNames = "UPDATE Text SET IdentifyString = \"" + a.Type.ToString() + ";\" || IdentifyString WHERE IdentifyString LIKE \"%[" + a.NameStringDicId + " / 0x" + a.NameStringDicId.ToString( "X6" ) + "]\"";
 				Console.WriteLine( UpdateNames );
 				command.CommandText = UpdateNames;
 				command.ExecuteNonQuery();
-				string UpdateDescs = "UPDATE Text SET IdentifyString = \"Description;\" || IdentifyString WHERE IdentifyString LIKE \"%[" + a.StringIdDescription + " / 0x" + a.StringIdDescription.ToString( "X6" ) + "]\"";
+				string UpdateDescs = "UPDATE Text SET IdentifyString = \"Description;\" || IdentifyString WHERE IdentifyString LIKE \"%[" + a.DescStringDicId + " / 0x" + a.DescStringDicId.ToString( "X6" ) + "]\"";
 				Console.WriteLine( UpdateDescs );
 				command.CommandText = UpdateDescs;
 				command.ExecuteNonQuery();
 
 				if ( a.Type == Arte.ArteType.Generic ) {
-					string UpdateStatus = "UPDATE Text SET status = 4, updated = 1, updatedby = \"[HyoutaTools]\", updatedtimestamp = " + Util.DateTimeToUnixTime( DateTime.UtcNow ) + " WHERE IdentifyString LIKE \"%[" + a.StringIdName + " / 0x" + a.StringIdName.ToString( "X6" ) + "]\"";
+					string UpdateStatus = "UPDATE Text SET status = 4, updated = 1, updatedby = \"[HyoutaTools]\", updatedtimestamp = " + Util.DateTimeToUnixTime( DateTime.UtcNow ) + " WHERE IdentifyString LIKE \"%[" + a.NameStringDicId + " / 0x" + a.NameStringDicId.ToString( "X6" ) + "]\"";
 					Console.WriteLine( UpdateStatus );
 					command.CommandText = UpdateStatus;
 					command.ExecuteNonQuery();

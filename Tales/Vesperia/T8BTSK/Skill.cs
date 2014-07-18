@@ -12,7 +12,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 
 		public uint Unknown7;
 		public uint LearnableByBitmask;
-		
+
 		public uint EquipCost;
 		public uint LearnCost;
 		public uint Category;
@@ -55,6 +55,42 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 
 		public override string ToString() {
 			return RefString;
+		}
+
+		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			StringBuilder sb = new StringBuilder();
+			sb.Append( "<div id=\"skill" + ID + "\">" );
+			sb.Append( RefString + "<br>" );
+			sb.Append( inGameIdDict[NameStringDicID].StringEngOrJpn + "<br>" );
+			sb.Append( inGameIdDict[DescStringDicID].StringEngOrJpn + "<br>" );
+			sb.Append( "Equip Cost: " + EquipCost + "<br>" );
+			sb.Append( "Required LP to learn: " + LearnCost + "<br>" );
+			sb.Append( "Category: " + Category + "<br>" );
+			sb.Append( "Symbol Weight: " + SymbolValue + "<br>" );
+
+			uint equip = LearnableByBitmask;
+			if ( equip > 0 ) {
+				sb.Append( "<span class=\"equip\">" );
+				if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_YUR.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 2 ) == 2 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_EST.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 4 ) == 4 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_KAR.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 8 ) == 8 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RIT.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 16 ) == 16 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAV.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 32 ) == 32 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_JUD.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 64 ) == 64 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAP.gif\" height=\"32\" width=\"24\">" ); }
+				if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_FRE.gif\" height=\"32\" width=\"24\">" ); }
+				if ( version == GameVersion.PS3 && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_PAT.gif\" height=\"32\" width=\"24\">" ); }
+				sb.Append( "</span>" );
+			}
+
+			sb.Append( "Unknowns:<br>" );
+			sb.Append( Unknown7 + "<br>" );
+			sb.Append( Unknown13 + "<br>" );
+			sb.Append( Unknown14 + "<br>" );
+			sb.Append( Unknown15 + "<br>" );
+			sb.Append( Unknown16 + "<br>" );
+			sb.Append( "</div>" );
+			return sb.ToString();
 		}
 	}
 }

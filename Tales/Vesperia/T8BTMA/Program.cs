@@ -15,7 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			foreach ( var a in arteFile.ArteList ) {
 				sb.Append( a.Type.ToString() );
 				sb.Append( " --- " );
-				sb.Append( stringIdDict[a.StringIdName].StringJPN );
+				sb.Append( stringIdDict[a.NameStringDicId].StringJPN );
 				sb.AppendLine();
 				//sb.AppendLine( a.ToString() );
 			}

@@ -15,26 +15,38 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Version = GameVersion.X360;
 			site.Items = new ItemDat.ItemDat( @"d:\Dropbox\ToV\360\item.svo.ext\ITEM.DAT" );
 			site.StringDic = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\360\string_dic_uk.so" ), true );
+			site.Artes = new T8BTMA.T8BTMA( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0004.ext\ALL.0000" );
 			site.Skills = new T8BTSK.T8BTSK( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0010.ext\ALL.0000" );
 			site.Enemies = new T8BTEMST.T8BTEMST( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0005.ext\ALL.0000" );
 			site.Recipes = new COOKDAT.COOKDAT( @"d:\Dropbox\ToV\360\cook.svo.ext\COOKDATA.BIN" );
 			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\WORLDDATA.BIN" );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
-			System.IO.File.WriteAllText( Path.Combine( dir, "items-X360.html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-X360.html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-" + site.Version + ".html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "skills-" + site.Version + ".html" ), site.GenerateHtmlSkills(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "artes-" + site.Version + ".html" ), site.GenerateHtmlArtes(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "synopsis-" + site.Version + ".html" ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "recipes-" + site.Version + ".html" ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "locations-" + site.Version + ".html" ), site.GenerateHtmlLocations(), Encoding.UTF8 );
 
 			site.Version = GameVersion.PS3;
 			site.Items = new ItemDat.ItemDat( @"d:\Dropbox\ToV\PS3\orig\item.svo.ext\ITEM.DAT" );
 			site.StringDic = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\PS3\mod\string.svo.ext\STRING_DIC.SO" ) );
+			site.Artes = new T8BTMA.T8BTMA( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0004.ext\ALL.0000" );
 			site.Skills = new T8BTSK.T8BTSK( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0010.ext\ALL.0000" );
 			site.Enemies = new T8BTEMST.T8BTEMST( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000" );
 			site.Recipes = new COOKDAT.COOKDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\COOKDATA.BIN" );
 			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\WORLDDATA.BIN" );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
-			System.IO.File.WriteAllText( Path.Combine( dir, "items-PS3.html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-PS3.html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-" + site.Version + ".html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "skills-" + site.Version + ".html" ), site.GenerateHtmlSkills(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "artes-" + site.Version + ".html" ), site.GenerateHtmlArtes(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "synopsis-" + site.Version + ".html" ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "recipes-" + site.Version + ".html" ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "locations-" + site.Version + ".html" ), site.GenerateHtmlLocations(), Encoding.UTF8 );
 
 			return 0;
 		}
@@ -42,6 +54,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public GameVersion Version;
 		public ItemDat.ItemDat Items;
 		public TSS.TSSFile StringDic;
+		public T8BTMA.T8BTMA Artes;
 		public T8BTSK.T8BTSK Skills;
 		public T8BTEMST.T8BTEMST Enemies;
 		public COOKDAT.COOKDAT Recipes;
@@ -50,8 +63,98 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		public string GenerateHtmlItems() {
 			var sb = new StringBuilder();
+			AddHeader( sb, "Items" );
+			sb.AppendLine( "<body><table>" );
+			AddMenuBar( sb );
+			foreach ( var item in Items.items ) {
+				if ( item.Data[(int)ItemData.Category] == 0 ) { continue; }
+				sb.AppendLine( ItemDat.ItemDat.GetItemDataAsHtml( Version, Items, item, Skills, Enemies, Recipes, Locations, StringDic, InGameIdDict ) );
+				sb.AppendLine( "<tr><td colspan=\"5\"><hr></td></tr>" );
+			}
+			sb.AppendLine( "</table></body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlEnemies() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Enemies" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			foreach ( var enemy in Enemies.EnemyList ) {
+				if ( enemy.InGameID == 0 ) { continue; }
+				sb.AppendLine( enemy.GetDataAsHtml( Version, Items, Locations, StringDic, InGameIdDict ) );
+				sb.AppendLine( "<hr>" );
+			}
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlSkills() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Enemies" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			foreach ( var skill in Skills.SkillList ) {
+				sb.AppendLine( skill.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.AppendLine( "<hr>" );
+			}
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlArtes() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Enemies" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			foreach ( var arte in Artes.ArteList ) {
+				if ( arte.Type == T8BTMA.Arte.ArteType.Generic ) {
+					continue;
+				}
+				sb.AppendLine( arte.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.AppendLine( "<hr>" );
+			}
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlSynopsis() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Enemies" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			//foreach ( var entry in Synopsis ) {
+			//	sb.AppendLine( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+			//	sb.AppendLine( "<hr>" );
+			//}
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlRecipes() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Enemies" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			for ( int i = 1; i < Recipes.RecipeList.Count; ++i ) {
+				var recipe = Recipes.RecipeList[i];
+				sb.AppendLine( recipe.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.AppendLine( "<hr>" );
+			}
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlLocations() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Enemies" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			for ( int i = 1; i < Locations.LocationList.Count; ++i ) {
+				var location = Locations.LocationList[i];
+				sb.AppendLine( location.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.AppendLine( "<hr>" );
+			}
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public void AddHeader( StringBuilder sb, string name ) {
 			sb.AppendLine( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" );
-			sb.AppendLine( "<title>Tales of Vesperia (" + Version.ToString() + ") - Items</title>" );
+			sb.AppendLine( "<title>Tales of Vesperia (" + Version.ToString() + ") - " + name + "</title>" );
 			sb.AppendLine( "<style>" );
 			sb.AppendLine( "body { background-color: #68504F; color: #EFD1AE; font-size: 16; }" );
 			sb.AppendLine( ".itemname { color: #FFEBD2; font-size: 20; }" );
@@ -64,44 +167,42 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "table.element { display: inline-block; }" );
 			sb.AppendLine( "table.element td { text-align: center; }" );
 			sb.AppendLine( "</style>" );
-			sb.AppendLine( "</head><body><table>" );
-			foreach ( var item in Items.items ) {
-				if ( item.Data[(int)ItemData.Category] == 0 ) { continue; }
-				sb.AppendLine( ItemDat.ItemDat.GetItemDataAsHtml( Version, Items, item, Skills, Enemies, Recipes, Locations, StringDic, InGameIdDict ) );
-				sb.AppendLine( "<tr><td colspan=\"5\"><hr></td></tr>" );
-			}
-			sb.AppendLine( "</table></body></html>" );
-
-			string html = sb.ToString();
-			html = VesperiaUtil.RemoveTags( html );
-			html = html.Replace( "\x06(STA)", "<img src=\"text-icons/" + Version.ToString() + "/button-Start.png\" height=\"16\">" );
-			html = html.Replace( "\x06(L3)", "<img src=\"text-icons/" + Version.ToString() + "/ls-push.png\" height=\"16\">" );
-			html = html.Replace( "\x06(ST1)", "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST2)", "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST3)", "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST4)", "<img src=\"text-icons/icon-status-04.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST5)", "<img src=\"text-icons/icon-status-05.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST6)", "<img src=\"text-icons/icon-status-06.png\" height=\"16\" width=\"16\">" );
-			html = html.Replace( "\x06(ST7)", "<img src=\"text-icons/icon-status-07.png\" height=\"16\" width=\"16\">" );
-			return html;
+			sb.AppendLine( "</head>" );
 		}
-		public string GenerateHtmlEnemies() {
-			var sb = new StringBuilder();
-			sb.AppendLine( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" );
-			sb.AppendLine( "<title>Tales of Vesperia (" + Version.ToString() + ") - Enemies</title>" );
-			sb.AppendLine( "<style>" );
-			sb.AppendLine( "body { background-color: #68504F; color: #EFD1AE; font-size: 16; }" );
-			sb.AppendLine( ".itemname { color: #FFEBD2; font-size: 20; }" );
-			sb.AppendLine( "</style>" );
-			sb.AppendLine( "</head><body>" );
-			foreach ( var enemy in Enemies.EnemyList ) {
-				sb.AppendLine( enemy.GetDataAsHtml( Items, Locations, StringDic, InGameIdDict ) );
-				sb.AppendLine( "<hr>" );
-			}
-			sb.AppendLine( "</body></html>" );
-
-			string html = sb.ToString();
-			return html;
+		public void AddMenuBar( StringBuilder sb ) {
+			sb.AppendLine( "<div>" );
+			sb.AppendLine( "<a href=\"artes-" + Version + ".html\"><img src=\"menu-icons/main-01.png\" title=\"Artes\"></a>" );
+			//sb.AppendLine( "<a href=\"equip-" + Version + ".html\"><img src=\"menu-icons/main-02.png\" title=\"Equipment\"></a>" );
+			sb.AppendLine( "<a href=\"items-" + Version + ".html\"><img src=\"menu-icons/main-03.png\" title=\"Items\"></a>" );
+			sb.AppendLine( "<a href=\"skills-" + Version + ".html\"><img src=\"menu-icons/main-04.png\" title=\"Skills\"></a>" );
+			sb.AppendLine( "<a href=\"strategy-" + Version + ".html\"><img src=\"menu-icons/main-05.png\" title=\"Strategy\"></a>" );
+			sb.AppendLine( "<a href=\"recipes-" + Version + ".html\"><img src=\"menu-icons/main-06.png\" title=\"Recipes\"></a>" );
+			sb.AppendLine( "<a href=\"titles-" + Version + ".html\"><img src=\"menu-icons/main-07.png\" title=\"Titles\"></a>" );
+			//sb.AppendLine( "<img src=\"menu-icons/main-08.png\" title=\"Library\">" );
+			sb.AppendLine( "<a href=\"synopsis-" + Version + ".html\"><img src=\"menu-icons/sub-09.png\" title=\"Synopsis\"></a>" );
+			sb.AppendLine( "<a href=\"battlebook-" + Version + ".html\"><img src=\"menu-icons/sub-14.png\" title=\"Battle Book\"></a>" );
+			sb.AppendLine( "<a href=\"enemies-" + Version + ".html\"><img src=\"menu-icons/sub-13.png\" title=\"Monster Book\"></a>" );
+			//sb.AppendLine( "<a href=\"items-" + Version + ".html\"><img src=\"menu-icons/sub-11.png\" title=\"Collector's Book\"></a>" );
+			sb.AppendLine( "<a href=\"locations-" + Version + ".html\"><img src=\"menu-icons/sub-10.png\" title=\"World Map\"></a>" );
+			sb.AppendLine( "<a href=\"records-" + Version + ".html\"><img src=\"menu-icons/sub-08.png\" title=\"Records\"></a>" );
+			//sb.AppendLine( "<img src=\"menu-icons/main-09.png\" title=\"Save & Load\">" );
+			//sb.AppendLine( "<img src=\"menu-icons/sub-06.png\" title=\"Save\">" );
+			//sb.AppendLine( "<img src=\"menu-icons/sub-05.png\" title=\"Load\">" );
+			sb.AppendLine( "<a href=\"settings-" + Version + ".html\"><img src=\"menu-icons/sub-07.png\" title=\"Settings\"></a>" );
+			sb.AppendLine( "</div>" );
+			sb.AppendLine( "<hr>" );
+		}
+		public string FixInGameStrings( StringBuilder sb ) {
+			sb.Replace( "\x06(STA)", "<img src=\"text-icons/" + Version.ToString() + "/button-Start.png\" height=\"16\">" );
+			sb.Replace( "\x06(L3)", "<img src=\"text-icons/" + Version.ToString() + "/ls-push.png\" height=\"16\">" );
+			sb.Replace( "\x06(ST1)", "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" );
+			sb.Replace( "\x06(ST2)", "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" );
+			sb.Replace( "\x06(ST3)", "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" );
+			sb.Replace( "\x06(ST4)", "<img src=\"text-icons/icon-status-04.png\" height=\"16\" width=\"16\">" );
+			sb.Replace( "\x06(ST5)", "<img src=\"text-icons/icon-status-05.png\" height=\"16\" width=\"16\">" );
+			sb.Replace( "\x06(ST6)", "<img src=\"text-icons/icon-status-06.png\" height=\"16\" width=\"16\">" );
+			sb.Replace( "\x06(ST7)", "<img src=\"text-icons/icon-status-07.png\" height=\"16\" width=\"16\">" );
+			return VesperiaUtil.RemoveTags( sb.ToString() );
 		}
 	}
 }

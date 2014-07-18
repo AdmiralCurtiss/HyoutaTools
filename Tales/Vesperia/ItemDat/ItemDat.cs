@@ -356,7 +356,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 						if ( recipeId != 0 ) {
 							var recipe = Recipes.RecipeList[recipeId];
 							var recipeNameEntry = dict[recipe.NameStringDicID];
-							sb.Append( recipeNameEntry.StringEngOrJpn + "<br>" );
+							sb.Append( "<a href=\"recipes-" + version + ".html#recipe" + recipe + "\">" + recipeNameEntry.StringEngOrJpn + "</a><br>" );
 						}
 					}
 
@@ -455,8 +455,10 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							var skillDescEntry = dict[skill.DescStringDicID];
 							string skillName = String.IsNullOrEmpty( skillNameEntry.StringENG ) ? skillNameEntry.StringJPN : skillNameEntry.StringENG;
 							string skillCat = "<img src=\"skill-icons/category-" + skill.Category.ToString() + ".png\" height=\"16\" width=\"16\">";
-							sb.Append( skillCat + skillName );
-							sb.Append( ", " + item.Data[(int)ItemData.Skill1Metadata + i * 2] + "<br>" );
+							sb.Append( skillCat );
+							sb.Append( "<a href=\"skills-" + version + ".html#skill" + skill.ID + "\">" );
+							sb.Append( skillName );
+							sb.Append( "</a>, " + item.Data[(int)ItemData.Skill1Metadata + i * 2] + "<br>" );
 						}
 					}
 					sb.Append( "</td>" );
@@ -472,9 +474,13 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			if ( item.Data[(int)ItemData.BuyableIn1] > 0 || item.Data[(int)ItemData.BuyableIn2] > 0 || item.Data[(int)ItemData.BuyableIn3] > 0 ) {
 				//sb.Append( "<br>Available at shops in:" );
-				if ( item.Data[(int)ItemData.BuyableIn1] > 0 ) { sb.Append( "<br>" + dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1]].DefaultStringDicID].StringEngOrJpn ); }
-				if ( item.Data[(int)ItemData.BuyableIn2] > 0 ) { sb.Append( "<br>" + dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn2]].DefaultStringDicID].StringEngOrJpn ); }
-				if ( item.Data[(int)ItemData.BuyableIn3] > 0 ) { sb.Append( "<br>" + dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn3]].DefaultStringDicID].StringEngOrJpn ); }
+				for ( int i = 0; i < 3; ++i ) {
+					if ( item.Data[(int)ItemData.BuyableIn1 + i] > 0 ) {
+						var loc = Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1 + i]];
+						sb.Append( "<br><a href=\"locations-" + version + ".html#location" + loc.LocationID + "\">" );
+						sb.Append( dict[loc.DefaultStringDicID].StringEngOrJpn + "</a>" );
+					}
+				}
 				sb.AppendLine();
 			}
 
@@ -515,7 +521,8 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							var enemyNameEntry = dict[enemy.NameStringDicID];
 							string enemyName = String.IsNullOrEmpty( enemyNameEntry.StringENG ) ? enemyNameEntry.StringJPN : enemyNameEntry.StringENG;
 							sb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\"><br>" );
-							sb.Append( enemyName + "<br>" + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
+							sb.Append( "<a href=\"enemies-" + version + ".html#enemy" + enemy.InGameID + "\">" );
+							sb.Append( enemyName + "</a><br>" + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
 							sb.Append( "</td>" );
 							if ( cellCount % 4 == 3 ) {
 								sb.Append( "</tr>" );

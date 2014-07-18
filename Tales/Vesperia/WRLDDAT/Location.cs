@@ -44,5 +44,33 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 		public override string ToString() {
 			return RefStrings[0];
 		}
+
+		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			StringBuilder sb = new StringBuilder();
+
+			string def = inGameIdDict[DefaultStringDicID].StringEngOrJpn;
+
+			sb.Append( "<div id=\"location" + LocationID + "\">" );
+			//sb.Append( def + "<br>" );
+			int validLocationCount = 0;
+			for ( int i = 0; i < 4; ++i ) {
+				if ( inGameIdDict[DescStringDicIDs[i]].StringEngOrJpn != "" ) {
+					validLocationCount++;
+				}
+			}
+			sb.Append( "<table><tr>" );
+			for ( int i = 0; i < validLocationCount; ++i ) {
+				sb.Append( "<td>" );
+				sb.Append( inGameIdDict[NameStringDicIDs[i]].StringEngOrJpn + "<br>" );
+				sb.Append( inGameIdDict[DescStringDicIDs[i]].StringEngOrJpn.Replace( "\n", "<br>" ) + "<br>" );
+				if ( RefStrings[i] != "" ) {
+					sb.Append( "<img src=\"worldmap/U_" + RefStrings[i] + ".png\"><br>" );
+				}
+				sb.Append( "</td>" );
+			}
+			sb.Append( "</tr></table>" );
+			sb.Append( "</div>" );
+			return sb.ToString();
+		}
 	}
 }
