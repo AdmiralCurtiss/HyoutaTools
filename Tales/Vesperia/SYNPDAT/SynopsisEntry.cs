@@ -36,18 +36,31 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 
-			string[] text = inGameIdDict[TextStringDicId].StringEngOrJpn.Replace( "\n", "<br>" ).Split( '\f' );
+			string[] textEng = inGameIdDict[TextStringDicId].StringENG.Replace( "\n", "<br>" ).Split( '\f' );
+			string[] textJpn = inGameIdDict[TextStringDicId].StringJPN.Replace( "\n", "<br>" ).Split( '\f' );
 
-			sb.Append( "<table class=\"synopsis\"><tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + text.Length + "\">" );
+			sb.Append( "<table class=\"synopsis\">" );
+			sb.Append( "<tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + textJpn.Length + "\">" );
 			if ( version == GameVersion.PS3 ) {
 				sb.Append( "<img src=\"synopsis/U_" + RefString1 + ".png\"><br>" );
 			}
-			sb.Append( inGameIdDict[NameStringDicId].StringEngOrJpn + "</td></tr><tr>" );
-
-			foreach ( string s in text ) {
+			sb.Append( inGameIdDict[NameStringDicId].StringJPN + "</td></tr><tr>" );
+			foreach ( string s in textJpn ) {
 				sb.Append( "<td>" + s + "</td>" );
 			}
-			sb.Append( "</tr></table>" );
+			sb.Append( "</tr>" );
+			sb.Append( "</table>" );
+			sb.Append( "<br>" );
+
+			sb.Append( "<table class=\"synopsis\">" );
+			sb.Append( "<tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + textEng.Length + "\">" );
+			sb.Append( inGameIdDict[NameStringDicId].StringENG + "</td></tr><tr>" );
+			foreach ( string s in textEng ) {
+				sb.Append( "<td>" + s + "</td>" );
+			}
+			sb.Append( "</tr>" );
+			sb.Append( "</table>" );
+
 			return sb.ToString();
 		}
 	}

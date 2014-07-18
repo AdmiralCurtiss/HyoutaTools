@@ -8,7 +8,7 @@ using System.IO;
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateWebsite {
 		public static int Generate( List<string> args ) {
-			string dir = @"e:\__tov\";
+			string dir = @"d:\Dropbox\ToV\website\";
 
 
 			var site = new GenerateWebsite();
@@ -22,6 +22,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\WORLDDATA.BIN" );
 			site.Synopsis = new SYNPDAT.SYNPDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\SYNOPSISDATA.BIN" );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
+
+			// copy over Japanese stuff into UK StringDic
+			var StringDicUs = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\360\string_dic_us.so" ), true );
+			var IdDictUs = StringDicUs.GenerateInGameIdDictionary();
+
+			foreach ( var kvp in IdDictUs ) {
+				site.InGameIdDict[kvp.Key].StringJPN = kvp.Value.StringJPN;
+			}
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-" + site.Version + ".html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
@@ -167,7 +175,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( ".equip { text-align: right; float: right; }" );
 			sb.AppendLine( ".special { text-align: right; float: right; }" );
 			sb.AppendLine( "table, tr, td, th { padding: 0px 4px 0px 0px; border-spacing: 0px; }" );
-			sb.AppendLine( "td { vertical-align: top; }" );
+			sb.AppendLine( "td, td > a { vertical-align: top; }" );
 			sb.AppendLine( "a:link, a:visited, a:hover, a:active { color: #FFEBD2; }" );
 			sb.AppendLine( "table.element { display: inline-block; }" );
 			sb.AppendLine( "table.element td { text-align: center; }" );

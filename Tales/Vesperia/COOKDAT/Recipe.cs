@@ -123,9 +123,13 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			sb.Append( "<table><tr><td>" );
 			sb.Append( "<img src=\"recipes/U_" + RefString + ".png\">" );
 			sb.Append( "</td><td>" );
-			sb.Append( "<span class=\"itemname\">" + inGameIdDict[NameStringDicID].StringEngOrJpn + "</span><br>" );
-			sb.Append( inGameIdDict[DescriptionStringDicID].StringEngOrJpn.Replace( "\n", "<br>" ) + "<br>" );
-			sb.Append( "<br>" + inGameIdDict[EffectStringDicID].StringEngOrJpn + "<br>" );
+			sb.Append( "<span class=\"itemname\">" + VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true ) + "</span><br>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescriptionStringDicID].StringJPN, true ).Replace( "\n", "<br>" ) + "<br>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[EffectStringDicID].StringJPN, true ) + "<br>" );
+			sb.Append( "<br>" );
+			sb.Append( "<span class=\"itemname\">" + inGameIdDict[NameStringDicID].StringENG + "</span><br>" );
+			sb.Append( inGameIdDict[DescriptionStringDicID].StringENG.Replace( "\n", "<br>" ) + "<br>" );
+			sb.Append( inGameIdDict[EffectStringDicID].StringENG + "<br>" );
 
 			sb.Append( "</td><td>" );
 			for ( int i = 0; i < IngredientGroups.Length; ++i ) {
@@ -148,7 +152,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 
 			sb.Append( "</td><td>" );
 			if ( HP > 0 ) { sb.Append( "HP Heal: " + HP + "%<br>" ); }
-			if ( TP > 0 ) { sb.Append( "HP Heal: " + TP + "%<br>" ); }
+			if ( TP > 0 ) { sb.Append( "TP Heal: " + TP + "%<br>" ); }
 
 			if ( PhysicalAilmentHeal > 0 || DeathHeal > 0 ) {
 				sb.Append( "Cures Ailments: " );
@@ -164,23 +168,29 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			}
 
 			if ( StatValue > 0 ) {
-				sb.Append( "Stat Type: " + StatType + "<br>" );
+				//sb.Append( "Stat Type: " + StatType + "<br>" );
 				switch ( StatType ) {
-					case 1: sb.Append( "PATK" ); break;
-					case 2: sb.Append( "PDEF" ); break;
-					case 3: sb.Append( "MATK" ); break;
-					case 4: sb.Append( "MDEF" ); break;
+					case 1: sb.Append( "P. ATK" ); break;
+					case 2: sb.Append( "P. DEF" ); break;
+					case 3: sb.Append( "M. ATK" ); break;
+					case 4: sb.Append( "M. DEF" ); break;
 					case 5: sb.Append( "AGL" ); break;
-					case 11: sb.Append( "Over Limit" ); break;
+					case 11: sb.Append( "Over Limit gauge increases<br>" ); break;
 				}
-				sb.Append( " Increase: " + StatValue + "%<br>" );
-				sb.Append( "Duration: " + StatTime + " seconds<br>" );
+				if ( StatType != 11 ) {
+					sb.Append( " +" + StatValue + ( StatType < 5 ? "%" : "" ) + "<br>" );
+					sb.Append( "Duration: " + StatTime + " seconds<br>" );
+				}
 			}
 
 			for ( int i = 0; i < RecipeCreationCharacter.Length; ++i ) {
 				if ( RecipeCreationCharacter[i] != 0 ) {
+					var otherRecipe = recipes.RecipeList[(int)RecipeCreationRecipe[i]];
+					sb.Append( "Creates <a href=\"#recipe" + otherRecipe.ID + "\">" );
+					sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpn );
+					sb.Append( "</a> when cooked by " );
 					Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ) );
-					sb.Append( " - " + inGameIdDict[recipes.RecipeList[(int)RecipeCreationRecipe[i]].NameStringDicID].StringEngOrJpn + "<br>" );
+					sb.Append( ".<br>" );
 				}
 			}
 

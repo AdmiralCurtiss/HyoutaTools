@@ -255,17 +255,29 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			}
 
 
-			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 			var nameEntry = dict[item.NamePointer];
+			var descEntry = dict[item.DescriptionPointer];
+
+			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( String.IsNullOrEmpty( nameEntry.StringENG ) ? nameEntry.StringJPN : nameEntry.StringENG );
+			sb.Append( VesperiaUtil.RemoveTags( nameEntry.StringJPN, true ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
 			sb.Append( "<span class=\"itemdesc\">" );
-			var descEntry = dict[item.DescriptionPointer];
-			string desc = String.IsNullOrEmpty( descEntry.StringENG ) ? descEntry.StringJPN : descEntry.StringENG;
-			sb.Append( desc.Replace( "\n", "<br>" ) );
+			sb.Append( VesperiaUtil.RemoveTags( descEntry.StringJPN, true ).Replace( "\n", "<br>" ) );
 			sb.Append( "</span>" );
+			sb.Append( "<br>" );
+			sb.Append( "<br>" );
+
+			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
+			sb.Append( "<span class=\"itemname\">" );
+			sb.Append( nameEntry.StringENG );
+			sb.Append( "</span>" );
+			sb.Append( "<br>" );
+			sb.Append( "<span class=\"itemdesc\">" );
+			sb.Append( descEntry.StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( "</span>" );
+
 			sb.Append( "<span class=\"special\">" );
 			if ( item.Data[177] > 0 ) { sb.Append( "Usable in battle" ); };
 			if ( item.Data[178] == 0 ) { sb.Append( "Not in Collector's Book" ); }
