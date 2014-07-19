@@ -219,6 +219,12 @@
     <Compile Include="Tales\Vesperia\T8BTTA\StrategyOption.cs" />
     <Compile Include="Tales\Vesperia\T8BTTA\StrategySet.cs" />
     <Compile Include="Tales\Vesperia\T8BTTA\T8BTTA.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\FloorInfo.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\MapTile.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMA.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMM.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMT.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\TreasureInfo.cs" />
     <Compile Include="Tales\Vesperia\To8chtx\ChatFile.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />
