@@ -61,8 +61,10 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 			StringBuilder sb = new StringBuilder();
 			sb.Append( "<div id=\"skill" + ID + "\">" );
 			sb.Append( RefString + "<br>" );
-			sb.Append( inGameIdDict[NameStringDicID].StringEngOrJpn + "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringEngOrJpn + "<br>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true, true ) + "<br>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) + "<br>" );
+			sb.Append( inGameIdDict[NameStringDicID].StringENG + "<br>" );
+			sb.Append( inGameIdDict[DescStringDicID].StringENG.Replace( "\n", "<br>" ) + "<br>" );
 			sb.Append( "Equip Cost: " + EquipCost + "<br>" );
 			sb.Append( "Required LP to learn: " + LearnCost + "<br>" );
 			sb.Append( "Category: " + Category + "<br>" );

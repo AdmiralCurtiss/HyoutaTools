@@ -130,7 +130,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 
 			var enemyNameEntry = inGameIdDict[NameStringDicID];
 			sb.Append( "<img src=\"monster-icons/44px/monster-" + IconID.ToString( "D3" ) + ".png\" title=\"" + RefString + "\"><br>" );
-			sb.Append( "<span class=\"itemname\">" + enemyNameEntry.StringEngOrJpn + "</span> / Category: " + Category + "<br>" );
+			sb.Append( "<span class=\"itemname\">" + VesperiaUtil.RemoveTags( enemyNameEntry.StringJPN, true, true ) + "</span><br>" );
+			sb.Append( "<span class=\"itemname\">" + enemyNameEntry.StringENG + "</span><br>" );
+			//sb.Append( " / Category: " + Category + "<br>" );
 
 			sb.Append( "Level: " + Level + "<br>" );
 			sb.Append( "HP: " + HP + "<br>" );

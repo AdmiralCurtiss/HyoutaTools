@@ -27,9 +27,9 @@ namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
-			sb.Append( inGameIdDict[NameStringDicID].StringJPN );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true, true ) );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringJPN.Replace( "\n", "<br>" ) );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) );
 			sb.Append( "<br>" );
 			sb.Append( "<br>" );
 			sb.Append( inGameIdDict[NameStringDicID].StringENG );

@@ -37,14 +37,14 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 			StringBuilder sb = new StringBuilder();
 
 			string[] textEng = inGameIdDict[TextStringDicId].StringENG.Replace( "\n", "<br>" ).Split( '\f' );
-			string[] textJpn = inGameIdDict[TextStringDicId].StringJPN.Replace( "\n", "<br>" ).Split( '\f' );
+			string[] textJpn = VesperiaUtil.RemoveTags( inGameIdDict[TextStringDicId].StringJPN, true, true ).Replace( "\n", "<br>" ).Split( '\f' );
 
 			sb.Append( "<table class=\"synopsis\">" );
 			sb.Append( "<tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + textJpn.Length + "\">" );
 			if ( version == GameVersion.PS3 ) {
-				sb.Append( "<img src=\"synopsis/U_" + RefString1 + ".png\"><br>" );
+				sb.Append( "<img src=\"synopsis/U_" + RefString1 + ".png\"><br><br>" );
 			}
-			sb.Append( inGameIdDict[NameStringDicId].StringJPN + "</td></tr><tr>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicId].StringJPN, true, true ) + "</td></tr><tr>" );
 			foreach ( string s in textJpn ) {
 				sb.Append( "<td>" + s + "</td>" );
 			}

@@ -59,8 +59,10 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			StringBuilder sb = new StringBuilder();
 			sb.Append( "<div id=\"arte" + ID + "\">" );
 			sb.Append( RefString + "<br>" );
-			sb.Append( inGameIdDict[NameStringDicId].StringEngOrJpn + "<br>" );
-			sb.Append( inGameIdDict[DescStringDicId].StringEngOrJpn + "<br>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicId].StringJPN, true, true ) + "<br>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicId].StringJPN, true, true ) + "<br>" );
+			sb.Append( inGameIdDict[NameStringDicId].StringENG + "<br>" );
+			sb.Append( inGameIdDict[DescStringDicId].StringENG + "<br>" );
 			sb.Append( Type + "<br>" );
 			sb.Append( "</div>" );
 			return sb.ToString();

@@ -48,7 +48,8 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 
-			string def = inGameIdDict[DefaultStringDicID].StringEngOrJpn;
+			string defJpn = VesperiaUtil.RemoveTags( inGameIdDict[DefaultStringDicID].StringJPN, true, true );
+			string defEng = inGameIdDict[DefaultStringDicID].StringENG;
 
 			sb.Append( "<div id=\"location" + LocationID + "\">" );
 			//sb.Append( def + "<br>" );
@@ -61,8 +62,10 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 			sb.Append( "<table><tr>" );
 			for ( int i = 0; i < validLocationCount; ++i ) {
 				sb.Append( "<td>" );
-				sb.Append( inGameIdDict[NameStringDicIDs[i]].StringEngOrJpn + "<br>" );
-				sb.Append( inGameIdDict[DescStringDicIDs[i]].StringEngOrJpn.Replace( "\n", "<br>" ) + "<br>" );
+				sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicIDs[i]].StringJPN, true, true ) + "<br>" );
+				sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicIDs[i]].StringJPN, true, true ).Replace( "\n", "<br>" ) + "<br>" );
+				sb.Append( inGameIdDict[NameStringDicIDs[i]].StringENG + "<br>" );
+				sb.Append( inGameIdDict[DescStringDicIDs[i]].StringENG.Replace( "\n", "<br>" ) + "<br>" );
 				if ( RefStrings[i] != "" ) {
 					sb.Append( "<img src=\"worldmap/U_" + RefStrings[i] + ".png\"><br>" );
 				}

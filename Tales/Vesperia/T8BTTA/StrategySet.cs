@@ -12,7 +12,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 		public string RefString;
 		public StrategySet( System.IO.Stream stream, uint refStringStart ) {
 			uint entrySize = stream.PeekUInt32().SwapEndian();
-			
+
 			Data = new uint[entrySize / 4];
 			for ( int i = 0; i < Data.Length; ++i ) {
 				Data[i] = stream.ReadUInt32().SwapEndian();
@@ -36,9 +36,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 			StringBuilder sb = new StringBuilder();
 			sb.Append( RefString );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[NameStringDicID].StringJPN );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true, true ) );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringJPN.Replace( "\n", "<br>" ) );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) );
 			sb.Append( "<br>" );
 			sb.Append( "<br>" );
 			sb.Append( inGameIdDict[NameStringDicID].StringENG );

@@ -124,8 +124,8 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			sb.Append( "<img src=\"recipes/U_" + RefString + ".png\">" );
 			sb.Append( "</td><td>" );
 			sb.Append( "<span class=\"itemname\">" + VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true ) + "</span><br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescriptionStringDicID].StringJPN, true ).Replace( "\n", "<br>" ) + "<br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[EffectStringDicID].StringJPN, true ) + "<br>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescriptionStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) + "<br>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[EffectStringDicID].StringJPN, true, true ) + "<br>" );
 			sb.Append( "<br>" );
 			sb.Append( "<span class=\"itemname\">" + inGameIdDict[NameStringDicID].StringENG + "</span><br>" );
 			sb.Append( inGameIdDict[DescriptionStringDicID].StringENG.Replace( "\n", "<br>" ) + "<br>" );

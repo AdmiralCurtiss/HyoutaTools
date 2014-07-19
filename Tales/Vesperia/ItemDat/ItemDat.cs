@@ -260,11 +260,11 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( VesperiaUtil.RemoveTags( nameEntry.StringJPN, true ) );
+			sb.Append( VesperiaUtil.RemoveTags( nameEntry.StringJPN, true, true ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
 			sb.Append( "<span class=\"itemdesc\">" );
-			sb.Append( VesperiaUtil.RemoveTags( descEntry.StringJPN, true ).Replace( "\n", "<br>" ) );
+			sb.Append( VesperiaUtil.RemoveTags( descEntry.StringJPN, true, true ).Replace( "\n", "<br>" ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
 			sb.Append( "<br>" );

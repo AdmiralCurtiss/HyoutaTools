@@ -9,7 +9,7 @@ namespace HyoutaTools.Tales.Vesperia {
 		None, X360, PS3
 	}
 	public class VesperiaUtil {
-		public static String RemoveTags( String s, bool useJapaneseNames = false ) {
+		public static String RemoveTags( String s, bool useJapaneseNames = false, bool replaceFuriganaWithHtmlRuby = false ) {
 			s = s.Replace( "''", "'" );
 			if ( useJapaneseNames ) {
 				s = s.Replace( "\x04(YUR)", "ユーリ" );
@@ -39,10 +39,35 @@ namespace HyoutaTools.Tales.Vesperia {
 				s = s.Replace( "\x04(BAU)", "Ba'ul" );
 			}
 			s = s.Replace( ""/*0xFF*/, "\n\n" );
-			s = s.Replace( "\r", "" ); // technically I think \r is used for Furigana but I haven't bothered displaying those properly.
+			if ( replaceFuriganaWithHtmlRuby ) {
+				s = ReplaceFuriganaWithHtmlRuby( s );
+			}
 			s = Regex.Replace( s, "\t[(][A-Za-z0-9_]+[)]", "" ); // audio/voice commands
 			s = Regex.Replace( s, "\x03[(][0-9]+[)]", "" ); // color commands
 			return s;
+		}
+
+		public static string ReplaceFuriganaWithHtmlRuby( string str ) {
+			while ( str.Contains( '\r' ) ) {
+				int furiStart = str.IndexOf( '\r' );
+				string textFromFuriStart = str.Substring( furiStart );
+				int furiEnd = furiStart + textFromFuriStart.IndexOf( ')' );
+				string furiDataString = str.Substring( furiStart + 2, furiEnd - furiStart - 2 );
+
+				string[] furiData = furiDataString.Split( ',' );
+				int kanjiLength = Int32.Parse( furiData[0] );
+				string furigana = furiData[1];
+
+				string textPreFurigana = str.Substring( 0, furiStart - kanjiLength );
+				string textKanji = str.Substring( furiStart - kanjiLength, kanjiLength );
+				string textPostFurigana = str.Substring( furiEnd + 1 );
+
+				str =
+					textPreFurigana + "<ruby>" + textKanji + "<rp>（</rp><rt>" +
+					furigana + "</rt><rp>）</rp></ruby>" + textPostFurigana;
+
+			}
+			return str;
 		}
 
 		private static String[][] InsaneNames = null;
