@@ -21,6 +21,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Recipes = new COOKDAT.COOKDAT( @"d:\Dropbox\ToV\360\cook.svo.ext\COOKDATA.BIN" );
 			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\WORLDDATA.BIN" );
 			site.Synopsis = new SYNPDAT.SYNPDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\SYNOPSISDATA.BIN" );
+			site.Titles = new FAMEDAT.FAMEDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\FAMEDATA.BIN" );
+			site.GradeShop = new T8BTGR.T8BTGR( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0016.ext\ALL.0000" );
+			site.BattleBook = new BTLBDAT.BTLBDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\BATTLEBOOKDATA.BIN" );
+			site.Strategy = new T8BTTA.T8BTTA( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0011.ext\ALL.0000" );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
 			// copy over Japanese stuff into UK StringDic
@@ -38,6 +42,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "synopsis-" + site.Version + ".html" ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "recipes-" + site.Version + ".html" ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "locations-" + site.Version + ".html" ), site.GenerateHtmlLocations(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "strategy-" + site.Version + ".html" ), site.GenerateHtmlStrategy(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "titles-" + site.Version + ".html" ), site.GenerateHtmlTitles(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "battlebook-" + site.Version + ".html" ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 
 			site.Version = GameVersion.PS3;
 			site.Items = new ItemDat.ItemDat( @"d:\Dropbox\ToV\PS3\orig\item.svo.ext\ITEM.DAT" );
@@ -48,6 +57,17 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Recipes = new COOKDAT.COOKDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\COOKDATA.BIN" );
 			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\WORLDDATA.BIN" );
 			site.Synopsis = new SYNPDAT.SYNPDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\SYNOPSISDATA.BIN" );
+			site.Titles = new FAMEDAT.FAMEDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\FAMEDATA.BIN" );
+			site.GradeShop = new T8BTGR.T8BTGR( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0016.ext\ALL.0000" );
+			site.BattleBook = new BTLBDAT.BTLBDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\BATTLEBOOKDATA.BIN" );
+			site.Strategy = new T8BTTA.T8BTTA( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0011.ext\ALL.0000" );
+			site.NecropolisFloors = new T8BTXTM.T8BTXTMA( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0021.ext\ALL.0000" );
+			site.NecropolisTreasures = new T8BTXTM.T8BTXTMT( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0022.ext\ALL.0000" );
+			var filenames = System.IO.Directory.GetFiles( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0023.ext\" );
+			site.NecropolisMaps = new Dictionary<string, T8BTXTM.T8BTXTMM>( filenames.Length );
+			for ( int i = 0; i < filenames.Length; ++i ) {
+				site.NecropolisMaps.Add( System.IO.Path.GetFileNameWithoutExtension( filenames[i] ), new T8BTXTM.T8BTXTMM( filenames[i] ) );
+			}
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
@@ -57,6 +77,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "synopsis-" + site.Version + ".html" ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "recipes-" + site.Version + ".html" ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "locations-" + site.Version + ".html" ), site.GenerateHtmlLocations(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "strategy-" + site.Version + ".html" ), site.GenerateHtmlStrategy(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "titles-" + site.Version + ".html" ), site.GenerateHtmlTitles(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "battlebook-" + site.Version + ".html" ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis(), Encoding.UTF8 );
 
 			return 0;
 		}
@@ -70,6 +96,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public COOKDAT.COOKDAT Recipes;
 		public WRLDDAT.WRLDDAT Locations;
 		public SYNPDAT.SYNPDAT Synopsis;
+		public FAMEDAT.FAMEDAT Titles;
+		public T8BTGR.T8BTGR GradeShop;
+		public BTLBDAT.BTLBDAT BattleBook;
+		public T8BTTA.T8BTTA Strategy;
+
+		public T8BTXTM.T8BTXTMA NecropolisFloors;
+		public T8BTXTM.T8BTXTMT NecropolisTreasures;
+		public Dictionary<string, T8BTXTM.T8BTXTMM> NecropolisMaps;
 
 		public Dictionary<uint, TSS.TSSEntry> InGameIdDict;
 
@@ -165,6 +199,84 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
 		}
+		public string GenerateHtmlStrategy() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Strategy" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			foreach ( var entry in Strategy.StrategySetList ) {
+				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.Append( "<hr>" );
+			}
+			foreach ( var entry in Strategy.StrategyOptionList ) {
+				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.Append( "<hr>" );
+			}
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlTitles() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Titles" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			foreach ( var entry in Titles.TitleList ) {
+				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.Append( "<hr>" );
+			}
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlBattleBook() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Battle Book" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+
+			foreach ( var entry in BattleBook.BattleBookEntryList ) {
+				try {
+					sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				} catch ( KeyNotFoundException ) {
+					continue;
+				}
+				sb.Append( "<hr>" );
+			}
+
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlRecords() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Records" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlSettings() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Settings" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlNecropolis() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Necropolis of Nostalgia" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+
+			foreach ( var map in NecropolisMaps ) {
+				sb.Append( "<hr>" );
+				sb.Append( map.Key );
+				sb.Append( map.Value.GetDataAsHtml() );
+			}
+
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+
 		public void AddHeader( StringBuilder sb, string name ) {
 			sb.AppendLine( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" );
 			sb.AppendLine( "<title>Tales of Vesperia (" + Version.ToString() + ") - " + name + "</title>" );
@@ -205,6 +317,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			//sb.AppendLine( "<img src=\"menu-icons/sub-06.png\" title=\"Save\">" );
 			//sb.AppendLine( "<img src=\"menu-icons/sub-05.png\" title=\"Load\">" );
 			sb.AppendLine( "<a href=\"settings-" + Version + ".html\"><img src=\"menu-icons/sub-07.png\" title=\"Settings\"></a>" );
+			if ( Version == GameVersion.PS3 ) {
+				sb.AppendLine( "<a href=\"necropolis-" + Version + ".html\"><img src=\"menu-icons/weather-7-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
+			}
 			sb.AppendLine( "</div>" );
 			sb.AppendLine( "<hr>" );
 		}

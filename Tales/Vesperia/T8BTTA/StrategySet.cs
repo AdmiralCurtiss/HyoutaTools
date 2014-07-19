@@ -31,5 +31,22 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 		public override string ToString() {
 			return RefString;
 		}
+
+		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			StringBuilder sb = new StringBuilder();
+			sb.Append( RefString );
+			sb.Append( "<br>" );
+			sb.Append( inGameIdDict[NameStringDicID].StringJPN );
+			sb.Append( "<br>" );
+			sb.Append( inGameIdDict[DescStringDicID].StringJPN.Replace( "\n", "<br>" ) );
+			sb.Append( "<br>" );
+			sb.Append( "<br>" );
+			sb.Append( inGameIdDict[NameStringDicID].StringENG );
+			sb.Append( "<br>" );
+			sb.Append( inGameIdDict[DescStringDicID].StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( "<br>" );
+			sb.Append( "<br>" );
+			return sb.ToString();
+		}
 	}
 }

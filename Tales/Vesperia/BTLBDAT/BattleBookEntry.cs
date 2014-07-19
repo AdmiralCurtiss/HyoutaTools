@@ -15,5 +15,20 @@ namespace HyoutaTools.Tales.Vesperia.BTLBDAT {
 			TextStringDicId = stream.ReadUInt32().SwapEndian();
 			stream.DiscardBytes( 0x4 );
 		}
+
+		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			StringBuilder sb = new StringBuilder();
+			sb.Append( inGameIdDict[NameStringDicId].StringJPN );
+			sb.Append( "<br>" );
+			sb.Append( inGameIdDict[TextStringDicId].StringJPN.Replace( "\n", "<br>" ) );
+			sb.Append( "<br>" );
+			sb.Append( "<br>" );
+			sb.Append( inGameIdDict[NameStringDicId].StringENG );
+			sb.Append( "<br>" );
+			sb.Append( inGameIdDict[TextStringDicId].StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( "<br>" );
+			sb.Append( "<br>" );
+			return sb.ToString();
+		}
 	}
 }
