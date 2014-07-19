@@ -216,6 +216,9 @@
     <Compile Include="Tales\Vesperia\T8BTMA\T8BTMA.cs" />
     <Compile Include="Tales\Vesperia\T8BTSK\Skill.cs" />
     <Compile Include="Tales\Vesperia\T8BTSK\T8BTSK.cs" />
+    <Compile Include="Tales\Vesperia\T8BTTA\StrategyOption.cs" />
+    <Compile Include="Tales\Vesperia\T8BTTA\StrategySet.cs" />
+    <Compile Include="Tales\Vesperia\T8BTTA\T8BTTA.cs" />
     <Compile Include="Tales\Vesperia\To8chtx\ChatFile.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />
