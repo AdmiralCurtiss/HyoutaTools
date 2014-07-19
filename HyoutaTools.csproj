@@ -182,6 +182,8 @@
       <DependentUpon>CreditsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Tales\Vesperia\Credits\RunCreditsViewer.cs" />
+    <Compile Include="Tales\Vesperia\FAMEDAT\FAMEDAT.cs" />
+    <Compile Include="Tales\Vesperia\FAMEDAT\Title.cs" />
     <Compile Include="Tales\Vesperia\Font\FontInfo.cs" />
     <Compile Include="Tales\Vesperia\Font\Viewer\FontViewer.cs">
       <SubType>Form</SubType>
