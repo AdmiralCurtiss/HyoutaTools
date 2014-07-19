@@ -209,6 +209,8 @@
     <Compile Include="Tales\Vesperia\SYNPDAT\SYNPDAT.cs" />
     <Compile Include="Tales\Vesperia\T8BTEMST\Enemy.cs" />
     <Compile Include="Tales\Vesperia\T8BTEMST\T8BTEMST.cs" />
+    <Compile Include="Tales\Vesperia\T8BTGR\GradeShopEntry.cs" />
+    <Compile Include="Tales\Vesperia\T8BTGR\T8BTGR.cs" />
     <Compile Include="Tales\Vesperia\T8BTMA\Arte.cs" />
     <Compile Include="Tales\Vesperia\T8BTMA\Program.cs" />
     <Compile Include="Tales\Vesperia\T8BTMA\T8BTMA.cs" />
