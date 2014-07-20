@@ -250,10 +250,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddHeader( sb, "Titles" );
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
+			sb.Append( "<table>" );
 			foreach ( var entry in Titles.TitleList ) {
+				if ( entry.Character == 0 ) { continue; }
 				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
-				sb.Append( "<hr>" );
+				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
+			sb.Append( "</table>" );
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
 		}
