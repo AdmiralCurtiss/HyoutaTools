@@ -56,9 +56,9 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			if ( item.Data[(int)ItemData.BuyableIn1] > 0 || item.Data[(int)ItemData.BuyableIn2] > 0 || item.Data[(int)ItemData.BuyableIn3] > 0 ) {
 				sb.Append( "Available at shops in: " );
-				if ( item.Data[(int)ItemData.BuyableIn1] > 0 ) { sb.Append( dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1]].DefaultStringDicID].StringEngOrJpn ); }
-				if ( item.Data[(int)ItemData.BuyableIn2] > 0 ) { sb.Append( "; " + dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn2]].DefaultStringDicID].StringEngOrJpn ); }
-				if ( item.Data[(int)ItemData.BuyableIn3] > 0 ) { sb.Append( "; " + dict[Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn3]].DefaultStringDicID].StringEngOrJpn ); }
+				if ( item.Data[(int)ItemData.BuyableIn1] > 0 ) { sb.Append( Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1]].GetLastValidName( dict ).StringEngOrJpn ); }
+				if ( item.Data[(int)ItemData.BuyableIn2] > 0 ) { sb.Append( "; " + Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn2]].GetLastValidName( dict ).StringEngOrJpn ); }
+				if ( item.Data[(int)ItemData.BuyableIn3] > 0 ) { sb.Append( "; " + Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn3]].GetLastValidName( dict ).StringEngOrJpn ); }
 				sb.AppendLine();
 			}
 
@@ -490,7 +490,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( item.Data[(int)ItemData.BuyableIn1 + i] > 0 ) {
 						var loc = Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1 + i]];
 						sb.Append( "<br><a href=\"locations-" + version + ".html#location" + loc.LocationID + "\">" );
-						sb.Append( dict[loc.DefaultStringDicID].StringEngOrJpn + "</a>" );
+						sb.Append( loc.GetLastValidName( dict ).StringEngOrJpn + "</a>" );
 					}
 				}
 				sb.AppendLine();

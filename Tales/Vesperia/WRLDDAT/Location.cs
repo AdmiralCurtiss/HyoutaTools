@@ -45,6 +45,15 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 			return RefStrings[0];
 		}
 
+		public TSS.TSSEntry GetLastValidName( Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			for ( int i = 3; i >= 0; --i ) {
+				if ( inGameIdDict[DescStringDicIDs[i]].StringEngOrJpn != "" ) {
+					return inGameIdDict[NameStringDicIDs[i]];
+				}
+			}
+			return inGameIdDict[DefaultStringDicID];
+		}
+
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 

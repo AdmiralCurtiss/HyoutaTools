@@ -165,7 +165,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 				if ( LocationWeather > -1 ) {
 					sb.AppendLine( "<img src=\"menu-icons/weather-" + LocationWeather + ".png\" width=\"16\" height=\"16\">" );
 				}
-				sb.AppendLine( inGameIdDict[loc.DefaultStringDicID].StringEngOrJpn + "</a><br>" );
+				sb.AppendLine( loc.GetLastValidName( inGameIdDict ).StringEngOrJpn + "</a><br>" );
 			}
 
 			if ( InMonsterBook == 0 ) {
