@@ -68,19 +68,31 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 					validLocationCount++;
 				}
 			}
-			sb.Append( "<table><tr>" );
 			for ( int i = 0; i < validLocationCount; ++i ) {
-				sb.Append( "<td>" );
-				sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicIDs[i]].StringJPN, true, true ) + "<br>" );
-				sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicIDs[i]].StringJPN, true, true ).Replace( "\n", "<br>" ) + "<br>" );
-				sb.Append( inGameIdDict[NameStringDicIDs[i]].StringENG + "<br>" );
-				sb.Append( inGameIdDict[DescStringDicIDs[i]].StringENG.Replace( "\n", "<br>" ) + "<br>" );
+				sb.Append( "<table>" );
+				sb.Append( "<tr>" );
 				if ( RefStrings[i] != "" ) {
+					sb.Append( "<td>" );
 					sb.Append( "<img src=\"worldmap/U_" + RefStrings[i] + ".png\"><br>" );
+					sb.Append( "</td>" );
 				}
+				sb.Append( "<td>" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicIDs[i]].StringJPN, true, true ) + "<br>" );
+				sb.Append( "</span>" );
+				sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicIDs[i]].StringJPN, true, true ).Replace( "\n", "<br>" ) + "<br>" );
+				sb.Append( "<br>" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( inGameIdDict[NameStringDicIDs[i]].StringENG + "<br>" );
+				sb.Append( "</span>" );
+				sb.Append( inGameIdDict[DescStringDicIDs[i]].StringENG.Replace( "\n", "<br>" ) + "<br>" );
 				sb.Append( "</td>" );
+				sb.Append( "</tr>" );
+				sb.Append( "</table>" );
+				if ( RefStrings[i] == "" ) {
+					sb.Append( "<br>" );
+				}
 			}
-			sb.Append( "</tr></table>" );
 			sb.Append( "</div>" );
 			return sb.ToString();
 		}
