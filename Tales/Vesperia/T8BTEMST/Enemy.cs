@@ -9,6 +9,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public uint[] Data;
 		public float[] DataFloat;
 
+		private uint ID;
 		public uint NameStringDicID;
 		public uint InGameID;
 		public string RefString;
@@ -39,6 +40,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public float FatalBlue;
 		public float FatalGreen;
 		public float FatalRed;
+		public float FatalBlueRelated;
+		public float FatalGreenRelated;
+		public float FatalRedRelated;
 
 		public uint InMonsterBook;
 		public uint Location;
@@ -48,7 +52,14 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public uint StealItem;
 		public uint StealChance;
 
-		public static int[] KnownValues = new int[] { 0, 2, 5, 57, 7, 8, 9, 10, 11, 12, 13, 15, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 60, 61, 6, 24, 59, 17, 18, 19 };
+		public static int[] KnownValues = new int[] { 14, 1, 20, 21, 22, 0, 2, 5, 57, 7, 8, 9, 10, 11, 12, 13, 15, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 60, 61, 6, 24, 59, 17, 18, 19 };
+		// 14 is always zero
+		// 16 is zero except on the new giganto monsters and spiral draco
+		// 32 is 100 for most, probably some % chance?
+		// 46, 48, 50 identical across category, possibly related to FS bonuses?
+		// 55, 58 -> stringrefs?
+		// 56 -> 0 on bosses, 1 otherwise -- maybe a "can be killed with FS?" flag
+		// 76 is on PS3 only, StringDicID for the dummy description
 
 		public Enemy( System.IO.Stream stream, uint refStringStart ) {
 			uint entryLength = stream.ReadUInt32().SwapEndian();
@@ -61,6 +72,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 				DataFloat[i] = Data[i].UIntToFloat();
 			}
 
+			ID = Data[1];
 			NameStringDicID = Data[2];
 			InGameID = Data[5];
 			IconID = Data[57];
@@ -80,6 +92,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			FatalBlue = DataFloat[17];
 			FatalGreen = DataFloat[18];
 			FatalRed = DataFloat[19];
+			FatalBlueRelated = DataFloat[20];
+			FatalGreenRelated = DataFloat[21];
+			FatalRedRelated = DataFloat[22];
 
 			// > 100 weak, < 100 resist, 0 nullify, negative absorb
 			// effectively a damage multiplier in percent
@@ -190,12 +205,15 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			}
 
 			/*
+			sb.AppendLine();
 			for ( int i = 0; i < Data.Length; ++i ) {
 				if ( !KnownValues.Contains( i ) ) {
-					sb.AppendLine( i + ": " + Data[i] + " ---- " + DataFloat[i] + "<br>" );
+					sb.Append( "~" + i + ": " + Data[i] + " ---- " + DataFloat[i] );
+					sb.Append( " [" + Category + "/" + enemyNameEntry.StringEngOrJpn + "]" );
+					sb.AppendLine( "<br>" );
 				}
 			}
-			 */
+			// */
 
 			sb.AppendLine( "</div>" );
 

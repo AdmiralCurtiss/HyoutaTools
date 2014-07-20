@@ -57,5 +57,20 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 			return RefString;
 		}
 
+		public string GetDataAsHtml( ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			StringBuilder sb = new StringBuilder();
+
+			for ( int i = 0; i < Items.Length; ++i ) {
+				if ( Items[i] > 0 ) {
+					var item = items.itemIdDict[this.Items[i]];
+					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpn );
+					sb.Append( " / " );
+					sb.Append( Chances[i] );
+				}
+				sb.Append( ( i % 3 == 2 ) ? "<br>" : " -- " );
+			}
+
+			return sb.ToString();
+		}
 	}
 }

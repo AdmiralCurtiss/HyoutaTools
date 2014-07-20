@@ -312,11 +312,21 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
 
-			foreach ( var map in NecropolisMaps ) {
+			foreach ( var floor in NecropolisFloors.SynopsisList ) {
+				int floorNumberLong = Int32.Parse( floor.RefString1.Split( '_' ).Last() );
+				int floorNumber = ( floorNumberLong - 1 ) % 10 + 1;
+				int floorStratumAsNumber = ( floorNumberLong - 1 ) / 10 + 1;
+				string floorStratum = ( (char)( floorStratumAsNumber + 64 ) ).ToString();
+				sb.Append( NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Version, NecropolisTreasures, Items, InGameIdDict ) );
 				sb.Append( "<hr>" );
-				sb.Append( map.Key );
-				sb.Append( map.Value.GetDataAsHtml() );
 			}
+
+			/*
+			foreach ( var treasureLayout in NecropolisTreasures.TreasureInfoList ) {
+				sb.Append( "<hr>" );
+				sb.Append( treasureLayout.GetDataAsHtml( Items, InGameIdDict ) );
+			}
+			//*/
 
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
@@ -339,6 +349,19 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "table.synopsis { margin: 0px auto; }" );
 			sb.AppendLine( "table.synopsis td { padding: 0px 10px 0px 10px; border-spacing: 10px; }" );
 			sb.AppendLine( ".synopsistitle { text-align: center; color: #FFEBD2; font-size: 20; }" );
+			sb.AppendLine( "table.necropolisfloor td { width: 200px; height: 150px; padding: 0; }" );
+			sb.AppendLine( "td.necropolistile1 div.necropolis-data { background-color: black; }" );
+			sb.AppendLine( "td.necropolistile2 div.necropolis-data { background-color: #701010; }" );
+			sb.AppendLine( "td.necropolistile3 div.necropolis-data { background-color: #203860; }" );
+			sb.AppendLine( "td.necropolistile4 div.necropolis-data { background-color: #204040; }" );
+			sb.AppendLine( "td.necropolistile5 div.necropolis-data { background-color: #701010; }" );
+			sb.AppendLine( "div.necropolis-arrow-up    { float: left;  width: 200px; height: 16px;  text-align: center; }" );
+			sb.AppendLine( "div.necropolis-arrow-down  { float: left;  width: 200px; height: 16px;  text-align: center; }" );
+			sb.AppendLine( "div.necropolis-arrow-side  { float: left;  width: 16px; height: 118px;  text-align: center; line-height: 118px; position:relative; min-height: 16px; }" );
+			sb.AppendLine( "div.necropolis-arrow-side img { vertical-align: middle; max-height: 118px; position: absolute; top: 0; bottom: 0; left: 0; margin: auto; }" );
+			sb.AppendLine( "div.necropolis-data        { float: left;  width: 166px; height: 116px; text-align: center; border: 1px solid black; }" );
+			sb.AppendLine( "div.necropolis-data table  { margin: 0px auto; }" );
+			sb.AppendLine( "div.necropolis-data td     { width: auto; height: auto; text-align: center; padding: 0px 4px 0px 4px; }" );
 			sb.AppendLine( "</style>" );
 			sb.AppendLine( "</head>" );
 		}
