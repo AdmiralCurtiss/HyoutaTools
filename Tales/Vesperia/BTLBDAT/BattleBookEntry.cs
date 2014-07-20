@@ -18,16 +18,19 @@ namespace HyoutaTools.Tales.Vesperia.BTLBDAT {
 
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
+			sb.Append( "<td>" );
+
+			sb.Append( "<span class=\"itemname\">" );
 			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicId].StringJPN, true, true ) );
-			sb.Append( "<br>" );
+			sb.Append( "</span><br>" );
 			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[TextStringDicId].StringJPN, true, true ).Replace( "\n", "<br>" ) );
-			sb.Append( "<br>" );
-			sb.Append( "<br>" );
+			sb.Append( "</td>" );
+			sb.Append( "<td>" );
+			sb.Append( "<span class=\"itemname\">" );
 			sb.Append( inGameIdDict[NameStringDicId].StringENG );
-			sb.Append( "<br>" );
+			sb.Append( "</span><br>" );
 			sb.Append( inGameIdDict[TextStringDicId].StringENG.Replace( "\n", "<br>" ) );
-			sb.Append( "<br>" );
-			sb.Append( "<br>" );
+			sb.Append( "</td>" );
 			return sb.ToString();
 		}
 	}

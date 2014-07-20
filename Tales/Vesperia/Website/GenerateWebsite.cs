@@ -263,15 +263,23 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
 
+			sb.Append( "<table>" );
+
 			foreach ( var entry in BattleBook.BattleBookEntryList ) {
+				string data;
 				try {
-					sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+					if ( InGameIdDict[entry.NameStringDicId].StringEngOrJpn == "" ) { continue; }
+					data = entry.GetDataAsHtml( Version, StringDic, InGameIdDict );
 				} catch ( KeyNotFoundException ) {
 					continue;
 				}
-				sb.Append( "<hr>" );
+				sb.Append( "<tr>" );
+				sb.Append( data );
+				sb.Append( "</tr>" );
+				sb.Append( "<tr><td colspan=\"2\"><hr></td></tr>" );
 			}
 
+			sb.Append( "</table>" );
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
 		}
