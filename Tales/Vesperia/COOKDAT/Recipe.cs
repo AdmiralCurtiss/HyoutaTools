@@ -119,8 +119,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 
 		public string GetDataAsHtml( GameVersion version, COOKDAT recipes, ItemDat.ItemDat items, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
-			sb.Append( "<div id=\"recipe" + ID + "\">" );
-			sb.Append( "<table><tr><td>" );
+			sb.Append( "<tr id=\"recipe" + ID + "\"><td>" );
 			sb.Append( "<img src=\"recipes/U_" + RefString + ".png\">" );
 			sb.Append( "</td><td>" );
 			sb.Append( "<span class=\"itemname\">" + VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true ) + "</span><br>" );
@@ -156,14 +155,14 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 
 			if ( PhysicalAilmentHeal > 0 || DeathHeal > 0 ) {
 				sb.Append( "Cures Ailments: " );
-				if ( DeathHeal > 0 ) { sb.Append( "<img src=\"text-icons/icon-status-13.png\" height=\"32\" width=\"32\">" ); }
-				if ( ( PhysicalAilmentHeal & 1 ) == 1 ) { sb.Append( "<img src=\"text-icons/icon-status-01.png\" height=\"32\" width=\"32\">" ); }
-				if ( ( PhysicalAilmentHeal & 2 ) == 2 ) { sb.Append( "<img src=\"text-icons/icon-status-07.png\" height=\"32\" width=\"32\">" ); }
-				if ( ( PhysicalAilmentHeal & 4 ) == 4 ) { sb.Append( "<img src=\"text-icons/icon-status-02.png\" height=\"32\" width=\"32\">" ); }
-				if ( ( PhysicalAilmentHeal & 8 ) == 8 ) { sb.Append( "<img src=\"text-icons/icon-status-03.png\" height=\"32\" width=\"32\">" ); }
-				if ( ( PhysicalAilmentHeal & 16 ) == 16 ) { sb.Append( "<img src=\"text-icons/icon-status-04.png\" height=\"32\" width=\"32\">" ); }
-				if ( ( PhysicalAilmentHeal & 32 ) == 32 ) { sb.Append( "<img src=\"text-icons/icon-status-05.png\" height=\"32\" width=\"32\">" ); }
-				if ( ( PhysicalAilmentHeal & 64 ) == 64 ) { sb.Append( "<img src=\"text-icons/icon-status-06.png\" height=\"32\" width=\"32\">" ); }
+				if ( DeathHeal > 0 ) { sb.Append( "<img src=\"text-icons/icon-status-13.png\" height=\"16\" width=\"16\">" ); }
+				if ( ( PhysicalAilmentHeal & 1 ) == 1 ) { sb.Append( "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" ); }
+				if ( ( PhysicalAilmentHeal & 2 ) == 2 ) { sb.Append( "<img src=\"text-icons/icon-status-07.png\" height=\"16\" width=\"16\">" ); }
+				if ( ( PhysicalAilmentHeal & 4 ) == 4 ) { sb.Append( "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" ); }
+				if ( ( PhysicalAilmentHeal & 8 ) == 8 ) { sb.Append( "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" ); }
+				if ( ( PhysicalAilmentHeal & 16 ) == 16 ) { sb.Append( "<img src=\"text-icons/icon-status-04.png\" height=\"16\" width=\"16\">" ); }
+				if ( ( PhysicalAilmentHeal & 32 ) == 32 ) { sb.Append( "<img src=\"text-icons/icon-status-05.png\" height=\"16\" width=\"16\">" ); }
+				if ( ( PhysicalAilmentHeal & 64 ) == 64 ) { sb.Append( "<img src=\"text-icons/icon-status-06.png\" height=\"16\" width=\"16\">" ); }
 				sb.Append( "<br>" );
 			}
 
@@ -186,29 +185,44 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			for ( int i = 0; i < RecipeCreationCharacter.Length; ++i ) {
 				if ( RecipeCreationCharacter[i] != 0 ) {
 					var otherRecipe = recipes.RecipeList[(int)RecipeCreationRecipe[i]];
-					sb.Append( "Creates <a href=\"#recipe" + otherRecipe.ID + "\">" );
-					sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpn );
-					sb.Append( "</a> when cooked by " );
 					Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ) );
-					sb.Append( ".<br>" );
+					sb.Append( " → <a href=\"#recipe" + otherRecipe.ID + "\">" );
+					sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpn );
+					sb.Append( "</a>" );
+					sb.Append( "<br>" );
 				}
 			}
 
-			sb.Append( "Likes: " );
-			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersLike );
-			sb.Append( "<br>" );
-			sb.Append( "Dislikes: " );
-			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersDislike );
-			sb.Append( "<br>" );
-			sb.Append( "Good at making: " );
-			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersGoodAtMaking );
-			sb.Append( "<br>" );
-			sb.Append( "Bad at making: " );
-			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersBadAtMaking );
-			sb.Append( "<br>" );
+			sb.Append( "<table class=\"element\">" );
+			sb.Append( "<tr>" );
+			sb.Append( "<td>Likes</td>" );
+			sb.Append( "<td>Dislikes</td>" );
+			sb.Append( "</tr>" );
 
-			sb.Append( "</td></tr></table>" );
-			sb.Append( "</div>" );
+			sb.Append( "<tr>" );
+			sb.Append( "<td>" );
+			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersLike );
+			sb.Append( "</td>" );
+			sb.Append( "<td>" );
+			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersDislike );
+			sb.Append( "</td>" );
+			sb.Append( "</tr>" );
+			sb.Append( "<tr>" );
+			sb.Append( "<td>Good at</td>" );
+			sb.Append( "<td>Bad at</td>" );
+			sb.Append( "</tr>" );
+			sb.Append( "<tr>" );
+			sb.Append( "<td>" );
+			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersGoodAtMaking );
+			sb.Append( "</td>" );
+			sb.Append( "<td>" );
+			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersBadAtMaking );
+			sb.Append( "</td>" );
+			sb.Append( "</tr>" );
+
+			sb.Append( "</table>" );
+
+			sb.Append( "</td></tr>" );
 			return sb.ToString();
 		}
 	}
