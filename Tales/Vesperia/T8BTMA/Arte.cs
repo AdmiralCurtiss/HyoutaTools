@@ -70,40 +70,73 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			DescStringDicId = Data[6];
 			Type = (ArteType)Data[7];
 
-			LearnRequirementsOtherArtesType = new uint[6];
-			for ( int i = 0; i < LearnRequirementsOtherArtesType.Length; ++i ) {
-				LearnRequirementsOtherArtesType[i] = Data[22 + i];
-			}
-			LearnRequirementsOtherArtesId = new uint[6];
-			for ( int i = 0; i < LearnRequirementsOtherArtesId.Length; ++i ) {
-				LearnRequirementsOtherArtesId[i] = Data[28 + i];
-			}
-			LearnRequirementsOtherArtesUsageCount = new uint[6];
-			for ( int i = 0; i < LearnRequirementsOtherArtesUsageCount.Length; ++i ) {
-				LearnRequirementsOtherArtesUsageCount[i] = Data[34 + i];
-			}
-
-			AlteredArteRequirementType = new uint[5];
-			for ( int i = 0; i < AlteredArteRequirementType.Length; ++i ) {
-				AlteredArteRequirementType[i] = Data[69 + i];
-			}
-			AlteredArteRequirementId = new uint[5];
-			for ( int i = 0; i < AlteredArteRequirementId.Length; ++i ) {
-				AlteredArteRequirementId[i] = Data[74 + i];
-			}
-			CharacterRelatedField = Data[95];
-			Character = Data[96];
-
+			TPUsage = Data[8];
 			ElementFire = Data[10];
 			ElementEarth = Data[11];
 			ElementWind = Data[12];
 			ElementWater = Data[13];
 			ElementLight = Data[14];
 			ElementDarkness = Data[15];
-			FatalStrikeType = Data[83];
-			TPUsage = Data[8];
 
-			UsableInMenu = Data[44];
+
+			// for some reason the data order different between versions?
+			if ( Size == 876 ) {
+				LearnRequirementsOtherArtesType = new uint[6];
+				for ( int i = 0; i < LearnRequirementsOtherArtesType.Length; ++i ) {
+					LearnRequirementsOtherArtesType[i] = Data[128 + 22 + i];
+				}
+				LearnRequirementsOtherArtesId = new uint[6];
+				for ( int i = 0; i < LearnRequirementsOtherArtesId.Length; ++i ) {
+					LearnRequirementsOtherArtesId[i] = Data[128 + 28 + i];
+				}
+				LearnRequirementsOtherArtesUsageCount = new uint[6];
+				for ( int i = 0; i < LearnRequirementsOtherArtesUsageCount.Length; ++i ) {
+					LearnRequirementsOtherArtesUsageCount[i] = Data[128 + 34 + i];
+				}
+
+				AlteredArteRequirementType = new uint[5];
+				for ( int i = 0; i < AlteredArteRequirementType.Length; ++i ) {
+					AlteredArteRequirementType[i] = Data[127 + 69 + i];
+				}
+				AlteredArteRequirementId = new uint[5];
+				for ( int i = 0; i < AlteredArteRequirementId.Length; ++i ) {
+					AlteredArteRequirementId[i] = Data[127 + 74 + i];
+				}
+				//CharacterRelatedField = Data[?];
+				Character = Data[21];
+
+				FatalStrikeType = Data[210];
+
+				UsableInMenu = Data[128 + 44];
+			} else {
+				LearnRequirementsOtherArtesType = new uint[6];
+				for ( int i = 0; i < LearnRequirementsOtherArtesType.Length; ++i ) {
+					LearnRequirementsOtherArtesType[i] = Data[22 + i];
+				}
+				LearnRequirementsOtherArtesId = new uint[6];
+				for ( int i = 0; i < LearnRequirementsOtherArtesId.Length; ++i ) {
+					LearnRequirementsOtherArtesId[i] = Data[28 + i];
+				}
+				LearnRequirementsOtherArtesUsageCount = new uint[6];
+				for ( int i = 0; i < LearnRequirementsOtherArtesUsageCount.Length; ++i ) {
+					LearnRequirementsOtherArtesUsageCount[i] = Data[34 + i];
+				}
+
+				AlteredArteRequirementType = new uint[5];
+				for ( int i = 0; i < AlteredArteRequirementType.Length; ++i ) {
+					AlteredArteRequirementType[i] = Data[69 + i];
+				}
+				AlteredArteRequirementId = new uint[5];
+				for ( int i = 0; i < AlteredArteRequirementId.Length; ++i ) {
+					AlteredArteRequirementId[i] = Data[74 + i];
+				}
+				CharacterRelatedField = Data[95];
+				Character = Data[96];
+
+				FatalStrikeType = Data[83];
+
+				UsableInMenu = Data[44];
+			}
 
 			// always identical: 16, 17
 			// 59 is some sort of status effect field
@@ -215,10 +248,12 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 				}
 			}
 
+			if ( UsableInMenu > 0 ) { sb.Append( "Usable outside of battle" ); }
+
 			sb.Append( "</td>" );
-			sb.Append( "<td>" );
 
 			/*
+			sb.Append( "<td>" );
 			sb.AppendLine();
 			sb.AppendLine( "~" + 9 + ": " + Data[9] + "<br>" );
 			for ( int i = 16; i < 22; ++i ) {
@@ -236,9 +271,8 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 				if ( i == 83 ) continue;
 				sb.AppendLine( "~" + i + ": " + Data[i] + "<br>" );
 			}
-			//*/
-
 			sb.Append( "</td>" );
+			//*/
 
 			sb.Append( "</tr>" );
 			return sb.ToString();
