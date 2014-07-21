@@ -18,6 +18,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 		}
 
 		public List<Arte> ArteList;
+		public Dictionary<uint, Arte> ArteIdDict;
 
 		private bool LoadFile( byte[] Bytes ) {
 			uint arteCount = BitConverter.ToUInt32( Bytes, 0x8 ).SwapEndian();
@@ -30,6 +31,11 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 				Arte a = new Arte( Bytes, location, entrySize, stringStart );
 				ArteList.Add( a );
 				location += entrySize;
+			}
+
+			ArteIdDict = new Dictionary<uint, Arte>( ArteList.Count );
+			foreach ( var arte in ArteList ) {
+				ArteIdDict.Add( arte.InGameID, arte );
 			}
 
 			return true;
