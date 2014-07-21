@@ -168,10 +168,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddHeader( sb, "Enemies" );
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
+			sb.Append( "<table>" );
 			foreach ( var skill in Skills.SkillList ) {
+				if ( skill.ID == 0 ) { continue; }
 				sb.AppendLine( skill.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
-				sb.AppendLine( "<hr>" );
+				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
+			sb.Append( "</table>" );
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
 		}
@@ -369,6 +372,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "div.necropolis-data        { float: left;  width: 166px; height: 116px; text-align: center; border: 1px solid black; }" );
 			sb.AppendLine( "div.necropolis-data table  { margin: 0px auto; }" );
 			sb.AppendLine( "div.necropolis-data td     { width: auto; height: auto; text-align: center; padding: 0px 4px 0px 4px; }" );
+			sb.AppendLine( "td.skilljpn { white-space: nowrap; }" );
+			sb.AppendLine( "td.skilldata { width: 275px; }" );
 			sb.AppendLine( "</style>" );
 			sb.AppendLine( "</head>" );
 		}
@@ -393,7 +398,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			//sb.AppendLine( "<img src=\"menu-icons/sub-05.png\" title=\"Load\">" );
 			sb.AppendLine( "<a href=\"settings-" + Version + ".html\"><img src=\"menu-icons/sub-07.png\" title=\"Settings\"></a>" );
 			if ( Version == GameVersion.PS3 ) {
-				sb.AppendLine( "<a href=\"necropolis-" + Version + ".html\"><img src=\"menu-icons/weather-7-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
+				sb.AppendLine( "<a href=\"necropolis-" + Version + ".html\"><img src=\"menu-icons/weather-4-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
 			}
 			sb.AppendLine( "<br>" );
 			for ( int i = 2; i < 12; ++i ) {

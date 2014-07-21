@@ -21,7 +21,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 		public float Unknown13;
 		public float Unknown14;
 		public float Unknown15;
-		public uint Unknown16;
+		public uint Inactive;
 
 		public string RefString;
 
@@ -45,7 +45,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 			Unknown13 = stream.ReadUInt32().SwapEndian().UIntToFloat();
 			Unknown14 = stream.ReadUInt32().SwapEndian().UIntToFloat();
 			Unknown15 = stream.ReadUInt32().SwapEndian().UIntToFloat();
-			Unknown16 = stream.ReadUInt32().SwapEndian();
+			Inactive = stream.ReadUInt32().SwapEndian();
 
 			long pos = stream.Position;
 			stream.Position = refStringStart + refStringLocation;
@@ -59,39 +59,46 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
-			sb.Append( "<div id=\"skill" + ID + "\">" );
-			sb.Append( RefString + "<br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true, true ) + "<br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) + "<br>" );
-			sb.Append( inGameIdDict[NameStringDicID].StringENG + "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringENG.Replace( "\n", "<br>" ) + "<br>" );
-			sb.Append( "Equip Cost: " + EquipCost + "<br>" );
-			sb.Append( "Required LP to learn: " + LearnCost + "<br>" );
-			sb.Append( "Category: " + Category + "<br>" );
-			sb.Append( "Symbol Weight: " + SymbolValue + "<br>" );
+			sb.Append( "<tr id=\"skill" + ID + "\">" );
+			//sb.Append( RefString + "<br>" );
 
-			uint equip = LearnableByBitmask;
-			if ( equip > 0 ) {
+			sb.Append( "<td>" );
+			sb.Append( "<img src=\"skill-icons/category-" + Category + ".png\" width=\"32\" height=\"32\">" );
+			sb.Append( "</td>" );
+
+			sb.Append( "<td class=\"skilljpn\">" );
+			sb.Append( "<span class=\"itemname\">" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true, true ) );
+			sb.Append( "</span>" );
+			sb.Append( "<br>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) );
+			sb.Append( "</td>" );
+			
+			sb.Append( "<td>" );
+			sb.Append( "<span class=\"itemname\">" );
+			sb.Append( inGameIdDict[NameStringDicID].StringENG );
+			sb.Append( "</span>" );
+			sb.Append( "<br>" );
+			sb.Append( inGameIdDict[DescStringDicID].StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( "</td>" );
+
+			sb.Append( "<td class=\"skilldata\">" );
+			if ( LearnableByBitmask > 0 ) {
 				sb.Append( "<span class=\"equip\">" );
-				if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_YUR.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 2 ) == 2 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_EST.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 4 ) == 4 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_KAR.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 8 ) == 8 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RIT.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 16 ) == 16 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAV.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 32 ) == 32 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_JUD.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 64 ) == 64 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAP.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_FRE.gif\" height=\"32\" width=\"24\">" ); }
-				if ( version == GameVersion.PS3 && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_PAT.gif\" height=\"32\" width=\"24\">" ); }
+				Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, LearnableByBitmask );
 				sb.Append( "</span>" );
 			}
+			sb.Append( EquipCost + "&nbsp;SP<br>" );
+			sb.Append( LearnCost + "&nbsp;LP<br>" );
+			sb.Append( "Symbol Weight: " + SymbolValue + "<br>" );
 
-			sb.Append( "Unknowns:<br>" );
-			sb.Append( Unknown7 + "<br>" );
-			sb.Append( Unknown13 + "<br>" );
-			sb.Append( Unknown14 + "<br>" );
-			sb.Append( Unknown15 + "<br>" );
-			sb.Append( Unknown16 + "<br>" );
-			sb.Append( "</div>" );
+			//sb.Append( "~7: " + Unknown7 + "<br>" );
+			//sb.Append( "~13: " + Unknown13 + "<br>" );
+			//sb.Append( "~14: " + Unknown14 + "<br>" );
+			//sb.Append( "~15: " + Unknown15 + "<br>" );
+			if ( Inactive == 0 ) { sb.Append( "Unusable<br>" ); }
+			sb.Append( "</td>" );
+			sb.Append( "</tr>" );
 			return sb.ToString();
 		}
 	}
