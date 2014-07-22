@@ -60,8 +60,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 
 			site.Version = GameVersion.PS3;
+			var PS3StringDic = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\PS3\mod\string.svo.ext\STRING_DIC.SO" ) );
+			site.StringDic = PS3StringDic;
 			site.Items = new ItemDat.ItemDat( @"d:\Dropbox\ToV\PS3\orig\item.svo.ext\ITEM.DAT" );
-			site.StringDic = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\PS3\mod\string.svo.ext\STRING_DIC.SO" ) );
 			site.Artes = new T8BTMA.T8BTMA( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0004.ext\ALL.0000" );
 			site.Skills = new T8BTSK.T8BTSK( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0010.ext\ALL.0000" );
 			site.Enemies = new T8BTEMST.T8BTEMST( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000" );
@@ -154,12 +155,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddHeader( sb, "Enemies" );
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
+			sb.Append( "<table>" );
 			foreach ( var enemy in Enemies.EnemyList ) {
 				if ( enemy.InGameID == 0 ) { continue; }
 				if ( category != null && category != enemy.Category ) { continue; }
 				sb.AppendLine( enemy.GetDataAsHtml( Version, Items, Locations, StringDic, InGameIdDict ) );
 				sb.AppendLine( "<hr>" );
 			}
+			sb.Append( "</table>" );
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
 		}
@@ -246,17 +249,21 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public string GenerateHtmlStrategy() {
 			var sb = new StringBuilder();
 			AddHeader( sb, "Strategy" );
-			sb.AppendLine( "<body>" );
+			sb.Append( "<body>" );
 			AddMenuBar( sb );
+			sb.Append( "<table>" );
 			foreach ( var entry in Strategy.StrategySetList ) {
-				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
-				sb.Append( "<hr>" );
+				sb.Append( entry.GetDataAsHtml( Version, Strategy, StringDic, InGameIdDict ) );
+				sb.Append( "<tr><td colspan=\"10\"><hr></td></tr>" );
 			}
+			sb.Append( "</table>" );
+			sb.Append( "<table>" );
 			foreach ( var entry in Strategy.StrategyOptionList ) {
 				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
-				sb.Append( "<hr>" );
+				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
-			sb.AppendLine( "</body></html>" );
+			sb.Append( "</table>" );
+			sb.Append( "</body></html>" );
 			return FixInGameStrings( sb );
 		}
 		public string GenerateHtmlTitles() {
@@ -374,6 +381,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "div.necropolis-data td     { width: auto; height: auto; text-align: center; padding: 0px 4px 0px 4px; }" );
 			sb.AppendLine( "td.skilljpn { white-space: nowrap; }" );
 			sb.AppendLine( "td.skilldata { width: 275px; }" );
+			sb.AppendLine( ".strategycat { color: #FFEBD2; }" );
+			sb.AppendLine( ".strategychar { text-align: center; }" );
 			sb.AppendLine( "</style>" );
 			sb.AppendLine( "</head>" );
 		}

@@ -22,6 +22,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 
 		public List<StrategySet> StrategySetList;
 		public List<StrategyOption> StrategyOptionList;
+		public Dictionary<uint, StrategyOption> StrategyOptionDict;
 
 		private bool LoadFile( Stream stream ) {
 			string magic = stream.ReadAscii( 8 );
@@ -38,6 +39,11 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 			for ( uint i = 0; i < strategyOptionCount; ++i ) {
 				StrategyOption so = new StrategyOption( stream, refStringStart );
 				StrategyOptionList.Add( so );
+			}
+
+			StrategyOptionDict = new Dictionary<uint, StrategyOption>( StrategyOptionList.Count );
+			foreach ( var option in StrategyOptionList ) {
+				StrategyOptionDict.Add( option.InGameID, option );
 			}
 
 			return true;
