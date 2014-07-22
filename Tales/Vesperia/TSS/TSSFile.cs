@@ -62,8 +62,8 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 
 				// get in-game string id
 				for ( i = 0; i < OneEntry.Length; i++ ) {
-					if ( OneEntry[i] == 0x02070000 ) {
-						inGameStringId = (int)OneEntry[i + 1];
+					if ( OneEntry[i] == 0x0E000007 ) {
+						inGameStringId = (int)OneEntry[i - 2];
 						break;
 					}
 				}
@@ -287,7 +287,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			return Serialized.ToArray();
 		}
 
-		public bool ImportSQL( bool placeEnglishInJpnEntry = true ) {
+		public bool ImportSQL( bool placeEnglishInJpnEntry = true, bool updateDatabaseWithInGameStringId = false ) {
 			String[] DBNames = {
                                    "VGeneral", "VMenu", "VArtes", "VSkills",
                                    "VStrategy", "VLocation Names", "VEnemies",
@@ -315,7 +315,9 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 					String English = Reader.GetString( 0 );
 					int PointerRef = Reader.GetInt32( 1 );
 
-					//UpdateDatabaseWithInGameStringId( Connection, PointerRef, Entries[PointerRef + 1].inGameStringId );
+					if ( updateDatabaseWithInGameStringId ) {
+						UpdateDatabaseWithInGameStringId( Connection, PointerRef, Entries[PointerRef + 1].inGameStringId );
+					}
 
 					if ( Entries[PointerRef + 1].StringJPN != null
 						 && !String.IsNullOrEmpty( English )

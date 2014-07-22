@@ -9,6 +9,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 		public static int Execute( List<string> args ) {
 			bool UseInsaneNames = false;
 			bool RealMode = false;
+			bool UpdateInGameId = false;
 
 			if ( args.Count == 1 ) {
 				if ( args[0] == "-insane" ) {
@@ -18,6 +19,10 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 				if ( args[0] == "-real" ) {
 					Console.WriteLine( "Real Mode activated, resulting file will contain both English and Japanese data as expected by an unmodified game." );
 					RealMode = true;
+				}
+				if ( args[0] == "-updateInGameId" ) {
+					Console.WriteLine( "Updating InGameIDs in the database." );
+					UpdateInGameId = true;
 				}
 			}
 
@@ -44,7 +49,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 
 
 			Console.WriteLine( "Importing databases..." );
-			if ( !TSS.ImportSQL( !RealMode ) ) {
+			if ( !TSS.ImportSQL( placeEnglishInJpnEntry: !RealMode, updateDatabaseWithInGameStringId: UpdateInGameId ) ) {
 				Console.WriteLine( "Could not import all databases! Exiting..." );
 				return -1;
 			}
