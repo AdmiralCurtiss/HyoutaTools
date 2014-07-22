@@ -35,26 +35,15 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 		public uint StatTime;
 
 		// not the best way to handle it but I can't find a direct reference to the entries in question
-		private static Dictionary<uint, uint> _IngredientGroupDictX360 = null;
-		private static Dictionary<uint, uint> IngredientGroupDictX360 {
+		private static Dictionary<uint, uint> _IngredientGroupDict = null;
+		private static Dictionary<uint, uint> IngredientGroupDict {
 			get {
-				if ( _IngredientGroupDictX360 == null ) {
-					_IngredientGroupDictX360 = new Dictionary<uint, uint>() {
-						{ 41, 410 }, { 42, 411 }, { 43, 412 }, { 44, 414 },
+				if ( _IngredientGroupDict == null ) {
+					_IngredientGroupDict = new Dictionary<uint, uint>() {
+						{ 41, 33912200 }, { 42, 33912201 }, { 43, 33912202 }, { 44, 33912204 },
 					};
 				}
-				return _IngredientGroupDictX360;
-			}
-		}
-		private static Dictionary<uint, uint> _IngredientGroupDictPS3 = null;
-		private static Dictionary<uint, uint> IngredientGroupDictPS3 {
-			get {
-				if ( _IngredientGroupDictPS3 == null ) {
-					_IngredientGroupDictPS3 = new Dictionary<uint, uint>() {
-						{ 41, 578 }, { 42, 579 }, { 43, 580 }, { 44, 582 },
-					};
-				}
-				return _IngredientGroupDictPS3;
+				return _IngredientGroupDict;
 			}
 		}
 
@@ -133,9 +122,9 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			sb.Append( "</td><td>" );
 			for ( int i = 0; i < IngredientGroups.Length; ++i ) {
 				if ( IngredientGroups[i] != 0 ) {
-					uint stringDicEntryId;
-					if ( version == GameVersion.PS3 ) { stringDicEntryId = IngredientGroupDictPS3[IngredientGroups[i]]; } else { stringDicEntryId = IngredientGroupDictX360[IngredientGroups[i]]; }
-					var entry = stringDic.Entries[stringDicEntryId];
+					uint stringDicId;
+					stringDicId = IngredientGroupDict[IngredientGroups[i]];
+					var entry = inGameIdDict[stringDicId];
 					sb.Append( "<img src=\"item-icons/ICON" + IngredientGroups[i] + ".png\" height=\"16\" width=\"16\"> " );
 					sb.Append( entry.StringEngOrJpn + " x" + IngredientGroupCount[i] + "<br>" );
 				}
