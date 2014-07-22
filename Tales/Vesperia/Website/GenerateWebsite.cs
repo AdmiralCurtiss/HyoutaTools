@@ -312,16 +312,170 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddHeader( sb, "Records" );
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
+
+			sb.Append( "<table>" );
+			for ( uint i = 33912371; i < 33912385; ++i ) {
+				if ( i == 33912376 ) { continue; }
+				AppendRecord( sb, i );
+			}
+			AppendRecord( sb, 33912570u );
+			for ( uint i = 33912385; i < 33912392; ++i ) {
+				AppendRecord( sb, i );
+			}
+			AppendRecord( sb, 33912571u );
+			AppendRecord( sb, 33912572u );
+			AppendRecord( sb, 33912585u );
+			AppendRecord( sb, 33912586u );
+			AppendRecord( sb, 33912587u );
+			AppendRecord( sb, 33912588u );
+
+			if ( Version == GameVersion.PS3 ) {
+				// repede snowboarding 1 - 8, team melee, 30 man per character
+				for ( uint i = 33912733; i < 33912751; ++i ) {
+					AppendRecord( sb, i );
+				}
+			} else {
+				AppendRecord( sb, 33912621u ); // 30 man melee generic
+			}
+
+			for ( uint i = 33912392; i < 33912399; ++i ) {
+				AppendRecord( sb, i );
+			}
+			if ( Version == GameVersion.PS3 ) {
+				// usage flynn, patty
+				AppendRecord( sb, 33912399u );
+				AppendRecord( sb, 33912400u );
+			}
+
+
+			sb.Append( "</table>" );
+
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
+		}
+		public void AppendRecord( StringBuilder sb, uint id ) {
+			sb.Append( "<tr>" );
+			sb.Append( "<td>" );
+			sb.Append( VesperiaUtil.RemoveTags( InGameIdDict[id].StringJPN, true, true ) );
+			sb.Append( "</td>" );
+			sb.Append( "<td>" );
+			sb.Append( InGameIdDict[id].StringENG );
+			sb.Append( "</td>" );
+			sb.Append( "</tr>" );
+			//sb.Append( "<tr><td colspan=\"2\"><hr></td></tr>" );
 		}
 		public string GenerateHtmlSettings() {
 			var sb = new StringBuilder();
 			AddHeader( sb, "Settings" );
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
+
+			sb.Append( "<table class=\"settings\">" );
+			AppendSetting( sb, 33912401u, 33912401u + 46u, 33912427u, 33912426u, 33912425u, 33912424u ); // msg speed
+			AppendSetting( sb, 33912402u, 33912402u + 46u, 33912428u, 33912429u, 33912430u, 33912431u ); // difficulty
+			if ( Version == GameVersion.X360 ) {
+				AppendSetting( sb, 33912403u, 33912403u + 46u, 33912438u, 33912437u ); // x360 vibration
+			} else {
+				AppendSetting( sb, 33912679u, 33912681u, 33912438u, 33912437u ); // console-neutral vibration
+			}
+			AppendSetting( sb, 33912404u, 33912404u + 46u, 33912432u, 33912433u ); // camera controls
+			if ( Version == GameVersion.PS3 ) {
+				AppendSetting( sb, 33912751u, 33912752u, 33912443u, 33912444u ); // stick/dpad controls
+			}
+			AppendSetting( sb, 33912405u, 33912405u + 46u, 33912439u ); // button config
+			AppendSetting( sb, 33912406u, 33912406u + 46u, 33912436u, 33912435u, 33912434u ); // sound
+			AppendSetting( sb, 33912407u, 33912407u + 46u ); // bgm
+			AppendSetting( sb, 33912408u, 33912408u + 46u ); // se
+			AppendSetting( sb, 33912409u, 33912409u + 46u ); // battle se
+			AppendSetting( sb, 33912413u, 33912413u + 46u ); // battle voice
+			AppendSetting( sb, 33912414u, 33912414u + 46u ); // event voice
+			AppendSetting( sb, 33912422u, 33912422u + 46u ); // skit
+			AppendSetting( sb, 33912423u, 33912423u + 46u ); // movie
+			if ( Version == GameVersion.PS3 ) {
+				AppendSetting( sb, 33912656u, 33912657u, 33912658u, 33912659u ); // item request type
+			}
+			AppendSetting( sb, 33912410u, 33912410u + 46u, 33912438u, 33912437u ); // engage cam
+			AppendSetting( sb, 33912411u, 33912411u + 46u, 33912438u, 33912437u ); // dynamic cam
+			AppendSetting( sb, 33912412u, 33912412u + 46u, 33912438u, 33912437u ); // field boundary
+			AppendSetting( sb, 33912415u, 33912415u + 46u, 33912438u, 33912437u ); // location names
+			AppendSetting( sb, 33912416u, 33912416u + 46u, 33912438u, 33912437u ); // skit titles
+			AppendSetting( sb, 33912417u, 33912417u + 46u, 33912438u, 33912437u ); // skit subs
+			AppendSetting( sb, 33912418u, 33912418u + 46u, 33912438u, 33912437u ); // movie subs
+			AppendSetting( sb, 33912420u, 33912420u + 46u, 33912440u, 33912441u, 33912442u ); // font
+			if ( Version == GameVersion.X360 ) {
+				AppendSetting( sb, 33912419u, 33912419u + 46u, 33912439u ); // brightness
+				AppendSetting( sb, 33912421u, 33912421u + 46u, 33912439u ); // marketplace
+			} else {
+				AppendSetting( sb, 33912713u, 33912714u, 33912439u ); // brightness & screen pos
+			}
+			AppendSetting( sb, 33912595u, 33912596u, 33912597u );		 // reset to default
+			sb.Append( "</table>" );
+
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
+		}
+		public void AppendSetting( StringBuilder sb, uint idName, uint idDesc, uint option1 = 0, uint option2 = 0, uint option3 = 0, uint option4 = 0 ) {
+			for ( int i = 0; i < 2; ++i ) {
+				sb.Append( "<tr>" );
+				sb.Append( "<td>" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( VesperiaUtil.RemoveTags( InGameIdDict[idName].GetString( i ), i == 0, i == 0 ) );
+				sb.Append( "</span>" );
+				sb.Append( "</td>" );
+
+				int optionCount = 0;
+				if ( option1 > 0 ) { ++optionCount; }
+				if ( option2 > 0 ) { ++optionCount; }
+				if ( option3 > 0 ) { ++optionCount; }
+				if ( option4 > 0 ) { ++optionCount; }
+
+				if ( optionCount == 0 ) {
+					sb.Append( "<td colspan=\"4\">" );
+					sb.Append( "</td>" );
+				} else {
+					if ( option1 > 0 ) {
+						if ( optionCount == 1 ) {
+							sb.Append( "<td colspan=\"4\">" );
+						} else {
+							sb.Append( "<td>" );
+						}
+						sb.Append( VesperiaUtil.RemoveTags( InGameIdDict[option1].GetString( i ), i == 0, i == 0 ) );
+						sb.Append( "</td>" );
+					}
+					if ( option2 > 0 ) {
+						if ( optionCount == 2 ) {
+							sb.Append( "<td colspan=\"3\">" );
+						} else {
+							sb.Append( "<td>" );
+						}
+						sb.Append( VesperiaUtil.RemoveTags( InGameIdDict[option2].GetString( i ), i == 0, i == 0 ) );
+						sb.Append( "</td>" );
+					}
+					if ( option3 > 0 ) {
+						if ( optionCount == 3 ) {
+							sb.Append( "<td colspan=\"2\">" );
+						} else {
+							sb.Append( "<td>" );
+						}
+						sb.Append( VesperiaUtil.RemoveTags( InGameIdDict[option3].GetString( i ), i == 0, i == 0 ) );
+						sb.Append( "</td>" );
+					}
+					if ( option4 > 0 ) {
+						sb.Append( "<td>" );
+						sb.Append( VesperiaUtil.RemoveTags( InGameIdDict[option4].GetString( i ), i == 0, i == 0 ) );
+						sb.Append( "</td>" );
+					}
+				}
+				sb.Append( "</tr>" );
+
+				sb.Append( "<tr>" );
+				sb.Append( "<td colspan=\"5\">" );
+				sb.Append( VesperiaUtil.RemoveTags( InGameIdDict[idDesc].GetString( i ), i == 0, i == 0 ).Replace( "\n", "<br>" ) );
+				sb.Append( "</td>" );
+				sb.Append( "</tr>" );
+			}
+
+			sb.Append( "<tr><td colspan=\"5\"><hr></td></tr>" );
 		}
 		public string GenerateHtmlNecropolis() {
 			var sb = new StringBuilder();
@@ -383,6 +537,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "td.skilldata { width: 275px; }" );
 			sb.AppendLine( ".strategycat { color: #FFEBD2; }" );
 			sb.AppendLine( ".strategychar { text-align: center; }" );
+			sb.AppendLine( "table.settings td { vertical-align: middle; min-width: 90px; }" );
 			sb.AppendLine( "</style>" );
 			sb.AppendLine( "</head>" );
 		}

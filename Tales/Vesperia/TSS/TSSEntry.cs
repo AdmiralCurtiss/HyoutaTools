@@ -17,6 +17,9 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 				return String.IsNullOrEmpty( StringENG ) ? StringJPN : StringENG;
 			}
 		}
+		public string GetString( int index ) {
+			if ( index == 0 ) { return StringJPN; } else { return StringENG; }
+		}
 
 		public TSSEntry( uint[] Entry, String StringJPN, String StringENG, int StringJPNIndex, int StringENGIndex, int inGameStringId ) {
 			this.Entry = Entry;
