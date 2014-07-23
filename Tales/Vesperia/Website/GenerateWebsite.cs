@@ -57,6 +57,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "battlebook-" + site.Version + ".html" ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
 
 			site.Version = GameVersion.PS3;
 			var PS3StringDic = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\PS3\mod\string.svo.ext\STRING_DIC.SO" ) );
@@ -103,6 +104,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "battlebook-" + site.Version + ".html" ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis(), Encoding.UTF8 );
 
 			return 0;
@@ -475,6 +477,21 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			sb.Append( "<tr><td colspan=\"5\"><hr></td></tr>" );
 		}
+		public string GenerateHtmlGradeShop() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Grade Shop" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			sb.Append( "<table>" );
+			foreach ( var entry in GradeShop.GradeShopEntryList ) {
+				if ( entry.GradeCost == 0 ) { continue; }
+				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
+			}
+			sb.Append( "</table>" );
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
 		public string GenerateHtmlNecropolis() {
 			var sb = new StringBuilder();
 			AddHeader( sb, "Necropolis of Nostalgia" );
@@ -559,6 +576,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			//sb.AppendLine( "<img src=\"menu-icons/sub-06.png\" title=\"Save\">" );
 			//sb.AppendLine( "<img src=\"menu-icons/sub-05.png\" title=\"Load\">" );
 			sb.AppendLine( "<a href=\"settings-" + Version + ".html\"><img src=\"menu-icons/sub-07.png\" title=\"Settings\"></a>" );
+			sb.AppendLine( "<a href=\"gradeshop-" + Version + ".html\"><img src=\"item-categories/cat-01.png\" title=\"Grade Shop\"></a>" );
 			if ( Version == GameVersion.PS3 ) {
 				sb.AppendLine( "<a href=\"necropolis-" + Version + ".html\"><img src=\"menu-icons/weather-4-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
 			}

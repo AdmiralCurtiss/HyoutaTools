@@ -32,5 +32,34 @@ namespace HyoutaTools.Tales.Vesperia.T8BTGR {
 		public override string ToString() {
 			return RefString;
 		}
+
+		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			StringBuilder sb = new StringBuilder();
+			sb.Append( "<tr>" );
+			/*
+			sb.Append( "<td>" );
+			sb.Append( RefString );
+			sb.Append( "</td>" );
+			//*/
+			sb.Append( "<td>" );
+			sb.Append( "<span class=\"itemname\">" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true, true ) );
+			sb.Append( "</span>" );
+			sb.Append( "<br>" );
+			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) );
+			sb.Append( "</td>" );
+			sb.Append( "<td>" );
+			sb.Append( "<span class=\"itemname\">" );
+			sb.Append( inGameIdDict[NameStringDicID].StringENG );
+			sb.Append( "</span>" );
+			sb.Append( "<br>" );
+			sb.Append( inGameIdDict[DescStringDicID].StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( "</td>" );
+			sb.Append( "<td>" );
+			sb.Append( GradeCost + " Grade" );
+			sb.Append( "</td>" );
+
+			return sb.ToString();
+		}
 	}
 }
