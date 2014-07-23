@@ -26,7 +26,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.BattleBook = new BTLBDAT.BTLBDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\BATTLEBOOKDATA.BIN" );
 			site.Strategy = new T8BTTA.T8BTTA( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0011.ext\ALL.0000" );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
-			site.IconsWithoutItems = new int[] { 0, 8, 11, 46, 47, 48, 49, 50, 53, 54, 55, 58, 59, 62 };
+			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 9, 16, 18, 2, 17, 19, 10, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
 
 			// copy over Japanese stuff into UK StringDic
 			var StringDicUs = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\360\string_dic_us.so" ), true );
@@ -37,11 +37,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
-			for ( int i = 0; i < 64; ++i ) {
-				if ( site.IconsWithoutItems.Contains( i ) ) { continue; }
+			foreach ( uint i in site.IconsWithItems ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, "items-i" + i + "-" + site.Version + ".html" ), site.GenerateHtmlItems( icon: i ), Encoding.UTF8 );
 			}
-			for ( int i = 2; i < 12; ++i ) {
+			for ( uint i = 2; i < 12; ++i ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, "items-c" + i + "-" + site.Version + ".html" ), site.GenerateHtmlItems( category: i ), Encoding.UTF8 );
 			}
 			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-" + site.Version + ".html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
@@ -81,14 +80,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				site.NecropolisMaps.Add( System.IO.Path.GetFileNameWithoutExtension( filenames[i] ), new T8BTXTM.T8BTXTMM( filenames[i] ) );
 			}
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
-			site.IconsWithoutItems = new int[] { 0, 8, 11, 46, 47, 48, 49, 50, 55, 58, 59, 62 };
+			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
-			for ( int i = 0; i < 64; ++i ) {
-				if ( site.IconsWithoutItems.Contains( i ) ) { continue; }
+			foreach ( uint i in site.IconsWithItems ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, "items-i" + i + "-" + site.Version + ".html" ), site.GenerateHtmlItems( icon: i ), Encoding.UTF8 );
 			}
-			for ( int i = 2; i < 12; ++i ) {
+			for ( uint i = 2; i < 12; ++i ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, "items-c" + i + "-" + site.Version + ".html" ), site.GenerateHtmlItems( category: i ), Encoding.UTF8 );
 			}
 			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-" + site.Version + ".html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
@@ -129,9 +127,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public Dictionary<string, T8BTXTM.T8BTXTMM> NecropolisMaps;
 
 		public Dictionary<uint, TSS.TSSEntry> InGameIdDict;
-		public int[] IconsWithoutItems;
+		public uint[] IconsWithItems;
 
-		public string GenerateHtmlItems( int? icon = null, int? category = null ) {
+		public string GenerateHtmlItems( uint? icon = null, uint? category = null ) {
 			var sb = new StringBuilder();
 			AddHeader( sb, "Items" );
 			sb.AppendLine( "<body><table>" );
@@ -545,7 +543,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<div>" );
 			sb.AppendLine( "<a href=\"artes-" + Version + ".html\"><img src=\"menu-icons/main-01.png\" title=\"Artes\"></a>" );
 			//sb.AppendLine( "<a href=\"equip-" + Version + ".html\"><img src=\"menu-icons/main-02.png\" title=\"Equipment\"></a>" );
-			sb.AppendLine( "<a href=\"items-" + Version + ".html\"><img src=\"menu-icons/main-03.png\" title=\"Items\"></a>" );
+			//sb.AppendLine( "<a href=\"items-" + Version + ".html\"><img src=\"menu-icons/main-03.png\" title=\"Items\"></a>" );
 			sb.AppendLine( "<a href=\"skills-" + Version + ".html\"><img src=\"menu-icons/main-04.png\" title=\"Skills\"></a>" );
 			sb.AppendLine( "<a href=\"strategy-" + Version + ".html\"><img src=\"menu-icons/main-05.png\" title=\"Strategy\"></a>" );
 			sb.AppendLine( "<a href=\"recipes-" + Version + ".html\"><img src=\"menu-icons/main-06.png\" title=\"Recipes\"></a>" );
@@ -554,7 +552,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<a href=\"synopsis-" + Version + ".html\"><img src=\"menu-icons/sub-09.png\" title=\"Synopsis\"></a>" );
 			sb.AppendLine( "<a href=\"battlebook-" + Version + ".html\"><img src=\"menu-icons/sub-14.png\" title=\"Battle Book\"></a>" );
 			sb.AppendLine( "<a href=\"enemies-" + Version + ".html\"><img src=\"menu-icons/sub-13.png\" title=\"Monster Book\"></a>" );
-			//sb.AppendLine( "<a href=\"items-" + Version + ".html\"><img src=\"menu-icons/sub-11.png\" title=\"Collector's Book\"></a>" );
+			sb.AppendLine( "<a href=\"items-" + Version + ".html\"><img src=\"menu-icons/sub-11.png\" title=\"Collector's Book\"></a>" );
 			sb.AppendLine( "<a href=\"locations-" + Version + ".html\"><img src=\"menu-icons/sub-10.png\" title=\"World Map\"></a>" );
 			sb.AppendLine( "<a href=\"records-" + Version + ".html\"><img src=\"menu-icons/sub-08.png\" title=\"Records\"></a>" );
 			//sb.AppendLine( "<img src=\"menu-icons/main-09.png\" title=\"Save & Load\">" );
@@ -565,20 +563,19 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.AppendLine( "<a href=\"necropolis-" + Version + ".html\"><img src=\"menu-icons/weather-4-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
 			}
 			sb.AppendLine( "<br>" );
-			for ( int i = 2; i < 12; ++i ) {
+			for ( uint i = 2; i < 12; ++i ) {
 				sb.Append( "<a href=\"items-c" + i + "-" + Version + ".html\">" );
-				sb.Append( "<img src=\"item-categories/cat-" + i.ToString( "D2" ) + ".png\" height=\"32\">" );
+				sb.Append( "<img src=\"item-categories/cat-" + i.ToString( "D2" ) + ".png\" title=\"" + InGameIdDict[33912572u + i].StringEngOrJpn + "\" height=\"32\">" );
 				sb.Append( "</a>" );
 			}
 			sb.AppendLine();
-			for ( int i = 0; i < 9; ++i ) {
+			for ( uint i = 0; i < 9; ++i ) {
 				sb.Append( "<a href=\"enemies-c" + i + "-" + Version + ".html\">" );
-				sb.Append( "<img src=\"monster-categories/cat-" + i + ".png\" height=\"32\">" );
+				sb.Append( "<img src=\"monster-categories/cat-" + i + ".png\" title=\"" + InGameIdDict[33912323u + i].StringEngOrJpn + "\" height=\"32\">" );
 				sb.Append( "</a>" );
 			}
 			sb.AppendLine( "<br>" );
-			for ( int i = 0; i < 64; ++i ) {
-				if ( IconsWithoutItems.Contains( i ) ) { continue; }
+			foreach ( uint i in IconsWithItems ) {
 				sb.Append( "<a href=\"items-i" + i + "-" + Version + ".html\">" );
 				sb.Append( "<img src=\"item-icons/ICON" + i + ".png\" height=\"16\" width=\"16\">" );
 				sb.Append( "</a>" );
