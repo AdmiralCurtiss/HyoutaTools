@@ -242,15 +242,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			uint equip = item.Data[(int)ItemData.EquippableByBitfield];
 			if ( equip > 0 ) {
 				sb.Append( "<span class=\"equip\">" );
-				if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_YUR.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 2 ) == 2 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_EST.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 4 ) == 4 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_KAR.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 8 ) == 8 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RIT.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 16 ) == 16 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAV.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 32 ) == 32 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_JUD.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 64 ) == 64 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAP.gif\" height=\"32\" width=\"24\">" ); }
-				if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_FRE.gif\" height=\"32\" width=\"24\">" ); }
-				if ( version == GameVersion.PS3 && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_PAT.gif\" height=\"32\" width=\"24\">" ); }
+				Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, equip );
 				sb.Append( "</span>" );
 			}
 
@@ -282,23 +274,6 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			if ( item.Data[177] > 0 ) { sb.Append( "Usable in battle" ); };
 			if ( item.Data[178] == 0 ) { sb.Append( "Not in Collector's Book" ); }
 			sb.Append( "</span>" );
-
-			/*
-			switch ( item.Data[(int)ItemData.Category] ) {
-				case 2: sb.AppendLine( "<Tools>" ); break;
-				case 3: sb.AppendLine( "<Main>" ); break;
-				case 4: sb.AppendLine( "<Sub>" ); break;
-				case 5: sb.AppendLine( "<Head>" ); break;
-				case 6: sb.AppendLine( "<Body>" ); break;
-				case 7: sb.AppendLine( "<Accessories>" ); break;
-				case 8: sb.AppendLine( "<Ingredients>" ); break;
-				case 9: sb.AppendLine( "<Synthesis Materials>" ); break;
-				case 10: sb.AppendLine( "<Valuables>" ); break;
-				case 11: sb.AppendLine( "<DLC>" ); break;
-				default: sb.AppendLine( "<UNKNOWN>" ); break;
-			}
-			*/
-
 			sb.Append( "</td>" );
 
 			uint synthCount = item.Data[(int)ItemData.SynthRecipeCount];
@@ -309,15 +284,16 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			}
 			for ( int j = 0; j < synthCount; ++j ) {
 				uint synthItemCount = item.Data[(int)ItemData.Synth1ItemSlotCount + j * 16];
-				sb.Append( "Required Synthesis Level: " + item.Data[(int)ItemData._Synth1Level + j * 16] );
-				sb.Append( "<br>Price: " + item.Data[(int)ItemData.Synth1Price + j * 16] + " Gald" );
+				sb.Append( "Synthesis Level: " + item.Data[(int)ItemData._Synth1Level + j * 16] );
+				sb.Append( "<br>" );
+				sb.Append( "Price: " + item.Data[(int)ItemData.Synth1Price + j * 16] + " Gald" );
 				for ( int i = 0; i < synthItemCount; ++i ) {
 					sb.Append( "<br>" );
 					var otherItem = items.itemIdDict[item.Data[(int)ItemData.Synth1Item1Type + i * 2 + j * 16]];
 					var otherItemNameEntry = dict[otherItem.NamePointer];
-					string otherItemName = String.IsNullOrEmpty( otherItemNameEntry.StringENG ) ? otherItemNameEntry.StringJPN : otherItemNameEntry.StringENG;
+					string otherItemName = otherItemNameEntry.StringEngOrJpn;
 					sb.Append( "<img src=\"item-icons/ICON" + otherItem.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
-					sb.Append( "<a href=\"#item" + otherItem.Data[(int)ItemData.ID] + "\">" );
+					sb.Append( "<a href=\"items-i" + otherItem.Data[(int)ItemData.Icon] + "-" + version + ".html#item" + otherItem.Data[(int)ItemData.ID] + "\">" );
 					sb.Append( otherItemName + "</a> x" + item.Data[(int)ItemData.Synth1Item1Count + i * 2 + j * 16] );
 				}
 				if ( synthCount > 1 && j == 0 ) { sb.Append( "</td><td>" ); }
@@ -419,12 +395,12 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							if ( lght < 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-03.png\"></td>" ); }
 							if ( dark < 0 ) { sb.Append( "<td><img src=\"text-icons/icon-element-06.png\"></td>" ); }
 							sb.Append( "</tr><tr>" );
-							if ( fire < 0 ) { sb.Append( "<td>" + -fire + "</td>" ); }
-							if ( eart < 0 ) { sb.Append( "<td>" + -eart + "</td>" ); }
-							if ( wind < 0 ) { sb.Append( "<td>" + -wind + "</td>" ); }
-							if ( watr < 0 ) { sb.Append( "<td>" + -watr + "</td>" ); }
-							if ( lght < 0 ) { sb.Append( "<td>" + -lght + "</td>" ); }
-							if ( dark < 0 ) { sb.Append( "<td>" + -dark + "</td>" ); }
+							if ( fire < 0 ) { sb.Append( "<td>" + -fire + "%</td>" ); }
+							if ( eart < 0 ) { sb.Append( "<td>" + -eart + "%</td>" ); }
+							if ( wind < 0 ) { sb.Append( "<td>" + -wind + "%</td>" ); }
+							if ( watr < 0 ) { sb.Append( "<td>" + -watr + "%</td>" ); }
+							if ( lght < 0 ) { sb.Append( "<td>" + -lght + "%</td>" ); }
+							if ( dark < 0 ) { sb.Append( "<td>" + -dark + "%</td>" ); }
 							sb.Append( "</tr></table>" );
 						}
 						if ( attackElementCount > 0 ) {
@@ -446,12 +422,12 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							if ( !( category == 3 || category == 4 ) ) {
 								// weapons always have a "1" here, don't print that, it's not useful
 								sb.Append( "</tr><tr>" );
-								if ( fire > 0 ) { sb.Append( "<td>" + fire + "</td>" ); }
-								if ( eart > 0 ) { sb.Append( "<td>" + eart + "</td>" ); }
-								if ( wind > 0 ) { sb.Append( "<td>" + wind + "</td>" ); }
-								if ( watr > 0 ) { sb.Append( "<td>" + watr + "</td>" ); }
-								if ( lght > 0 ) { sb.Append( "<td>" + lght + "</td>" ); }
-								if ( dark > 0 ) { sb.Append( "<td>" + dark + "</td>" ); }
+								if ( fire > 0 ) { sb.Append( "<td>" + fire + "%</td>" ); }
+								if ( eart > 0 ) { sb.Append( "<td>" + eart + "%</td>" ); }
+								if ( wind > 0 ) { sb.Append( "<td>" + wind + "%</td>" ); }
+								if ( watr > 0 ) { sb.Append( "<td>" + watr + "%</td>" ); }
+								if ( lght > 0 ) { sb.Append( "<td>" + lght + "%</td>" ); }
+								if ( dark > 0 ) { sb.Append( "<td>" + dark + "%</td>" ); }
 							}
 							sb.Append( "</tr></table>" );
 						}
@@ -533,7 +509,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							var enemyNameEntry = dict[enemy.NameStringDicID];
 							string enemyName = String.IsNullOrEmpty( enemyNameEntry.StringENG ) ? enemyNameEntry.StringJPN : enemyNameEntry.StringENG;
 							sb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\"><br>" );
-							sb.Append( "<a href=\"enemies-" + version + ".html#enemy" + enemy.InGameID + "\">" );
+							sb.Append( "<a href=\"enemies-c" + enemy.Category + "-" + version + ".html#enemy" + enemy.InGameID + "\">" );
 							sb.Append( enemyName + "</a><br>" + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
 							sb.Append( "</td>" );
 							if ( cellCount % 4 == 3 ) {

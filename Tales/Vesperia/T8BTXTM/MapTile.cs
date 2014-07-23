@@ -85,7 +85,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 					for ( int i = 0; i < 3; ++i ) {
 						var item = items.itemIdDict[treasureInfo.Items[i]];
 						sb.Append( "<td>" );
-						sb.Append( "<a href=\"items-" + version + ".html#item" + item.Data[(int)ItemDat.ItemData.ID] + "\">" );
+						sb.Append( "<a href=\"items-i" + item.Data[(int)ItemDat.ItemData.Icon] + "-" + version + ".html#item" + item.Data[(int)ItemDat.ItemData.ID] + "\">" );
 						sb.Append( "<img src=\"items/U_" + item.ItemString.TrimNull() + ".png\" height=\"32\" width=\"32\" title=\"" + inGameIdDict[item.NamePointer].StringEngOrJpn + "\">" );
 						sb.Append( "</a>" );
 						sb.Append( "</td>" );
@@ -106,7 +106,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 					var treasureInfo = treasures.TreasureInfoList[(int)SpecialTreasure];
 					var item = items.itemIdDict[treasureInfo.Items[0]];
 					sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemDat.ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
-					sb.Append( "<a href=\"items-" + version + ".html#item" + item.Data[(int)ItemDat.ItemData.ID] + "\">" );
+					sb.Append( "<a href=\"items-i" + item.Data[(int)ItemDat.ItemData.Icon] + "-" + version + ".html#item" + item.Data[(int)ItemDat.ItemData.ID] + "\">" );
 					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpn + "</a><br>" );
 				}
 
