@@ -693,15 +693,15 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return VesperiaUtil.RemoveTags( sb.ToString() );
 		}
 		public static void AppendCharacterBitfieldAsImageString( StringBuilder sb, GameVersion version, uint equip ) {
-			if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_YUR.gif\" height=\"32\" width=\"24\" title=\"Yuri\">" ); }
-			if ( ( equip & 2 ) == 2 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_EST.gif\" height=\"32\" width=\"24\" title=\"Estelle\">" ); }
-			if ( ( equip & 4 ) == 4 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_KAR.gif\" height=\"32\" width=\"24\" title=\"Karol\">" ); }
-			if ( ( equip & 8 ) == 8 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RIT.gif\" height=\"32\" width=\"24\" title=\"Rita\">" ); }
-			if ( ( equip & 16 ) == 16 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAV.gif\" height=\"32\" width=\"24\" title=\"Raven\">" ); }
-			if ( ( equip & 32 ) == 32 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_JUD.gif\" height=\"32\" width=\"24\" title=\"Judith\">" ); }
-			if ( ( equip & 64 ) == 64 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_RAP.gif\" height=\"32\" width=\"24\" title=\"Repede\">" ); }
-			if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_FRE.gif\" height=\"32\" width=\"24\" title=\"Flynn\">" ); }
-			if ( version == GameVersion.PS3 && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/StatusIcon_PAT.gif\" height=\"32\" width=\"24\" title=\"Patty\">" ); }
+			if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/YUR.png\" height=\"32\" width=\"24\" title=\"Yuri\">" ); }
+			if ( ( equip & 2 ) == 2 ) { sb.Append( "<img src=\"chara-icons/EST.png\" height=\"32\" width=\"24\" title=\"Estelle\">" ); }
+			if ( ( equip & 4 ) == 4 ) { sb.Append( "<img src=\"chara-icons/KAR.png\" height=\"32\" width=\"24\" title=\"Karol\">" ); }
+			if ( ( equip & 8 ) == 8 ) { sb.Append( "<img src=\"chara-icons/RIT.png\" height=\"32\" width=\"24\" title=\"Rita\">" ); }
+			if ( ( equip & 16 ) == 16 ) { sb.Append( "<img src=\"chara-icons/RAV.png\" height=\"32\" width=\"24\" title=\"Raven\">" ); }
+			if ( ( equip & 32 ) == 32 ) { sb.Append( "<img src=\"chara-icons/JUD.png\" height=\"32\" width=\"24\" title=\"Judith\">" ); }
+			if ( ( equip & 64 ) == 64 ) { sb.Append( "<img src=\"chara-icons/RAP.png\" height=\"32\" width=\"24\" title=\"Repede\">" ); }
+			if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/FRE.png\" height=\"32\" width=\"24\" title=\"Flynn\">" ); }
+			if ( version == GameVersion.PS3 && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/PAT.png\" height=\"32\" width=\"24\" title=\"Patty\">" ); }
 		}
 		public static void AppendPhysicalAilmentBitfieldAsImageString( StringBuilder sb, uint physAil ) {
 			if ( ( physAil & 1 ) == 1 ) { sb.Append( "<img src=\"text-icons/icon-status-13.png\" height=\"16\" width=\"16\">" ); }
