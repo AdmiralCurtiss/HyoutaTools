@@ -160,7 +160,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				if ( enemy.InGameID == 0 ) { continue; }
 				if ( category != null && category != enemy.Category ) { continue; }
 				sb.AppendLine( enemy.GetDataAsHtml( Version, Items, Locations, StringDic, InGameIdDict ) );
-				sb.AppendLine( "<hr>" );
+				sb.AppendLine( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
 			sb.AppendLine( "</body></html>" );
@@ -588,8 +588,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<hr>" );
 		}
 		public string FixInGameStrings( StringBuilder sb ) {
-			sb.Replace( "\x06(STA)", "<img src=\"text-icons/" + Version.ToString() + "/button-Start.png\" height=\"16\">" );
-			sb.Replace( "\x06(L3)", "<img src=\"text-icons/" + Version.ToString() + "/ls-push.png\" height=\"16\">" );
 			sb.Replace( "\x06(ST1)", "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" );
 			sb.Replace( "\x06(ST2)", "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" );
 			sb.Replace( "\x06(ST3)", "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" );
@@ -624,27 +622,46 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Replace( "\x06(MC8)", "<img src=\"text-icons/icon-monster-08.png\" height=\"16\" width=\"16\">" );
 			sb.Replace( "\x06(MC9)", "<img src=\"text-icons/icon-monster-09.png\" height=\"16\" width=\"16\">" );
 			sb.Replace( "\x06(COS)", "<img src=\"text-icons/icon-costume.png\" height=\"16\" width=\"16\">" );
-			sb.Replace( "\x06(MVN)", "<img src=\"text-icons/" + Version.ToString() + "/ls-side.png\" height=\"16\">" );
+			sb.Replace( "\x06(STA)", "<img src=\"text-icons/" + Version.ToString() + "/button-Start.png\" height=\"16\">" );
+			sb.Replace( "\x06(SEL)", "<img src=\"text-icons/" + Version.ToString() + "/button-Select.png\" height=\"16\">" );
+			sb.Replace( "\x06(L3)", "<img src=\"text-icons/" + Version.ToString() + "/ls-push.png\" height=\"16\">" );
+			sb.Replace( "\x06(R3)", "<img src=\"text-icons/" + Version.ToString() + "/rs-push.png\" height=\"16\">" );
+			sb.Replace( "\x06(MVN)", "<img src=\"text-icons/" + Version.ToString() + "/ls.png\" height=\"16\">" );
 			sb.Replace( "\x06(MVR)", "<img src=\"text-icons/" + Version.ToString() + "/ls-right.png\" height=\"16\">" );
 			sb.Replace( "\x06(MVL)", "<img src=\"text-icons/" + Version.ToString() + "/ls-left.png\" height=\"16\">" );
 			sb.Replace( "\x06(MVU)", "<img src=\"text-icons/" + Version.ToString() + "/ls-up.png\" height=\"16\">" );
 			sb.Replace( "\x06(MVD)", "<img src=\"text-icons/" + Version.ToString() + "/ls-down.png\" height=\"16\">" );
-			sb.Replace( "\x06(LTN)", "<img src=\"text-icons/" + Version.ToString() + "/ls-side.png\" height=\"16\">" );
+			sb.Replace( "\x06(MVH)", "<img src=\"text-icons/" + Version.ToString() + "/ls-side.png\" height=\"16\">" );
+			sb.Replace( "\x06(LTN)", "<img src=\"text-icons/" + Version.ToString() + "/ls.png\" height=\"16\">" );
 			sb.Replace( "\x06(LTR)", "<img src=\"text-icons/" + Version.ToString() + "/ls-right.png\" height=\"16\">" );
 			sb.Replace( "\x06(LTL)", "<img src=\"text-icons/" + Version.ToString() + "/ls-left.png\" height=\"16\">" );
 			sb.Replace( "\x06(LTU)", "<img src=\"text-icons/" + Version.ToString() + "/ls-up.png\" height=\"16\">" );
 			sb.Replace( "\x06(LTD)", "<img src=\"text-icons/" + Version.ToString() + "/ls-down.png\" height=\"16\">" );
+			sb.Replace( "\x06(LTH)", "<img src=\"text-icons/" + Version.ToString() + "/ls-side.png\" height=\"16\">" );
+			sb.Replace( "\x06(RTN)", "<img src=\"text-icons/" + Version.ToString() + "/rs.png\" height=\"16\">" );
+			sb.Replace( "\x06(RTR)", "<img src=\"text-icons/" + Version.ToString() + "/rs-right.png\" height=\"16\">" );
+			sb.Replace( "\x06(RTL)", "<img src=\"text-icons/" + Version.ToString() + "/rs-left.png\" height=\"16\">" );
+			sb.Replace( "\x06(RTU)", "<img src=\"text-icons/" + Version.ToString() + "/rs-up.png\" height=\"16\">" );
+			sb.Replace( "\x06(RTD)", "<img src=\"text-icons/" + Version.ToString() + "/rs-down.png\" height=\"16\">" );
+			sb.Replace( "\x06(RTH)", "<img src=\"text-icons/" + Version.ToString() + "/rs-side.png\" height=\"16\">" );
 			sb.Replace( "\x06(LBN)", "<img src=\"text-icons/" + Version.ToString() + "/dpad.png\" height=\"16\">" );
 			sb.Replace( "\x06(LBR)", "<img src=\"text-icons/" + Version.ToString() + "/dpad-right.png\" height=\"16\">" );
 			sb.Replace( "\x06(LBL)", "<img src=\"text-icons/" + Version.ToString() + "/dpad-left.png\" height=\"16\">" );
 			sb.Replace( "\x06(LBU)", "<img src=\"text-icons/" + Version.ToString() + "/dpad-up.png\" height=\"16\">" );
 			sb.Replace( "\x06(LBD)", "<img src=\"text-icons/" + Version.ToString() + "/dpad-down.png\" height=\"16\">" );
+			sb.Replace( "\x06(LBH)", "<img src=\"text-icons/" + Version.ToString() + "/dpad-side.png\" height=\"16\">" );
 			sb.Replace( "\x06(MVNR)", "<img src=\"text-icons/" + Version.ToString() + "/dpad.png\" height=\"16\">" );
 			sb.Replace( "\x06(MVRR)", "<img src=\"text-icons/" + Version.ToString() + "/dpad-right.png\" height=\"16\">" );
 			sb.Replace( "\x06(MVLR)", "<img src=\"text-icons/" + Version.ToString() + "/dpad-left.png\" height=\"16\">" );
 			sb.Replace( "\x06(MVUR)", "<img src=\"text-icons/" + Version.ToString() + "/dpad-up.png\" height=\"16\">" );
 			sb.Replace( "\x06(MVDR)", "<img src=\"text-icons/" + Version.ToString() + "/dpad-down.png\" height=\"16\">" );
+			sb.Replace( "\x06(MVHR)", "<img src=\"text-icons/" + Version.ToString() + "/dpad-side.png\" height=\"16\">" );
 			sb.Replace( "\x06(RBL)", "<img src=\"text-icons/" + Version.ToString() + "/button-action.png\" height=\"16\">" );
+			sb.Replace( "\x06(RBU)", "<img src=\"text-icons/" + Version.ToString() + "/button-menu.png\" height=\"16\">" );
+			sb.Replace( "\x06(RBR)", "<img src=\"text-icons/" + Version.ToString() + "/button-cancel.png\" height=\"16\">" );
+			sb.Replace( "\x06(RBD)", "<img src=\"text-icons/" + Version.ToString() + "/button-confirm.png\" height=\"16\">" );
+			sb.Replace( "\x06(CCL)", "<img src=\"text-icons/" + Version.ToString() + "/button-cancel.png\" height=\"16\">" );
+			sb.Replace( "\x06(ETR)", "<img src=\"text-icons/" + Version.ToString() + "/button-confirm.png\" height=\"16\">" );
 			sb.Replace( "\x06(ATK)", "<img src=\"text-icons/" + Version.ToString() + "/button-cancel.png\" height=\"16\">" );
 			sb.Replace( "\x06(ART)", "<img src=\"text-icons/" + Version.ToString() + "/button-confirm.png\" height=\"16\">" );
 			sb.Replace( "\x06(GUD)", "<img src=\"text-icons/" + Version.ToString() + "/button-action.png\" height=\"16\">" );
@@ -680,6 +697,26 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			if ( ( physAil & 32 ) == 32 ) { sb.Append( "<img src=\"text-icons/icon-status-05.png\" height=\"16\" width=\"16\">" ); }
 			if ( ( physAil & 64 ) == 64 ) { sb.Append( "<img src=\"text-icons/icon-status-06.png\" height=\"16\" width=\"16\">" ); }
 			if ( ( physAil & 128 ) == 128 ) { sb.Append( "<img src=\"text-icons/icon-status-07.png\" height=\"16\" width=\"16\">" ); }
+		}
+		public static void AppendFatalStrikeIcon( StringBuilder sb, uint fstype ) {
+			switch ( fstype ) {
+				case 0: sb.Append( "<img src=\"menu-icons/artes-13.png\" width=\"16\" height=\"16\">" ); break;
+				case 1: sb.Append( "<img src=\"menu-icons/artes-15.png\" width=\"16\" height=\"16\">" ); break;
+				case 2: sb.Append( "<img src=\"menu-icons/artes-14.png\" width=\"16\" height=\"16\">" ); break;
+				default: sb.Append( "[Unknown Fatal Strike Type]" ); break;
+			}
+		}
+		public static void AppendElementIcon( StringBuilder sb, T8BTEMST.Element element ) {
+			switch ( element ) {
+				case T8BTEMST.Element.Fire: sb.Append( "<img src=\"text-icons/icon-element-02.png\" width=\"16\" height=\"16\">" ); break;
+				case T8BTEMST.Element.Earth: sb.Append( "<img src=\"text-icons/icon-element-04.png\" width=\"16\" height=\"16\">" ); break;
+				case T8BTEMST.Element.Wind: sb.Append( "<img src=\"text-icons/icon-element-01.png\" width=\"16\" height=\"16\">" ); break;
+				case T8BTEMST.Element.Water: sb.Append( "<img src=\"text-icons/icon-element-05.png\" width=\"16\" height=\"16\">" ); break;
+				case T8BTEMST.Element.Light: sb.Append( "<img src=\"text-icons/icon-element-03.png\" width=\"16\" height=\"16\">" ); break;
+				case T8BTEMST.Element.Darkness: sb.Append( "<img src=\"text-icons/icon-element-06.png\" width=\"16\" height=\"16\">" ); break;
+				case T8BTEMST.Element.Physical: sb.Append( "<img src=\"text-icons/icon-element-07.png\" width=\"16\" height=\"16\">" ); break;
+				default: sb.Append( "[Unknown Element]" ); break;
+			}
 		}
 	}
 }
