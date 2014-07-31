@@ -12,6 +12,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 
 			var site = new GenerateWebsite();
+
 			site.Version = GameVersion.X360;
 			site.Items = new ItemDat.ItemDat( @"d:\Dropbox\ToV\360\item.svo.ext\ITEM.DAT" );
 			site.StringDic = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\360\string_dic_uk.so" ), true );
@@ -32,7 +33,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			// copy over Japanese stuff into UK StringDic
 			var StringDicUs = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\360\string_dic_us.so" ), true );
 			var IdDictUs = StringDicUs.GenerateInGameIdDictionary();
-
 			foreach ( var kvp in IdDictUs ) {
 				site.InGameIdDict[kvp.Key].StringJPN = kvp.Value.StringJPN;
 			}
@@ -110,6 +110,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "npc-" + site.Version + ".html" ), site.GenerateHtmlNpc(), Encoding.UTF8 );
 
 			return 0;
 		}
@@ -535,6 +536,55 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlNpc() {
+			var npcListPS3 = new TOVNPC.TOVNPCL( @"d:\Dropbox\ToV\PS3\orig\npc.svo.ext\NPC.DAT.dec.ext\0000.dec" );
+			Dictionary<string, TOVNPC.TOVNPCT> npcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
+			foreach ( var f in npcListPS3.NpcFileList ) {
+				string filename = @"d:\Dropbox\ToV\PS3\orig\npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
+				if ( File.Exists( filename ) ) {
+					var d = new TOVNPC.TOVNPCT( filename );
+					npcDefs.Add( f.Map, d );
+				}
+			}
+
+			StringBuilder sb = new StringBuilder();
+			AddHeader( sb, "NPC Dialogue" );
+			sb.AppendLine( "<body>" );
+			//AddMenuBar( sb );
+			sb.Append( "<table class=\"npcdiff\">" );
+			foreach ( var kvp in npcDefs ) {
+				for ( int i = 0; i < kvp.Value.NpcDefList.Count; ++i ) {
+					var d = kvp.Value.NpcDefList[i];
+					sb.Append( "<tr>" );
+
+					sb.Append( "<td>" );
+					sb.Append( kvp.Key );
+					sb.Append( "<br>" );
+					sb.Append( d.StringDicId );
+					//sb.Append( "<br>" );
+					//sb.Append( d.RefString1 );
+					//sb.Append( "<br>" );
+					//sb.Append( d.RefString2 );
+					sb.Append( "</td>" );
+
+					sb.Append( "<td>" );
+					sb.Append( VesperiaUtil.RemoveTags( InGameIdDict[d.StringDicId].StringJPN, true, true ).Replace( "\n", "<br>" ) );
+					sb.Append( "</td>" );
+
+					sb.Append( "<td>" );
+					sb.Append( VesperiaUtil.RemoveTags( InGameIdDict[d.StringDicId].StringENG, false, false ).Replace( "\n", "<br>" ) );
+					sb.Append( "</td>" );
+
+					sb.Append( "</tr>" );
+
+					sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
+				}
+			}
+			sb.Append( "</table>" );
+			sb.Append( "</body></html>" );
+
+			return sb.ToString();
 		}
 
 		public void AddHeader( StringBuilder sb, string name ) {
