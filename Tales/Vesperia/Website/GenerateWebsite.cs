@@ -18,6 +18,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Artes = new T8BTMA.T8BTMA( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0004.ext\ALL.0000" );
 			site.Skills = new T8BTSK.T8BTSK( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0010.ext\ALL.0000" );
 			site.Enemies = new T8BTEMST.T8BTEMST( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0005.ext\ALL.0000" );
+			site.EnemyGroups = new T8BTEMGP.T8BTEMGP( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0006.ext\ALL.0000" );
 			site.Recipes = new COOKDAT.COOKDAT( @"d:\Dropbox\ToV\360\cook.svo.ext\COOKDATA.BIN" );
 			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\WORLDDATA.BIN" );
 			site.Synopsis = new SYNPDAT.SYNPDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\SYNOPSISDATA.BIN" );
@@ -47,6 +48,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			for ( int i = 0; i < 9; ++i ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, "enemies-c" + i + "-" + site.Version + ".html" ), site.GenerateHtmlEnemies( category: i ), Encoding.UTF8 );
 			}
+			System.IO.File.WriteAllText( Path.Combine( dir, "enemygroups-" + site.Version + ".html" ), site.GenerateHtmlEnemyGroups(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "skills-" + site.Version + ".html" ), site.GenerateHtmlSkills(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "artes-" + site.Version + ".html" ), site.GenerateHtmlArtes(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "synopsis-" + site.Version + ".html" ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
@@ -66,6 +68,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Artes = new T8BTMA.T8BTMA( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0004.ext\ALL.0000" );
 			site.Skills = new T8BTSK.T8BTSK( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0010.ext\ALL.0000" );
 			site.Enemies = new T8BTEMST.T8BTEMST( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000" );
+			site.EnemyGroups = new T8BTEMGP.T8BTEMGP( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0006.ext\ALL.0000" );
 			site.Recipes = new COOKDAT.COOKDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\COOKDATA.BIN" );
 			site.Locations = new WRLDDAT.WRLDDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\WORLDDATA.BIN" );
 			site.Synopsis = new SYNPDAT.SYNPDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\SYNOPSISDATA.BIN" );
@@ -94,6 +97,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			for ( int i = 0; i < 9; ++i ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, "enemies-c" + i + "-" + site.Version + ".html" ), site.GenerateHtmlEnemies( category: i ), Encoding.UTF8 );
 			}
+			System.IO.File.WriteAllText( Path.Combine( dir, "enemygroups-" + site.Version + ".html" ), site.GenerateHtmlEnemyGroups(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "skills-" + site.Version + ".html" ), site.GenerateHtmlSkills(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "artes-" + site.Version + ".html" ), site.GenerateHtmlArtes(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "synopsis-" + site.Version + ".html" ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
@@ -116,6 +120,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public T8BTMA.T8BTMA Artes;
 		public T8BTSK.T8BTSK Skills;
 		public T8BTEMST.T8BTEMST Enemies;
+		public T8BTEMGP.T8BTEMGP EnemyGroups;
 		public COOKDAT.COOKDAT Recipes;
 		public WRLDDAT.WRLDDAT Locations;
 		public SYNPDAT.SYNPDAT Synopsis;
@@ -161,6 +166,20 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				if ( category != null && category != enemy.Category ) { continue; }
 				sb.AppendLine( enemy.GetDataAsHtml( Version, Items, Locations, StringDic, InGameIdDict ) );
 				sb.AppendLine( "<tr><td colspan=\"4\"><hr></td></tr>" );
+			}
+			sb.Append( "</table>" );
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlEnemyGroups() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Enemies" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			sb.Append( "<table>" );
+			foreach ( var group in EnemyGroups.EnemyGroupList ) {
+				sb.AppendLine( group.GetDataAsHtml( Enemies, InGameIdDict ) );
+				sb.AppendLine( "<tr><td colspan=\"9\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
 			sb.AppendLine( "</body></html>" );
