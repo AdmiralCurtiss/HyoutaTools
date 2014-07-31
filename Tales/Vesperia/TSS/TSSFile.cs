@@ -305,6 +305,29 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			char[] bx06 = { '', '(' };
 			String x06 = new String( bx06 );
 
+			// stuff to import the NPC text area names into GN
+			Dictionary<uint, string> npcInGameIdMapDict = null;
+			if ( updateDatabaseWithInGameStringId ) {
+				string npcListFilename = @"d:\Dropbox\ToV\PS3\orig\npc.svo.ext\NPC.DAT.dec.ext\0000.dec";
+				if ( System.IO.File.Exists( npcListFilename ) ) {
+					var npcListPS3 = new TOVNPC.TOVNPCL( npcListFilename );
+					Dictionary<string, TOVNPC.TOVNPCT> npcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
+					foreach ( var f in npcListPS3.NpcFileList ) {
+						string filename = @"d:\Dropbox\ToV\PS3\orig\npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
+						if ( System.IO.File.Exists( filename ) ) {
+							var d = new TOVNPC.TOVNPCT( filename );
+							npcDefs.Add( f.Map, d );
+						}
+					}
+					npcInGameIdMapDict = new Dictionary<uint, string>();
+					foreach ( var kvp in npcDefs ) {
+						foreach ( var npcText in kvp.Value.NpcDefList ) {
+							npcInGameIdMapDict.Add( npcText.StringDicId, kvp.Key );
+						}
+					}
+				}
+			}
+
 			foreach ( String CurrentDBName in DBNames ) {
 				Console.WriteLine( "   Importing " + CurrentDBName + "..." );
 				SQLiteConnection Connection = new SQLiteConnection( "Data Source=db/" + CurrentDBName );
@@ -316,7 +339,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 					int PointerRef = Reader.GetInt32( 1 );
 
 					if ( updateDatabaseWithInGameStringId ) {
-						UpdateDatabaseWithInGameStringId( Connection, PointerRef, Entries[PointerRef + 1].inGameStringId );
+						UpdateDatabaseWithInGameStringId( Connection, PointerRef, Entries[PointerRef + 1].inGameStringId, npcInGameIdMapDict );
 					}
 
 					if ( Entries[PointerRef + 1].StringJPN != null
@@ -346,9 +369,15 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			return true;
 		}
 
-		private static void UpdateDatabaseWithInGameStringId( SQLiteConnection conn, int pointerref, int ingameid ) {
+		private static void UpdateDatabaseWithInGameStringId( SQLiteConnection conn, int pointerref, int ingameid, Dictionary<uint, string> npcInGameIdMapDict = null ) {
 			if ( ingameid > -1 ) {
-				string UPDATE = "UPDATE Text SET IdentifyString = IdentifyString || \" [" + ingameid + " / 0x" + ingameid.ToString( "X6" ) + "]\" WHERE PointerRef = " + pointerref;
+				string areaName = "";
+				if ( npcInGameIdMapDict != null && npcInGameIdMapDict.ContainsKey( (uint)ingameid ) ) {
+					areaName = "[" + npcInGameIdMapDict[(uint)ingameid] + "] ";
+				}
+				string inGameIdText = " [" + ingameid + " / 0x" + ingameid.ToString( "X6" ) + "]";
+
+				string UPDATE = "UPDATE Text SET IdentifyString = \"" + areaName + "\" || IdentifyString || \"" + inGameIdText + "\" WHERE PointerRef = " + pointerref;
 				Console.WriteLine( UPDATE );
 				SQLiteCommand command = new SQLiteCommand( UPDATE, conn );
 				command.ExecuteNonQuery();
