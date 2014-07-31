@@ -572,6 +572,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( ".strategycat { color: #FFEBD2; }" );
 			sb.AppendLine( ".strategychar { text-align: center; }" );
 			sb.AppendLine( "table.settings td { vertical-align: middle; min-width: 90px; }" );
+			sb.AppendLine( ".difficultyname { font-weight: bold; text-decoration: underline; }" );
 			sb.AppendLine( "</style>" );
 			sb.AppendLine( "</head>" );
 		}

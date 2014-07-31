@@ -200,16 +200,10 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			sb.Append( "</td>" );
 			//sb.Append( " / Category: " + Category + "<br>" );
 
-			sb.Append( "<td rowspan=\"2\">" );
-			sb.Append( "Level: " + Level + "<br>" );
-			sb.Append( "HP: " + HP + "<br>" );
-			sb.Append( "TP: " + TP + "<br>" );
-			sb.Append( "PATK: " + PATK + "<br>" );
-			sb.Append( "PDEF: " + PDEF + "<br>" );
-			sb.Append( "MATK: " + MATK + "<br>" );
-			sb.Append( "MDEF: " + MDEF + "<br>" );
-			sb.Append( "AGL: " + AGL + "<br>" );
-			sb.Append( "</td>" );
+			AppendStats( sb, "Easy", 0 );
+			AppendStats( sb, "Normal", 1 );
+			AppendStats( sb, "Hard", 2 );
+			AppendStats( sb, "Unknown", 3 );
 
 			sb.Append( "<td rowspan=\"2\">" );
 			sb.Append( "EXP: " + EXP + ", " );
@@ -373,5 +367,34 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 
 			return sb.ToString();
 		}
+
+		public void AppendStats( StringBuilder sb, string difficultyName, int difficulty ) {
+			double hpMod = 1.0;
+			double tpMod = 1.0;
+			double atkMod = 1.0;
+			double defMod = 1.0;
+			double mAtkMod = 1.0;
+			double mDefMod = 1.0;
+			double speedMod = 1.0;
+			switch ( difficulty ) {
+				case 0: hpMod = 0.7; tpMod = 0.7; atkMod = 0.7; defMod = 0.7; mAtkMod = 0.7; mDefMod = 0.7; speedMod = 0.7; break;
+				case 1: hpMod = 1.0; tpMod = 1.0; atkMod = 1.0; defMod = 1.0; mAtkMod = 1.0; mDefMod = 1.0; speedMod = 1.0; break;
+				case 2: hpMod = 2.5; tpMod = 1.0; atkMod = 1.2; defMod = 1.0; mAtkMod = 1.2; mDefMod = 1.0; speedMod = 1.0; break;
+				case 3: hpMod = 5.0; tpMod = 1.0; atkMod = 3.5; defMod = 2.5; mAtkMod = 3.0; mDefMod = 2.5; speedMod = 1.0; break;
+			}
+
+			sb.Append( "<td rowspan=\"2\">" );
+			sb.Append( "<span class=\"difficultyname\">" + difficultyName + "</span><br>" );
+			sb.Append( "Level: " + Level + "<br>" );
+			sb.Append( "HP: " + Math.Floor( HP * hpMod ) + "<br>" );
+			sb.Append( "TP: " + Math.Floor( TP * tpMod ) + "<br>" );
+			sb.Append( "PATK: " + Math.Floor( PATK * atkMod ) + "<br>" );
+			sb.Append( "PDEF: " + Math.Floor( PDEF * defMod ) + "<br>" );
+			sb.Append( "MATK: " + Math.Floor( MATK * mAtkMod ) + "<br>" );
+			sb.Append( "MDEF: " + Math.Floor( MDEF * mDefMod ) + "<br>" );
+			sb.Append( "AGL: " + Math.Floor( AGL * speedMod ) + "<br>" );
+			sb.Append( "</td>" );
+		}
+
 	}
 }
