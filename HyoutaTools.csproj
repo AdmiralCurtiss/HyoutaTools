@@ -229,6 +229,8 @@
     <Compile Include="Tales\Vesperia\T8BTXTM\TreasureInfo.cs" />
     <Compile Include="Tales\Vesperia\To8chtx\ChatFile.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\NpcDialogueDefinition.cs" />
+    <Compile Include="Tales\Vesperia\TOVNPC\NpcFileReference.cs" />
+    <Compile Include="Tales\Vesperia\TOVNPC\TOVNPCL.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\TOVNPCT.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />
