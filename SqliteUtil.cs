@@ -10,12 +10,23 @@ namespace HyoutaTools {
 			return SelectScalar( connString, statement, new object[0] );
 		}
 		public static object SelectScalar( string connString, string statement, IEnumerable<object> parameters ) {
+			using ( SQLiteConnection connection = new SQLiteConnection( connString ) ) {
+				connection.Open();
+				return SelectScalar( connection, statement, parameters );
+			}
+		}
+		public static object SelectScalar( SQLiteConnection connection, string statement, IEnumerable<object> parameters ) {
 			object retval = null;
-			SQLiteConnection Connection = new SQLiteConnection( connString );
-			Connection.Open();
-
-			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
-			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
+			using ( SQLiteTransaction transaction = connection.BeginTransaction() ) {
+				retval = SelectScalar( transaction, statement, parameters );
+				transaction.Commit();
+			}
+			return retval;
+		}
+		public static object SelectScalar( SQLiteTransaction transaction, string statement, IEnumerable<object> parameters ) {
+			object retval = null;
+			using ( SQLiteCommand Command = new SQLiteCommand() ) {
+				Command.Connection = transaction.Connection;
 				Command.CommandText = statement;
 				foreach ( object p in parameters ) {
 					SQLiteParameter sqp = new SQLiteParameter();
@@ -23,10 +34,7 @@ namespace HyoutaTools {
 					Command.Parameters.Add( sqp );
 				}
 				retval = Command.ExecuteScalar();
-				Transaction.Commit();
 			}
-			Connection.Close();
-
 			return retval;
 		}
 
