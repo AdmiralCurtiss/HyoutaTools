@@ -10,20 +10,23 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 			bool UseInsaneNames = false;
 			bool RealMode = false;
 			bool UpdateInGameId = false;
+			bool GenerateGracesEnglish = false;
 
-			if ( args.Count == 1 ) {
-				if ( args[0] == "-insane" ) {
-					Console.WriteLine( "Wesker-Dumbledore Mode Activated!" );
-					UseInsaneNames = true;
-				}
-				if ( args[0] == "-real" ) {
-					Console.WriteLine( "Real Mode activated, resulting file will contain both English and Japanese data as expected by an unmodified game." );
-					RealMode = true;
-				}
-				if ( args[0] == "-updateInGameId" ) {
-					Console.WriteLine( "Updating InGameIDs in the database." );
-					UpdateInGameId = true;
-				}
+			if ( args.Contains( "-insane" ) ) {
+				Console.WriteLine( "Wesker-Dumbledore Mode Activated!" );
+				UseInsaneNames = true;
+			}
+			if ( args.Contains( "-real" ) ) {
+				Console.WriteLine( "Real Mode activated, resulting file will contain both English and Japanese data as expected by an unmodified game." );
+				RealMode = true;
+			}
+			if ( args.Contains( "-updateInGameId" ) ) {
+				Console.WriteLine( "Updating InGameIDs in the database." );
+				UpdateInGameId = true;
+			}
+			if ( args.Contains( "-generateGracesEnglish" ) ) {
+				Console.WriteLine( "Generating English version of GracesJapanese." );
+				GenerateGracesEnglish = true;
 			}
 
 
@@ -37,19 +40,18 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 			}
 
 
-			if ( args.Count == 1 ) {
-				if ( args[0] == "-engorigdmp" ) {
-					Console.WriteLine( "Exporting original text (english)..." );
-					System.IO.File.WriteAllBytes( "STRING_DIC_original_eng_export.txt", TSS.ExportTextForEnglishDump() );
-				} else if ( args[0] == "-origdmp" ) {
-					Console.WriteLine( "Exporting original text (all)..." );
-					System.IO.File.WriteAllBytes( "STRING_DIC_original_export.txt", TSS.ExportText() );
-				}
+			if ( args.Contains( "-engorigdmp" ) ) {
+				Console.WriteLine( "Exporting original text (english)..." );
+				System.IO.File.WriteAllBytes( "STRING_DIC_original_eng_export.txt", TSS.ExportTextForEnglishDump() );
+			}
+			if ( args.Contains( "-origdmp" ) ) {
+				Console.WriteLine( "Exporting original text (all)..." );
+				System.IO.File.WriteAllBytes( "STRING_DIC_original_export.txt", TSS.ExportText() );
 			}
 
 
 			Console.WriteLine( "Importing databases..." );
-			if ( !TSS.ImportSQL( placeEnglishInJpnEntry: !RealMode, updateDatabaseWithInGameStringId: UpdateInGameId ) ) {
+			if ( !TSS.ImportSQL( placeEnglishInJpnEntry: !RealMode, updateDatabaseWithInGameStringId: UpdateInGameId, generateGracesEnglish: GenerateGracesEnglish ) ) {
 				Console.WriteLine( "Could not import all databases! Exiting..." );
 				return -1;
 			}

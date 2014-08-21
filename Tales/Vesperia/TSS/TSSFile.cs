@@ -287,7 +287,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			return Serialized.ToArray();
 		}
 
-		public bool ImportSQL( bool placeEnglishInJpnEntry = true, bool updateDatabaseWithInGameStringId = false ) {
+		public bool ImportSQL( bool placeEnglishInJpnEntry = true, bool updateDatabaseWithInGameStringId = false, bool generateGracesEnglish = false ) {
 			String[] DBNames = {
                                    "VGeneral", "VMenu", "VArtes", "VSkills",
                                    "VStrategy", "VLocation Names", "VEnemies",
@@ -304,6 +304,13 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 
 			char[] bx06 = { '', '(' };
 			String x06 = new String( bx06 );
+			SQLiteConnection connectionGracesEnglish = null;
+			SQLiteTransaction transactionGracesEnglish = null;
+			if ( generateGracesEnglish ) {
+				connectionGracesEnglish = new SQLiteConnection( "Data Source=db/GracesEnglish" );
+				connectionGracesEnglish.Open();
+				transactionGracesEnglish = connectionGracesEnglish.BeginTransaction();
+			}
 
 			// stuff to import the NPC text area names into GN
 			Dictionary<uint, string> npcInGameIdMapDict = null;
@@ -332,7 +339,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 				Console.WriteLine( "   Importing " + CurrentDBName + "..." );
 				SQLiteConnection Connection = new SQLiteConnection( "Data Source=db/" + CurrentDBName );
 				Connection.Open();
-				SQLiteCommand Command = new SQLiteCommand( "SELECT english, PointerRef FROM Text", Connection );
+				SQLiteCommand Command = new SQLiteCommand( "SELECT english, PointerRef, StringID FROM Text", Connection );
 				SQLiteDataReader Reader = Command.ExecuteReader();
 				while ( Reader.Read() ) {
 					String English = Reader.GetString( 0 );
@@ -340,6 +347,11 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 
 					if ( updateDatabaseWithInGameStringId ) {
 						UpdateDatabaseWithInGameStringId( Connection, PointerRef, Entries[PointerRef + 1].inGameStringId, npcInGameIdMapDict );
+					}
+					if ( generateGracesEnglish ) {
+						string englishOriginal = Entries[PointerRef + 1].StringENG;
+						int gracesJapaneseId = Reader.GetInt32( 2 );
+						UpdateGracesJapanese( transactionGracesEnglish, gracesJapaneseId, englishOriginal, 0 );
 					}
 
 					if ( Entries[PointerRef + 1].StringJPN != null
@@ -366,7 +378,23 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 				Connection.Dispose();
 			}
 
+			if ( generateGracesEnglish ) {
+				transactionGracesEnglish.Commit();
+				connectionGracesEnglish.Close();
+			}
+
 			return true;
+		}
+
+		private static void UpdateGracesJapanese( SQLiteTransaction ta, int id, string originalString, int debug ) {
+			// CREATE TABLE Japanese(ID INT PRIMARY KEY, string TEXT, debug INT)
+			long exists = (long)SqliteUtil.SelectScalar( ta, "SELECT COUNT(1) FROM Japanese WHERE ID = ?", new object[1] { id } );
+
+			if ( exists > 0 ) {
+				SqliteUtil.Update( ta, "UPDATE Japanese SET string = ?, debug = ? WHERE ID = ?", new object[3] { originalString, debug, id } );
+			} else {
+				SqliteUtil.Update( ta, "INSERT INTO Japanese (ID, string, debug) VALUES (?, ?, ?)", new object[3] { id, originalString, debug } );
+			}
 		}
 
 		private static void UpdateDatabaseWithInGameStringId( SQLiteConnection conn, int pointerref, int ingameid, Dictionary<uint, string> npcInGameIdMapDict = null ) {
