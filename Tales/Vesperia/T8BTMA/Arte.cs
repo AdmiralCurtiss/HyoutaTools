@@ -211,7 +211,11 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 				if ( LearnRequirementsOtherArtesType[i] > 0 ) {
 					switch ( LearnRequirementsOtherArtesType[i] ) {
 						case 1: // Level
-							sb.Append( "Level " + LearnRequirementsOtherArtesId[i] );
+							if ( LearnRequirementsOtherArtesId[i] == 300 ) {
+								sb.Append( "Learn via Event" );
+							} else {
+								sb.Append( "Level " + LearnRequirementsOtherArtesId[i] );
+							}
 							break;
 						case 2: // Other Arte
 							var otherArte = arteIdDict[LearnRequirementsOtherArtesId[i]];
