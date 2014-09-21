@@ -166,7 +166,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				if ( enemy.InGameID == 0 ) { continue; }
 				if ( category != null && category != enemy.Category ) { continue; }
 				sb.AppendLine( enemy.GetDataAsHtml( Version, Items, Locations, StringDic, InGameIdDict ) );
-				sb.AppendLine( "<tr><td colspan=\"4\"><hr></td></tr>" );
+				sb.AppendLine( "<tr><td colspan=\"7\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
 			sb.AppendLine( "</body></html>" );
