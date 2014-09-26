@@ -5,16 +5,19 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 	public class Location {
-		public uint[] Data;
-
 		public uint LocationID;
 		public uint[] NameStringDicIDs;
 		public uint[] DescStringDicIDs;
 		public uint DefaultStringDicID;
 		public string[] RefStrings;
+		public uint Category; // 1 = Town, 2 = Dungeon, 3 = Field
+		public uint[] ChangeEventTriggers;
+		public uint[] ShopsOrEnemyGroups;
+		public uint Unused2;
+		public uint Unused25;
 
 		public Location( System.IO.Stream stream ) {
-			Data = new uint[0x74 / 4]; // + 0x20*4 strings, + 4*4 StringDicIDs
+			uint[] Data = new uint[0x74 / 4]; // + 0x20*4 strings, + 4*4 StringDicIDs
 
 			for ( int i = 0; i < Data.Length; ++i ) {
 				Data[i] = stream.ReadUInt32().SwapEndian();
@@ -22,9 +25,24 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 
 			LocationID = Data[0];
 			DefaultStringDicID = Data[1];
+			Unused2 = Data[2];
+			Category = Data[3];
 			DescStringDicIDs = new uint[4];
 			for ( int i = 0; i < 4; ++i ) {
 				DescStringDicIDs[i] = Data[5 + i];
+			}
+
+			ShopsOrEnemyGroups = new uint[16];
+			for ( int i = 0; i < 16; ++i ) {
+				ShopsOrEnemyGroups[i] = Data[9 + i];
+			}
+
+			Unused25 = Data[25];
+
+			// Data[26 ~ 28] appear to be references to event triggers for when an area advances to its next 'state'
+			ChangeEventTriggers = new uint[3];
+			for ( int i = 0; i < 3; ++i ) {
+				ChangeEventTriggers[i] = Data[26 + i];
 			}
 
 			long pos = stream.Position;
@@ -62,13 +80,9 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 
 			sb.Append( "<div id=\"location" + LocationID + "\">" );
 			//sb.Append( def + "<br>" );
-			int validLocationCount = 0;
 			for ( int i = 0; i < 4; ++i ) {
-				if ( inGameIdDict[DescStringDicIDs[i]].StringEngOrJpn != "" ) {
-					validLocationCount++;
-				}
-			}
-			for ( int i = 0; i < validLocationCount; ++i ) {
+				if ( i >= 1 && ChangeEventTriggers[i - 1] == 0 ) { continue; }
+
 				sb.Append( "<table>" );
 				sb.Append( "<tr>" );
 				if ( RefStrings[i] != "" ) {
