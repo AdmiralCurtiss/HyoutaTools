@@ -277,11 +277,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddHeader( sb, "Locations" );
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
+			sb.AppendLine( "<table>" );
 			for ( int i = 1; i < Locations.LocationList.Count; ++i ) {
 				var location = Locations.LocationList[i];
 				sb.AppendLine( location.GetDataAsHtml( Version, StringDic, InGameIdDict, EncounterGroups, EnemyGroups, Enemies ) );
-				sb.AppendLine( "<hr>" );
+				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
 			}
+			sb.AppendLine( "</table>" );
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
 		}
