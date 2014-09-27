@@ -20,7 +20,25 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			}
 		}
 
+		public List<ShopDefinition> ShopDefinitions;
+		public List<ShopItem> ShopItems;
+
 		private bool LoadFile( Stream stream, uint shopStart, uint shopCount, uint itemStart, uint itemCount ) {
+			ShopDefinitions = new List<ShopDefinition>( (int)shopCount );
+			ShopItems = new List<ShopItem>( (int)itemCount );
+
+			for ( int i = 0; i < shopCount; ++i ) {
+				stream.Position = shopStart + i * 32;
+				var shop = new ShopDefinition( stream );
+				ShopDefinitions.Add( shop );
+			}
+
+			for ( int i = 0; i < itemCount; ++i ) {
+				stream.Position = itemStart + i * 56;
+				var item = new ShopItem( stream );
+				ShopItems.Add( item );
+			}
+
 			return true;
 		}
 	}

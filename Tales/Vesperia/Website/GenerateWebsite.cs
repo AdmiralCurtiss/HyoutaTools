@@ -58,6 +58,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "recipes-" + site.Version + ".html" ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "locations-" + site.Version + ".html" ), site.GenerateHtmlLocations(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "strategy-" + site.Version + ".html" ), site.GenerateHtmlStrategy(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "shops-" + site.Version + ".html" ), site.GenerateHtmlShops(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "titles-" + site.Version + ".html" ), site.GenerateHtmlTitles(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "battlebook-" + site.Version + ".html" ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
@@ -110,6 +111,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "recipes-" + site.Version + ".html" ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "locations-" + site.Version + ".html" ), site.GenerateHtmlLocations(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "strategy-" + site.Version + ".html" ), site.GenerateHtmlStrategy(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "shops-" + site.Version + ".html" ), site.GenerateHtmlShops(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "titles-" + site.Version + ".html" ), site.GenerateHtmlTitles(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "battlebook-" + site.Version + ".html" ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
@@ -304,6 +306,26 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Append( "<table>" );
 			foreach ( var entry in Strategy.StrategyOptionList ) {
 				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
+			}
+			sb.Append( "</table>" );
+			sb.Append( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlShops() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Shops" );
+			sb.Append( "<body>" );
+			AddMenuBar( sb );
+			sb.Append( "<table>" );
+			foreach ( var entry in Shops.ShopDefinitions ) {
+				sb.Append( entry.GetDataAsHtml( Version, Items, InGameIdDict ) );
+				sb.Append( "<tr><td colspan=\"10\"><hr></td></tr>" );
+			}
+			sb.Append( "</table>" );
+			sb.Append( "<table>" );
+			foreach ( var entry in Shops.ShopItems ) {
+				sb.Append( entry.GetDataAsHtml( Version, Items, InGameIdDict ) );
 				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
