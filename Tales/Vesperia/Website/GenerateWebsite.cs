@@ -285,7 +285,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<table>" );
 			for ( int i = 1; i < Locations.LocationList.Count; ++i ) {
 				var location = Locations.LocationList[i];
-				sb.AppendLine( location.GetDataAsHtml( Version, StringDic, InGameIdDict, EncounterGroups, EnemyGroups, Enemies ) );
+				sb.AppendLine( location.GetDataAsHtml( Version, StringDic, InGameIdDict, EncounterGroups, EnemyGroups, Enemies, Shops ) );
 				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
 			}
 			sb.AppendLine( "</table>" );
@@ -319,14 +319,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddMenuBar( sb );
 			sb.Append( "<table>" );
 			foreach ( var entry in Shops.ShopDefinitions ) {
+				if ( entry.InGameID == 1 ) { continue; } // dummy shop
 				sb.Append( entry.GetDataAsHtml( Version, Items, InGameIdDict ) );
-				sb.Append( "<tr><td colspan=\"10\"><hr></td></tr>" );
-			}
-			sb.Append( "</table>" );
-			sb.Append( "<table>" );
-			foreach ( var entry in Shops.ShopItems ) {
-				sb.Append( entry.GetDataAsHtml( Version, Items, InGameIdDict ) );
-				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
+				sb.Append( "<tr><td colspan=\"6\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
 			sb.Append( "</body></html>" );
@@ -635,7 +630,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		public void AddHeader( StringBuilder sb, string name ) {
 			sb.AppendLine( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" );
-			sb.AppendLine( "<title>Tales of Vesperia (" + Version.ToString() + ") - " + name + "</title>" );
+			sb.AppendLine( "<title>" + name + " - Tales of Vesperia (" + Version.ToString() + ")</title>" );
 			sb.AppendLine( "<style>" );
 			sb.AppendLine( "body { background-color: #68504F; color: #EFD1AE; font-size: 16; }" );
 			sb.AppendLine( ".itemname { color: #FFEBD2; font-size: 20; }" );
@@ -680,6 +675,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<a href=\"skills-" + Version + ".html\"><img src=\"menu-icons/main-04.png\" title=\"Skills\"></a>" );
 			sb.AppendLine( "<a href=\"strategy-" + Version + ".html\"><img src=\"menu-icons/main-05.png\" title=\"Strategy\"></a>" );
 			sb.AppendLine( "<a href=\"recipes-" + Version + ".html\"><img src=\"menu-icons/main-06.png\" title=\"Recipes\"></a>" );
+			sb.AppendLine( "<a href=\"shops-" + Version + ".html\"><img src=\"menu-icons/main-02.png\" title=\"Shops\"></a>" );
 			sb.AppendLine( "<a href=\"titles-" + Version + ".html\"><img src=\"menu-icons/main-07.png\" title=\"Titles\"></a>" );
 			//sb.AppendLine( "<img src=\"menu-icons/main-08.png\" title=\"Library\">" );
 			sb.AppendLine( "<a href=\"synopsis-" + Version + ".html\"><img src=\"menu-icons/sub-09.png\" title=\"Synopsis\"></a>" );

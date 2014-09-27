@@ -72,7 +72,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 			return inGameIdDict[DefaultStringDicID];
 		}
 
-		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict, T8BTEMEG.T8BTEMEG encounterGroups, T8BTEMGP.T8BTEMGP enemyGroups, T8BTEMST.T8BTEMST enemies ) {
+		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict, T8BTEMEG.T8BTEMEG encounterGroups, T8BTEMGP.T8BTEMGP enemyGroups, T8BTEMST.T8BTEMST enemies, ShopData.ShopData shops ) {
 			StringBuilder sb = new StringBuilder();
 
 			string defJpn = VesperiaUtil.RemoveTags( inGameIdDict[DefaultStringDicID].StringJPN, true, true );
@@ -81,13 +81,15 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 			StringBuilder shopEnemySb = new StringBuilder();
 			List<uint> alreadyPrinted = new List<uint>();
 			for ( int i = 0; i < ShopsOrEnemyGroups.Length; ++i ) {
+				if ( ShopsOrEnemyGroups[i] == 0 ) { continue; }
 				if ( Category == 1 ) {
 					// references to shops
-					// no idea where the game stores shop data
+					var shop = shops.ShopDictionary[ShopsOrEnemyGroups[i]];
+					shopEnemySb.Append( "<a href=\"shops-" + version + ".html#shop" + shop.InGameID + "\">" );
+					shopEnemySb.Append( inGameIdDict[shop.StringDicID].StringEngOrJpn );
+					shopEnemySb.Append( "</a>" );
 				} else {
 					// references to encounter groups
-					if ( ShopsOrEnemyGroups[i] == 0 ) { continue; }
-
 					foreach ( uint groupId in encounterGroups.EncounterGroupIdDict[ShopsOrEnemyGroups[i]].EnemyGroupIDs ) {
 						if ( groupId == 0xFFFFFFFFu ) { continue; }
 						foreach ( uint id in enemyGroups.EnemyGroupIdDict[groupId].EnemyIDs ) {

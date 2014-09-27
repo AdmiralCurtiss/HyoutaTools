@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaTools.Tales.Vesperia.ItemDat;
 
 namespace HyoutaTools.Tales.Vesperia.ShopData {
 	public class ShopItem {
@@ -20,14 +21,13 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			ItemID = Data[5];
 		}
 
-		public string GetDataAsHtml( GameVersion Version, ItemDat.ItemDat Items, Dictionary<uint, TSS.TSSEntry> InGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine( "<tr><td>" );
-			sb.AppendLine( ShopID.ToString() );
-			var item = Items.itemIdDict[ItemID];
-			sb.AppendLine( InGameIdDict[item.NamePointer].StringEngOrJpn );
-			sb.AppendLine( "</td></tr>" );
+			var item = items.itemIdDict[ItemID];
+			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
+			sb.Append( "<a href=\"items-i" + item.Data[(int)ItemData.Icon] + "-" + version + ".html#item" + item.Data[(int)ItemData.ID] + "\">" );
+			sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpn + "</a>" );
 
 			return sb.ToString();
 		}

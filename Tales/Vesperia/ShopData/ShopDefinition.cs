@@ -12,6 +12,8 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 		public uint OnTrigger;
 		public uint ChangeToShop;
 
+		public ShopItem[] ShopItems;
+
 		public ShopDefinition( System.IO.Stream stream ) {
 			Data = new uint[8];
 			for ( int i = 0; i < Data.Length; ++i ) {
@@ -24,16 +26,33 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			ChangeToShop = Data[5];
 		}
 
-		public string GetDataAsHtml( GameVersion Version, ItemDat.ItemDat Items, Dictionary<uint, TSS.TSSEntry> InGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine( "<tr><td>" );
-			sb.AppendLine( InGameID.ToString() );
-			sb.AppendLine( InGameIdDict[StringDicID].StringEngOrJpn );
-			if ( OnTrigger > 0 ) {
-				sb.AppendLine( " -&gt; " + ChangeToShop );
+			sb.AppendLine( "<tr id=\"shop" + InGameID + "\">" );
+			sb.AppendLine( "<td class=\"synopsistitle\" colspan=\"3\">" );
+			sb.AppendLine( VesperiaUtil.RemoveTags( inGameIdDict[StringDicID].StringJPN, true, true ) );
+			sb.AppendLine( "</td>" );
+			sb.AppendLine( "<td class=\"synopsistitle\" colspan=\"3\">" );
+			sb.AppendLine( inGameIdDict[StringDicID].StringENG );
+			sb.AppendLine( "</td>" );
+			//if ( OnTrigger > 0 ) {
+			//	sb.AppendLine( " -&gt; " + ChangeToShop );
+			//}
+			sb.AppendLine( "</tr>" );
+			sb.AppendLine( "<tr>" );
+			for ( int i = 2; i < 9; ++i ) {
+				if ( i == 4 ) { continue; }
+				sb.AppendLine( "<td>" );
+				foreach ( var item in ShopItems ) {
+					if ( items.itemIdDict[item.ItemID].Data[(int)ItemDat.ItemData.Category] == i ) {
+						sb.Append( item.GetDataAsHtml( version, items, inGameIdDict ) );
+						sb.Append( "<br>" );
+					}
+				}
+				sb.AppendLine( "</td>" );
 			}
-			sb.AppendLine( "</td></tr>" );
+			sb.AppendLine( "</tr>" );
 
 			return sb.ToString();
 		}
