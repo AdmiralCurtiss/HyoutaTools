@@ -260,7 +260,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddMenuBar( sb );
 			for ( int i = 1; i < Locations.LocationList.Count; ++i ) {
 				var location = Locations.LocationList[i];
-				sb.AppendLine( location.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.AppendLine( location.GetDataAsHtml( Version, StringDic, InGameIdDict, EnemyGroups, Enemies ) );
 				sb.AppendLine( "<hr>" );
 			}
 			sb.AppendLine( "</body></html>" );

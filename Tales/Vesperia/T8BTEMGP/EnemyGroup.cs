@@ -8,6 +8,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 		uint[] Data;
 
 		public uint ID;
+		public uint Unknown;
 		public uint InGameID;
 		public string RefString;
 		public int[] EnemyIDs;
@@ -26,6 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 			}
 
 			ID = Data[1];
+			Unknown = Data[2];
 			InGameID = Data[3];
 
 			EnemyIDs = new int[8];
@@ -73,6 +75,15 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 
 			sb.Append( "<td>" );
 			sb.Append( RefString );
+			sb.Append( "<br>" );
+			sb.Append( "Unknown: " );
+			sb.Append( Unknown );
+			sb.Append( "<br>" );
+			sb.Append( "ID: " );
+			sb.Append( ID );
+			sb.Append( "<br>" );
+			sb.Append( "InGameId: " );
+			sb.Append( InGameID );
 			sb.Append( "<br>" );
 			sb.Append( "Flag: " );
 			sb.Append( SomeFlag );
