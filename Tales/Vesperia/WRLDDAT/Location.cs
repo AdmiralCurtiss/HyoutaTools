@@ -72,7 +72,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 			return inGameIdDict[DefaultStringDicID];
 		}
 
-		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict, T8BTEMGP.T8BTEMGP enemyGroups, T8BTEMST.T8BTEMST enemies ) {
+		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict, T8BTEMEG.T8BTEMEG encounterGroups, T8BTEMGP.T8BTEMGP enemyGroups, T8BTEMST.T8BTEMST enemies ) {
 			StringBuilder sb = new StringBuilder();
 
 			string defJpn = VesperiaUtil.RemoveTags( inGameIdDict[DefaultStringDicID].StringJPN, true, true );
@@ -108,34 +108,26 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				}
 			}
 
-			/*
 			List<uint> alreadyPrinted = new List<uint>();
 			for ( int i = 0; i < ShopsOrEnemyGroups.Length; ++i ) {
 				if ( Category == 1 ) {
 					// references to shops
-
+					// no idea where the game stores shop data
 				} else {
-					// references to enemy groups
-					try {
-						// this isn't correct, it comes close but some enemy entries are wrong, not sure how this is intended to be looked up
-						if ( ShopsOrEnemyGroups[i] == 0 ) { continue; }
+					// references to encounter groups
+					if ( ShopsOrEnemyGroups[i] == 0 ) { continue; }
 
-						foreach ( uint id in enemyGroups.EnemyGroupIdDict[ShopsOrEnemyGroups[i]].EnemyIDs ) {
+					foreach ( uint groupId in encounterGroups.EncounterGroupIdDict[ShopsOrEnemyGroups[i]].EnemyGroupIDs ) {
+						if ( groupId == 0xFFFFFFFFu ) { continue; }
+						foreach ( uint id in enemyGroups.EnemyGroupIdDict[groupId].EnemyIDs ) {
 							if ( id == 0xFFFFFFFFu ) { continue; }
 							if ( alreadyPrinted.Contains( id ) ) { continue; }
 							sb.AppendLine( inGameIdDict[enemies.EnemyIdDict[id].NameStringDicID].StringEngOrJpn );
 							alreadyPrinted.Add( id );
 						}
-					} catch ( KeyNotFoundException ) { }
+					}
 				}
 			}
-			foreach ( var id in ShopsOrEnemyGroups ) {
-				if ( id != 0 ) {
-					sb.AppendLine( "<br>" );
-					sb.Append( id );
-				}
-			}
-			 */
 
 			sb.Append( "</div>" );
 			return sb.ToString();

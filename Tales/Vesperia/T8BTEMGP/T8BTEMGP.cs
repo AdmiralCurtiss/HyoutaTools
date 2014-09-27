@@ -16,7 +16,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 
 		public T8BTEMGP( Stream stream ) {
 			if ( !LoadFile( stream ) ) {
-				throw new Exception( "Loading v failed!" );
+				throw new Exception( "Loading T8BTEMGP failed!" );
 			}
 		}
 
