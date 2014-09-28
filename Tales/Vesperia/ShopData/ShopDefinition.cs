@@ -26,7 +26,7 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			ChangeToShop = Data[5];
 		}
 
-		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, ShopData shops, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 
 			sb.AppendLine( "<tr id=\"shop" + InGameID + "\">" );
@@ -36,9 +36,6 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			sb.AppendLine( "<td class=\"synopsistitle\" colspan=\"3\">" );
 			sb.AppendLine( inGameIdDict[StringDicID].StringENG );
 			sb.AppendLine( "</td>" );
-			//if ( OnTrigger > 0 ) {
-			//	sb.AppendLine( " -&gt; " + ChangeToShop );
-			//}
 			sb.AppendLine( "</tr>" );
 			sb.AppendLine( "<tr>" );
 			for ( int i = 2; i < 9; ++i ) {
@@ -53,6 +50,15 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 				sb.AppendLine( "</td>" );
 			}
 			sb.AppendLine( "</tr>" );
+			if ( OnTrigger > 0 ) {
+				sb.Append( "<tr>" );
+				sb.Append( "<td class=\"strategychar\" colspan=\"6\">" );
+				sb.Append( "Changes to <a href=\"#shop" + ChangeToShop + "\">" );
+				sb.Append( inGameIdDict[shops.ShopDictionary[ChangeToShop].StringDicID].StringEngOrJpn );
+				sb.Append( "</a>" );
+				sb.Append( "</td>" );
+				sb.Append( "</tr>" );
+			}
 
 			return sb.ToString();
 		}

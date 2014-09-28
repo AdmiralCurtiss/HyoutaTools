@@ -320,7 +320,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Append( "<table>" );
 			foreach ( var entry in Shops.ShopDefinitions ) {
 				if ( entry.InGameID == 1 ) { continue; } // dummy shop
-				sb.Append( entry.GetDataAsHtml( Version, Items, InGameIdDict ) );
+				sb.Append( entry.GetDataAsHtml( Version, Items, Shops, InGameIdDict ) );
 				sb.Append( "<tr><td colspan=\"6\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
