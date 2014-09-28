@@ -108,13 +108,15 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				}
 			}
 
-			sb.Append( "<div id=\"location" + LocationID + "\">" );
-			//sb.Append( def + "<br>" );
 			int variantCount = ChangeEventTriggers.Count( x => x != 0 ) + 1;
 			for ( int i = 0; i < 4; ++i ) {
 				if ( i >= 1 && ChangeEventTriggers[i - 1] == 0 ) { continue; }
 
-				sb.Append( "<tr>" );
+				if ( i == 0 ) {
+					sb.Append( "<tr id=\"location" + LocationID + "\">" );
+				} else {
+					sb.Append( "<tr>" );
+				}
 				sb.Append( "<td>" );
 				if ( RefStrings[i] != "" ) {
 					sb.Append( "<img src=\"worldmap/U_" + RefStrings[i] + ".png\">" );
@@ -142,7 +144,6 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				sb.Append( "</tr>" );
 			}
 
-			sb.Append( "</div>" );
 			return sb.ToString();
 		}
 	}
