@@ -117,7 +117,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-enemies-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "npc-" + site.Version + ".html" ), site.GenerateHtmlNpc(), Encoding.UTF8 );
 
 			return 0;
@@ -553,7 +554,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
 		}
-		public string GenerateHtmlNecropolis() {
+		public string GenerateHtmlNecropolis( bool showEnemies ) {
 			var sb = new StringBuilder();
 			AddHeader( sb, "Necropolis of Nostalgia" );
 			sb.AppendLine( "<body>" );
@@ -564,7 +565,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				int floorNumber = ( floorNumberLong - 1 ) % 10 + 1;
 				int floorStratumAsNumber = ( floorNumberLong - 1 ) / 10 + 1;
 				string floorStratum = ( (char)( floorStratumAsNumber + 64 ) ).ToString();
-				sb.Append( NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Version, NecropolisTreasures, Items, InGameIdDict ) );
+				sb.Append( NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, showEnemies ? Enemies : null, showEnemies ? EnemyGroups : null, showEnemies ? EncounterGroups : null, Version, NecropolisTreasures, Items, InGameIdDict ) );
 				sb.Append( "<hr>" );
 			}
 

@@ -44,7 +44,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 			return true;
 		}
 
-		public string GetDataAsHtml( string stratum, int floor, GameVersion version, T8BTXTMT treasures, ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( string stratum, int floor, T8BTEMST.T8BTEMST Enemies, T8BTEMGP.T8BTEMGP EnemyGroups, T8BTEMEG.T8BTEMEG EncounterGroups, GameVersion version, T8BTXTMT treasures, ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append( "<div id=\"" + stratum + floor + "\">" );
@@ -55,7 +55,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 			for ( int y = 0; y < VerticalTiles; y++ ) {
 				sb.Append( "<tr>" );
 				for ( int x = 0; x < HorizontalTiles; x++ ) {
-					sb.Append( TileList[(int)( y * HorizontalTiles + x )].GetDataAsHtml( stratum, floor, version, treasures, items, inGameIdDict ) );
+					sb.Append( TileList[(int)( y * HorizontalTiles + x )].GetDataAsHtml( stratum, floor, Enemies, EnemyGroups, EncounterGroups, version, treasures, items, inGameIdDict ) );
 				}
 				sb.Append( "</tr>" );
 				//sb.Append( "<tr><td colspan=\"" + HorizontalTiles + "\"><hr></td></tr>" );
