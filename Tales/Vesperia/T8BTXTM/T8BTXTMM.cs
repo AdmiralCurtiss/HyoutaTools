@@ -48,10 +48,14 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append( "<div id=\"" + stratum + floor + "\">" );
+			sb.Append( "<table class=\"necropolisfloor\">" );
+			sb.Append( "<tr>" );
+			sb.Append( "<td colspan=\"6\">" );
 			sb.Append( "<div class=\"itemname\" style=\"text-align: center;\">" );
 			sb.Append( stratum + "-" + floor );
 			sb.Append( "</div>" );
-			sb.Append( "<table class=\"necropolisfloor\">" );
+			sb.Append( "</td>" );
+			sb.Append( "</tr>" );
 			for ( int y = 0; y < VerticalTiles; y++ ) {
 				sb.Append( "<tr>" );
 				for ( int x = 0; x < HorizontalTiles; x++ ) {
