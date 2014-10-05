@@ -50,7 +50,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 			sb.Append( "<div id=\"" + stratum + floor + "\">" );
 			sb.Append( "<table class=\"necropolisfloor\">" );
 			sb.Append( "<tr>" );
-			sb.Append( "<td colspan=\"6\">" );
+			sb.Append( "<th colspan=\"6\">" );
 			sb.Append( "<div class=\"itemname\" style=\"text-align: center;\">" );
 			sb.Append( stratum + "-" + floor );
 			sb.Append( "</div>" );
