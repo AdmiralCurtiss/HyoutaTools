@@ -232,6 +232,12 @@
     <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMM.cs" />
     <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMT.cs" />
     <Compile Include="Tales\Vesperia\T8BTXTM\TreasureInfo.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\SkitInfo.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\TO8CHLI.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\SkitConditionForwarder.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\SkitCondition.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\UnknownSkitData4.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\UnknownSkitData5.cs" />
     <Compile Include="Tales\Vesperia\To8chtx\ChatFile.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\NpcDialogueDefinition.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\NpcFileReference.cs" />

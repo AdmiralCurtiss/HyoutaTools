@@ -28,6 +28,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.GradeShop = new T8BTGR.T8BTGR( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0016.ext\ALL.0000" );
 			site.BattleBook = new BTLBDAT.BTLBDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\BATTLEBOOKDATA.BIN" );
 			site.Strategy = new T8BTTA.T8BTTA( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0011.ext\ALL.0000" );
+			site.Skits = new TO8CHLI.TO8CHLI( @"d:\Dropbox\ToV\360\chat.svo.ext\CHAT.DAT.dec" );
 			site.Shops = new ShopData.ShopData( @"d:\Dropbox\ToV\360\scenario0", 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56 );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 9, 16, 18, 2, 17, 19, 10, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
@@ -64,6 +65,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "skits-" + site.Version + ".html" ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
 
 			site.Version = GameVersion.PS3;
 			var PS3StringDic = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\PS3\mod\string.svo.ext\STRING_DIC.SO" ) );
@@ -81,6 +83,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.GradeShop = new T8BTGR.T8BTGR( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0016.ext\ALL.0000" );
 			site.BattleBook = new BTLBDAT.BTLBDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\BATTLEBOOKDATA.BIN" );
 			site.Strategy = new T8BTTA.T8BTTA( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0011.ext\ALL.0000" );
+			site.Skits = new TO8CHLI.TO8CHLI( @"d:\Dropbox\ToV\PS3\orig\chat.svo.ext\CHAT.DAT.dec" );
 			site.Shops = new ShopData.ShopData( @"d:\Dropbox\ToV\PS3\mod\scenario0", 0x1C9BC, 0x460 / 32, 0x980, 0x14CB8 / 56 );
 			site.NecropolisFloors = new T8BTXTM.T8BTXTMA( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0021.ext\ALL.0000" );
 			site.NecropolisTreasures = new T8BTXTM.T8BTXTMT( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0022.ext\ALL.0000" );
@@ -117,6 +120,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "skits-" + site.Version + ".html" ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-enemies-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "npc-" + site.Version + ".html" ), site.GenerateHtmlNpc(), Encoding.UTF8 );
@@ -140,6 +144,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public BTLBDAT.BTLBDAT BattleBook;
 		public T8BTTA.T8BTTA Strategy;
 		public ShopData.ShopData Shops;
+		public TO8CHLI.TO8CHLI Skits;
 
 		public T8BTXTM.T8BTXTMA NecropolisFloors;
 		public T8BTXTM.T8BTXTMT NecropolisTreasures;
@@ -256,6 +261,18 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			foreach ( var entry in Synopsis.SynopsisList ) {
 				if ( InGameIdDict[entry.NameStringDicId].StringEngOrJpn == "" ) { continue; }
 				sb.AppendLine( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.AppendLine( "<hr>" );
+			}
+			sb.AppendLine( "</body></html>" );
+			return FixInGameStrings( sb );
+		}
+		public string GenerateHtmlSkitInfo() {
+			var sb = new StringBuilder();
+			AddHeader( sb, "Skits" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			foreach ( var entry in Skits.SkitInfoList ) {
+				sb.AppendLine( entry.GetDataAsHtml( Version, Skits, InGameIdDict ) );
 				sb.AppendLine( "<hr>" );
 			}
 			sb.AppendLine( "</body></html>" );
