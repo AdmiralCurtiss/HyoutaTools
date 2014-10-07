@@ -565,8 +565,17 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				int floorNumber = ( floorNumberLong - 1 ) % 10 + 1;
 				int floorStratumAsNumber = ( floorNumberLong - 1 ) / 10 + 1;
 				string floorStratum = ( (char)( floorStratumAsNumber + 64 ) ).ToString();
-				sb.Append( NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, showEnemies ? Enemies : null, showEnemies ? EnemyGroups : null, showEnemies ? EncounterGroups : null, Version, NecropolisTreasures, Items, InGameIdDict ) );
+				string html = NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, showEnemies ? Enemies : null, showEnemies ? EnemyGroups : null, showEnemies ? EncounterGroups : null, Version, NecropolisTreasures, Items, InGameIdDict );
+				sb.Append( html );
 				sb.Append( "<hr>" );
+
+				string dir = @"d:\Dropbox\ToV\website\";
+				StringBuilder sb2 = new StringBuilder();
+				AddHeader( sb2, floorStratum + "-" + floorNumber + " - Necropolis of Nostalgia" );
+				sb2.Append( "<body>" );
+				sb2.Append( html );
+				sb2.Append( "</body></html>" );
+				System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-single-" + floorStratum + floorNumber + "-" + ( showEnemies ? "enemies-" : "" ) + Version + ".html" ), sb2.ToString(), Encoding.UTF8 );
 			}
 
 			/*
