@@ -115,6 +115,7 @@ namespace HyoutaTools.Other.AutoExtract {
 				string f = System.IO.Path.GetFullPath( fstr.Filename );
 				string prog, args;
 
+				if ( !System.IO.File.Exists( f ) ) continue;
 				if ( fstr.Indirection > 3 ) continue;
 				if ( fstr.Filename.EndsWith( "fps4.type" ) ) continue;
 
@@ -213,7 +214,7 @@ namespace HyoutaTools.Other.AutoExtract {
 								args = "\"" + f + "\"";
 								Console.WriteLine();
 								Console.WriteLine( prog + " " + args );
-								
+
 								var fps4 = new Tales.Vesperia.FPS4.FPS4( f );
 								fps4.Extract( f + ".ext" );
 								fps4.Close();
@@ -266,10 +267,12 @@ namespace HyoutaTools.Other.AutoExtract {
 
 						uint filenum;
 						string fname = System.IO.Path.GetFileName( f );
-						if ( firstbyte == 0x00 && secondbyte == 0x02 && thirdbyte == 0x00 && fourthbyte == 0x00 &&
+						if (
+							( firstbyte == 0x00 && secondbyte == 0x02 && thirdbyte == 0x00 && fourthbyte == 0x00 &&
 							!isTexture
-							&& !( fname.EndsWith( ".TXM" ) || fname.EndsWith( ".TXV" ) )
-							/* && fname.Length == 4 && UInt32.TryParse( fname, out filenum ) */ ) {
+							&& !( fname.EndsWith( ".TXM" ) || fname.EndsWith( ".TXV" ) ) )
+							|| ( firstbyte == 'M' && secondbyte == 'T' && thirdbyte == 'E' && fourthbyte == 'X' ) // Tales of Xillia texture
+							 ) {
 
 							FileStruct nextfile = queue.Peek();
 							fs.Close();
@@ -399,16 +402,16 @@ namespace HyoutaTools.Other.AutoExtract {
 							HasBeenProcessed = true;
 						}
 
-						// Tales of Xillia texture
-						if ( firstbyte == 'M' && secondbyte == 'T' && thirdbyte == 'E' && fourthbyte == 'X' ) {
-							fs.Close();
-							prog = @"Graceful";
-							args = "6 \"" + f + "\"";
-							if ( RunProgram( prog, args ) ) {
-								//System.IO.File.Delete( f );
-								HasBeenProcessed = true;
-							}
-						}
+						//// Tales of Xillia texture
+						//if ( firstbyte == 'M' && secondbyte == 'T' && thirdbyte == 'E' && fourthbyte == 'X' ) {
+						//    fs.Close();
+						//    prog = @"Graceful";
+						//    args = "6 \"" + f + "\"";
+						//    if ( RunProgram( prog, args ) ) {
+						//        //System.IO.File.Delete( f );
+						//        HasBeenProcessed = true;
+						//    }
+						//}
 
 						if ( !HasBeenProcessed && DeepSearchForPTMD ) {
 							fs.Close();
