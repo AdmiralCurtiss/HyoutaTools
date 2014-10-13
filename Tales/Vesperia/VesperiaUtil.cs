@@ -8,6 +8,10 @@ namespace HyoutaTools.Tales.Vesperia {
 	public enum GameVersion {
 		None, X360, PS3
 	}
+	public enum ControllerButton {
+		Start, Select, RightButton, LowerButton, LeftButton, UpperButton, L1, L2, L3, R1, R2, R3, LeftStick, RightStick, DPad, System
+	}
+
 	public class VesperiaUtil {
 		public static String RemoveTags( String s, bool useJapaneseNames = false, bool replaceFuriganaWithHtmlRuby = false ) {
 			s = s.Replace( "''", "'" );
@@ -109,5 +113,51 @@ namespace HyoutaTools.Tales.Vesperia {
 			return input;
 		}
 
+		public static String GetButtonName( GameVersion version, ControllerButton button ) {
+			switch ( version ) {
+				case GameVersion.X360:
+					switch ( button ) {
+						case ControllerButton.Start: return "Start";
+						case ControllerButton.Select: return "Back";
+						case ControllerButton.RightButton: return "B";
+						case ControllerButton.LowerButton: return "A";
+						case ControllerButton.LeftButton: return "X";
+						case ControllerButton.UpperButton: return "Y";
+						case ControllerButton.L1: return "LB";
+						case ControllerButton.L2: return "LT";
+						case ControllerButton.L3: return "Push LS";
+						case ControllerButton.R1: return "RB";
+						case ControllerButton.R2: return "RT";
+						case ControllerButton.R3: return "Push RS";
+						case ControllerButton.LeftStick: return "Left Stick";
+						case ControllerButton.RightStick: return "Right Stick";
+						case ControllerButton.DPad: return "D-Pad";
+						case ControllerButton.System: return "Guide";
+					}
+					break;
+				case GameVersion.PS3:
+					switch ( button ) {
+						case ControllerButton.Start: return "Start";
+						case ControllerButton.Select: return "Select";
+						case ControllerButton.RightButton: return "Circle";
+						case ControllerButton.LowerButton: return "Cross";
+						case ControllerButton.LeftButton: return "Square";
+						case ControllerButton.UpperButton: return "Triangle";
+						case ControllerButton.L1: return "L1";
+						case ControllerButton.L2: return "L2";
+						case ControllerButton.L3: return "L3";
+						case ControllerButton.R1: return "R1";
+						case ControllerButton.R2: return "R2";
+						case ControllerButton.R3: return "R3";
+						case ControllerButton.LeftStick: return "Left Stick";
+						case ControllerButton.RightStick: return "Right Stick";
+						case ControllerButton.DPad: return "D-Pad";
+						case ControllerButton.System: return "PS";
+					}
+					break;
+			}
+
+			return "None";
+		}
 	}
 }

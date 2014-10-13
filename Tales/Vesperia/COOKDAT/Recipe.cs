@@ -144,14 +144,14 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 
 			if ( PhysicalAilmentHeal > 0 || DeathHeal > 0 ) {
 				sb.Append( "Cures Ailments: " );
-				if ( DeathHeal > 0 ) { sb.Append( "<img src=\"text-icons/icon-status-13.png\" height=\"16\" width=\"16\">" ); }
-				if ( ( PhysicalAilmentHeal & 1 ) == 1 ) { sb.Append( "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" ); }
-				if ( ( PhysicalAilmentHeal & 2 ) == 2 ) { sb.Append( "<img src=\"text-icons/icon-status-07.png\" height=\"16\" width=\"16\">" ); }
-				if ( ( PhysicalAilmentHeal & 4 ) == 4 ) { sb.Append( "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" ); }
-				if ( ( PhysicalAilmentHeal & 8 ) == 8 ) { sb.Append( "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" ); }
-				if ( ( PhysicalAilmentHeal & 16 ) == 16 ) { sb.Append( "<img src=\"text-icons/icon-status-04.png\" height=\"16\" width=\"16\">" ); }
-				if ( ( PhysicalAilmentHeal & 32 ) == 32 ) { sb.Append( "<img src=\"text-icons/icon-status-05.png\" height=\"16\" width=\"16\">" ); }
-				if ( ( PhysicalAilmentHeal & 64 ) == 64 ) { sb.Append( "<img src=\"text-icons/icon-status-06.png\" height=\"16\" width=\"16\">" ); }
+				if ( DeathHeal > 0 ) { sb.Append( "<img src=\"text-icons/icon-status-13.png\" height=\"16\" width=\"16\" title=\"Death\">" ); }
+				if ( ( PhysicalAilmentHeal & 1 ) == 1 ) { sb.Append( "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\" title=\"Poison\">" ); }
+				if ( ( PhysicalAilmentHeal & 2 ) == 2 ) { sb.Append( "<img src=\"text-icons/icon-status-07.png\" height=\"16\" width=\"16\" title=\"Contamination\">" ); }
+				if ( ( PhysicalAilmentHeal & 4 ) == 4 ) { sb.Append( "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\" title=\"Paralysis\">" ); }
+				if ( ( PhysicalAilmentHeal & 8 ) == 8 ) { sb.Append( "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\" title=\"Petrification\">" ); }
+				if ( ( PhysicalAilmentHeal & 16 ) == 16 ) { sb.Append( "<img src=\"text-icons/icon-status-04.png\" height=\"16\" width=\"16\" title=\"Weakness\">" ); }
+				if ( ( PhysicalAilmentHeal & 32 ) == 32 ) { sb.Append( "<img src=\"text-icons/icon-status-05.png\" height=\"16\" width=\"16\" title=\"Sealed Artes\">" ); }
+				if ( ( PhysicalAilmentHeal & 64 ) == 64 ) { sb.Append( "<img src=\"text-icons/icon-status-06.png\" height=\"16\" width=\"16\" title=\"Sealed Skills\">" ); }
 				sb.Append( "<br>" );
 			}
 
@@ -171,14 +171,17 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 				}
 			}
 
-			for ( int i = 0; i < RecipeCreationCharacter.Length; ++i ) {
-				if ( RecipeCreationCharacter[i] != 0 ) {
-					var otherRecipe = recipes.RecipeList[(int)RecipeCreationRecipe[i]];
-					Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ) );
-					sb.Append( " → <a href=\"#recipe" + otherRecipe.ID + "\">" );
-					sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpn );
-					sb.Append( "</a>" );
-					sb.Append( "<br>" );
+			if ( RecipeCreationCharacter.Count( x => x != 0 ) > 0 ) {
+				sb.Append( "Recipe Evolutions:<br>" );
+				for ( int i = 0; i < RecipeCreationCharacter.Length; ++i ) {
+					if ( RecipeCreationCharacter[i] != 0 ) {
+						var otherRecipe = recipes.RecipeList[(int)RecipeCreationRecipe[i]];
+						Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ) );
+						sb.Append( " <a href=\"#recipe" + otherRecipe.ID + "\">" );
+						sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpn );
+						sb.Append( "</a>" );
+						sb.Append( "<br>" );
+					}
 				}
 			}
 
