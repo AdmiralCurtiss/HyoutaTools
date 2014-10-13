@@ -21,17 +21,17 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 			}
 		}
 
-		public List<FloorInfo> SynopsisList;
+		public List<FloorInfo> FloorList;
 
 		private bool LoadFile( Stream stream ) {
 			string magic = stream.ReadAscii( 8 );
 			uint floorInfoCount = stream.ReadUInt32().SwapEndian();
 			uint refStringStart = stream.ReadUInt32().SwapEndian();
 
-			SynopsisList = new List<FloorInfo>( (int)floorInfoCount );
+			FloorList = new List<FloorInfo>( (int)floorInfoCount );
 			for ( uint i = 0; i < floorInfoCount; ++i ) {
 				FloorInfo fi = new FloorInfo( stream, refStringStart );
-				SynopsisList.Add( fi );
+				FloorList.Add( fi );
 			}
 
 			return true;
