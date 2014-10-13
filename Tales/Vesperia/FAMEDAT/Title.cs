@@ -46,7 +46,7 @@ namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 			sb.Append( inGameIdDict[DescStringDicID].StringENG.Replace( "\n", "<br>" ) );
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
-			sb.Append( BunnyGuildPointsMaybe + " Fame points" );
+			sb.Append( BunnyGuildPointsMaybe + " Fame point" + ( BunnyGuildPointsMaybe != 1 ? "s" : "" ) );
 			sb.Append( "</td>" );
 
 			return sb.ToString();
