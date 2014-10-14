@@ -460,5 +460,11 @@ namespace HyoutaTools {
 			return "";
 		}
 
+
+		public static void Assert( bool cond ) {
+			if ( !cond ) {
+				throw new Exception( "Assert Failed!" );
+			}
+		}
 	}
 }

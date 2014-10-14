@@ -86,30 +86,28 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 				sb.Append( "<br>No special condition." );
 			} else {
 				var fw = skits.SkitConditionForwarderList[SkitConditionForwarderReference];
+				/*
 				sb.AppendLine();
 				sb.Append( "<br>Trigger Condition #" + SkitConditionForwarderReference );
 				sb.Append( " / Condition: " + fw.SkitConditionReference );
 				sb.Append( " / Count: " + fw.SkitConditionCount );
+				//*/
 				for ( int i = 0; i < fw.SkitConditionCount; ++i ) {
 					var c = skits.SkitConditionList[(int)( fw.SkitConditionReference + i )];
-					sb.AppendLine();
-					sb.Append( "<br>#1a: " + c.Type );
-					sb.Append( " / #1b: " + c.MathOp );
-					sb.Append( " / #2a: " + c.Unknown2a );
-					sb.Append( " / #2b: " + c.Value1 );
-					sb.Append( " / #3: " + c.Value2 );
-					sb.Append( " / #4: " + c.Value3 );
+					sb.AppendLine( "<br>" );
+					c.GetDataAsHtml( sb );
 				}
 			}
 
 			sb.Append( "<br>" );
 			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharacterBitmask );
 
-			for ( int i = 2; i < 7; ++i ) {
-				if ( i == 3 || i == 5 ) { continue; }
-				sb.AppendLine( "<br>" );
-				sb.AppendLine( "~" + i + ": " + Data[i] );
-			}
+			sb.AppendLine( "<br>" );
+			sb.AppendLine( "~2: " + Data[2] );
+			sb.AppendLine( "<br>" );
+			sb.AppendLine( "~4: 0x" + Data[4].ToString("X8") );
+			sb.AppendLine( "<br>" );
+			sb.AppendLine( "~6: " + Data[6] );
 			sb.Append( "<br>" );
 
 			return sb.ToString();
