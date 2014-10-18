@@ -6,8 +6,8 @@ using System.Text;
 namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 	public class SynopsisEntry {
 		public uint ID;
-		public uint Unknown2;
-		public uint Unknown3;
+		public uint StoryIdMin;
+		public uint StoryIdMax;
 		public uint NameStringDicId;
 		public uint TextStringDicId;
 
@@ -16,8 +16,8 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 
 		public SynopsisEntry( System.IO.Stream stream ) {
 			ID = stream.ReadUInt32().SwapEndian();
-			Unknown2 = stream.ReadUInt32().SwapEndian();
-			Unknown3 = stream.ReadUInt32().SwapEndian();
+			StoryIdMin = stream.ReadUInt32().SwapEndian();
+			StoryIdMax = stream.ReadUInt32().SwapEndian();
 			NameStringDicId = stream.ReadUInt32().SwapEndian();
 			TextStringDicId = stream.ReadUInt32().SwapEndian();
 			stream.DiscardBytes( 0xC );
@@ -38,6 +38,8 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 
 			string[] textEng = inGameIdDict[TextStringDicId].StringENG.Replace( "\n", "<br>" ).Split( '\f' );
 			string[] textJpn = VesperiaUtil.RemoveTags( inGameIdDict[TextStringDicId].StringJPN, true, true ).Replace( "\n", "<br>" ).Split( '\f' );
+
+			//sb.Append( "Unlocks between " + StoryIdMin + " and " + StoryIdMax + "<br>" );
 
 			sb.Append( "<table class=\"synopsis\">" );
 			sb.Append( "<tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + textJpn.Length + "\">" );
