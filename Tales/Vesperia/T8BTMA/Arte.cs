@@ -229,6 +229,13 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 							sb.Append( LearnRequirementsOtherArtesUsageCount[i] + " uses" );
 
 							break;
+						case 3: // appears on Rita and Repede's Burst Artes in 360 only, appears to be unused
+							break;
+						default:
+							sb.Append( "##Unknown Learn Type: " + LearnRequirementsOtherArtesType[i] + "<br>" );
+							sb.Append( "##Value 1: " + LearnRequirementsOtherArtesId[i] + "<br>" );
+							sb.Append( "##Value 2: " + LearnRequirementsOtherArtesUsageCount[i] + "<br>" );
+							break;
 					}
 					sb.Append( "<br>" );
 				}
@@ -246,6 +253,10 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 							var skill = skills.SkillIdDict[AlteredArteRequirementId[i]];
 							sb.Append( "<img src=\"skill-icons/category-" + skill.Category + ".png\" width=\"16\" height=\"16\">" );
 							sb.Append( "<a href=\"skills-" + version + ".html#skill" + skill.ID + "\">" + inGameIdDict[skill.NameStringDicID].StringEngOrJpn + "</a>" );
+							break;
+						default:
+							sb.Append( "##Unknown Altered Type: " + AlteredArteRequirementType[i] + "<br>" );
+							sb.Append( "##Value: " + AlteredArteRequirementId[i] + "<br>" );
 							break;
 					}
 					sb.Append( "<br>" );
