@@ -21,11 +21,12 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 		}
 
 		public List<ShopDefinition> ShopDefinitions;
+		public List<ShopItem> ShopItems;
 		public Dictionary<uint, ShopDefinition> ShopDictionary;
 
 		private bool LoadFile( Stream stream, uint shopStart, uint shopCount, uint itemStart, uint itemCount ) {
 			ShopDefinitions = new List<ShopDefinition>( (int)shopCount );
-			List<ShopItem> shopItems = new List<ShopItem>( (int)itemCount );
+			ShopItems = new List<ShopItem>( (int)itemCount );
 
 			for ( int i = 0; i < shopCount; ++i ) {
 				stream.Position = shopStart + i * 32;
@@ -36,11 +37,11 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			for ( int i = 0; i < itemCount; ++i ) {
 				stream.Position = itemStart + i * 56;
 				var item = new ShopItem( stream );
-				shopItems.Add( item );
+				ShopItems.Add( item );
 			}
 
 			foreach ( var shop in ShopDefinitions ) {
-				shop.ShopItems = shopItems.Where( x => x.ShopID == shop.InGameID ).ToArray();
+				shop.ShopItems = ShopItems.Where( x => x.ShopID == shop.InGameID ).ToArray();
 			}
 
 			ShopDictionary = new Dictionary<uint, ShopDefinition>();
