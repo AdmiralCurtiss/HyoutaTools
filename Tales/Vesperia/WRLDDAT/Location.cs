@@ -14,7 +14,6 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 		public uint[] ChangeEventTriggers;
 		public uint[] ShopsOrEnemyGroups;
 		public uint Unused2;
-		public uint Unused25;
 
 		public Location( System.IO.Stream stream ) {
 			uint[] Data = new uint[0x74 / 4]; // + 0x20*4 strings, + 4*4 StringDicIDs
@@ -37,12 +36,11 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				ShopsOrEnemyGroups[i] = Data[9 + i];
 			}
 
-			Unused25 = Data[25];
-
 			// Data[26 ~ 28] appear to be references to event triggers for when an area advances to its next 'state'
-			ChangeEventTriggers = new uint[3];
-			for ( int i = 0; i < 3; ++i ) {
-				ChangeEventTriggers[i] = Data[26 + i];
+			// Data[25] is always 0, which makes sense as the initial state of a location should not have a required trigger
+			ChangeEventTriggers = new uint[4];
+			for ( int i = 0; i < 4; ++i ) {
+				ChangeEventTriggers[i] = Data[25 + i];
 			}
 
 			long pos = stream.Position;
@@ -110,7 +108,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 
 			int variantCount = ChangeEventTriggers.Count( x => x != 0 ) + 1;
 			for ( int i = 0; i < 4; ++i ) {
-				if ( i >= 1 && ChangeEventTriggers[i - 1] == 0 ) { continue; }
+				if ( i >= 1 && ChangeEventTriggers[i] == 0 ) { continue; }
 
 				if ( i == 0 ) {
 					sb.Append( "<tr id=\"location" + LocationID + "\">" );
