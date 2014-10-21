@@ -25,6 +25,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateWebsite {
 		public static int Generate( List<string> args ) {
 			string dir = @"d:\Dropbox\ToV\website\";
+			string databasePath;
 
 
 			var site = new GenerateWebsite();
@@ -57,6 +58,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			foreach ( var kvp in IdDictUs ) {
 				site.InGameIdDict[kvp.Key].StringJPN = kvp.Value.StringJPN;
 			}
+
+			databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
+			System.IO.File.Delete( databasePath );
+			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath ) ).ExportAll();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
@@ -114,6 +119,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
 			site.Records = site.GenerateRecordsStringDicList();
 			site.Settings = site.GenerateSettingsStringDicList();
+
+			databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
+			System.IO.File.Delete( databasePath );
+			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath ) ).ExportAll();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {

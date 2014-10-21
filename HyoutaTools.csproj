@@ -254,6 +254,7 @@
     </Compile>
     <Compile Include="Tales\Vesperia\TownMap\Viewer\Program.cs" />
     <Compile Include="Tales\Vesperia\VesperiaUtil.cs" />
+    <Compile Include="Tales\Vesperia\Website\GenerateDatabase.cs" />
     <Compile Include="Tales\Vesperia\Website\GenerateWebsite.cs" />
     <Compile Include="Tales\Vesperia\WRLDDAT\Location.cs" />
     <Compile Include="Tales\Vesperia\WRLDDAT\WRLDDAT.cs" />
