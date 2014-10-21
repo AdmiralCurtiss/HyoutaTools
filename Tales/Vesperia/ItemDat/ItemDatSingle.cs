@@ -171,6 +171,12 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 		Always35 = 16,
 
+		UsableInBattle = 177,
+		InCollectorsBook = 178,
+
+		PermanentPAtkIncrease = 26,
+		PermanentPDefIncrease = 27,
+
 		ItemDataCount = 0xB9
 	}
 

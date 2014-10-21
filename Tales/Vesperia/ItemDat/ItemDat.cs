@@ -223,8 +223,8 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			// seems to be some sort of ID, useless for the reader
 			//sb.AppendLine( "~176: " + item.Data[176] );
 
-			if ( item.Data[177] > 0 ) { sb.AppendLine( "Usable in battle" ); };
-			if ( item.Data[178] == 0 ) { sb.AppendLine( "Not in Collector's Book" ); }
+			if ( item.Data[(int)ItemData.UsableInBattle] > 0 ) { sb.AppendLine( "Usable in battle" ); };
+			if ( item.Data[(int)ItemData.InCollectorsBook] == 0 ) { sb.AppendLine( "Not in Collector's Book" ); }
 
 			return sb.ToString();
 		}
@@ -271,8 +271,8 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			sb.Append( "</span>" );
 
 			sb.Append( "<span class=\"special\">" );
-			if ( item.Data[177] > 0 ) { sb.Append( "Usable in battle" ); };
-			if ( item.Data[178] == 0 ) { sb.Append( "Not in Collector's Book" ); }
+			if ( item.Data[(int)ItemData.UsableInBattle] > 0 ) { sb.Append( "Usable in battle" ); };
+			if ( item.Data[(int)ItemData.InCollectorsBook] == 0 ) { sb.Append( "Not in Collector's Book" ); }
 			sb.Append( "</span>" );
 			sb.Append( "</td>" );
 
@@ -331,8 +331,8 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 						sb.Append( "Cures magical ailments<br>" );
 					}
 
-					if ( item.Data[26] > 0 ) { sb.Append( "Permanent PATK increase: " + item.Data[26] + "<br>" ); }
-					if ( item.Data[27] > 0 ) { sb.Append( "Permanent PDEF increase: " + item.Data[27] + "<br>" ); }
+					if ( item.Data[(int)ItemData.PermanentPAtkIncrease] > 0 ) { sb.Append( "Permanent PATK increase: " + item.Data[(int)ItemData.PermanentPAtkIncrease] + "<br>" ); }
+					if ( item.Data[(int)ItemData.PermanentPDefIncrease] > 0 ) { sb.Append( "Permanent PDEF increase: " + item.Data[(int)ItemData.PermanentPDefIncrease] + "<br>" ); }
 					if ( item.Data[(int)ItemData.AttrFire] > 0 ) { sb.Append( "Permanent MATK increase: " + item.Data[(int)ItemData.AttrFire] + "<br>" ); }
 					if ( item.Data[(int)ItemData.AttrWater] > 0 ) { sb.Append( "Permanent MDEF increase: " + item.Data[(int)ItemData.AttrWater] + "<br>" ); }
 					if ( item.Data[(int)ItemData.AttrWind] > 0 ) { sb.Append( "Permanent AGL increase: " + item.Data[(int)ItemData.AttrWind] + "<br>" ); }
@@ -476,6 +476,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 
+			// read how many drops and steals this item lists
 			int[] dropStealCount = new int[2];
 			for ( int j = 0; j < 2; ++j ) {
 				dropStealCount[j] = 0;
