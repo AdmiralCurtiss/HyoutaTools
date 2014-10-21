@@ -6,6 +6,22 @@ using HyoutaTools.Tales.Vesperia.ItemDat;
 using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
+	public class Setting {
+		public uint NameStringDicId;
+		public uint DescStringDicId;
+		public uint[] OptionsStringDicIds;
+
+		public Setting( uint idName, uint idDesc, uint option1 = 0, uint option2 = 0, uint option3 = 0, uint option4 = 0 ) {
+			NameStringDicId = idName;
+			DescStringDicId = idDesc;
+			OptionsStringDicIds = new uint[4];
+			OptionsStringDicIds[0] = option1;
+			OptionsStringDicIds[1] = option2;
+			OptionsStringDicIds[2] = option3;
+			OptionsStringDicIds[3] = option4;
+		}
+	}
+
 	public class GenerateWebsite {
 		public static int Generate( List<string> args ) {
 			string dir = @"d:\Dropbox\ToV\website\";
@@ -32,6 +48,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Shops = new ShopData.ShopData( @"d:\Dropbox\ToV\360\scenario0", 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56 );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 9, 16, 18, 2, 17, 19, 10, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
+			site.Records = site.GenerateRecordsStringDicList();
+			site.Settings = site.GenerateSettingsStringDicList();
 
 			// copy over Japanese stuff into UK StringDic
 			var StringDicUs = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\360\string_dic_us.so" ), true );
@@ -94,6 +112,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
+			site.Records = site.GenerateRecordsStringDicList();
+			site.Settings = site.GenerateSettingsStringDicList();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
@@ -145,6 +165,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public T8BTTA.T8BTTA Strategy;
 		public ShopData.ShopData Shops;
 		public TO8CHLI.TO8CHLI Skits;
+		public List<uint> Records;
+		public List<Setting> Settings;
 
 		public T8BTXTM.T8BTXTMA NecropolisFloors;
 		public T8BTXTM.T8BTXTMT NecropolisTreasures;
@@ -386,6 +408,44 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "</body></html>" );
 			return FixInGameStrings( sb );
 		}
+		public List<uint> GenerateRecordsStringDicList() {
+			List<uint> records = new List<uint>();
+
+			for ( uint i = 33912371; i < 33912385; ++i ) {
+				if ( i == 33912376 ) { continue; }
+				records.Add( i );
+			}
+			records.Add( 33912570u );
+			for ( uint i = 33912385; i < 33912392; ++i ) {
+				records.Add( i );
+			}
+			records.Add( 33912571u );
+			records.Add( 33912572u );
+			records.Add( 33912585u );
+			records.Add( 33912586u );
+			records.Add( 33912587u );
+			records.Add( 33912588u );
+
+			if ( Version == GameVersion.PS3 ) {
+				// repede snowboarding 1 - 8, team melee, 30 man per character
+				for ( uint i = 33912733; i < 33912751; ++i ) {
+					records.Add( i );
+				}
+			} else {
+				records.Add( 33912621u ); // 30 man melee generic
+			}
+
+			for ( uint i = 33912392; i < 33912399; ++i ) {
+				records.Add( i );
+			}
+			if ( Version == GameVersion.PS3 ) {
+				// usage flynn, patty
+				records.Add( 33912399u );
+				records.Add( 33912400u );
+			}
+
+			return records;
+		}
 		public string GenerateHtmlRecords() {
 			var sb = new StringBuilder();
 			AddHeader( sb, "Records" );
@@ -393,40 +453,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddMenuBar( sb );
 
 			sb.Append( "<table>" );
-			for ( uint i = 33912371; i < 33912385; ++i ) {
-				if ( i == 33912376 ) { continue; }
+			foreach ( var i in Records ) {
 				AppendRecord( sb, i );
 			}
-			AppendRecord( sb, 33912570u );
-			for ( uint i = 33912385; i < 33912392; ++i ) {
-				AppendRecord( sb, i );
-			}
-			AppendRecord( sb, 33912571u );
-			AppendRecord( sb, 33912572u );
-			AppendRecord( sb, 33912585u );
-			AppendRecord( sb, 33912586u );
-			AppendRecord( sb, 33912587u );
-			AppendRecord( sb, 33912588u );
-
-			if ( Version == GameVersion.PS3 ) {
-				// repede snowboarding 1 - 8, team melee, 30 man per character
-				for ( uint i = 33912733; i < 33912751; ++i ) {
-					AppendRecord( sb, i );
-				}
-			} else {
-				AppendRecord( sb, 33912621u ); // 30 man melee generic
-			}
-
-			for ( uint i = 33912392; i < 33912399; ++i ) {
-				AppendRecord( sb, i );
-			}
-			if ( Version == GameVersion.PS3 ) {
-				// usage flynn, patty
-				AppendRecord( sb, 33912399u );
-				AppendRecord( sb, 33912400u );
-			}
-
-
 			sb.Append( "</table>" );
 
 			sb.AppendLine( "</body></html>" );
@@ -443,6 +472,50 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Append( "</tr>" );
 			//sb.Append( "<tr><td colspan=\"2\"><hr></td></tr>" );
 		}
+		public List<Setting> GenerateSettingsStringDicList() {
+			List<Setting> settings = new List<Setting>();
+
+			settings.Add( new Setting( 33912401u, 33912401u + 46u, 33912427u, 33912426u, 33912425u, 33912424u ) ); // msg speed
+			settings.Add( new Setting( 33912402u, 33912402u + 46u, 33912428u, 33912429u, 33912430u, 33912431u ) ); // difficulty
+			if ( Version == GameVersion.X360 ) {
+				settings.Add( new Setting( 33912403u, 33912403u + 46u, 33912438u, 33912437u ) ); // x360 vibration
+			} else {
+				settings.Add( new Setting( 33912679u, 33912681u, 33912438u, 33912437u ) ); // console-neutral vibration
+			}
+			settings.Add( new Setting( 33912404u, 33912404u + 46u, 33912432u, 33912433u ) ); // camera controls
+			if ( Version == GameVersion.PS3 ) {
+				settings.Add( new Setting( 33912751u, 33912752u, 33912443u, 33912444u ) ); // stick/dpad controls
+			}
+			settings.Add( new Setting( 33912405u, 33912405u + 46u, 33912439u ) ); // button config
+			settings.Add( new Setting( 33912406u, 33912406u + 46u, 33912436u, 33912435u, 33912434u ) ); // sound
+			settings.Add( new Setting( 33912407u, 33912407u + 46u ) ); // bgm
+			settings.Add( new Setting( 33912408u, 33912408u + 46u ) ); // se
+			settings.Add( new Setting( 33912409u, 33912409u + 46u ) ); // battle se
+			settings.Add( new Setting( 33912413u, 33912413u + 46u ) ); // battle voice
+			settings.Add( new Setting( 33912414u, 33912414u + 46u ) ); // event voice
+			settings.Add( new Setting( 33912422u, 33912422u + 46u ) ); // skit
+			settings.Add( new Setting( 33912423u, 33912423u + 46u ) ); // movie
+			if ( Version == GameVersion.PS3 ) {
+				settings.Add( new Setting( 33912656u, 33912657u, 33912658u, 33912659u ) ); // item request type
+			}
+			settings.Add( new Setting( 33912410u, 33912410u + 46u, 33912438u, 33912437u ) ); // engage cam
+			settings.Add( new Setting( 33912411u, 33912411u + 46u, 33912438u, 33912437u ) ); // dynamic cam
+			settings.Add( new Setting( 33912412u, 33912412u + 46u, 33912438u, 33912437u ) ); // field boundary
+			settings.Add( new Setting( 33912415u, 33912415u + 46u, 33912438u, 33912437u ) ); // location names
+			settings.Add( new Setting( 33912416u, 33912416u + 46u, 33912438u, 33912437u ) ); // skit titles
+			settings.Add( new Setting( 33912417u, 33912417u + 46u, 33912438u, 33912437u ) ); // skit subs
+			settings.Add( new Setting( 33912418u, 33912418u + 46u, 33912438u, 33912437u ) ); // movie subs
+			settings.Add( new Setting( 33912420u, 33912420u + 46u, 33912440u, 33912441u, 33912442u ) ); // font
+			if ( Version == GameVersion.X360 ) {
+				settings.Add( new Setting( 33912419u, 33912419u + 46u, 33912439u ) ); // brightness
+				settings.Add( new Setting( 33912421u, 33912421u + 46u, 33912439u ) ); // marketplace
+			} else {
+				settings.Add( new Setting( 33912713u, 33912714u, 33912439u ) ); // brightness & screen pos
+			}
+			settings.Add( new Setting( 33912595u, 33912596u, 33912597u ) ); // reset to default
+
+			return settings;
+		}
 		public string GenerateHtmlSettings() {
 			var sb = new StringBuilder();
 			AddHeader( sb, "Settings" );
@@ -450,44 +523,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddMenuBar( sb );
 
 			sb.Append( "<table class=\"settings\">" );
-			AppendSetting( sb, 33912401u, 33912401u + 46u, 33912427u, 33912426u, 33912425u, 33912424u ); // msg speed
-			AppendSetting( sb, 33912402u, 33912402u + 46u, 33912428u, 33912429u, 33912430u, 33912431u ); // difficulty
-			if ( Version == GameVersion.X360 ) {
-				AppendSetting( sb, 33912403u, 33912403u + 46u, 33912438u, 33912437u ); // x360 vibration
-			} else {
-				AppendSetting( sb, 33912679u, 33912681u, 33912438u, 33912437u ); // console-neutral vibration
+			foreach ( var s in Settings ) {
+				AppendSetting( sb, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0],
+					s.OptionsStringDicIds[1], s.OptionsStringDicIds[2], s.OptionsStringDicIds[3] );
 			}
-			AppendSetting( sb, 33912404u, 33912404u + 46u, 33912432u, 33912433u ); // camera controls
-			if ( Version == GameVersion.PS3 ) {
-				AppendSetting( sb, 33912751u, 33912752u, 33912443u, 33912444u ); // stick/dpad controls
-			}
-			AppendSetting( sb, 33912405u, 33912405u + 46u, 33912439u ); // button config
-			AppendSetting( sb, 33912406u, 33912406u + 46u, 33912436u, 33912435u, 33912434u ); // sound
-			AppendSetting( sb, 33912407u, 33912407u + 46u ); // bgm
-			AppendSetting( sb, 33912408u, 33912408u + 46u ); // se
-			AppendSetting( sb, 33912409u, 33912409u + 46u ); // battle se
-			AppendSetting( sb, 33912413u, 33912413u + 46u ); // battle voice
-			AppendSetting( sb, 33912414u, 33912414u + 46u ); // event voice
-			AppendSetting( sb, 33912422u, 33912422u + 46u ); // skit
-			AppendSetting( sb, 33912423u, 33912423u + 46u ); // movie
-			if ( Version == GameVersion.PS3 ) {
-				AppendSetting( sb, 33912656u, 33912657u, 33912658u, 33912659u ); // item request type
-			}
-			AppendSetting( sb, 33912410u, 33912410u + 46u, 33912438u, 33912437u ); // engage cam
-			AppendSetting( sb, 33912411u, 33912411u + 46u, 33912438u, 33912437u ); // dynamic cam
-			AppendSetting( sb, 33912412u, 33912412u + 46u, 33912438u, 33912437u ); // field boundary
-			AppendSetting( sb, 33912415u, 33912415u + 46u, 33912438u, 33912437u ); // location names
-			AppendSetting( sb, 33912416u, 33912416u + 46u, 33912438u, 33912437u ); // skit titles
-			AppendSetting( sb, 33912417u, 33912417u + 46u, 33912438u, 33912437u ); // skit subs
-			AppendSetting( sb, 33912418u, 33912418u + 46u, 33912438u, 33912437u ); // movie subs
-			AppendSetting( sb, 33912420u, 33912420u + 46u, 33912440u, 33912441u, 33912442u ); // font
-			if ( Version == GameVersion.X360 ) {
-				AppendSetting( sb, 33912419u, 33912419u + 46u, 33912439u ); // brightness
-				AppendSetting( sb, 33912421u, 33912421u + 46u, 33912439u ); // marketplace
-			} else {
-				AppendSetting( sb, 33912713u, 33912714u, 33912439u ); // brightness & screen pos
-			}
-			AppendSetting( sb, 33912595u, 33912596u, 33912597u );		 // reset to default
 			sb.Append( "</table>" );
 
 			sb.AppendLine( "</body></html>" );
