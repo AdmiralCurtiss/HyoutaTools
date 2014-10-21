@@ -780,7 +780,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "</div>" );
 			sb.AppendLine( "<hr>" );
 		}
-		public string FixInGameStrings( StringBuilder sb ) {
+		public static StringBuilder ReplaceIconsWithHtml( StringBuilder sb, GameVersion Version ) {
 			sb.Replace( "\x06(ST1)", "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" );
 			sb.Replace( "\x06(ST2)", "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" );
 			sb.Replace( "\x06(ST3)", "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" );
@@ -867,8 +867,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Replace( "\x06(R2)", "<img src=\"text-icons/" + Version.ToString() + "/button-R2.png\" height=\"16\" title=\"" + VesperiaUtil.GetButtonName( Version, ControllerButton.R2 ) + "\">" );
 			sb.Replace( "\x06(L1)", "<img src=\"text-icons/" + Version.ToString() + "/button-L1.png\" height=\"16\" title=\"" + VesperiaUtil.GetButtonName( Version, ControllerButton.L1 ) + "\">" );
 			sb.Replace( "\x06(L2)", "<img src=\"text-icons/" + Version.ToString() + "/button-L2.png\" height=\"16\" title=\"" + VesperiaUtil.GetButtonName( Version, ControllerButton.L2 ) + "\">" );
-			sb.Replace( "∀", "♥" );
-			return VesperiaUtil.RemoveTags( sb.ToString() );
+			sb.Replace( '∀', '♥' );
+			sb.Replace( '‡', 'é' );
+			sb.Replace( '†', 'í' );
+			return sb;
+		}
+		public string FixInGameStrings( StringBuilder sb ) {
+			return VesperiaUtil.RemoveTags( ReplaceIconsWithHtml( sb, this.Version ).ToString() );
 		}
 		public static void AppendCharacterBitfieldAsImageString( StringBuilder sb, GameVersion version, uint equip ) {
 			if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/YUR.png\" height=\"32\" width=\"24\" title=\"Yuri\">" ); }

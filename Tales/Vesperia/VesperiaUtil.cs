@@ -48,8 +48,6 @@ namespace HyoutaTools.Tales.Vesperia {
 			}
 			s = Regex.Replace( s, "\t[(][A-Za-z0-9_]+[)]", "" ); // audio/voice commands
 			s = Regex.Replace( s, "\x03[(][0-9]+[)]", "" ); // color commands
-			s = s.Replace( '‡', 'é' );
-			s = s.Replace( '†', 'í' );
 			return s;
 		}
 
