@@ -18,7 +18,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public uint[] Data;
 		public float[] DataFloat;
 
-		private uint ID;
+		public uint ID;
 		public uint NameStringDicID;
 		public uint InGameID;
 		public string RefString;
@@ -49,8 +49,8 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public float FatalRed;
 		public float FatalGreen;
 		public float FatalBlueRelated;
-		public float FatalGreenRelated;
 		public float FatalRedRelated;
+		public float FatalGreenRelated;
 
 		public uint InMonsterBook;
 		public uint Location;
@@ -109,8 +109,8 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			FatalRed = DataFloat[18];
 			FatalGreen = DataFloat[19];
 			FatalBlueRelated = DataFloat[20];
-			FatalGreenRelated = DataFloat[21];
-			FatalRedRelated = DataFloat[22];
+			FatalRedRelated = DataFloat[21];
+			FatalGreenRelated = DataFloat[22];
 
 			// > 100 weak, < 100 resist, 0 nullify, negative absorb
 			// effectively a damage multiplier in percent
