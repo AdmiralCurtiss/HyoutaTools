@@ -45,26 +45,36 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		private void ExportStringDic() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE StringDic ( id INTEGER PRIMARY KEY AUTOINCREMENT, japanese TEXT, english TEXT )";
+					command.CommandText = "CREATE TABLE StringDic ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT, language INT, entry TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO StringDic ( id, japanese, english ) VALUES ( @id, @japanese, @english )";
-					command.AddParameter( "id" );
-					command.AddParameter( "japanese" );
-					command.AddParameter( "english" );
+					command.CommandText = "CREATE INDEX StringDic_GameId_Index ON StringDic ( gameId, language )";
+					command.ExecuteNonQuery();
+				}
+				
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "INSERT INTO StringDic ( gameId, language, entry ) VALUES ( @gameId, @language, @entry )";
+					command.AddParameter( "gameId" );
+					command.AddParameter( "language" );
+					command.AddParameter( "entry" );
 
 					foreach ( var e in Site.StringDic.Entries ) {
 						if ( e.inGameStringId > -1 ) {
 							string jp = e.StringJPN != null ? e.StringJPN : "";
 							string en = e.StringENG != null ? e.StringENG : "";
 
-							jp = VesperiaUtil.RemoveTags( GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( jp ), Site.Version ).ToString(), true, true );
-							en = VesperiaUtil.RemoveTags( GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( en ), Site.Version ).ToString(), false, true );
+							jp = VesperiaUtil.RemoveTags( GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( jp ), Site.Version ).ToString(), true, true ).Replace( "\n", "<br />" );
+							en = VesperiaUtil.RemoveTags( GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( en ), Site.Version ).ToString(), false, true ).Replace( "\n", "<br />" );
 
-							command.GetParameter( "id" ).Value = e.inGameStringId;
-							command.GetParameter( "japanese" ).Value = jp;
-							command.GetParameter( "english" ).Value = en;
+							command.GetParameter( "gameId" ).Value = e.inGameStringId;
+							command.GetParameter( "language" ).Value = 0;
+							command.GetParameter( "entry" ).Value = jp;
+							command.ExecuteNonQuery();
+
+							command.GetParameter( "gameId" ).Value = e.inGameStringId;
+							command.GetParameter( "language" ).Value = 1;
+							command.GetParameter( "entry" ).Value = en;
 							command.ExecuteNonQuery();
 						}
 					}
