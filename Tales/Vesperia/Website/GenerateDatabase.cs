@@ -15,6 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public void ExportAll() {
+			Console.WriteLine( "Exporting database" );
 			try {
 				DB.Open();
 				ExportStringDic();
@@ -61,11 +62,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 					foreach ( var e in Site.StringDic.Entries ) {
 						if ( e.inGameStringId > -1 ) {
-							string jp = e.StringJPN != null ? e.StringJPN : "";
-							string en = e.StringENG != null ? e.StringENG : "";
-
-							jp = VesperiaUtil.RemoveTags( GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( jp ), Site.Version ).ToString(), true, true ).Replace( "\n", "<br />" );
-							en = VesperiaUtil.RemoveTags( GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( en ), Site.Version ).ToString(), false, true ).Replace( "\n", "<br />" );
+							string jp = e.StringJpnHtml( Site.Version );
+							string en = e.StringEngHtml( Site.Version );
 
 							command.GetParameter( "gameId" ).Value = e.inGameStringId;
 							command.GetParameter( "language" ).Value = 0;

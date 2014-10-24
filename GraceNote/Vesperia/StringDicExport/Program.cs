@@ -60,12 +60,12 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 			// Empty unused strings, alter names if wanted
 			if ( !RealMode ) {
 				foreach ( TSSEntry e in TSS.Entries ) {
-					if ( e.StringENG != null ) {
-						e.StringENG = "";
+					if ( e.StringEng != null ) {
+						e.StringEng = "";
 					}
 
 					if ( UseInsaneNames ) {
-						e.StringJPN = HyoutaTools.Tales.Vesperia.VesperiaUtil.ReplaceWithInsaneNames( e.StringJPN );
+						e.StringJpn = HyoutaTools.Tales.Vesperia.VesperiaUtil.ReplaceWithInsaneNames( e.StringJpn );
 					}
 				}
 			}

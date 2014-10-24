@@ -67,13 +67,13 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 
 			sb.Append( RefString );
 			sb.Append( "<br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[StringDicIdName].StringJPN, true, true ) );
+			sb.Append( inGameIdDict[StringDicIdName].StringJpnHtml( version ) );
 			sb.Append( "<br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[StringDicIdCondition].StringJPN, true, true ) );
+			sb.Append( inGameIdDict[StringDicIdCondition].StringJpnHtml( version ) );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[StringDicIdName].StringENG );
+			sb.Append( inGameIdDict[StringDicIdName].StringEngHtml( version ) );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[StringDicIdCondition].StringENG );
+			sb.Append( inGameIdDict[StringDicIdCondition].StringEngHtml( version ) );
 			sb.Append( "<br>Available after event: " );
 			sb.Append( FlagTrigger );
 			if ( FlagCancel == 9999999 ) {

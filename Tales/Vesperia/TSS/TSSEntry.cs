@@ -6,40 +6,55 @@ using System.Text;
 namespace HyoutaTools.Tales.Vesperia.TSS {
 	public class TSSEntry {
 		public uint[] Entry;
-		public String StringJPN;
-		public String StringENG;
-		public int StringJPNIndex;
-		public int StringENGIndex;
+		public String StringJpn;
+		public String StringEng;
+		public int StringJpnIndex;
+		public int StringEngIndex;
 		public int inGameStringId;
 
 		public String StringEngOrJpn {
 			get {
-				return String.IsNullOrEmpty( StringENG ) ? StringJPN : StringENG;
+				return String.IsNullOrEmpty( StringEng ) ? StringJpn : StringEng;
 			}
 		}
-		public string GetString( int index ) {
-			if ( index == 0 ) { return StringJPN; } else { return StringENG; }
+		public string StringJpnHtml( GameVersion version ) {
+			string jp = StringJpn != null ? StringJpn : "";
+			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( jp ), version ).ToString(), true, true ).Replace( "\n", "<br />" );
+		}
+		public string StringEngHtml( GameVersion version ) {
+			string en = StringEng != null ? StringEng : "";
+			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( en ), version ).ToString(), false, true ).Replace( "\n", "<br />" );
+		}
+		public string StringEngOrJpnHtml( GameVersion version ) {
+			return String.IsNullOrEmpty( StringEng ) ? StringJpnHtml( version ) : StringEngHtml( version );
 		}
 
-		public TSSEntry( uint[] Entry, String StringJPN, String StringENG, int StringJPNIndex, int StringENGIndex, int inGameStringId ) {
-			this.Entry = Entry;
-			this.StringJPN = StringJPN;
-			this.StringENG = StringENG;
-			this.StringJPNIndex = StringJPNIndex;
-			this.StringENGIndex = StringENGIndex;
+		public string GetString( int index ) {
+			if ( index == 0 ) { return StringJpn; } else { return StringEng; }
+		}
+		public string GetStringHtml( int index, GameVersion version ) {
+			if ( index == 0 ) { return StringJpnHtml( version ); } else { return StringEngHtml( version ); }
+		}
+
+		public TSSEntry( uint[] entry, String stringJpn, String stringEng, int stringJpnIndex, int stringEngIndex, int inGameStringId ) {
+			this.Entry = entry;
+			this.StringJpn = stringJpn;
+			this.StringEng = stringEng;
+			this.StringJpnIndex = stringJpnIndex;
+			this.StringEngIndex = stringEngIndex;
 			this.inGameStringId = inGameStringId;
 		}
 
-		private void SetPointer( int index, uint Pointer ) {
-			Entry[index] = Pointer;
+		private void SetPointer( int index, uint pointer ) {
+			Entry[index] = pointer;
 		}
 
-		public void SetJPNPointer( uint Pointer ) {
-			SetPointer( StringJPNIndex, Pointer );
+		public void SetJPNPointer( uint pointer ) {
+			SetPointer( StringJpnIndex, pointer );
 		}
 
-		public void SetENGPointer( uint Pointer ) {
-			SetPointer( StringENGIndex, Pointer );
+		public void SetENGPointer( uint pointer ) {
+			SetPointer( StringEngIndex, pointer );
 		}
 
 		public byte[] SerializeScript() {

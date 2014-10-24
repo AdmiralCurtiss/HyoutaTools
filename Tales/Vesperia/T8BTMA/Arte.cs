@@ -157,7 +157,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			if ( Character > 9 ) {
 				var enemy = enemies.EnemyIdDict[Character];
 				sb.Append( "<a href=\"enemies-c" + enemy.Category + "-" + version + ".html#enemy" + enemy.InGameID + "\">" );
-				sb.Append( "<img src=\"monster-icons/48px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" width=\"32\" height=\"32\" title=\"" + inGameIdDict[enemy.NameStringDicID].StringEngOrJpn + "\">" );
+				sb.Append( "<img src=\"monster-icons/48px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" width=\"32\" height=\"32\" title=\"" + inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version ) + "\">" );
 				sb.Append( "</a>" );
 			}
 			sb.Append( "<img src=\"menu-icons/artes-" );
@@ -179,13 +179,13 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicId].StringJPN, true, true ) + "</span><br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicId].StringJPN, true, true ).Replace( "\n", "<br>" ) );
+			sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version ) + "</span><br>" );
+			sb.Append( inGameIdDict[DescStringDicId].StringJpnHtml( version ) );
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicId].StringENG + "</span><br>" );
-			sb.Append( inGameIdDict[DescStringDicId].StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version ) + "</span><br>" );
+			sb.Append( inGameIdDict[DescStringDicId].StringEngHtml( version ) );
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
 			//sb.Append( Type + "<br>" );
@@ -221,7 +221,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 							var otherArte = arteIdDict[LearnRequirementsOtherArtesId[i]];
 							if ( otherArte.ID != this.ID ) {
 								sb.Append( "<img src=\"menu-icons/artes-" + otherArte.GetIconNumber() + ".png\" width=\"16\" height=\"16\">" );
-								sb.Append( "<a href=\"#arte" + otherArte.ID + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpn );
+								sb.Append( "<a href=\"#arte" + otherArte.ID + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpnHtml( version ) );
 								sb.Append( "</a>, " );
 							} else {
 								sb.Append( "Learn with " );
@@ -247,12 +247,12 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 							var otherArte = arteIdDict[AlteredArteRequirementId[i]];
 							sb.Append( "Alters from " );
 							sb.Append( "<img src=\"menu-icons/artes-" + otherArte.GetIconNumber() + ".png\" width=\"16\" height=\"16\">" );
-							sb.Append( "<a href=\"#arte" + otherArte.ID + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpn + "</a>" );
+							sb.Append( "<a href=\"#arte" + otherArte.ID + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpnHtml( version ) + "</a>" );
 							break;
 						case 3: // skill
 							var skill = skills.SkillIdDict[AlteredArteRequirementId[i]];
 							sb.Append( "<img src=\"skill-icons/category-" + skill.Category + ".png\" width=\"16\" height=\"16\">" );
-							sb.Append( "<a href=\"skills-" + version + ".html#skill" + skill.ID + "\">" + inGameIdDict[skill.NameStringDicID].StringEngOrJpn + "</a>" );
+							sb.Append( "<a href=\"skills-" + version + ".html#skill" + skill.ID + "\">" + inGameIdDict[skill.NameStringDicID].StringEngOrJpnHtml( version ) + "</a>" );
 							break;
 						default:
 							sb.Append( "##Unknown Altered Type: " + AlteredArteRequirementType[i] + "<br>" );

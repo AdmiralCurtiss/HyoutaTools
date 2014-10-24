@@ -77,7 +77,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			foreach ( ItemDatSingle i in itemDat.items ) {
 				var entry = GetEntry( i.Data[(int)ItemData.NamePointer] );
-				listBox1.Items.Add( String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG );
+				listBox1.Items.Add( entry.StringEngOrJpn );
 			}
 
 		}
@@ -95,11 +95,11 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			}
 
 			TSSEntry entry = GetEntry( item.Data[(int)ItemData.NamePointer] );
-			labelName.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
+			labelName.Text = entry.StringEngOrJpn;
 			entry = GetEntry( item.Data[(int)ItemData.DescriptionPointer] );
-			labelDescription.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
+			labelDescription.Text = entry.StringEngOrJpn;
 			entry = GetEntry( item.Data[(int)ItemData.UnknownTextPointer] );
-			labelUnknown.Text = String.IsNullOrEmpty( entry.StringENG ) ? entry.StringJPN : entry.StringENG;
+			labelUnknown.Text = entry.StringEngOrJpn;
 			textBoxGeneratedText.Text = ItemDat.GetItemDataAsText( Version, itemDat, item, Skills, Enemies, Recipes, Locations, TSS, InGameIdDict );
 		}
 

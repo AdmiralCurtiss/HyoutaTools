@@ -63,17 +63,17 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 			sb.Append( "<tr>" );
 			sb.Append( "<td colspan=\"5\">" );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true, true ) );
+			sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) );
+			sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version ) );
 			sb.Append( "</td>" );
 			sb.Append( "<td colspan=\"5\">" );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicID].StringENG );
+			sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
 			sb.Append( "</td>" );
 			sb.Append( "</tr>" );
 
@@ -90,14 +90,14 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 				sb.Append( "<tr>" );
 				sb.Append( "<td>" );
 				sb.Append( "<span class=\"strategycat\">" );
-				sb.Append( GetCategoryName( x, inGameIdDict ) );
+				sb.Append( GetCategoryName( x, version, inGameIdDict ) );
 				sb.Append( "</span>" );
 				sb.Append( "</td>" );
 				for ( uint y = 0; y < StrategyDefaults.GetLength( 1 ); ++y ) {
 					if ( version == GameVersion.X360 && y == 8 ) { continue; }
 					sb.Append( "<td>" );
 					var option = strategy.StrategyOptionDict[StrategyDefaults[x, y]];
-					sb.Append( inGameIdDict[option.NameStringDicID].StringEngOrJpn );
+					sb.Append( inGameIdDict[option.NameStringDicID].StringEngOrJpnHtml( version ) );
 					sb.Append( "</td>" );
 				}
 				sb.Append( "</tr>" );
@@ -116,9 +116,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 			return sb.ToString();
 		}
 
-		public static string GetCategoryName( uint cat, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public static string GetCategoryName( uint cat, GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			if ( cat == 8 ) { return "Personal"; }
-			return inGameIdDict[33912138u + cat].StringEngOrJpn;
+			return inGameIdDict[33912138u + cat].StringEngOrJpnHtml( version );
 		}
 	}
 }

@@ -37,7 +37,7 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 					+ ( Data[0] == 2 ? " --- Image: " + Credits.GetInFileString( (int)Data[2] + 0xD60 ) + " --- " : "" )
 					+ ( Data[0] == 3 ? " --- Free Space: " + Util.UIntToFloat( Data[4] ).ToString() + " --- " : "" )
 					+ ( Data[0] == 5 ? " --- Text Size?: " + Util.UIntToFloat( Data[4] ).ToString() + " --- " : "" )
-					+ ( Form != null ? Form.GetEntry( Data[(int)CreditsData.EntryNumber] ).StringJPN : "" )
+					+ ( Form != null ? Form.GetEntry( Data[(int)CreditsData.EntryNumber] ).StringJpn : "" )
 			;
 		}
 	}

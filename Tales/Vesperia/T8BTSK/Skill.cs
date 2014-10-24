@@ -68,18 +68,18 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 
 			sb.Append( "<td class=\"skilljpn\">" );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true, true ) );
+			sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) );
+			sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version ) );
 			sb.Append( "</td>" );
 			
 			sb.Append( "<td>" );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicID].StringENG );
+			sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
 			sb.Append( "</td>" );
 
 			sb.Append( "<td class=\"skilldata\">" );

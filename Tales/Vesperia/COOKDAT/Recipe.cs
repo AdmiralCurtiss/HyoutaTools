@@ -111,13 +111,13 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			sb.Append( "<tr id=\"recipe" + ID + "\"><td>" );
 			sb.Append( "<img src=\"recipes/U_" + RefString + ".png\">" );
 			sb.Append( "</td><td>" );
-			sb.Append( "<span class=\"itemname\">" + VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true ) + "</span><br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescriptionStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) + "<br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[EffectStringDicID].StringJPN, true, true ) + "<br>" );
+			sb.Append( "<span class=\"itemname\">" + inGameIdDict[NameStringDicID].StringJpnHtml( version ) + "</span><br>" );
+			sb.Append( inGameIdDict[DescriptionStringDicID].StringJpnHtml( version ) + "<br>" );
+			sb.Append( inGameIdDict[EffectStringDicID].StringJpnHtml( version ) + "<br>" );
 			sb.Append( "<br>" );
-			sb.Append( "<span class=\"itemname\">" + inGameIdDict[NameStringDicID].StringENG + "</span><br>" );
-			sb.Append( inGameIdDict[DescriptionStringDicID].StringENG.Replace( "\n", "<br>" ) + "<br>" );
-			sb.Append( inGameIdDict[EffectStringDicID].StringENG + "<br>" );
+			sb.Append( "<span class=\"itemname\">" + inGameIdDict[NameStringDicID].StringEngHtml( version ) + "</span><br>" );
+			sb.Append( inGameIdDict[DescriptionStringDicID].StringEngHtml( version ) + "<br>" );
+			sb.Append( inGameIdDict[EffectStringDicID].StringEngHtml( version ) + "<br>" );
 
 			sb.Append( "</td><td>" );
 			for ( int i = 0; i < IngredientGroups.Length; ++i ) {
@@ -126,7 +126,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 					stringDicId = IngredientGroupDict[IngredientGroups[i]];
 					var entry = inGameIdDict[stringDicId];
 					sb.Append( "<img src=\"item-icons/ICON" + IngredientGroups[i] + ".png\" height=\"16\" width=\"16\"> " );
-					sb.Append( entry.StringEngOrJpn + " x" + IngredientGroupCount[i] + "<br>" );
+					sb.Append( entry.StringEngOrJpnHtml( version ) + " x" + IngredientGroupCount[i] + "<br>" );
 				}
 			}
 			for ( int i = 0; i < Ingredients.Length; ++i ) {
@@ -134,7 +134,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 					var item = items.itemIdDict[Ingredients[i]];
 					sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 					sb.Append( "<a href=\"items-i" + item.Data[(int)ItemData.Icon] + "-" + version + ".html#item" + item.Data[(int)ItemData.ID] + "\">" );
-					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpn + "</a> x" + IngredientCount[i] + "<br>" );
+					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version ) + "</a> x" + IngredientCount[i] + "<br>" );
 				}
 			}
 
@@ -178,7 +178,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 						var otherRecipe = recipes.RecipeList[(int)RecipeCreationRecipe[i]];
 						Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ) );
 						sb.Append( " <a href=\"#recipe" + otherRecipe.ID + "\">" );
-						sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpn );
+						sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpnHtml( version ) );
 						sb.Append( "</a>" );
 						sb.Append( "<br>" );
 					}

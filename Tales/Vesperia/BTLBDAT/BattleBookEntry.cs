@@ -21,15 +21,15 @@ namespace HyoutaTools.Tales.Vesperia.BTLBDAT {
 			sb.Append( "<td>" );
 
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicId].StringJPN, true, true ) );
+			sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version ) );
 			sb.Append( "</span><br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[TextStringDicId].StringJPN, true, true ).Replace( "\n", "<br>" ) );
+			sb.Append( inGameIdDict[TextStringDicId].StringJpnHtml( version ) );
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicId].StringENG );
+			sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version ) );
 			sb.Append( "</span><br>" );
-			sb.Append( inGameIdDict[TextStringDicId].StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( inGameIdDict[TextStringDicId].StringEngHtml( version ) );
 			sb.Append( "</td>" );
 			return sb.ToString();
 		}

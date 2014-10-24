@@ -133,11 +133,11 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			byte[] newlinereturn = { 0x0D, 0x0A };
 
 			for ( int i = 0; i < Entries.Length; i++ ) {
-				if ( Entries[i].StringJPN != null ) {
-					Lines.Add( i.ToString() + "j: " + Entries[i].StringJPN.Replace( newlineS, backslashnS ) );
+				if ( Entries[i].StringJpn != null ) {
+					Lines.Add( i.ToString() + "j: " + Entries[i].StringJpn.Replace( newlineS, backslashnS ) );
 				}
-				if ( Entries[i].StringENG != null ) {
-					Lines.Add( i.ToString() + "e: " + Entries[i].StringENG.Replace( newlineS, backslashnS ) );
+				if ( Entries[i].StringEng != null ) {
+					Lines.Add( i.ToString() + "e: " + Entries[i].StringEng.Replace( newlineS, backslashnS ) );
 				}
 				Lines.Add( "" );
 			}
@@ -163,16 +163,16 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			byte[] newlinereturn = { 0x0D, 0x0A };
 
 			for ( int i = 0; i < Entries.Length; i++ ) {
-				if ( Entries[i].StringJPN != null ) {
+				if ( Entries[i].StringJpn != null ) {
 					//Lines.Add(Entries[i].StringJPN);
 				}
-				if ( Entries[i].StringENG != null ) {
+				if ( Entries[i].StringEng != null ) {
 					if (
-						( Entries[i].StringENG.Trim() == "" || Entries[i].StringENG.Trim() == "北米専用。右に直接書き込んでください→" )
-						&& Entries[i].StringJPN != null ) {
-						Lines.Add( RemoveTags( Entries[i].StringJPN ) );
+						( Entries[i].StringEng.Trim() == "" || Entries[i].StringEng.Trim() == "北米専用。右に直接書き込んでください→" )
+						&& Entries[i].StringJpn != null ) {
+						Lines.Add( RemoveTags( Entries[i].StringJpn ) );
 					} else {
-						Lines.Add( RemoveTags( Entries[i].StringENG ) );
+						Lines.Add( RemoveTags( Entries[i].StringEng ) );
 					}
 				}
 				Lines.Add( "" );
@@ -227,9 +227,9 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 					char language = s[location - 1];
 					int number = Int32.Parse( StringNumber );
 					if ( language == 'j' ) {
-						Entries[number].StringJPN = s.Substring( location + 1 );
+						Entries[number].StringJpn = s.Substring( location + 1 );
 					} else if ( language == 'e' ) {
-						Entries[number].StringENG = s.Substring( location + 1 );
+						Entries[number].StringEng = s.Substring( location + 1 );
 					}
 				} catch ( Exception ) { }
 			}
@@ -244,17 +244,17 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			foreach ( TSSEntry e in Entries ) {
 				uint ptr = CurrentPointer - Header.TextStart;
 
-				if ( e.StringJPN != null ) {
+				if ( e.StringJpn != null ) {
 					e.SetJPNPointer( ptr );
-					uint StringLength = (uint)Util.StringToBytesShiftJis( e.StringJPN ).Length;
+					uint StringLength = (uint)Util.StringToBytesShiftJis( e.StringJpn ).Length;
 					CurrentPointer += StringLength + 1;
-					if ( e.StringENG != null ) {
+					if ( e.StringEng != null ) {
 						e.SetENGPointer( ptr + StringLength );
 					}
 				}
-				if ( e.StringENG != null && e.StringENG != "" ) {
+				if ( e.StringEng != null && e.StringEng != "" ) {
 					e.SetENGPointer( CurrentPointer - Header.TextStart );
-					CurrentPointer += (uint)Util.StringToBytesShiftJis( e.StringENG ).Length + 1;
+					CurrentPointer += (uint)Util.StringToBytesShiftJis( e.StringEng ).Length + 1;
 				}
 			}
 
@@ -274,12 +274,12 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 				Serialized.Add( 0x00 );
 			}
 			foreach ( TSSEntry e in Entries ) {
-				if ( e.StringJPN != null ) {
-					Serialized.AddRange( Util.StringToBytesShiftJis( e.StringJPN ) );
+				if ( e.StringJpn != null ) {
+					Serialized.AddRange( Util.StringToBytesShiftJis( e.StringJpn ) );
 					Serialized.Add( 0x00 );
 				}
-				if ( e.StringENG != null && e.StringENG != "" ) {
-					Serialized.AddRange( Util.StringToBytesShiftJis( e.StringENG ) );
+				if ( e.StringEng != null && e.StringEng != "" ) {
+					Serialized.AddRange( Util.StringToBytesShiftJis( e.StringEng ) );
 					Serialized.Add( 0x00 );
 				}
 			}
@@ -349,12 +349,12 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 						UpdateDatabaseWithInGameStringId( Connection, PointerRef, Entries[PointerRef + 1].inGameStringId, npcInGameIdMapDict );
 					}
 					if ( generateGracesEnglish ) {
-						string englishOriginal = Entries[PointerRef + 1].StringENG;
+						string englishOriginal = Entries[PointerRef + 1].StringEng;
 						int gracesJapaneseId = Reader.GetInt32( 2 );
 						UpdateGracesJapanese( transactionGracesEnglish, gracesJapaneseId, englishOriginal, 0 );
 					}
 
-					if ( Entries[PointerRef + 1].StringJPN != null
+					if ( Entries[PointerRef + 1].StringJpn != null
 						 && !String.IsNullOrEmpty( English )
 					   ) {
 						English = English.Replace( "''", "'" );
@@ -366,9 +366,9 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 						}
 						*/
 						if ( placeEnglishInJpnEntry ) {
-							Entries[PointerRef + 1].StringJPN = English;
+							Entries[PointerRef + 1].StringJpn = English;
 						} else {
-							Entries[PointerRef + 1].StringENG = English;
+							Entries[PointerRef + 1].StringEng = English;
 						}
 					}
 				}

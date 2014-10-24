@@ -23,7 +23,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicImport {
 
 			List<GraceNoteDatabaseEntry> entries = new List<GraceNoteDatabaseEntry>();
 			foreach ( TSSEntry e in TSS.Entries ) {
-				GraceNoteDatabaseEntry g = new GraceNoteDatabaseEntry( e.StringJPN, e.StringENG );
+				GraceNoteDatabaseEntry g = new GraceNoteDatabaseEntry( e.StringJpn, e.StringEng );
 				entries.Add( g );
 			}
 

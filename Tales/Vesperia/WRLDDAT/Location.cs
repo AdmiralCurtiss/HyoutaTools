@@ -73,9 +73,6 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict, T8BTEMEG.T8BTEMEG encounterGroups, T8BTEMGP.T8BTEMGP enemyGroups, T8BTEMST.T8BTEMST enemies, ShopData.ShopData shops ) {
 			StringBuilder sb = new StringBuilder();
 
-			string defJpn = VesperiaUtil.RemoveTags( inGameIdDict[DefaultStringDicID].StringJPN, true, true );
-			string defEng = inGameIdDict[DefaultStringDicID].StringENG;
-
 			StringBuilder shopEnemySb = new StringBuilder();
 			List<uint> alreadyPrinted = new List<uint>();
 			for ( int i = 0; i < ShopsOrEnemyGroups.Length; ++i ) {
@@ -84,7 +81,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 					// references to shops
 					var shop = shops.ShopDictionary[ShopsOrEnemyGroups[i]];
 					shopEnemySb.Append( "<a href=\"shops-" + version + ".html#shop" + shop.InGameID + "\">" );
-					shopEnemySb.Append( inGameIdDict[shop.StringDicID].StringEngOrJpn );
+					shopEnemySb.Append( inGameIdDict[shop.StringDicID].StringEngOrJpnHtml( version ) );
 					shopEnemySb.Append( "</a>" );
 				} else {
 					// references to encounter groups
@@ -97,7 +94,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 							var enemy = enemies.EnemyIdDict[id];
 							shopEnemySb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" height=\"22\" width=\"22\"> " );
 							shopEnemySb.Append( "<a href=\"enemies-c" + enemy.Category + "-" + version + ".html#enemy" + enemy.InGameID + "\">" );
-							shopEnemySb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpn + "</a>" );
+							shopEnemySb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version ) + "</a>" );
 							shopEnemySb.Append( "<br>" );
 
 							alreadyPrinted.Add( id );
@@ -122,14 +119,14 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				sb.Append( "</td>" );
 				sb.Append( "<td>" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicIDs[i]].StringJPN, true, true ) + "<br>" );
+				sb.Append( inGameIdDict[NameStringDicIDs[i]].StringJpnHtml( version ) + "<br>" );
 				sb.Append( "</span>" );
-				sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicIDs[i]].StringJPN, true, true ).Replace( "\n", "<br>" ) + "<br>" );
+				sb.Append( inGameIdDict[DescStringDicIDs[i]].StringJpnHtml( version ) + "<br>" );
 				sb.Append( "<br>" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicIDs[i]].StringENG + "<br>" );
+				sb.Append( inGameIdDict[NameStringDicIDs[i]].StringEngHtml( version ) + "<br>" );
 				sb.Append( "</span>" );
-				sb.Append( inGameIdDict[DescStringDicIDs[i]].StringENG.Replace( "\n", "<br>" ) + "<br>" );
+				sb.Append( inGameIdDict[DescStringDicIDs[i]].StringEngHtml( version ) + "<br>" );
 				if ( RefStrings[i] == "" ) {
 					sb.Append( "<br>" );
 				}

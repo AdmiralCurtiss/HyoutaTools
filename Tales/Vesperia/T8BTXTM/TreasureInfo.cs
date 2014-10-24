@@ -63,7 +63,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 			for ( int i = 0; i < Items.Length; ++i ) {
 				if ( Items[i] > 0 ) {
 					var item = items.itemIdDict[this.Items[i]];
-					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpn );
+					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( GameVersion.PS3 ) );
 					sb.Append( " / " );
 					sb.Append( Chances[i] );
 				}

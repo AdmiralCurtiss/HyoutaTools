@@ -191,8 +191,8 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			sb.Append( "<img src=\"monster-icons/44px/monster-" + IconID.ToString( "D3" ) + ".png\" title=\"" + RefString + "\">" );
 			sb.Append( "</td>" );
 			sb.Append( "<td style=\"height: 46px;\">" );
-			sb.Append( "<span class=\"itemname\">" + VesperiaUtil.RemoveTags( enemyNameEntry.StringJPN, true, true ) + "</span><br>" );
-			sb.Append( "<span class=\"itemname\">" + enemyNameEntry.StringENG + "</span><br>" );
+			sb.Append( "<span class=\"itemname\">" + enemyNameEntry.StringJpnHtml( version ) + "</span><br>" );
+			sb.Append( "<span class=\"itemname\">" + enemyNameEntry.StringEngHtml( version ) + "</span><br>" );
 			//sb.Append( RefString2 + "<br>" );
 			//sb.Append( RefString3 + "<br>" );
 			//sb.Append( RefString4 + "<br>" );
@@ -321,7 +321,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 				if ( LocationWeather > -1 ) {
 					sb.AppendLine( "<img src=\"menu-icons/weather-" + LocationWeather + ".png\" width=\"16\" height=\"16\">" );
 				}
-				sb.AppendLine( loc.GetLastValidName( inGameIdDict ).StringEngOrJpn + "</a><br>" );
+				sb.AppendLine( loc.GetLastValidName( inGameIdDict ).StringEngOrJpnHtml( version ) + "</a><br>" );
 			}
 
 			for ( int i = 0; i < DropItems.Length; ++i ) {
@@ -335,7 +335,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 					var item = items.itemIdDict[DropItems[i]];
 					sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 					sb.Append( "<a href=\"items-i" + item.Data[(int)ItemData.Icon] + "-" + version + ".html#item" + item.Data[(int)ItemData.ID] + "\">" );
-					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpn + "</a>" );
+					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version ) + "</a>" );
 					sb.Append( ", " + DropChances[i] + "%" );
 					if ( DropChances[i] < 100 ) {
 						sb.Append( ", " );
@@ -350,14 +350,14 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 				var item = items.itemIdDict[SecretMissionDrop];
 				sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 				sb.Append( "<a href=\"items-i" + item.Data[(int)ItemData.Icon] + "-" + version + ".html#item" + item.Data[(int)ItemData.ID] + "\">" );
-				sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpn + "</a>, " + SecretMissionDropChance + "%<br>" );
+				sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version ) + "</a>, " + SecretMissionDropChance + "%<br>" );
 			}
 			if ( StealItem != 0 ) {
 				sb.Append( "Steal:<br>" );
 				var item = items.itemIdDict[StealItem];
 				sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 				sb.Append( "<a href=\"items-i" + item.Data[(int)ItemData.Icon] + "-" + version + ".html#item" + item.Data[(int)ItemData.ID] + "\">" );
-				sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpn + "</a>, " + StealChance + "%<br>" );
+				sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version ) + "</a>, " + StealChance + "%<br>" );
 			}
 			sb.Append( "</td>" );
 

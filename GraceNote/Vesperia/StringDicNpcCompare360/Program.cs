@@ -166,7 +166,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicNpcCompare360 {
 			List<ScenarioString> npcLines = GetSQL( "Data Source=VSkit Text", "Data Source=GracesJapanese" ).ToList();
 			List<ScenarioString> x360Lines = new List<ScenarioString>( TSS.Entries.Length );
 			foreach ( TSSEntry e in TSS.Entries ) {
-				x360Lines.Add( new ScenarioString( e.StringJPNIndex, e.StringJPN, e.StringENG ) );
+				x360Lines.Add( new ScenarioString( e.StringJpnIndex, e.StringJpn, e.StringEng ) );
 			}
 			List<ScenarioString> foundLinesNpc = new List<ScenarioString>();
 			List<ScenarioString> foundLines360 = new List<ScenarioString>();

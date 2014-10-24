@@ -46,23 +46,23 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 			//sb.Append( RefString );
 			sb.Append( "<tr id=\"strategyoption" + InGameID + "\">" );
 			sb.Append( "<td>" );
-			sb.Append( StrategySet.GetCategoryName( Category, inGameIdDict ) );
+			sb.Append( StrategySet.GetCategoryName( Category, version, inGameIdDict ) );
 			sb.Append( "</td>" );
 
 			sb.Append( "<td>" );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[NameStringDicID].StringJPN, true, true ) );
+			sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
-			sb.Append( VesperiaUtil.RemoveTags( inGameIdDict[DescStringDicID].StringJPN, true, true ).Replace( "\n", "<br>" ) );
+			sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version ) );
 			sb.Append( "</td>" );
 
 			sb.Append( "<td>" );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicID].StringENG );
+			sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
 			sb.Append( "</td>" );
 
 			sb.Append( "<td>" );

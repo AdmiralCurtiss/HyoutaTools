@@ -31,10 +31,10 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 
 			sb.AppendLine( "<tr id=\"shop" + InGameID + "\">" );
 			sb.AppendLine( "<td class=\"synopsistitle\" colspan=\"3\">" );
-			sb.AppendLine( VesperiaUtil.RemoveTags( inGameIdDict[StringDicID].StringJPN, true, true ) );
+			sb.AppendLine( inGameIdDict[StringDicID].StringJpnHtml( version ) );
 			sb.AppendLine( "</td>" );
 			sb.AppendLine( "<td class=\"synopsistitle\" colspan=\"3\">" );
-			sb.AppendLine( inGameIdDict[StringDicID].StringENG );
+			sb.AppendLine( inGameIdDict[StringDicID].StringEngHtml( version ) );
 			sb.AppendLine( "</td>" );
 			sb.AppendLine( "</tr>" );
 			sb.AppendLine( "<tr>" );
@@ -54,7 +54,7 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 				sb.Append( "<tr>" );
 				sb.Append( "<td class=\"strategychar\" colspan=\"6\">" );
 				sb.Append( "Changes to <a href=\"#shop" + ChangeToShop + "\">" );
-				sb.Append( inGameIdDict[shops.ShopDictionary[ChangeToShop].StringDicID].StringEngOrJpn );
+				sb.Append( inGameIdDict[shops.ShopDictionary[ChangeToShop].StringDicID].StringEngOrJpnHtml( version ) );
 				sb.Append( "</a>" );
 				sb.Append( "</td>" );
 				sb.Append( "</tr>" );

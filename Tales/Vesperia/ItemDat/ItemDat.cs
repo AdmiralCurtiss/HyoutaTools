@@ -34,9 +34,9 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			sb.AppendLine( "[" + item.ItemString.TrimNull() + "]" );
 			sb.Append( "[Icon" + item.Data[(int)ItemData.Icon] + "] " );
 			var nameEntry = dict[item.NamePointer];
-			sb.AppendLine( String.IsNullOrEmpty( nameEntry.StringENG ) ? nameEntry.StringJPN : nameEntry.StringENG );
+			sb.AppendLine( nameEntry.StringEngOrJpn );
 			var descEntry = dict[item.DescriptionPointer];
-			sb.AppendLine( String.IsNullOrEmpty( descEntry.StringENG ) ? descEntry.StringJPN : descEntry.StringENG );
+			sb.AppendLine( descEntry.StringEngOrJpn );
 
 			switch ( item.Data[(int)ItemData.Category] ) {
 				case 2: sb.AppendLine( "<Tools>" ); break;
@@ -92,7 +92,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				for ( int i = 0; i < synthItemCount; ++i ) {
 					var otherItem = items.itemIdDict[item.Data[(int)ItemData.Synth1Item1Type + i * 2 + j * 16]];
 					var otherItemNameEntry = dict[otherItem.NamePointer];
-					string otherItemName = String.IsNullOrEmpty( otherItemNameEntry.StringENG ) ? otherItemNameEntry.StringJPN : otherItemNameEntry.StringENG;
+					string otherItemName = otherItemNameEntry.StringEngOrJpn;
 					sb.AppendLine( "  Item " + ( i + 1 ) + ": " + otherItemName + " x" + item.Data[(int)ItemData.Synth1Item1Count + i * 2 + j * 16] );
 				}
 			}
@@ -175,8 +175,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 						if ( skillId != 0 ) {
 							var skill = skills.SkillIdDict[skillId];
 							var skillNameEntry = dict[skill.NameStringDicID];
-							var skillDescEntry = dict[skill.DescStringDicID];
-							string skillName = String.IsNullOrEmpty( skillNameEntry.StringENG ) ? skillNameEntry.StringJPN : skillNameEntry.StringENG;
+							string skillName = skillNameEntry.StringEngOrJpn;
 							sb.AppendLine( "Skill #" + ( i + 1 ) + " Name: " + skillName );
 							sb.AppendLine( "Skill #" + ( i + 1 ) + " Metadata: " + item.Data[(int)ItemData.Skill1Metadata + i * 2] );
 						}
@@ -192,7 +191,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( enemyId != 0 ) {
 						var enemy = enemies.EnemyIdDict[enemyId];
 						var enemyNameEntry = dict[enemy.NameStringDicID];
-						string enemyName = String.IsNullOrEmpty( enemyNameEntry.StringENG ) ? enemyNameEntry.StringJPN : enemyNameEntry.StringENG;
+						string enemyName = enemyNameEntry.StringEngOrJpn;
 						sb.AppendLine( "Enemy " + ( j == 0 ? "Drop" : "Steal" ) + " #" + ( i + 1 ) + ": " + enemyName + ", " + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
 					}
 				}
@@ -252,22 +251,22 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( VesperiaUtil.RemoveTags( nameEntry.StringJPN, true, true ) );
+			sb.Append( nameEntry.StringJpnHtml( version ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
 			sb.Append( "<span class=\"itemdesc\">" );
-			sb.Append( VesperiaUtil.RemoveTags( descEntry.StringJPN, true, true ).Replace( "\n", "<br>" ) );
+			sb.Append( descEntry.StringJpnHtml( version ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
 			sb.Append( "<br>" );
 
 			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( nameEntry.StringENG );
+			sb.Append( nameEntry.StringEngHtml( version ) );
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
 			sb.Append( "<span class=\"itemdesc\">" );
-			sb.Append( descEntry.StringENG.Replace( "\n", "<br>" ) );
+			sb.Append( descEntry.StringEngHtml( version ) );
 			sb.Append( "</span>" );
 
 			sb.Append( "<span class=\"special\">" );
@@ -291,7 +290,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					sb.Append( "<br>" );
 					var otherItem = items.itemIdDict[item.Data[(int)ItemData.Synth1Item1Type + i * 2 + j * 16]];
 					var otherItemNameEntry = dict[otherItem.NamePointer];
-					string otherItemName = otherItemNameEntry.StringEngOrJpn;
+					string otherItemName = otherItemNameEntry.StringEngOrJpnHtml( version );
 					sb.Append( "<img src=\"item-icons/ICON" + otherItem.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 					sb.Append( "<a href=\"items-i" + otherItem.Data[(int)ItemData.Icon] + "-" + version + ".html#item" + otherItem.Data[(int)ItemData.ID] + "\">" );
 					sb.Append( otherItemName + "</a> x" + item.Data[(int)ItemData.Synth1Item1Count + i * 2 + j * 16] );
@@ -344,7 +343,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 						if ( recipeId != 0 ) {
 							var recipe = Recipes.RecipeList[recipeId];
 							var recipeNameEntry = dict[recipe.NameStringDicID];
-							sb.Append( "<a href=\"recipes-" + version + ".html#recipe" + recipe + "\">" + recipeNameEntry.StringEngOrJpn + "</a><br>" );
+							sb.Append( "<a href=\"recipes-" + version + ".html#recipe" + recipe + "\">" + recipeNameEntry.StringEngOrJpnHtml( version ) + "</a><br>" );
 						}
 					}
 
@@ -440,8 +439,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 						if ( skillId != 0 ) {
 							var skill = skills.SkillIdDict[skillId];
 							var skillNameEntry = dict[skill.NameStringDicID];
-							var skillDescEntry = dict[skill.DescStringDicID];
-							string skillName = String.IsNullOrEmpty( skillNameEntry.StringENG ) ? skillNameEntry.StringJPN : skillNameEntry.StringENG;
+							string skillName = skillNameEntry.StringEngOrJpnHtml( version );
 							string skillCat = "<img src=\"skill-icons/category-" + skill.Category.ToString() + ".png\" height=\"16\" width=\"16\">";
 							sb.Append( skillCat );
 							sb.Append( "<a href=\"skills-" + version + ".html#skill" + skill.ID + "\">" );
@@ -466,7 +464,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( item.Data[(int)ItemData.BuyableIn1 + i] > 0 ) {
 						var loc = Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1 + i]];
 						sb.Append( "<br><a href=\"locations-" + version + ".html#location" + loc.LocationID + "\">" );
-						sb.Append( loc.GetLastValidName( dict ).StringEngOrJpn + "</a>" );
+						sb.Append( loc.GetLastValidName( dict ).StringEngOrJpnHtml( version ) + "</a>" );
 					}
 				}
 				sb.AppendLine();
@@ -508,7 +506,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							sb.Append( "<td>" );
 							var enemy = enemies.EnemyIdDict[enemyId];
 							var enemyNameEntry = dict[enemy.NameStringDicID];
-							string enemyName = String.IsNullOrEmpty( enemyNameEntry.StringENG ) ? enemyNameEntry.StringJPN : enemyNameEntry.StringENG;
+							string enemyName = enemyNameEntry.StringEngOrJpnHtml( version );
 							sb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\"><br>" );
 							sb.Append( "<a href=\"enemies-c" + enemy.Category + "-" + version + ".html#enemy" + enemy.InGameID + "\">" );
 							sb.Append( enemyName + "</a><br>" + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
