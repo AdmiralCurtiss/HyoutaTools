@@ -36,8 +36,16 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 
-			string[] textEng = inGameIdDict[TextStringDicId].StringEngHtml( version ).Split( '\f' );
-			string[] textJpn = inGameIdDict[TextStringDicId].StringJpnHtml( version ).Split( '\f' );
+			var synopsisEntry = inGameIdDict[TextStringDicId];
+			string jp = synopsisEntry.StringJpn != null ? synopsisEntry.StringJpn : "";
+			jp = Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( jp ), version ).ToString();
+			string en = synopsisEntry.StringEng != null ? synopsisEntry.StringEng : "";
+			en = Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( en ), version ).ToString();
+
+			string[] textJpn = jp.Split( '\f' );
+			string[] textEng = en.Split( '\f' );
+			for ( int i = 0; i < textJpn.Length; ++i ) { textJpn[i] = VesperiaUtil.RemoveTags( textJpn[i], true, true ).Replace( "\n", "<br />" ); }
+			for ( int i = 0; i < textEng.Length; ++i ) { textEng[i] = VesperiaUtil.RemoveTags( textEng[i], false, true ).Replace( "\n", "<br />" ); }
 
 			//sb.Append( "Unlocks between " + StoryIdMin + " and " + StoryIdMax + "<br>" );
 
