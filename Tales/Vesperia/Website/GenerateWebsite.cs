@@ -554,6 +554,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			foreach ( var s in Settings ) {
 				AppendSetting( sb, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0],
 					s.OptionsStringDicIds[1], s.OptionsStringDicIds[2], s.OptionsStringDicIds[3] );
+				sb.Append( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
 
@@ -621,7 +622,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "</tr>" );
 			}
 
-			sb.Append( "<tr><td colspan=\"5\"><hr></td></tr>" );
 		}
 		public string GenerateHtmlGradeShop() {
 			Console.WriteLine( "Generating Website: Grade Shop" );
