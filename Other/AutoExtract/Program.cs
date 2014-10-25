@@ -265,7 +265,6 @@ namespace HyoutaTools.Other.AutoExtract {
 							}
 						}
 
-						uint filenum;
 						string fname = System.IO.Path.GetFileName( f );
 						if (
 							( firstbyte == 0x00 && secondbyte == 0x02 && thirdbyte == 0x00 && fourthbyte == 0x00 &&
