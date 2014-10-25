@@ -97,6 +97,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.CommandText = "CREATE TABLE Artes_AlteredReqs ( id INTEGER PRIMARY KEY AUTOINCREMENT, arteId INT, type INT, value INT )";
 					command.ExecuteNonQuery();
 				}
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE INDEX Artes_Character_Type_Index ON Artes ( character, type )";
+					command.ExecuteNonQuery();
+				}
 
 				using ( var commandArte = DB.CreateCommand() )
 				using ( var commandLearnReq = DB.CreateCommand() )
@@ -551,6 +555,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.CommandText = "CREATE TABLE Enemies_Drops ( id INTEGER PRIMARY KEY AUTOINCREMENT, enemyId INT, itemId INT, chance INT, fatalModifier INT )";
 					command.ExecuteNonQuery();
 				}
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE INDEX Enemies_Category_Index ON Enemies ( category )";
+					command.ExecuteNonQuery();
+				}
 
 				using ( var command = DB.CreateCommand() )
 				using ( var commandDrop = DB.CreateCommand() ) {
@@ -802,6 +810,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE Items_Steals ( id INTEGER PRIMARY KEY AUTOINCREMENT, itemId INT, enemyId INT, chance INT )";
+					command.ExecuteNonQuery();
+				}
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE INDEX Items_Category_Index ON Items ( category )";
+					command.ExecuteNonQuery();
+				}
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE INDEX Items_Icon_Index ON Items ( icon )";
 					command.ExecuteNonQuery();
 				}
 
