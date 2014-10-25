@@ -25,6 +25,10 @@ namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 			stream.DiscardBytes( 0xC );
 		}
 
+		public override string ToString() {
+			return ID.ToString();
+		}
+
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 			sb.Append( "<tr>" );

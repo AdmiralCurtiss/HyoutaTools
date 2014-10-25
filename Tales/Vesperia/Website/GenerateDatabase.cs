@@ -402,7 +402,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportShops() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE Shops ( id INTEGER PRIMARY KEY AUTOINCREMENT, strDicName INT, changesToShop INT, onTrigger INT, html TEXT )";
+					command.CommandText = "CREATE TABLE Shops ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, strDicName INT, changesToShop INT, onTrigger INT, html TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -410,15 +410,15 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Shops ( id, strDicName, changesToShop, onTrigger, html ) VALUES ( @id, @strDicName, @changesToShop, @onTrigger, @html )";
-					command.AddParameter( "id" );
+					command.CommandText = "INSERT INTO Shops ( gameId, strDicName, changesToShop, onTrigger, html ) VALUES ( @gameId, @strDicName, @changesToShop, @onTrigger, @html )";
+					command.AddParameter( "gameId" );
 					command.AddParameter( "strDicName" );
 					command.AddParameter( "changesToShop" );
 					command.AddParameter( "onTrigger" );
 					command.AddParameter( "html" );
 
 					foreach ( var s in Site.Shops.ShopDefinitions ) {
-						command.GetParameter( "id" ).Value = s.InGameID;
+						command.GetParameter( "gameId" ).Value = s.InGameID;
 						command.GetParameter( "strDicName" ).Value = s.StringDicID;
 						command.GetParameter( "changesToShop" ).Value = s.ChangeToShop;
 						command.GetParameter( "onTrigger" ).Value = s.OnTrigger;
@@ -444,13 +444,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportTitles() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE Titles ( id INTEGER PRIMARY KEY AUTOINCREMENT, strDicName INT, strDicDesc INT, character INT, points INT, model TEXT, html TEXT )";
+					command.CommandText = "CREATE TABLE Titles ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, strDicName INT, strDicDesc INT, character INT, "
+						+ "points INT, model TEXT, html TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Titles ( id, strDicName, strDicDesc, character, points, model, html ) "
-						+ "VALUES ( @id, @strDicName, @strDicDesc, @character, @points, @model, @html )";
-					command.AddParameter( "id" );
+					command.CommandText = "INSERT INTO Titles ( gameId, strDicName, strDicDesc, character, points, model, html ) "
+						+ "VALUES ( @gameId, @strDicName, @strDicDesc, @character, @points, @model, @html )";
+					command.AddParameter( "gameId" );
 					command.AddParameter( "strDicName" );
 					command.AddParameter( "strDicDesc" );
 					command.AddParameter( "character" );
@@ -459,7 +460,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "html" );
 
 					foreach ( var t in Site.Titles.TitleList ) {
-						command.GetParameter( "id" ).Value = t.ID;
+						command.GetParameter( "gameId" ).Value = t.ID;
 						command.GetParameter( "strDicName" ).Value = t.NameStringDicID;
 						command.GetParameter( "strDicDesc" ).Value = t.DescStringDicID;
 						command.GetParameter( "character" ).Value = t.Character;
@@ -769,8 +770,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportItems() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE Items ( id INTEGER PRIMARY KEY AUTOINCREMENT, image TEXT, equipBy INT, strDicName INT, strDicDesc INT, icon INT, "
-						+ "usableInBattle INT, inCollectorsBook INT, category INT, hpHeal INT, tpHeal INT, ailmentPhys INT, ailmentMag INT, permaPAtk INT, permaPDef INT, "
+					command.CommandText = "CREATE TABLE Items ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, image TEXT, equipBy INT, strDicName INT, strDicDesc INT, "
+						+ "icon INT, usableInBattle INT, inCollectorsBook INT, category INT, hpHeal INT, tpHeal INT, ailmentPhys INT, ailmentMag INT, permaPAtk INT, permaPDef INT, "
 						+ "permaMAtk INT, permaMDef INT, permaAgl INT, permaHp INT, permaTp INT, equipPAtk INT, equipMAtk INT, equipPDef INT, equipMDef INT, equipAgl INT, "
 						+ "equipLuck INT, attrFire INT, attrWater INT, attrWind INT, attrEarth INT, attrLight INT, attrDark INT, price INT, html TEXT )";
 					command.ExecuteNonQuery();
@@ -812,13 +813,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				using ( var commandShop = DB.CreateCommand() )
 				using ( var commandDrop = DB.CreateCommand() )
 				using ( var commandSteal = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Items ( id, image, equipBy, strDicName, strDicDesc, icon, usableInBattle, inCollectorsBook, category, hpHeal, "
+					command.CommandText = "INSERT INTO Items ( gameId, image, equipBy, strDicName, strDicDesc, icon, usableInBattle, inCollectorsBook, category, hpHeal, "
 						+ "tpHeal, ailmentPhys, ailmentMag, permaPAtk, permaPDef, permaMAtk, permaMDef, permaAgl, permaHp, permaTp, equipPAtk, equipMAtk, equipPDef, "
-						+ "equipMDef, equipAgl, equipLuck, attrFire, attrWater, attrWind, attrEarth, attrLight, attrDark, price, html ) VALUES ( @id, @image, @equipBy, "
+						+ "equipMDef, equipAgl, equipLuck, attrFire, attrWater, attrWind, attrEarth, attrLight, attrDark, price, html ) VALUES ( @gameId, @image, @equipBy, "
 						+ "@strDicName, @strDicDesc, @icon, @usableInBattle, @inCollectorsBook, @category, @hpHeal, @tpHeal, @ailmentPhys, @ailmentMag, @permaPAtk, "
 						+ "@permaPDef, @permaMAtk, @permaMDef, @permaAgl, @permaHp, @permaTp, @equipPAtk, @equipMAtk, @equipPDef, @equipMDef, @equipAgl, @equipLuck, "
 						+ "@attrFire, @attrWater, @attrWind, @attrEarth, @attrLight, @attrDark, @price, @html )";
-					command.AddParameter( "id" );
+					command.AddParameter( "gameId" );
 					command.AddParameter( "image" );
 					command.AddParameter( "equipBy" );
 					command.AddParameter( "strDicName" );
@@ -887,8 +888,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					commandSteal.AddParameter( "chance" );
 
 					foreach ( var item in Site.Items.items ) {
-						uint itemId = item.Data[(int)ItemDat.ItemData.ID];
-						command.GetParameter( "id" ).Value = itemId;
+						command.GetParameter( "gameId" ).Value = item.Data[(int)ItemDat.ItemData.ID];
 						command.GetParameter( "image" ).Value = item.ItemString.TrimNull();
 						command.GetParameter( "equipBy" ).Value = item.Data[(int)ItemDat.ItemData.EquippableByBitfield];
 						command.GetParameter( "strDicName" ).Value = item.Data[(int)ItemDat.ItemData.NamePointer];
@@ -956,6 +956,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						}
 
 						command.ExecuteNonQuery();
+
+						long itemId = GetLastInsertedId();
 
 						uint synthCount = item.Data[(int)ItemDat.ItemData.SynthRecipeCount];
 						for ( int j = 0; j < synthCount; ++j ) {
@@ -1033,7 +1035,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportWorldMap() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE Locations ( id INTEGER PRIMARY KEY AUTOINCREMENT, strDicName INT, category INT, html TEXT )";
+					command.CommandText = "CREATE TABLE Locations ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, strDicName INT, category INT, html TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -1052,8 +1054,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				using ( var commandState = DB.CreateCommand() )
 				using ( var commandShop = DB.CreateCommand() )
 				using ( var commandEncounter = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Locations ( id, strDicName, category, html ) VALUES ( @id, @strDicName, @category, @html )";
-					command.AddParameter( "id" );
+					command.CommandText = "INSERT INTO Locations ( gameId, strDicName, category, html ) VALUES ( @gameId, @strDicName, @category, @html )";
+					command.AddParameter( "gameId" );
 					command.AddParameter( "strDicName" );
 					command.AddParameter( "category" );
 					command.AddParameter( "html" );
@@ -1075,14 +1077,16 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					commandEncounter.AddParameter( "encounterId" );
 
 					foreach ( var s in Site.Locations.LocationList ) {
-						command.GetParameter( "id" ).Value = s.LocationID;
+						command.GetParameter( "gameId" ).Value = s.LocationID;
 						command.GetParameter( "strDicName" ).Value = s.DefaultStringDicID;
 						command.GetParameter( "category" ).Value = s.Category;
 						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict, Site.EncounterGroups, Site.EnemyGroups, Site.Enemies, Site.Shops );
 						command.ExecuteNonQuery();
 
+						long insertedId = GetLastInsertedId();
+
 						for ( int i = 0; i < s.NameStringDicIDs.Length; ++i ) {
-							commandState.GetParameter( "locationId" ).Value = s.LocationID;
+							commandState.GetParameter( "locationId" ).Value = insertedId;
 							commandState.GetParameter( "strDicName" ).Value = s.NameStringDicIDs[i];
 							commandState.GetParameter( "strDicDesc" ).Value = s.DescStringDicIDs[i];
 							commandState.GetParameter( "refString" ).Value = s.RefStrings[i];
@@ -1093,11 +1097,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						foreach ( uint v in s.ShopsOrEnemyGroups ) {
 							if ( v <= 0 ) { continue; }
 							if ( s.Category == 1 ) {
-								commandShop.GetParameter( "locationId" ).Value = s.LocationID;
+								commandShop.GetParameter( "locationId" ).Value = insertedId;
 								commandShop.GetParameter( "shopId" ).Value = v;
 								commandShop.ExecuteNonQuery();
 							} else {
-								commandEncounter.GetParameter( "locationId" ).Value = s.LocationID;
+								commandEncounter.GetParameter( "locationId" ).Value = insertedId;
 								commandEncounter.GetParameter( "encounterId" ).Value = v;
 								commandEncounter.ExecuteNonQuery();
 							}
@@ -1211,7 +1215,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportNecropolis() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE NecropolisFloors ( id INTEGER PRIMARY KEY AUTOINCREMENT, floorName TEXT, map TEXT, html TEXT, htmlEnemies TEXT )";
+					command.CommandText = "CREATE TABLE NecropolisFloors ( id INTEGER PRIMARY KEY AUTOINCREMENT, floorName VARCHAR(16) UNIQUE, map TEXT, html TEXT, htmlEnemies TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -1227,9 +1231,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						int floorStratumAsNumber = ( floorNumberLong - 1 ) / 10 + 1;
 						string floorStratum = ( (char)( floorStratumAsNumber + 64 ) ).ToString();
 						string html = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, null, null, null,
-							Site.Version, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict );
-						string htmlEnemies = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Site.Enemies,
-							Site.EnemyGroups, Site.EncounterGroups, Site.Version, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict );
+							Site.Version, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false );
+						string htmlEnemies = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Site.Enemies, Site.EnemyGroups,
+							Site.EncounterGroups, Site.Version, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false );
 
 						command.GetParameter( "floorName" ).Value = floor.RefString1;
 						command.GetParameter( "map" ).Value = floor.RefString2;
@@ -1241,7 +1245,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE NecropolisMaps ( id INTEGER PRIMARY KEY AUTOINCREMENT, mapName TEXT UNIQUE, tilesX INT, tilesY INT )";
+					command.CommandText = "CREATE TABLE NecropolisMaps ( id INTEGER PRIMARY KEY AUTOINCREMENT, mapName VARCHAR(5) UNIQUE, tilesX INT, tilesY INT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
