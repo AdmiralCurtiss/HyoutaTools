@@ -21,12 +21,12 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			ItemID = Data[5];
 		}
 
-		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 
 			var item = items.itemIdDict[ItemID];
 			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
-			sb.Append( "<a href=\"items-i" + item.Data[(int)ItemData.Icon] + "-" + version + ".html#item" + item.Data[(int)ItemData.ID] + "\">" );
+			sb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Item, version, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
 			sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version ) + "</a>" );
 
 			return sb.ToString();

@@ -156,7 +156,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						commandArte.GetParameter( "water" ).Value = arte.ElementWater;
 						commandArte.GetParameter( "light" ).Value = arte.ElementLight;
 						commandArte.GetParameter( "dark" ).Value = arte.ElementDarkness;
-						commandArte.GetParameter( "html" ).Value = arte.GetDataAsHtml( Site.Version, Site.Artes.ArteIdDict, Site.Enemies, Site.Skills, Site.StringDic, Site.InGameIdDict );
+						commandArte.GetParameter( "html" ).Value = arte.GetDataAsHtml( Site.Version, Site.Artes.ArteIdDict, Site.Enemies, Site.Skills, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						commandArte.ExecuteNonQuery();
 
 						for ( int j = 0; j < arte.LearnRequirementsOtherArtesType.Length; ++j ) {
@@ -371,7 +371,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "statType" ).Value = r.StatType;
 						command.GetParameter( "statValue" ).Value = r.StatValue;
 						command.GetParameter( "statTime" ).Value = r.StatTime;
-						command.GetParameter( "html" ).Value = r.GetDataAsHtml( Site.Version, Site.Recipes, Site.Items, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "html" ).Value = r.GetDataAsHtml( Site.Version, Site.Recipes, Site.Items, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						command.ExecuteNonQuery();
 
 						for ( int i = 0; i < r.IngredientGroups.Length; ++i ) {
@@ -658,7 +658,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "fatalLpType" ).Value = e.FatalTypeLP;
 						command.GetParameter( "fatalLpModifier" ).Value = e.LPModifier;
 						command.GetParameter( "fatalDropType" ).Value = e.FatalTypeDrop;
-						command.GetParameter( "html" ).Value = e.GetDataAsHtml( Site.Version, Site.Items, Site.Locations, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "html" ).Value = e.GetDataAsHtml( Site.Version, Site.Items, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						command.ExecuteNonQuery();
 
 						for ( int i = 0; i < e.DropItems.Length; ++i ) {
@@ -913,7 +913,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "usableInBattle" ).Value = item.Data[(int)ItemDat.ItemData.UsableInBattle];
 						command.GetParameter( "inCollectorsBook" ).Value = item.Data[(int)ItemDat.ItemData.InCollectorsBook];
 						command.GetParameter( "price" ).Value = item.Data[(int)ItemDat.ItemData.ShopPrice];
-						command.GetParameter( "html" ).Value = ItemDat.ItemDat.GetItemDataAsHtml( Site.Version, Site.Items, item, Site.Skills, Site.Enemies, Site.Recipes, Site.Locations, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "html" ).Value = ItemDat.ItemDat.GetItemDataAsHtml( Site.Version, Site.Items, item, Site.Skills, Site.Enemies, Site.Recipes, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 
 						uint category = item.Data[(int)ItemDat.ItemData.Category];
 						bool equipType = category >= 3 && category <= 7;
@@ -1096,7 +1096,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "gameId" ).Value = s.LocationID;
 						command.GetParameter( "strDicName" ).Value = s.DefaultStringDicID;
 						command.GetParameter( "category" ).Value = s.Category;
-						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict, Site.EncounterGroups, Site.EnemyGroups, Site.Enemies, Site.Shops );
+						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict, Site.EncounterGroups, Site.EnemyGroups, Site.Enemies, Site.Shops, phpLinks: true );
 						command.ExecuteNonQuery();
 
 						long insertedId = GetLastInsertedId();
@@ -1247,9 +1247,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						int floorStratumAsNumber = ( floorNumberLong - 1 ) / 10 + 1;
 						string floorStratum = ( (char)( floorStratumAsNumber + 64 ) ).ToString();
 						string html = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, null, null, null,
-							Site.Version, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false );
+							Site.Version, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
 						string htmlEnemies = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Site.Enemies, Site.EnemyGroups,
-							Site.EncounterGroups, Site.Version, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false );
+							Site.EncounterGroups, Site.Version, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
 
 						command.GetParameter( "floorName" ).Value = floor.RefString1;
 						command.GetParameter( "map" ).Value = floor.RefString2;

@@ -106,7 +106,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			return RefString;
 		}
 
-		public string GetDataAsHtml( GameVersion version, COOKDAT recipes, ItemDat.ItemDat items, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, COOKDAT recipes, ItemDat.ItemDat items, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 			sb.Append( "<tr id=\"recipe" + ID + "\"><td>" );
 			sb.Append( "<img src=\"recipes/U_" + RefString + ".png\">" );
@@ -133,7 +133,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 				if ( Ingredients[i] != 0 ) {
 					var item = items.itemIdDict[Ingredients[i]];
 					sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
-					sb.Append( "<a href=\"items-i" + item.Data[(int)ItemData.Icon] + "-" + version + ".html#item" + item.Data[(int)ItemData.ID] + "\">" );
+					sb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Item, version, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
 					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version ) + "</a> x" + IngredientCount[i] + "<br>" );
 				}
 			}

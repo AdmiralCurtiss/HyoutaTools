@@ -59,7 +59,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
-			sb.Append( "<tr id=\"skill" + ID + "\">" );
+			sb.Append( "<tr id=\"skill" + InGameID + "\">" );
 			//sb.Append( RefString + "<br>" );
 
 			sb.Append( "<td>" );

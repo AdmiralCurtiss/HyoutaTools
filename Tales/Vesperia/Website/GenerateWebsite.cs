@@ -6,6 +6,10 @@ using HyoutaTools.Tales.Vesperia.ItemDat;
 using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
+	public enum WebsiteSection {
+		Enemy, Item, Recipe, Skill, Location, Shop, NecropolisMap
+	}
+
 	public class Setting {
 		public uint NameStringDicId;
 		public uint DescStringDicId;
@@ -946,6 +950,31 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				case T8BTEMST.Element.Physical: sb.Append( "<img src=\"text-icons/icon-element-07.png\" width=\"16\" height=\"16\">" ); break;
 				default: sb.Append( "[Unknown Element]" ); break;
 			}
+		}
+
+		public static string GetUrl( WebsiteSection section, GameVersion version, bool phpLink, int? id = null, int? category = null, int? icon = null ) {
+			if ( phpLink ) {
+				string v = ( version == GameVersion.PS3 ? "ps3" : "360" );
+				switch ( section ) {
+					case WebsiteSection.Enemy: return "?version=" + v + "&section=enemies&category=" + category + "#enemy" + id;
+					case WebsiteSection.Item: return "?version=" + v + "&section=items&item=" + icon + "#item" + id;
+					case WebsiteSection.Recipe: return "?version=" + v + "&section=recipes#recipe" + id;
+					case WebsiteSection.Skill: return "?version=" + v + "&section=skills#skill" + id;
+					case WebsiteSection.Location: return "?version=" + v + "&section=locations#location" + id;
+					case WebsiteSection.Shop: return "?version=" + v + "&section=shops#shop" + id;
+				}
+			} else {
+				switch ( section ) {
+					case WebsiteSection.Enemy: return "enemies-c" + category + "-" + version + ".html#enemy" + id;
+					case WebsiteSection.Item: return "items-i" + icon + "-" + version + ".html#item" + id;
+					case WebsiteSection.Recipe: return "recipes-" + version + ".html#recipe" + id;
+					case WebsiteSection.Skill: return "skills-" + version + ".html#skill" + id;
+					case WebsiteSection.Location: return "locations-" + version + ".html#location" + id;
+					case WebsiteSection.Shop: return "shops-" + version + ".html#shop" + id;
+				}
+			}
+
+			throw new Exception( "Unsupported URL requested." );
 		}
 	}
 }
