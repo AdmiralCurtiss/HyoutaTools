@@ -426,7 +426,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "strDicName" ).Value = s.StringDicID;
 						command.GetParameter( "changesToShop" ).Value = s.ChangeToShop;
 						command.GetParameter( "onTrigger" ).Value = s.OnTrigger;
-						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.Items, Site.Shops, Site.InGameIdDict );
+						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.Items, Site.Shops, Site.InGameIdDict, phpLinks: true );
 						command.ExecuteNonQuery();
 					}
 				}

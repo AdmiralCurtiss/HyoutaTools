@@ -957,7 +957,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				string v = ( version == GameVersion.PS3 ? "ps3" : "360" );
 				switch ( section ) {
 					case WebsiteSection.Enemy: return "?version=" + v + "&section=enemies&category=" + category + "#enemy" + id;
-					case WebsiteSection.Item: return "?version=" + v + "&section=items&item=" + icon + "#item" + id;
+					case WebsiteSection.Item: return "?version=" + v + "&section=items&icon=" + icon + "#item" + id;
 					case WebsiteSection.Recipe: return "?version=" + v + "&section=recipes#recipe" + id;
 					case WebsiteSection.Skill: return "?version=" + v + "&section=skills#skill" + id;
 					case WebsiteSection.Location: return "?version=" + v + "&section=locations#location" + id;

@@ -26,7 +26,7 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			ChangeToShop = Data[5];
 		}
 
-		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, ShopData shops, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, ShopData shops, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 
 			sb.AppendLine( "<tr id=\"shop" + InGameID + "\">" );
@@ -43,7 +43,7 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 				sb.AppendLine( "<td>" );
 				foreach ( var item in ShopItems ) {
 					if ( items.itemIdDict[item.ItemID].Data[(int)ItemDat.ItemData.Category] == i ) {
-						sb.Append( item.GetDataAsHtml( version, items, inGameIdDict ) );
+						sb.Append( item.GetDataAsHtml( version, items, inGameIdDict, phpLinks: phpLinks ) );
 						sb.Append( "<br>" );
 					}
 				}
