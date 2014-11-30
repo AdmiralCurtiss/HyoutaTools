@@ -111,6 +111,8 @@
     <Compile Include="GraceNote\Vesperia\StringDicImport\Importer.cs" />
     <Compile Include="GraceNote\Vesperia\To8chtxExport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
+    <Compile Include="Gust\ebm\ebm.cs" />
+    <Compile Include="Gust\ebm\TextDumper.cs" />
     <Compile Include="HalfMinuteHeroSecond\S2AR.cs" />
     <Compile Include="LastRanker\bscr.cs" />
     <Compile Include="LastRanker\CZAA.cs" />
