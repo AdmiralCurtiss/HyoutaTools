@@ -437,6 +437,9 @@ namespace HyoutaTools {
 			}
 			return sb.ToString();
 		}
+		public static void Write( this Stream s, byte[] data ) {
+			s.Write( data, 0, data.Length );
+		}
 		#endregion
 
 		public static string GuessFileExtension( Stream s ) {

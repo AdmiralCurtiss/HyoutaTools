@@ -113,6 +113,8 @@
     <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
     <Compile Include="Gust\ebm\ebm.cs" />
     <Compile Include="Gust\ebm\TextDumper.cs" />
+    <Compile Include="Gust\g1t\DDSConverter.cs" />
+    <Compile Include="Gust\g1t\g1t.cs" />
     <Compile Include="HalfMinuteHeroSecond\S2AR.cs" />
     <Compile Include="LastRanker\bscr.cs" />
     <Compile Include="LastRanker\CZAA.cs" />
@@ -260,6 +262,7 @@
     <Compile Include="Tales\Vesperia\Website\GenerateWebsite.cs" />
     <Compile Include="Tales\Vesperia\WRLDDAT\Location.cs" />
     <Compile Include="Tales\Vesperia\WRLDDAT\WRLDDAT.cs" />
+    <Compile Include="Textures\DDS.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />
     <Compile Include="Trophy\TrophyNode.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicExport\Program.cs" />
