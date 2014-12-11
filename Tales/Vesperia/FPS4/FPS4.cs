@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
-	public class FPS4 {
+	public class FPS4 : IDisposable {
 		public FPS4() {
 			ContentBitmask = 0x000F;
 			Alignment = 0x800;
@@ -284,6 +284,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				infile.Close();
 				infile = null;
 			}
+		}
+
+		public void Dispose() {
+			Close();
 		}
 	}
 }
