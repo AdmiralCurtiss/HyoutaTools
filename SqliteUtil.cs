@@ -38,13 +38,27 @@ namespace HyoutaTools {
 			return retval;
 		}
 
+		public static List<Object[]> SelectArray( string connString, string statement ) {
+			return SelectArray( connString, statement, new object[0] );
+		}
 		public static List<Object[]> SelectArray( string connString, string statement, IEnumerable<object> parameters ) {
+			using ( SQLiteConnection Connection = new SQLiteConnection( connString ) ) {
+				Connection.Open();
+				return SelectArray( Connection, statement, parameters );
+			}
+		}
+		public static List<Object[]> SelectArray( SQLiteConnection connection, string statement, IEnumerable<object> parameters ) {
+			List<Object[]> retval = null;
+			using ( SQLiteTransaction transaction = connection.BeginTransaction() ) {
+				retval = SelectArray( transaction, statement, parameters );
+				transaction.Commit();
+			}
+			return retval;
+		}
+		public static List<Object[]> SelectArray( SQLiteTransaction transaction, string statement, IEnumerable<object> parameters ) {
 			List<Object[]> rows = null;
-			SQLiteConnection Connection = new SQLiteConnection( connString );
-			Connection.Open();
-
-			using ( SQLiteTransaction Transaction = Connection.BeginTransaction() )
-			using ( SQLiteCommand Command = new SQLiteCommand( Connection ) ) {
+			using ( SQLiteCommand Command = new SQLiteCommand() ) {
+				Command.Connection = transaction.Connection;
 				Command.CommandText = statement;
 				foreach ( object p in parameters ) {
 					SQLiteParameter sqp = new SQLiteParameter();
@@ -63,11 +77,7 @@ namespace HyoutaTools {
 						fields = new Object[rd.FieldCount];
 					} while ( rd.Read() );
 				}
-
-				Transaction.Commit();
 			}
-			Connection.Close();
-
 			return rows;
 		}
 
