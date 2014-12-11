@@ -26,7 +26,7 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 		}
 	}
 
-	public class ScenarioDat {
+	public class ScenarioDat : IDisposable {
 		public string Magic;
 		public uint Filesize;
 		public uint Unknown;
@@ -146,6 +146,16 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 			}
 
 			f.Close();
+		}
+
+		public void Dispose() {
+			if ( Entries != null ) {
+				for ( int i = 0; i < Entries.Count; ++i ) {
+					if ( Entries[i].Data != null ) {
+						Entries[i].Data.Close();
+					}
+				}
+			}
 		}
 	}
 }
