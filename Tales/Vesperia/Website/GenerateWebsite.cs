@@ -160,6 +160,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-enemies-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "npc-" + site.Version + ".html" ), site.GenerateHtmlNpc(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-" + site.Version + ".html" ), site.GenerateScenarioIndex( @"d:\Dropbox\ToV\PS3\scenarioDB" ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "sidequest-" + site.Version + ".html" ), site.GenerateScenarioIndex( @"d:\Dropbox\ToV\PS3\scenarioDB", sidequests: true ), Encoding.UTF8 );
 
 			return 0;
 		}
@@ -975,6 +977,135 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 
 			throw new Exception( "Unsupported URL requested." );
+		}
+
+		class ScenarioData : IComparable<ScenarioData> {
+			public string EpisodeId;
+			public string HumanReadableName;
+			public string DatabaseName;
+
+			public int CompareTo( ScenarioData other ) {
+				return this.EpisodeId.CompareTo( other.EpisodeId );
+			}
+			public override string ToString() {
+				return EpisodeId + ": " + HumanReadableName;
+			}
+		}
+
+		private string GenerateScenarioIndex( string database, bool sidequests = false ) {
+			var data = SqliteUtil.SelectArray( "Data Source=" + database, "SELECT filename, shortdesc, desc FROM descriptions" );
+
+			List<ScenarioData> scenes = new List<ScenarioData>();
+			foreach ( var d in data ) {
+				string filename = (string)d[0];
+				string humanReadableName = (string)d[1];
+				string episodeID = (string)d[2];
+
+				int idx = humanReadableName.LastIndexOfAny( new char[] { ']', '}' } );
+				if ( idx > -1 ) {
+					humanReadableName = humanReadableName.Substring( idx + 1 );
+				}
+				humanReadableName = humanReadableName.Trim();
+
+				if ( filename.StartsWith( "VScenario" ) && episodeID.StartsWith( "EP_" ) ) {
+					string group = episodeID.Split( '_' )[1];
+					int dummy;
+					bool isStory = group.Length == 3 && Int32.TryParse( group, out dummy );
+					if ( ( !sidequests && isStory ) || ( sidequests && !isStory ) ) {
+						scenes.Add( new ScenarioData() { EpisodeId = episodeID, HumanReadableName = humanReadableName, DatabaseName = filename } );
+					}
+				}
+			}
+
+			string list = ScenarioProcessGroupsToHtml( ScenarioProcessScenesToGroups( scenes ) );
+
+			return list;
+		}
+
+		private string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups ) {
+			var sb = new StringBuilder();
+
+			sb.Append( "<ul>" );
+			foreach ( var group in groups ) {
+				string commonBegin = ScenarioFindMostCommonStart( group );
+				sb.Append( "<li>" );
+				if ( commonBegin != "" ) {
+					sb.Append( commonBegin );
+				} else {
+					sb.Append( "Intro" );
+				}
+
+				sb.Append( "<ul>" );
+				foreach ( var scene in group ) {
+					sb.Append( "<li>" );
+					sb.Append( "<a href=\"" );
+					sb.Append( scene.EpisodeId );
+					sb.Append( "\">" );
+					string sceneName = scene.HumanReadableName;
+					if ( sceneName.StartsWith( commonBegin ) ) {
+						sceneName = sceneName.Substring( commonBegin.Length );
+					}
+					sceneName = sceneName.Trim( new char[] { ' ', '-', ':' } );
+					sb.Append( sceneName );
+					sb.Append( "</a>" );
+					sb.Append( "</li>" );
+				}
+				sb.Append( "</ul>" );
+
+				sb.Append( "</li>" );
+			}
+			sb.Append( "</ul>" );
+
+			return sb.ToString();
+		}
+
+		private string ScenarioFindMostCommonStart( List<ScenarioData> group ) {
+			Dictionary<string, int> dict = new Dictionary<string, int>();
+			foreach ( var scene in group ) {
+				string start = scene.HumanReadableName;
+				int idx = start.IndexOfAny( new char[] { ':', '-' } );
+				if ( idx > -1 ) {
+					start = start.Substring( 0, idx );
+				}
+				start = start.Trim();
+				if ( !dict.Keys.Contains( start ) ) {
+					dict.Add( start, 0 );
+				}
+				dict[start] += 1;
+			}
+
+			string highestStr = "";
+			int highestInt = 0;
+			foreach ( var kvp in dict ) {
+				if ( kvp.Value > highestInt ) {
+					highestInt = kvp.Value;
+					highestStr = kvp.Key;
+				}
+			}
+
+			return highestStr;
+		}
+
+		private List<List<ScenarioData>> ScenarioProcessScenesToGroups( List<ScenarioData> scenes ) {
+			scenes.Sort();
+			List<List<ScenarioData>> groups = new List<List<ScenarioData>>();
+
+			List<ScenarioData> group = new List<ScenarioData>();
+			group.Add( scenes[0] );
+			for ( int i = 1; i < scenes.Count; ++i ) {
+				string currentId = scenes[i].EpisodeId.Split( '_' )[1];
+				string lastId = scenes[i - 1].EpisodeId.Split( '_' )[1];
+
+				if ( currentId != lastId ) {
+					groups.Add( group );
+					group = new List<ScenarioData>();
+				}
+
+				group.Add( scenes[i] );
+			}
+			groups.Add( group );
+
+			return groups;
 		}
 	}
 }
