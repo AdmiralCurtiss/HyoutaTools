@@ -19,5 +19,10 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			Unknown3 = stream.ReadUInt32().SwapEndian();
 			Unknown4 = stream.ReadUInt32().SwapEndian();
 		}
+
+		public override string ToString() {
+			return String.Format( "{0} / {1} / {2} / {3} / {4} / {5}", Unknown1a, Unknown1b, Unknown2a, Unknown2b, Unknown3, Unknown4 );
+		}
+
 	}
 }

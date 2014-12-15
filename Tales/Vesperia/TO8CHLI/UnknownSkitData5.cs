@@ -9,5 +9,9 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 		public UnknownSkitData5( System.IO.Stream stream ) {
 			Unknown1 = stream.ReadUInt32().SwapEndian();
 		}
+
+		public override string ToString() {
+			return Unknown1.ToString();
+		}
 	}
 }
