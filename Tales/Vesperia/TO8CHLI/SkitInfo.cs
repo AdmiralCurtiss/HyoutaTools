@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
-	public class SkitInfo {
+	public class SkitInfo : IComparable<SkitInfo> {
 		uint[] Data;
 
 		// always 1
@@ -129,6 +129,10 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			sb.Append( "<br>" );
 
 			return sb.ToString();
+		}
+
+		public int CompareTo( SkitInfo other ) {
+			return this.SkitFlagUnique.CompareTo( other.SkitFlagUnique );
 		}
 	}
 }

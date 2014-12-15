@@ -1017,16 +1017,29 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 			}
 
-			string list = ScenarioProcessGroupsToHtml( ScenarioProcessScenesToGroups( scenes ) );
+			string list = ScenarioProcessGroupsToHtml( ScenarioProcessScenesToGroups( scenes ), !sidequests );
 
 			return list;
 		}
 
-		private string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups ) {
+		private string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, bool addSkits ) {
 			var sb = new StringBuilder();
 
+			List<TO8CHLI.SkitInfo> skitsToProcess = null;
+			if ( addSkits ) {
+				Skits.SkitInfoList.Sort();
+				skitsToProcess = new List<TO8CHLI.SkitInfo>();
+				foreach ( var skit in Skits.SkitInfoList ) {
+					if ( skit.Category == 0 ) {
+						skitsToProcess.Add( skit );
+					}
+				}
+			}
+
 			sb.Append( "<ul>" );
-			foreach ( var group in groups ) {
+			for ( int i = 0; i < groups.Count; ++i ) {
+				var group = groups[i];
+
 				string commonBegin = ScenarioFindMostCommonStart( group );
 				sb.Append( "<li>" );
 				if ( commonBegin != "" ) {
@@ -1036,7 +1049,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 
 				sb.Append( "<ul>" );
-				foreach ( var scene in group ) {
+				for ( int j = 0; j < group.Count; ++j ) {
+					var scene = group[j];
+
 					sb.Append( "<li>" );
 					sb.Append( "<a href=\"" );
 					sb.Append( scene.EpisodeId );
@@ -1048,6 +1063,47 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					sceneName = sceneName.Trim( new char[] { ' ', '-', ':' } );
 					sb.Append( sceneName );
 					sb.Append( "</a>" );
+
+					if ( addSkits ) {
+						ScenarioData nextScene = null;
+						if ( j != group.Count - 1 ) {
+							nextScene = group[j + 1];
+						} else {
+							if ( i != groups.Count - 1 ) {
+								nextScene = groups[i + 1][0];
+							}
+						}
+
+						uint nextScenarioId = 1000000u;
+						if ( nextScene != null ) {
+							string scenarioIdStr = nextScene.EpisodeId.Substring( 3, 7 ).Replace( "_", "" );
+							nextScenarioId = UInt32.Parse( scenarioIdStr.TrimStart( '0' ) );
+						}
+
+						List<TO8CHLI.SkitInfo> skitsToRemove = new List<TO8CHLI.SkitInfo>();
+						foreach ( var skit in skitsToProcess ) {
+							uint skitTrigger = skit.FlagTrigger % 1000000u;
+							if ( skitTrigger < nextScenarioId ) {
+								sb.Append( "<ul>" );
+								sb.Append( "<li>" );
+								sb.Append( "<a href=\"" );
+								sb.Append( skit.RefString );
+								sb.Append( "\">" );
+								sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 1, GameVersion.PS3 ) );
+								//sb.Append( " (" );
+								//sb.Append( skit.FlagTrigger );
+								//sb.Append( ")" );
+								sb.Append( "</a>" );
+								sb.Append( "</li>" );
+								sb.Append( "</ul>" );
+								skitsToRemove.Add( skit );
+							}
+						}
+						foreach ( var skit in skitsToRemove ) {
+							skitsToProcess.Remove( skit );
+						}
+					}
+
 					sb.Append( "</li>" );
 				}
 				sb.Append( "</ul>" );
