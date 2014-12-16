@@ -122,14 +122,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			for ( int i = 0; i < filenames.Length; ++i ) {
 				site.NecropolisMaps.Add( System.IO.Path.GetFileNameWithoutExtension( filenames[i] ), new T8BTXTM.T8BTXTMM( filenames[i] ) );
 			}
+			site.ScenarioFiles = new Dictionary<string, ScenarioFile.ScenarioFile>();
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
 			site.Records = site.GenerateRecordsStringDicList();
 			site.Settings = site.GenerateSettingsStringDicList();
-
-			databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
-			System.IO.File.Delete( databasePath );
-			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath ) ).ExportAll();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
@@ -160,9 +157,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-enemies-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "npc-" + site.Version + ".html" ), site.GenerateHtmlNpc(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-" + site.Version + ".html" ), site.GenerateScenarioIndex( @"d:\Dropbox\ToV\PS3\scenarioDB" ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "sidequest-" + site.Version + ".html" ), site.GenerateScenarioIndex( @"d:\Dropbox\ToV\PS3\scenarioDB", sidequests: true ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-" + site.Version + ".html" ), site.GenerateScenarioIndex( @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "sidequest-" + site.Version + ".html" ), site.GenerateScenarioIndex( @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\", sidequests: true ), Encoding.UTF8 );
 
+			databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
+			System.IO.File.Delete( databasePath );
+			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath ) ).ExportAll();
 			return 0;
 		}
 
@@ -185,6 +185,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public TO8CHLI.TO8CHLI Skits;
 		public List<uint> Records;
 		public List<Setting> Settings;
+		public Dictionary<string, ScenarioFile.ScenarioFile> ScenarioFiles;
 
 		public T8BTXTM.T8BTXTMA NecropolisFloors;
 		public T8BTXTM.T8BTXTMT NecropolisTreasures;
@@ -992,8 +993,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
-		private string GenerateScenarioIndex( string database, bool sidequests = false ) {
-			var data = SqliteUtil.SelectArray( "Data Source=" + database, "SELECT filename, shortdesc, desc FROM descriptions" );
+		private string GenerateScenarioIndex( string database, string scenarioDatFolder, string scenarioDatFolderMod = null, bool sidequests = false ) {
+			var data = SqliteUtil.SelectArray( "Data Source=" + database, "SELECT filename, shortdesc, desc FROM descriptions ORDER BY desc" );
 
 			List<ScenarioData> scenes = new List<ScenarioData>();
 			foreach ( var d in data ) {
@@ -1012,7 +1013,20 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					int dummy;
 					bool isStory = group.Length == 3 && Int32.TryParse( group, out dummy );
 					if ( ( !sidequests && isStory ) || ( sidequests && !isStory ) ) {
-						scenes.Add( new ScenarioData() { EpisodeId = episodeID, HumanReadableName = humanReadableName, DatabaseName = filename } );
+						if ( !ScenarioFiles.ContainsKey( episodeID ) ) {
+							string num = filename.Substring( "VScenario".Length );
+							try {
+								var orig = new ScenarioFile.ScenarioFile( Path.Combine( scenarioDatFolder, num + ".d" ) );
+								var mod = new ScenarioFile.ScenarioFile( Path.Combine( scenarioDatFolderMod, num + ".d" ) );
+								Util.Assert( orig.EntryList.Count == mod.EntryList.Count );
+								for ( int i = 0; i < orig.EntryList.Count; ++i ) {
+									orig.EntryList[i].EnName = mod.EntryList[i].JpName;
+									orig.EntryList[i].EnText = mod.EntryList[i].JpText;
+								}
+								this.ScenarioFiles.Add( episodeID, orig );
+								scenes.Add( new ScenarioData() { EpisodeId = episodeID, HumanReadableName = humanReadableName, DatabaseName = filename } );
+							} catch ( FileNotFoundException ) { }
+						}
 					}
 				}
 			}
@@ -1053,7 +1067,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					var scene = group[j];
 
 					sb.Append( "<li>" );
-					sb.Append( "<a href=\"" );
+					sb.Append( "<a href=\"?version=ps3&section=scenario&name=" );
 					sb.Append( scene.EpisodeId );
 					sb.Append( "\">" );
 					string sceneName = scene.HumanReadableName;
@@ -1086,7 +1100,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 							if ( skitTrigger < nextScenarioId ) {
 								sb.Append( "<ul>" );
 								sb.Append( "<li>" );
-								sb.Append( "<a href=\"" );
+								sb.Append( "<a href=\"?version=ps3&section=skit&name=" );
 								sb.Append( skit.RefString );
 								sb.Append( "\">" );
 								sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 1, GameVersion.PS3 ) );

@@ -37,9 +37,51 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				ExportGradeShop();
 				if ( Site.Version != GameVersion.X360 ) {
 					ExportNecropolis();
+					ExportScenarioDat();
 				}
 			} finally {
 				DB.Close();
+			}
+		}
+
+		private void ExportScenarioDat() {
+			using ( var transaction = DB.BeginTransaction() ) {
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE TABLE ScenarioDat ( id INTEGER PRIMARY KEY AUTOINCREMENT, episodeId VARCHAR(16), displayOrder INT, type INT, jpName TEXT, jpText TEXT, enName TEXT, enText TEXT )";
+					command.ExecuteNonQuery();
+				}
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE INDEX ScenarioDat_EpisodeId_Index ON ScenarioDat ( episodeId )";
+					command.ExecuteNonQuery();
+				}
+
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "INSERT INTO ScenarioDat ( episodeId, displayOrder, type, jpName, jpText, enName, enText ) VALUES ( @episodeId, @displayOrder, @type, @jpName, @jpText, @enName, @enText )";
+					command.AddParameter( "episodeId" );
+					command.AddParameter( "displayOrder" );
+					command.AddParameter( "type" );
+					command.AddParameter( "jpName" );
+					command.AddParameter( "jpText" );
+					command.AddParameter( "enName" );
+					command.AddParameter( "enText" );
+
+					foreach ( var kvp in Site.ScenarioFiles ) {
+						var episodeId = kvp.Key;
+						var scenario = kvp.Value;
+
+						for ( int i = 0; i < scenario.EntryList.Count; ++i ) {
+							command.GetParameter( "episodeId" ).Value = episodeId;
+							command.GetParameter( "displayOrder" ).Value = i;
+							command.GetParameter( "type" ).Value = 0; // should be used to differentiate bubble/fmv subtitle/infobox/...
+							command.GetParameter( "jpName" ).Value = scenario.EntryList[i].JpName.ToHtmlJpn( Site.Version );
+							command.GetParameter( "jpText" ).Value = scenario.EntryList[i].JpText.ToHtmlJpn( Site.Version );
+							command.GetParameter( "enName" ).Value = scenario.EntryList[i].EnName.ToHtmlEng( Site.Version );
+							command.GetParameter( "enText" ).Value = scenario.EntryList[i].EnText.ToHtmlEng( Site.Version );
+							command.ExecuteNonQuery();
+						}
+					}
+				}
+				transaction.Commit();
 			}
 		}
 

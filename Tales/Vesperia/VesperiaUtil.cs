@@ -12,7 +12,7 @@ namespace HyoutaTools.Tales.Vesperia {
 		Start, Select, RightButton, LowerButton, LeftButton, UpperButton, L1, L2, L3, R1, R2, R3, LeftStick, RightStick, DPad, System
 	}
 
-	public class VesperiaUtil {
+	public static class VesperiaUtil {
 		public static String RemoveTags( String s, bool useJapaneseNames = false, bool replaceFuriganaWithHtmlRuby = false ) {
 			s = s.Replace( "''", "'" );
 			if ( useJapaneseNames ) {
@@ -72,6 +72,13 @@ namespace HyoutaTools.Tales.Vesperia {
 
 			}
 			return str;
+		}
+
+		public static string ToHtmlJpn( this string str, GameVersion version ) {
+			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version ).ToString(), true, true ).Replace( "\n", "<br />" );
+		}
+		public static string ToHtmlEng( this string str, GameVersion version ) {
+			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version ).ToString(), false, false ).Replace( "\n", "<br />" );
 		}
 
 		private static String[][] InsaneNames = null;
