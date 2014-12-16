@@ -207,6 +207,8 @@
       <DependentUpon>ItemForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Tales\Vesperia\ItemDat\RunItemViewer.cs" />
+    <Compile Include="Tales\Vesperia\ScenarioFile\ScenarioFile.cs" />
+    <Compile Include="Tales\Vesperia\ScenarioFile\ScenarioFileEntry.cs" />
     <Compile Include="Tales\Vesperia\Scenario\Program.cs" />
     <Compile Include="Tales\Vesperia\Scenario\ScenarioDat.cs" />
     <Compile Include="Tales\Vesperia\ShopData\ShopDefinition.cs" />
