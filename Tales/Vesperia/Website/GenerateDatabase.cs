@@ -38,6 +38,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				if ( Site.Version != GameVersion.X360 ) {
 					ExportNecropolis();
 					ExportScenarioDat();
+					ExportSkitText();
 				}
 			} finally {
 				DB.Close();
@@ -77,6 +78,47 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 							command.GetParameter( "jpText" ).Value = scenario.EntryList[i].JpText.ToHtmlJpn( Site.Version );
 							command.GetParameter( "enName" ).Value = scenario.EntryList[i].EnName.ToHtmlEng( Site.Version );
 							command.GetParameter( "enText" ).Value = scenario.EntryList[i].EnText.ToHtmlEng( Site.Version );
+							command.ExecuteNonQuery();
+						}
+					}
+				}
+				transaction.Commit();
+			}
+		}
+
+		private void ExportSkitText() {
+			using ( var transaction = DB.BeginTransaction() ) {
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE TABLE SkitText ( id INTEGER PRIMARY KEY AUTOINCREMENT, skitId VARCHAR(8), displayOrder INT, character TEXT, jpText TEXT, enText TEXT )";
+					command.ExecuteNonQuery();
+				}
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE INDEX SkitText_SkitId_Index ON SkitText ( skitId )";
+					command.ExecuteNonQuery();
+				}
+
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "INSERT INTO SkitText ( skitId, displayOrder, character, jpText, enText ) VALUES ( @skitId, @displayOrder, @character, @jpText, @enText )";
+					command.AddParameter( "skitId" );
+					command.AddParameter( "displayOrder" );
+					command.AddParameter( "character" );
+					command.AddParameter( "jpText" );
+					command.AddParameter( "enText" );
+
+					foreach ( var kvp in Site.SkitText ) {
+						var skitId = kvp.Key;
+						var skit = kvp.Value;
+
+						for ( int i = 0; i < skit.Lines.Length; ++i ) {
+							string name = skit.Lines[i].SName;
+							int idx = name.IndexOf( '(' ) + 1;
+							name = name.Substring( idx, name.LastIndexOf( ')' ) - idx );
+
+							command.GetParameter( "skitId" ).Value = skitId;
+							command.GetParameter( "displayOrder" ).Value = i;
+							command.GetParameter( "character" ).Value = name;
+							command.GetParameter( "jpText" ).Value = skit.Lines[i].SJPN.ToHtmlJpn( Site.Version );
+							command.GetParameter( "enText" ).Value = skit.Lines[i].SENG.ToHtmlEng( Site.Version );
 							command.ExecuteNonQuery();
 						}
 					}

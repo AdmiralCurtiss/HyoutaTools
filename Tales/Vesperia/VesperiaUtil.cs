@@ -28,6 +28,7 @@ namespace HyoutaTools.Tales.Vesperia {
 				s = s.Replace( "\x04(FRE)", "フレン" );
 				s = s.Replace( "\x04(PAT)", "パティ" );
 				s = s.Replace( "\x04(BAU)", "バウル" );
+				s = s.Replace( "\x04(ALL)", "みんな" );
 			} else {
 				s = s.Replace( "\x04(YUR)", "Yuri" );
 				s = s.Replace( "\x04(EST)", "Estellise" );
@@ -41,6 +42,7 @@ namespace HyoutaTools.Tales.Vesperia {
 				s = s.Replace( "\x04(FRE)", "Flynn" );
 				s = s.Replace( "\x04(PAT)", "Patty" );
 				s = s.Replace( "\x04(BAU)", "Ba'ul" );
+				s = s.Replace( "\x04(ALL)", "Everyone" );
 			}
 			s = s.Replace( ""/*0xFF*/, "\n\n" );
 			if ( replaceFuriganaWithHtmlRuby ) {

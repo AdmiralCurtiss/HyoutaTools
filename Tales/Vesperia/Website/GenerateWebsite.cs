@@ -114,6 +114,19 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.BattleBook = new BTLBDAT.BTLBDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\BATTLEBOOKDATA.BIN" );
 			site.Strategy = new T8BTTA.T8BTTA( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0011.ext\ALL.0000" );
 			site.Skits = new TO8CHLI.TO8CHLI( @"d:\Dropbox\ToV\PS3\orig\chat.svo.ext\CHAT.DAT.dec" );
+			site.SkitText = new Dictionary<string, TO8CHTX.ChatFile>();
+			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
+				string name = site.Skits.SkitInfoList[i].RefString;
+				string filenameOrig = @"d:\Dropbox\ToV\PS3\orig\chat.svo.ext\" + name + @"J.DAT.dec.ext\0003";
+				string filenameMod = @"d:\Dropbox\ToV\PS3\mod\chat.svo.ext\" + name + @"J.DAT.dec.ext\0003";
+				var chatFile = new TO8CHTX.ChatFile( filenameOrig );
+				var chatFileMod = new TO8CHTX.ChatFile( filenameMod );
+				Util.Assert( chatFile.Lines.Length == chatFileMod.Lines.Length );
+				for ( int j = 0; j < chatFile.Lines.Length; ++j ) {
+					chatFile.Lines[j].SENG = chatFileMod.Lines[j].SJPN;
+				}
+				site.SkitText.Add( name, chatFile );
+			}
 			site.Shops = new ShopData.ShopData( @"d:\Dropbox\ToV\PS3\mod\scenario0", 0x1C9BC, 0x460 / 32, 0x980, 0x14CB8 / 56 );
 			site.NecropolisFloors = new T8BTXTM.T8BTXTMA( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0021.ext\ALL.0000" );
 			site.NecropolisTreasures = new T8BTXTM.T8BTXTMT( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0022.ext\ALL.0000" );
@@ -183,6 +196,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public T8BTTA.T8BTTA Strategy;
 		public ShopData.ShopData Shops;
 		public TO8CHLI.TO8CHLI Skits;
+		public Dictionary<string, TO8CHTX.ChatFile> SkitText;
 		public List<uint> Records;
 		public List<Setting> Settings;
 		public Dictionary<string, ScenarioFile.ScenarioFile> ScenarioFiles;

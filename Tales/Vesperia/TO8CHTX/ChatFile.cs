@@ -31,7 +31,15 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public ChatFileHeader Header;
 		public ChatFileLine[] Lines;
 
-		public ChatFile( byte[] TO8CHTX ) {
+		public ChatFile( string filename ) {
+			LoadFile( System.IO.File.ReadAllBytes( filename ) );
+		}
+
+		public ChatFile( byte[] file ) {
+			LoadFile( file );
+		}
+
+		private void LoadFile( byte[] TO8CHTX ) {
 			Header = new ChatFileHeader();
 
 			Header.Identify = Util.SwapEndian( BitConverter.ToUInt64( TO8CHTX, 0x00 ) );
