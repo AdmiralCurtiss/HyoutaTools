@@ -109,8 +109,8 @@
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicImport\Importer.cs" />
-    <Compile Include="GraceNote\Vesperia\To8chtxExport\Program.cs" />
-    <Compile Include="GraceNote\Vesperia\To8chtxImport\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\TO8CHTXExport\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\TO8CHTXImport\Program.cs" />
     <Compile Include="Gust\ebm\ebm.cs" />
     <Compile Include="Gust\ebm\TextDumper.cs" />
     <Compile Include="Gust\g1t\DDSConverter.cs" />
@@ -244,7 +244,7 @@
     <Compile Include="Tales\Vesperia\TO8CHLI\SkitCondition.cs" />
     <Compile Include="Tales\Vesperia\TO8CHLI\UnknownSkitData4.cs" />
     <Compile Include="Tales\Vesperia\TO8CHLI\UnknownSkitData5.cs" />
-    <Compile Include="Tales\Vesperia\To8chtx\ChatFile.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHTX\ChatFile.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\NpcDialogueDefinition.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\NpcFileReference.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\TOVNPCL.cs" />

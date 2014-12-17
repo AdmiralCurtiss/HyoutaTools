@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Data.SQLite;
 
-namespace HyoutaTools.Tales.Vesperia.To8chtx {
-	struct ChatFileHeader {
+namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
+	public struct ChatFileHeader {
 		public UInt64 Identify;
 		public UInt32 Filesize;
 		public UInt32 Lines;
@@ -14,7 +14,7 @@ namespace HyoutaTools.Tales.Vesperia.To8chtx {
 		public UInt64 Empty;
 	}
 
-	struct ChatFileLine {
+	public struct ChatFileLine {
 		public Int32 Location;
 
 		public UInt32 Name;
@@ -27,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.To8chtx {
 		public String SENG;
 	}
 
-	class ChatFile {
+	public class ChatFile {
 		public ChatFileHeader Header;
 		public ChatFileLine[] Lines;
 

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HyoutaTools.Tales.Vesperia.To8chtx;
+using HyoutaTools.Tales.Vesperia.TO8CHTX;
 
-namespace HyoutaTools.GraceNote.Vesperia.To8chtxExport {
+namespace HyoutaTools.GraceNote.Vesperia.TO8CHTXExport {
 	class Program {
 		public static int Execute( List<string> args ) {
 			String Filename;
