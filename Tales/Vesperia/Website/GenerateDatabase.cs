@@ -45,6 +45,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
+		enum TextboxType { Bubble, Information, Subtitle };
 		private void ExportScenarioDat() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
@@ -71,14 +72,30 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						var scenario = kvp.Value;
 
 						for ( int i = 0; i < scenario.EntryList.Count; ++i ) {
-							command.GetParameter( "episodeId" ).Value = episodeId;
-							command.GetParameter( "displayOrder" ).Value = i;
-							command.GetParameter( "type" ).Value = 0; // should be used to differentiate bubble/fmv subtitle/infobox/...
-							command.GetParameter( "jpName" ).Value = scenario.EntryList[i].JpName.ToHtmlJpn( Site.Version );
-							command.GetParameter( "jpText" ).Value = scenario.EntryList[i].JpText.ToHtmlJpn( Site.Version );
-							command.GetParameter( "enName" ).Value = scenario.EntryList[i].EnName.ToHtmlEng( Site.Version );
-							command.GetParameter( "enText" ).Value = scenario.EntryList[i].EnText.ToHtmlEng( Site.Version );
-							command.ExecuteNonQuery();
+							var entry = scenario.EntryList[i];
+							TextboxType type = TextboxType.Bubble;
+							if ( entry.JpName == "Information" ) { type = TextboxType.Information; }
+							if ( entry.EnText == "Yes\nNo" ) { type = TextboxType.Information; }
+							if ( entry.EnText.StartsWith( "\x03(2)" ) ) { type = TextboxType.Subtitle; }
+
+							string[] jpTextArray = entry.JpText.Split( '\f' );
+							string[] enTextArray = entry.EnText.Split( '\f' );
+							int textboxCount = Math.Max( jpTextArray.Length, enTextArray.Length );
+
+							const int maxTextboxCount = 16;
+							Util.Assert( textboxCount <= maxTextboxCount );
+							for ( int j = 0; j < textboxCount; ++j ) {
+								string jpText = j < jpTextArray.Length ? jpTextArray[j] : "";
+								string enText = j < enTextArray.Length ? enTextArray[j] : "";
+								command.GetParameter( "episodeId" ).Value = episodeId;
+								command.GetParameter( "displayOrder" ).Value = i * maxTextboxCount + j;
+								command.GetParameter( "type" ).Value = (int)type;
+								command.GetParameter( "jpName" ).Value = entry.JpName.ToHtmlJpn( Site.Version );
+								command.GetParameter( "jpText" ).Value = jpText.ToHtmlJpn( Site.Version );
+								command.GetParameter( "enName" ).Value = entry.EnName.ToHtmlEng( Site.Version );
+								command.GetParameter( "enText" ).Value = enText.ToHtmlEng( Site.Version );
+								command.ExecuteNonQuery();
+							}
 						}
 					}
 				}
