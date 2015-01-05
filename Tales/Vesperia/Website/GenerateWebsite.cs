@@ -832,7 +832,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "</div>" );
 			sb.AppendLine( "<hr>" );
 		}
-		public static StringBuilder ReplaceIconsWithHtml( StringBuilder sb, GameVersion Version ) {
+		public static StringBuilder ReplaceIconsWithHtml( StringBuilder sb, GameVersion Version, bool japaneseStyle ) {
 			sb.Replace( "\x06(ST1)", "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" );
 			sb.Replace( "\x06(ST2)", "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" );
 			sb.Replace( "\x06(ST3)", "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" );
@@ -905,8 +905,16 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Replace( "\x06(RBU)", "<img src=\"text-icons/" + Version.ToString() + "/button-menu.png\" height=\"16\" title=\"" + VesperiaUtil.GetButtonName( Version, ControllerButton.UpperButton ) + "\">" );
 			sb.Replace( "\x06(RBR)", "<img src=\"text-icons/" + Version.ToString() + "/button-cancel.png\" height=\"16\" title=\"" + VesperiaUtil.GetButtonName( Version, ControllerButton.RightButton ) + "\">" );
 			sb.Replace( "\x06(RBD)", "<img src=\"text-icons/" + Version.ToString() + "/button-confirm.png\" height=\"16\" title=\"" + VesperiaUtil.GetButtonName( Version, ControllerButton.LowerButton ) + "\">" );
-			sb.Replace( "\x06(CCL)", "<img src=\"text-icons/" + Version.ToString() + "/button-cancel.png\" height=\"16\" title=\"Cancel\">" );
-			sb.Replace( "\x06(ETR)", "<img src=\"text-icons/" + Version.ToString() + "/button-confirm.png\" height=\"16\" title=\"Confirm\">" );
+
+			if ( japaneseStyle && Version == GameVersion.PS3 ) {
+				// in JP PS3 version, swap circle/cross for confirm/cancel
+				sb.Replace( "\x06(CCL)", "<img src=\"text-icons/" + Version.ToString() + "/button-confirm.png\" height=\"16\" title=\"Cancel\">" );
+				sb.Replace( "\x06(ETR)", "<img src=\"text-icons/" + Version.ToString() + "/button-cancel.png\" height=\"16\" title=\"Confirm\">" );
+			} else {
+				sb.Replace( "\x06(CCL)", "<img src=\"text-icons/" + Version.ToString() + "/button-cancel.png\" height=\"16\" title=\"Cancel\">" );
+				sb.Replace( "\x06(ETR)", "<img src=\"text-icons/" + Version.ToString() + "/button-confirm.png\" height=\"16\" title=\"Confirm\">" );
+			}
+
 			sb.Replace( "\x06(ATK)", "<img src=\"text-icons/" + Version.ToString() + "/button-cancel.png\" height=\"16\" title=\"Attack\">" );
 			sb.Replace( "\x06(ART)", "<img src=\"text-icons/" + Version.ToString() + "/button-confirm.png\" height=\"16\" title=\"Arte\">" );
 			sb.Replace( "\x06(GUD)", "<img src=\"text-icons/" + Version.ToString() + "/button-action.png\" height=\"16\" title=\"Guard\">" );
@@ -923,9 +931,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Replace( '‡', 'é' );
 			sb.Replace( '†', 'í' );
 			return sb;
-		}
-		public string FixInGameStrings( StringBuilder sb ) {
-			return VesperiaUtil.RemoveTags( ReplaceIconsWithHtml( sb, this.Version ).ToString() );
 		}
 		public static void AppendCharacterBitfieldAsImageString( StringBuilder sb, GameVersion version, uint equip ) {
 			if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/YUR.png\" height=\"32\" width=\"24\" title=\"Yuri\">" ); }

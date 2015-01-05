@@ -77,10 +77,10 @@ namespace HyoutaTools.Tales.Vesperia {
 		}
 
 		public static string ToHtmlJpn( this string str, GameVersion version ) {
-			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version ).ToString(), true, true ).Replace( "\n", "<br />" );
+			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version, true ).ToString(), true, true ).Replace( "\n", "<br />" );
 		}
 		public static string ToHtmlEng( this string str, GameVersion version ) {
-			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version ).ToString(), false, false ).Replace( "\n", "<br />" );
+			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version, false ).ToString(), false, false ).Replace( "\n", "<br />" );
 		}
 
 		private static String[][] InsaneNames = null;

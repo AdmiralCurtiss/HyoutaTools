@@ -38,9 +38,9 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 
 			var synopsisEntry = inGameIdDict[TextStringDicId];
 			string jp = synopsisEntry.StringJpn != null ? synopsisEntry.StringJpn : "";
-			jp = Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( jp ), version ).ToString();
+			jp = Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( jp ), version, true ).ToString();
 			string en = synopsisEntry.StringEng != null ? synopsisEntry.StringEng : "";
-			en = Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( en ), version ).ToString();
+			en = Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( en ), version, false ).ToString();
 
 			string[] textJpn = jp.Split( '\f' );
 			string[] textEng = en.Split( '\f' );
