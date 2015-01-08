@@ -47,12 +47,33 @@ namespace HyoutaTools.Tales.Vesperia {
 			s = s.Replace( ""/*0xFF*/, "\n\n" );
 			if ( replaceFuriganaWithHtmlRuby ) {
 				s = ReplaceFuriganaWithHtmlRuby( s );
+			} else {
+				s = RemoveFurigana( s );
 			}
 			s = Regex.Replace( s, "\t[(][A-Za-z0-9_]+[)]", "" ); // audio/voice commands
 			s = Regex.Replace( s, "\x03[(][0-9]+[)]", "" ); // color commands
 			return s;
 		}
 
+		public static string RemoveFurigana( string str ) {
+			while ( str.Contains( '\r' ) ) {
+				int furiStart = str.IndexOf( '\r' );
+				string textFromFuriStart = str.Substring( furiStart );
+				int furiEnd = furiStart + textFromFuriStart.IndexOf( ')' );
+				string furiDataString = str.Substring( furiStart + 2, furiEnd - furiStart - 2 );
+
+				string[] furiData = furiDataString.Split( ',' );
+				int kanjiLength = Int32.Parse( furiData[0] );
+				string furigana = furiData[1];
+
+				string textPreFurigana = str.Substring( 0, furiStart - kanjiLength );
+				string textKanji = str.Substring( furiStart - kanjiLength, kanjiLength );
+				string textPostFurigana = str.Substring( furiEnd + 1 );
+
+				str = textPreFurigana + textKanji + textPostFurigana;
+			}
+			return str;
+		}
 		public static string ReplaceFuriganaWithHtmlRuby( string str ) {
 			while ( str.Contains( '\r' ) ) {
 				int furiStart = str.IndexOf( '\r' );
