@@ -117,8 +117,12 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 		}
 
 		public static string GetCategoryName( uint cat, GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
-			if ( cat == 8 ) { return "Personal"; }
-			return inGameIdDict[33912138u + cat].StringEngOrJpnHtml( version );
+			switch ( cat ) {
+				case 6: return inGameIdDict[33912145u].StringEngOrJpnHtml( version );
+				case 7: return inGameIdDict[33912144u].StringEngOrJpnHtml( version );
+				case 8: return inGameIdDict[33912162u].StringEngOrJpnHtml( version );
+				default: return inGameIdDict[33912138u + cat].StringEngOrJpnHtml( version );
+			}
 		}
 	}
 }
