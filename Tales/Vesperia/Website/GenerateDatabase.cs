@@ -39,6 +39,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					ExportNecropolis();
 					ExportScenarioDat();
 					ExportSkitText();
+					ExportScenarioMetadata();
 				}
 			} finally {
 				DB.Close();
@@ -141,6 +142,67 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					}
 				}
 				transaction.Commit();
+			}
+		}
+
+		private void ExportScenarioMetadata() {
+			using ( var transaction = DB.BeginTransaction() ) {
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE TABLE ScenarioMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, type INT, sceneGroup INT, parent INT, episodeId VARCHAR(16), description TEXT )";
+					command.ExecuteNonQuery();
+				}
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE INDEX ScenarioMeta_Type_Group_Index ON ScenarioMeta ( type, sceneGroup )";
+					command.ExecuteNonQuery();
+				}
+
+				ExportScenarioMetadata( transaction, Site.ScenarioGroupsStory, 1 );
+				ExportScenarioMetadata( transaction, Site.ScenarioGroupsSidequests, 2 );
+				transaction.Commit();
+			}
+		}
+
+		private void ExportScenarioMetadata( IDbTransaction transaction, List<List<ScenarioData>> groups, int groupType ) {
+			using ( var command = DB.CreateCommand() ) {
+				command.CommandText = "INSERT INTO ScenarioMeta ( type, sceneGroup, parent, episodeId, description ) VALUES ( @type, @sceneGroup, @parent, @episodeId, @description )";
+				command.AddParameter( "type" );
+				command.AddParameter( "sceneGroup" );
+				command.AddParameter( "parent" );
+				command.AddParameter( "episodeId" );
+				command.AddParameter( "description" );
+
+				int groupNumber = 0;
+				foreach ( var group in groups ) {
+					string commonBegin = ScenarioData.FindMostCommonStart( group );
+					command.GetParameter( "type" ).Value = groupType;
+					command.GetParameter( "sceneGroup" ).Value = groupNumber;
+					command.GetParameter( "parent" ).Value = null;
+					command.GetParameter( "episodeId" ).Value = null;
+					command.GetParameter( "description" ).Value = commonBegin;
+					command.ExecuteNonQuery();
+
+					long parentId = GetLastInsertedId();
+					foreach ( var scene in group ) {
+						command.GetParameter( "type" ).Value = groupType;
+						command.GetParameter( "sceneGroup" ).Value = groupNumber;
+						command.GetParameter( "parent" ).Value = parentId;
+						command.GetParameter( "episodeId" ).Value = scene.EpisodeId;
+						command.GetParameter( "description" ).Value = scene.HumanReadableNameWithoutPrefix( commonBegin );
+						command.ExecuteNonQuery();
+
+						long sceneId = GetLastInsertedId();
+						foreach ( var skit in scene.Skits ) {
+							command.GetParameter( "type" ).Value = groupType;
+							command.GetParameter( "sceneGroup" ).Value = groupNumber;
+							command.GetParameter( "parent" ).Value = sceneId;
+							command.GetParameter( "episodeId" ).Value = skit.RefString;
+							command.GetParameter( "description" ).Value = Site.InGameIdDict[skit.StringDicIdName].GetStringHtml( 1, GameVersion.PS3 );
+							command.ExecuteNonQuery();
+						}
+					}
+
+					++groupNumber;
+				}
 			}
 		}
 

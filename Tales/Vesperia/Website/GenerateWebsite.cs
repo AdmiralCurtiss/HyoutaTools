@@ -170,8 +170,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-enemies-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "npc-" + site.Version + ".html" ), site.GenerateHtmlNpc(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-" + site.Version + ".html" ), site.GenerateScenarioIndex( @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "sidequest-" + site.Version + ".html" ), site.GenerateScenarioIndex( @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\", sidequests: true ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-" + site.Version + ".html" ), site.GenerateScenarioIndex( out site.ScenarioGroupsStory, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "sidequest-" + site.Version + ".html" ), site.GenerateScenarioIndex( out site.ScenarioGroupsSidequests, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\", sidequests: true ), Encoding.UTF8 );
 
 			databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
 			System.IO.File.Delete( databasePath );
@@ -199,7 +199,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public Dictionary<string, TO8CHTX.ChatFile> SkitText;
 		public List<uint> Records;
 		public List<Setting> Settings;
+		
 		public Dictionary<string, ScenarioFile.ScenarioFile> ScenarioFiles;
+		public List<List<ScenarioData>> ScenarioGroupsStory;
+		public List<List<ScenarioData>> ScenarioGroupsSidequests;
 
 		public T8BTXTM.T8BTXTMA NecropolisFloors;
 		public T8BTXTM.T8BTXTMT NecropolisTreasures;
@@ -999,20 +1002,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			throw new Exception( "Unsupported URL requested." );
 		}
 
-		class ScenarioData : IComparable<ScenarioData> {
-			public string EpisodeId;
-			public string HumanReadableName;
-			public string DatabaseName;
-
-			public int CompareTo( ScenarioData other ) {
-				return this.EpisodeId.CompareTo( other.EpisodeId );
-			}
-			public override string ToString() {
-				return EpisodeId + ": " + HumanReadableName;
-			}
-		}
-
-		private string GenerateScenarioIndex( string database, string scenarioDatFolder, string scenarioDatFolderMod = null, bool sidequests = false ) {
+		private string GenerateScenarioIndex( out List<List<ScenarioData>> scenarioGroups, string database, string scenarioDatFolder, string scenarioDatFolderMod = null, bool sidequests = false ) {
 			var data = SqliteUtil.SelectArray( "Data Source=" + database, "SELECT filename, shortdesc, desc FROM descriptions ORDER BY desc" );
 
 			List<ScenarioData> scenes = new List<ScenarioData>();
@@ -1050,9 +1040,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 			}
 
-			string list = ScenarioProcessGroupsToHtml( ScenarioProcessScenesToGroups( scenes ), !sidequests );
-
-			return list;
+			scenarioGroups = ScenarioData.ProcessScenesToGroups( scenes );
+			return ScenarioProcessGroupsToHtml( scenarioGroups, !sidequests );
 		}
 
 		private string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, bool addSkits ) {
@@ -1073,7 +1062,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			for ( int i = 0; i < groups.Count; ++i ) {
 				var group = groups[i];
 
-				string commonBegin = ScenarioFindMostCommonStart( group );
+				string commonBegin = ScenarioData.FindMostCommonStart( group );
 				sb.Append( "<li>" );
 				if ( commonBegin != "" ) {
 					sb.Append( commonBegin );
@@ -1089,12 +1078,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					sb.Append( "<a href=\"?version=ps3&section=scenario&name=" );
 					sb.Append( scene.EpisodeId );
 					sb.Append( "\">" );
-					string sceneName = scene.HumanReadableName;
-					if ( sceneName.StartsWith( commonBegin ) ) {
-						sceneName = sceneName.Substring( commonBegin.Length );
-					}
-					sceneName = sceneName.Trim( new char[] { ' ', '-', ':' } );
-					sb.Append( sceneName );
+					sb.Append( scene.HumanReadableNameWithoutPrefix( commonBegin ) );
 					sb.Append( "</a>" );
 
 					if ( addSkits ) {
@@ -1130,6 +1114,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 								sb.Append( "</li>" );
 								sb.Append( "</ul>" );
 								skitsToRemove.Add( skit );
+
+								if ( !scene.Skits.Contains( skit ) ) {
+									scene.Skits.Add( skit );
+								}
 							}
 						}
 						foreach ( var skit in skitsToRemove ) {
@@ -1148,53 +1136,5 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return sb.ToString();
 		}
 
-		private string ScenarioFindMostCommonStart( List<ScenarioData> group ) {
-			Dictionary<string, int> dict = new Dictionary<string, int>();
-			foreach ( var scene in group ) {
-				string start = scene.HumanReadableName;
-				int idx = start.IndexOfAny( new char[] { ':', '-' } );
-				if ( idx > -1 ) {
-					start = start.Substring( 0, idx );
-				}
-				start = start.Trim();
-				if ( !dict.Keys.Contains( start ) ) {
-					dict.Add( start, 0 );
-				}
-				dict[start] += 1;
-			}
-
-			string highestStr = "";
-			int highestInt = 0;
-			foreach ( var kvp in dict ) {
-				if ( kvp.Value > highestInt ) {
-					highestInt = kvp.Value;
-					highestStr = kvp.Key;
-				}
-			}
-
-			return highestStr;
-		}
-
-		private List<List<ScenarioData>> ScenarioProcessScenesToGroups( List<ScenarioData> scenes ) {
-			scenes.Sort();
-			List<List<ScenarioData>> groups = new List<List<ScenarioData>>();
-
-			List<ScenarioData> group = new List<ScenarioData>();
-			group.Add( scenes[0] );
-			for ( int i = 1; i < scenes.Count; ++i ) {
-				string currentId = scenes[i].EpisodeId.Split( '_' )[1];
-				string lastId = scenes[i - 1].EpisodeId.Split( '_' )[1];
-
-				if ( currentId != lastId ) {
-					groups.Add( group );
-					group = new List<ScenarioData>();
-				}
-
-				group.Add( scenes[i] );
-			}
-			groups.Add( group );
-
-			return groups;
-		}
 	}
 }

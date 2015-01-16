@@ -262,6 +262,7 @@
     <Compile Include="Tales\Vesperia\VesperiaUtil.cs" />
     <Compile Include="Tales\Vesperia\Website\GenerateDatabase.cs" />
     <Compile Include="Tales\Vesperia\Website\GenerateWebsite.cs" />
+    <Compile Include="Tales\Vesperia\Website\ScenarioData.cs" />
     <Compile Include="Tales\Vesperia\WRLDDAT\Location.cs" />
     <Compile Include="Tales\Vesperia\WRLDDAT\WRLDDAT.cs" />
     <Compile Include="Textures\DDS.cs" />
