@@ -75,8 +75,15 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						for ( int i = 0; i < scenario.EntryList.Count; ++i ) {
 							var entry = scenario.EntryList[i];
 							TextboxType type = TextboxType.Bubble;
-							if ( entry.JpName == "Information" ) { type = TextboxType.Information; }
-							if ( entry.EnText == "Yes\nNo" ) { type = TextboxType.Information; }
+							if ( entry.JpName == "Information"
+							  || entry.JpName.Contains( "：" )
+							  || entry.JpName.EndsWith( "？" )
+							  || entry.EnName.EndsWith( "?" )
+							  || entry.EnName.StartsWith( "Select" )
+							  || entry.EnText == "Yes\nNo"
+							   ) {
+								type = TextboxType.Information;
+							}
 							if ( entry.EnText.StartsWith( "\x03(2)" ) ) { type = TextboxType.Subtitle; }
 
 							string[] jpTextArray = entry.JpText.Split( '\f' );
