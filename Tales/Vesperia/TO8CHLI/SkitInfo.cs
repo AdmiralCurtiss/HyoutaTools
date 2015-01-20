@@ -79,6 +79,39 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			return RefString;
 		}
 
+		public string GetIndexDataAsHtml( GameVersion version, TO8CHLI skits, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {
+			StringBuilder sb = new StringBuilder();
+
+			string url;
+			if ( phpLinks ) {
+				url = "?version=" + Website.GenerateWebsite.GetPhpUrlGameVersion( version ) + "&section=skit&name=" + RefString;
+			} else {
+				url = "skit-" + RefString + "-" + version + ".html";
+			}
+
+			sb.Append( "<tr>" );
+
+			sb.Append( "<td>" );
+			sb.Append( CategoryString );
+			sb.Append( "</td>" );
+			sb.Append( "<td>" );
+			sb.Append( "<a href=\"" + url + "\">" );
+			sb.Append( inGameIdDict[StringDicIdName].StringJpnHtml( version ) );
+			sb.Append( "</a>" );
+			sb.Append( "</td>" );
+			sb.Append( "<td>" );
+			sb.Append( "<a href=\"" + url + "\">" );
+			sb.Append( inGameIdDict[StringDicIdName].StringEngHtml( version ) );
+			sb.Append( "</a>" );
+			sb.Append( "</td>" );
+			sb.Append( "<td>" );
+			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharacterBitmask );
+			sb.Append( "</td>" );
+
+			sb.Append( "</tr>" );
+
+			return sb.ToString();
+		}
 		public string GetDataAsHtml( GameVersion version, TO8CHLI skits, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 

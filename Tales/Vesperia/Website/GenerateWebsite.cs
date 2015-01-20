@@ -94,6 +94,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "skits-" + site.Version + ".html" ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "skit-index-" + site.Version + ".html" ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
 
 			Console.WriteLine( "Initializing PS3" );
 
@@ -168,6 +169,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "skits-" + site.Version + ".html" ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "skit-index-" + site.Version + ".html" ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-enemies-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "npc-" + site.Version + ".html" ), site.GenerateHtmlNpc(), Encoding.UTF8 );
@@ -342,6 +344,20 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.AppendLine( entry.GetDataAsHtml( Version, Skits, InGameIdDict ) );
 				sb.AppendLine( "<hr>" );
 			}
+			sb.AppendLine( "</body></html>" );
+			return sb.ToString();
+		}
+		public string GenerateHtmlSkitIndex() {
+			Console.WriteLine( "Generating Website: Skit Index" );
+			var sb = new StringBuilder();
+			AddHeader( sb, "Skit Index" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			sb.Append( "<table>" );
+			foreach ( var entry in Skits.SkitInfoList ) {
+				sb.AppendLine( entry.GetIndexDataAsHtml( Version, Skits, InGameIdDict ) );
+			}
+			sb.Append( "</table>" );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -978,9 +994,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
+		public static string GetPhpUrlGameVersion( GameVersion version ) {
+			return ( version == GameVersion.PS3 ? "ps3" : "360" );
+		}
 		public static string GetUrl( WebsiteSection section, GameVersion version, bool phpLink, int? id = null, int? category = null, int? icon = null ) {
 			if ( phpLink ) {
-				string v = ( version == GameVersion.PS3 ? "ps3" : "360" );
+				string v = GetPhpUrlGameVersion( version );
 				switch ( section ) {
 					case WebsiteSection.Enemy: return "?version=" + v + "&section=enemies&category=" + category + "#enemy" + id;
 					case WebsiteSection.Item: return "?version=" + v + "&section=items&icon=" + icon + "#item" + id;

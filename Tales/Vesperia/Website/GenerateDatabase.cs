@@ -41,6 +41,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					ExportScenarioDat();
 					ExportSkitText();
 					ExportScenarioMetadata();
+					ExportSkitMetadata();
 				}
 			} finally {
 				DB.Close();
@@ -441,6 +442,55 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
+		private void ExportSkitMetadata() {
+			using ( var transaction = DB.BeginTransaction() ) {
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE TABLE SkitMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, skitId VARCHAR(8), flagTrigger INT, flagCancel INT, category INT, "
+						+ "skitFlag INT, skitFlagUnique INT, characterBitmask INT, jpName TEXT, enName TEXT, jpCond TEXT, enCond TEXT, html TEXT )";
+					command.ExecuteNonQuery();
+				}
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE INDEX SkitMeta_SkitId_Index ON SkitMeta ( skitId )";
+					command.ExecuteNonQuery();
+				}
+
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "INSERT INTO SkitMeta ( skitId, flagTrigger, flagCancel, category, skitFlag, skitFlagUnique, characterBitmask, jpName,"
+						+ " enName, jpCond, enCond, html ) VALUES ( @skitId, @flagTrigger, @flagCancel, @category, @skitFlag, @skitFlagUnique, @characterBitmask,"
+						+ " @jpName, @enName, @jpCond, @enCond, @html )";
+					command.AddParameter( "skitId" );
+					command.AddParameter( "flagTrigger" );
+					command.AddParameter( "flagCancel" );
+					command.AddParameter( "category" );
+					command.AddParameter( "skitFlag" );
+					command.AddParameter( "skitFlagUnique" );
+					command.AddParameter( "characterBitmask" );
+					command.AddParameter( "jpName" );
+					command.AddParameter( "enName" );
+					command.AddParameter( "jpCond" );
+					command.AddParameter( "enCond" );
+					command.AddParameter( "html" );
+
+					foreach ( var skit in Site.Skits.SkitInfoList ) {
+						command.GetParameter( "skitId" ).Value = skit.RefString;
+						command.GetParameter( "flagTrigger" ).Value = skit.FlagTrigger;
+						command.GetParameter( "flagCancel" ).Value = skit.FlagCancel;
+						command.GetParameter( "category" ).Value = skit.Category;
+						command.GetParameter( "skitFlag" ).Value = skit.SkitFlag;
+						command.GetParameter( "skitFlagUnique" ).Value = skit.SkitFlagUnique;
+						command.GetParameter( "characterBitmask" ).Value = skit.CharacterBitmask;
+						command.GetParameter( "jpName" ).Value = Site.InGameIdDict[skit.StringDicIdName].StringJpnHtml( Site.Version );
+						command.GetParameter( "jpCond" ).Value = Site.InGameIdDict[skit.StringDicIdCondition].StringJpnHtml( Site.Version );
+						command.GetParameter( "enName" ).Value = Site.InGameIdDict[skit.StringDicIdName].StringEngHtml( Site.Version );
+						command.GetParameter( "enCond" ).Value = Site.InGameIdDict[skit.StringDicIdCondition].StringEngHtml( Site.Version );
+						command.GetParameter( "html" ).Value = skit.GetIndexDataAsHtml( Site.Version, Site.Skits, Site.InGameIdDict, phpLinks: true );
+						command.ExecuteNonQuery();
+					}
+				}
+				transaction.Commit();
+			}
+		}
+		
 		private void ExportStringDic() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
