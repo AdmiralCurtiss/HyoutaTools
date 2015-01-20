@@ -14,7 +14,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public UInt64 Empty;
 	}
 
-	public struct ChatFileLine {
+	public class ChatFileLine {
 		public Int32 Location;
 
 		public UInt32 Name;
@@ -25,6 +25,9 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public String SName;
 		public String SJPN;
 		public String SENG;
+
+		// this field does not actually exist in the game files, used as a hotfix for matching up original and modified files in GenerateWebsite/Database
+		public String SNameEnglishNotUsedByGame = null;
 	}
 
 	public class ChatFile {

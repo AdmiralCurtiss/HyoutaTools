@@ -117,7 +117,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		private void ExportSkitText() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE SkitText ( id INTEGER PRIMARY KEY AUTOINCREMENT, skitId VARCHAR(8), displayOrder INT, character TEXT, jpText TEXT, enText TEXT )";
+					command.CommandText = "CREATE TABLE SkitText ( id INTEGER PRIMARY KEY AUTOINCREMENT, skitId VARCHAR(8), displayOrder INT, jpChar TEXT, enChar TEXT, jpText TEXT, enText TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -126,10 +126,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO SkitText ( skitId, displayOrder, character, jpText, enText ) VALUES ( @skitId, @displayOrder, @character, @jpText, @enText )";
+					command.CommandText = "INSERT INTO SkitText ( skitId, displayOrder, jpChar, enChar, jpText, enText ) VALUES ( @skitId, @displayOrder, @jpChar, @enChar, @jpText, @enText )";
 					command.AddParameter( "skitId" );
 					command.AddParameter( "displayOrder" );
-					command.AddParameter( "character" );
+					command.AddParameter( "jpChar" );
+					command.AddParameter( "enChar" );
 					command.AddParameter( "jpText" );
 					command.AddParameter( "enText" );
 
@@ -138,13 +139,21 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						var skit = kvp.Value;
 
 						for ( int i = 0; i < skit.Lines.Length; ++i ) {
-							string name = skit.Lines[i].SName;
-							int idx = name.IndexOf( '(' ) + 1;
-							name = name.Substring( idx, name.LastIndexOf( ')' ) - idx );
+							string nameJp = skit.Lines[i].SName;
+							int idx = nameJp.IndexOf( '(' ) + 1;
+							nameJp = nameJp.Substring( idx, nameJp.LastIndexOf( ')' ) - idx );
+							string nameEn = skit.Lines[i].SNameEnglishNotUsedByGame;
+							if ( nameEn != null ) {
+								idx = nameEn.IndexOf( '(' ) + 1;
+								nameEn = nameEn.Substring( idx, nameEn.LastIndexOf( ')' ) - idx );
+							} else {
+								nameEn = nameJp;
+							}
 
 							command.GetParameter( "skitId" ).Value = skitId;
 							command.GetParameter( "displayOrder" ).Value = i;
-							command.GetParameter( "character" ).Value = name;
+							command.GetParameter( "jpChar" ).Value = nameJp;
+							command.GetParameter( "enChar" ).Value = nameEn;
 							command.GetParameter( "jpText" ).Value = skit.Lines[i].SJPN.ToHtmlJpn( Site.Version );
 							command.GetParameter( "enText" ).Value = skit.Lines[i].SENG.ToHtmlEng( Site.Version );
 							command.ExecuteNonQuery();

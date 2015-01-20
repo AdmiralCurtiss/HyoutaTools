@@ -124,6 +124,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				Util.Assert( chatFile.Lines.Length == chatFileMod.Lines.Length );
 				for ( int j = 0; j < chatFile.Lines.Length; ++j ) {
 					chatFile.Lines[j].SENG = chatFileMod.Lines[j].SJPN;
+					chatFile.Lines[j].SNameEnglishNotUsedByGame = chatFileMod.Lines[j].SName;
 				}
 				site.SkitText.Add( name, chatFile );
 			}
