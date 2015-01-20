@@ -6,6 +6,8 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 	public class ScenarioFile {
+		private ScenarioFile() { }
+
 		public ScenarioFile( String filename ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
 				if ( !LoadFile( stream ) ) {
@@ -68,6 +70,15 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 			}
 
 			return list;
+		}
+
+		public ScenarioFile CloneShallow() {
+			ScenarioFile clone = new ScenarioFile();
+			
+			clone.EntryList = new List<ScenarioFileEntry>( this.EntryList.Count );
+			clone.EntryList.AddRange( this.EntryList );
+
+			return clone;
 		}
 	}
 }

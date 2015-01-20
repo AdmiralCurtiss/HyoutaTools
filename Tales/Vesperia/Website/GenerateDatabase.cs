@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using HyoutaTools.Tales.Vesperia.ScenarioFile;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateDatabase {
@@ -48,6 +49,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		enum TextboxType { Bubble, Information, Subtitle };
 		private void ExportScenarioDat() {
+			CleanScenarioStrings( Site.ScenarioFiles );
+
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE ScenarioDat ( id INTEGER PRIMARY KEY AUTOINCREMENT, episodeId VARCHAR(16), displayOrder INT, type INT, jpName TEXT, jpText TEXT, enName TEXT, enText TEXT )";
@@ -163,9 +166,223 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.ExecuteNonQuery();
 				}
 
+				CleanScenarioMetadata( Site.ScenarioGroupsStory, true );
+				CleanScenarioMetadata( Site.ScenarioGroupsSidequests, false );
+
 				ExportScenarioMetadata( transaction, Site.ScenarioGroupsStory, 1 );
 				ExportScenarioMetadata( transaction, Site.ScenarioGroupsSidequests, 2 );
 				transaction.Commit();
+			}
+		}
+
+		// removes files from the scenario index that aren't useful for the website user
+		// stuff like scenes without dialogue, duplicated scenes
+		// also move skits around a bit to make them fit better
+		// as well as add our custom split final boss form 3 file
+		private void CleanScenarioMetadata( List<List<ScenarioData>> groups, bool sortSkits ) {
+			foreach ( var group in groups ) {
+				// remove scenes that the user shouldn't see
+				group.RemoveAll( x => x.EpisodeId == "EP_000_020" ); // no text
+				group.RemoveAll( x => x.EpisodeId == "EP_060_060" ); // no text
+				group.RemoveAll( x => x.EpisodeId == "EP_140_041" ); // duplicate of EP_140_040
+				group.RemoveAll( x => x.EpisodeId == "EP_150_021" ); // partial duplicate of EP_150_020
+				group.RemoveAll( x => x.EpisodeId == "EP_200_080" ); // partial duplicate of EP_200_070
+				group.RemoveAll( x => x.EpisodeId == "EP_200_090" ); // partial duplicate of EP_200_070 without new PS3 lines
+				group.RemoveAll( x => x.EpisodeId == "EP_210_010" ); // FMV subtitles only for a FMV without dialogue
+				group.RemoveAll( x => x.EpisodeId == "EP_260_080_0" ); // partial duplicate of EP_260_080
+				group.RemoveAll( x => x.EpisodeId == "EP_260_080_1" ); // no text
+				group.RemoveAll( x => x.EpisodeId == "EP_260_080_2" ); // partial duplicate of EP_260_080
+				group.RemoveAll( x => x.EpisodeId == "EP_320_065" ); // no text
+				group.RemoveAll( x => x.EpisodeId == "EP_370_070" ); // no text
+				group.RemoveAll( x => x.EpisodeId == "EP_420_011" ); // effectively duplicate of EP_420_010
+				group.RemoveAll( x => x.EpisodeId == "EP_420_090_1" ); // no text
+				group.RemoveAll( x => x.EpisodeId == "EP_420_111" ); // duplicate of EP_420_110
+				group.RemoveAll( x => x.EpisodeId == "EP_650_053" ); // english 360 FMV subs
+				group.RemoveAll( x => x.EpisodeId == "EP_0017_050" ); // scene no longer in PS3 version
+				group.RemoveAll( x => x.EpisodeId == "EP_0017_060" ); // scene no longer in PS3 version
+				group.RemoveAll( x => x.EpisodeId == "EP_0030_080" ); // scene no longer in PS3 version
+				group.RemoveAll( x => x.EpisodeId == "EP_0030_090" ); // unused variant of radiant winged one
+				group.RemoveAll( x => x.EpisodeId == "EP_0070_010" ); // battle tutorial copy
+				group.RemoveAll( x => x.EpisodeId == "EP_0080_010" ); // skill tutorial copy
+				group.RemoveAll( x => x.EpisodeId == "EP_0090_010" ); // cooking tutorial copy
+				group.RemoveAll( x => x.EpisodeId == "EP_0121_021" ); // duplicate of EP_0121_020
+				group.RemoveAll( x => x.EpisodeId == "EP_0170_011" ); // duplicate of EP_0170_010
+				group.RemoveAll( x => x.EpisodeId == "EP_0170_021" ); // duplicate of EP_0170_020
+				group.RemoveAll( x => x.EpisodeId == "EP_0170_031" ); // duplicate of EP_0170_030
+				group.RemoveAll( x => x.EpisodeId == "EP_0271_011" ); // duplicate of EP_0271_010
+				group.RemoveAll( x => x.EpisodeId == "EP_0271_021" ); // duplicate of EP_0271_020
+				group.RemoveAll( x => x.EpisodeId == "EP_0271_031" ); // duplicate of EP_0271_030
+				group.RemoveAll( x => x.EpisodeId == "EP_0300_030" ); // partial duplicate of EP_0300_020
+				group.RemoveAll( x => x.EpisodeId == "EP_0741_020" ); // scene no longer in PS3 version (has been adapted into a skit)
+				group.RemoveAll( x => x.EpisodeId == "EP_0920_010" ); // synthesis tutorial copy (old revision?)
+				group.RemoveAll( x => x.EpisodeId == "EP_0960_020" ); // no text
+				group.RemoveAll( x => x.EpisodeId == "EP_0990_010" ); // boat tutorial, game seems to use the one in EP_250_090 instead
+				group.RemoveAll( x => x.EpisodeId == "EP_1040_020" ); // burst arte tutorial, game should use the Battle one instead
+			}
+
+			if ( sortSkits ) {
+				string[] skitsToRemove = new string[] {
+					"VC911", "VC912", "VC913", "VC906", "VC907", "VC914", "VC964", "VC967", "VC915", "VC1756", // move skits in the 4 spirits events to fitting places
+					"VC921", // also for fetching Harry late game one skit seems misplaced
+					"VC927", "VC960", // final zagi skits should be one scene higher
+				};
+				Dictionary<string, TO8CHLI.SkitInfo> removedSkits = new Dictionary<string,TO8CHLI.SkitInfo>();
+
+				// grab skits and remove them from their files
+				foreach ( var group in groups ) {
+					foreach ( var scene in group ) {
+						foreach ( string skitId in skitsToRemove ) {
+							var skit = scene.Skits.Find( x => x.RefString == skitId );
+							if ( skit != null ) {
+								removedSkits.Add( skitId, skit );
+								scene.Skits.Remove( skit );
+							}
+						}
+					}
+				}
+
+				Util.Assert( skitsToRemove.Length == removedSkits.Count );
+				
+				// insert them in other places instead
+				InsertSkitAt( groups, "EP_570_020", removedSkits["VC911"] );
+				InsertSkitAt( groups, "EP_580_030", removedSkits["VC912"] );
+				InsertSkitAt( groups, "EP_580_030", removedSkits["VC913"] );
+				InsertSkitAt( groups, "EP_560_040", removedSkits["VC906"] );
+				InsertSkitAt( groups, "EP_560_040", removedSkits["VC907"] );
+				InsertSkitAt( groups, "EP_590_040", removedSkits["VC914"] );
+				InsertSkitAt( groups, "EP_580_030", removedSkits["VC964"] );
+				InsertSkitAt( groups, "EP_580_030", removedSkits["VC967"] );
+				InsertSkitAt( groups, "EP_600_010", removedSkits["VC915"] );
+				InsertSkitAt( groups, "EP_600_010", removedSkits["VC1756"] );
+				InsertSkitAt( groups, "EP_620_010", removedSkits["VC921"] );
+				InsertSkitAt( groups, "EP_650_030", removedSkits["VC927"] );
+				InsertSkitAt( groups, "EP_650_030", removedSkits["VC960"] );
+			}
+
+			foreach ( var group in groups ) {
+				// add our custom final boss form 3 file
+				var scene = group.Find( x => x.EpisodeId == "EP_0030_010" );
+				if ( scene != null ) {
+					group.Add( new ScenarioData() { EpisodeId = "EP_650_051b", HumanReadableName = "Radiant Winged One" } );
+					break;
+				}
+			}
+		}
+
+		private bool InsertSkitAt( List<List<ScenarioData>> groups, string episodeId, TO8CHLI.SkitInfo skit ) {
+			foreach ( var group in groups ) {
+				var scene = group.Find( x => x.EpisodeId == episodeId );
+				if ( scene != null ) {
+					scene.Skits.Add( skit );
+					return true;
+				}
+			}
+			return false;
+		}
+
+		// removes strings from scenario files that shouldn't be shown to the website user
+		// stuff like spoilery FMV subtitles or debug text
+		private void CleanScenarioStrings( Dictionary<string, ScenarioFile.ScenarioFile> files ) {
+			{
+				// remove FMV subtitles from other FMVs, sort the "start game?" question to the front
+				var intro = files["EP_000_010"];
+				var pleaseAdjustSettings = intro.EntryList[76];
+				var startTheGame = intro.EntryList[77];
+				intro.EntryList.RemoveRange( 15, intro.EntryList.Count - 15 );
+				intro.EntryList.Insert( 0, pleaseAdjustSettings );
+				intro.EntryList.Insert( 1, startTheGame );
+			}
+
+			{
+				// sort the skill tutorial text to the middle of the scene where it belongs
+				// cooking tutorial at EP_060_040 doesn't need reordering, it's fine as-is
+				var skillTutorial = files["EP_050_010"];
+				var sorted = new List<ScenarioFileEntry>( skillTutorial.EntryList.Count );
+				for ( int i = 0; i <= 11; ++i ) { sorted.Add( skillTutorial.EntryList[i] ); }
+				for ( int i = 27; i <= 32; ++i ) { sorted.Add( skillTutorial.EntryList[i] ); }
+				for ( int i = 12; i <= 26; ++i ) { sorted.Add( skillTutorial.EntryList[i] ); }
+				skillTutorial.EntryList = sorted;
+			}
+
+			{
+				// remove FMV subs belonging to other scenes, and sort the remaining ones to the correct in-scene position
+				var revivingTheTree = files["EP_090_020"];
+				for ( int i = 15; i < 19; ++i ) {
+					revivingTheTree.EntryList.Add( revivingTheTree.EntryList[i] );
+				}
+				revivingTheTree.EntryList.RemoveRange( 0, 76 );
+
+				var dahngrestBridge = files["EP_230_040"];
+				for ( int i = 19; i <= 20; ++i ) {
+					dahngrestBridge.EntryList.Add( dahngrestBridge.EntryList[i] );
+				}
+				dahngrestBridge.EntryList.RemoveRange( 0, 76 );
+
+				var alexeiInZaphias = files["EP_450_010"];
+				for ( int i = 21; i <= 33; ++i ) {
+					alexeiInZaphias.EntryList.Add( alexeiInZaphias.EntryList[i] );
+				}
+				alexeiInZaphias.EntryList.RemoveRange( 0, 76 );
+
+				var swordStair = files["EP_490_060"];
+				for ( int i = 0; i <= 38 - 34; ++i ) {
+					swordStair.EntryList.Insert( 123 + i, swordStair.EntryList[i + 34] );
+				}
+				swordStair.EntryList.RemoveRange( 0, 76 );
+
+				var adephagos = files["EP_510_080"];
+				for ( int i = 39; i <= 47; ++i ) {
+					adephagos.EntryList.Add( adephagos.EntryList[i] );
+				}
+				adephagos.EntryList.RemoveRange( 0, 76 );
+
+				var ending = files["EP_650_052"];
+				ending.EntryList.RemoveAt( 85 );
+				ending.EntryList.RemoveRange( 0, 54 );
+
+				var movieViewer = files["EP_0700_010"];
+				for ( int i = 0; i <= 18 - 15; ++i ) {
+					movieViewer.EntryList.Insert( 88 + i, movieViewer.EntryList[i + 15] );
+				}
+				movieViewer.EntryList.RemoveRange( 0, 76 );
+			}
+
+			{
+				// remove all FMV subs, none of these FMVs have dialogue
+				var subLessFmv = new string[] { "EP_420_010", "EP_420_011", "EP_430_010", "EP_440_080", "EP_510_010", "EP_550_040", "EP_600_050", "EP_610_040" };
+				foreach ( string episodeId in subLessFmv ) {
+					files[episodeId].EntryList.RemoveRange( 0, 76 );
+				}
+			}
+
+			{
+				// remove map text that somehow ended up here
+				var raven = files["EP_500_030"];
+				raven.EntryList.RemoveRange( 0, 5 );
+			}
+
+			{
+				// lines for the first part of the final boss scene are not in correct order and have a bunch of duplicates, fix
+				var form12 = files["EP_650_050"];
+				form12.EntryList.RemoveRange( 163, 7 );
+				form12.EntryList.RemoveRange( 102, 5 );
+				form12.EntryList.Insert( 102, form12.EntryList[7] );
+				form12.EntryList.Insert( 96, form12.EntryList[8] );
+				form12.EntryList.Insert( 91, form12.EntryList[6] );
+				form12.EntryList.Insert( 85, form12.EntryList[5] );
+				form12.EntryList.Insert( 77, form12.EntryList[4] );
+				form12.EntryList.Insert( 73, form12.EntryList[3] );
+				form12.EntryList.Insert( 68, form12.EntryList[2] );
+				form12.EntryList.Insert( 63, form12.EntryList[1] );
+				form12.EntryList.Insert( 57, form12.EntryList[0] );
+				form12.EntryList.RemoveRange( 0, 9 );
+
+				// split second part of the scene into two files so you can actually read the ending without getting spoiled on the optional 3rd form
+				var ending = files["EP_650_051"];
+				var form3 = ending.CloneShallow();
+				ending.EntryList.RemoveRange( 0, 14 );
+				form3.EntryList.RemoveRange( 14, form3.EntryList.Count - 14 );
+				files.Add( "EP_650_051b", form3 );
 			}
 		}
 
@@ -180,6 +397,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 				int groupNumber = 0;
 				foreach ( var group in groups ) {
+					if ( group.Count == 0 ) { continue; }
+
 					string commonBegin = ScenarioData.FindMostCommonStart( group );
 					command.GetParameter( "type" ).Value = groupType;
 					command.GetParameter( "sceneGroup" ).Value = groupNumber;
