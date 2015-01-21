@@ -13,7 +13,7 @@ namespace HyoutaTools.Tales.Vesperia {
 	}
 
 	public static class VesperiaUtil {
-		public static String RemoveTags( String s, bool useJapaneseNames = false, bool replaceFuriganaWithHtmlRuby = false ) {
+		public static String RemoveTags( String s, bool useJapaneseNames = false, bool outputAsHtml = false ) {
 			s = s.Replace( "''", "'" );
 			if ( useJapaneseNames ) {
 				s = s.Replace( "\x04(YUR)", "ユーリ" );
@@ -44,14 +44,72 @@ namespace HyoutaTools.Tales.Vesperia {
 				s = s.Replace( "\x04(BAU)", "Ba'ul" );
 				s = s.Replace( "\x04(ALL)", "Everyone" );
 			}
+
 			s = s.Replace( ""/*0xFF*/, "\n\n" );
-			if ( replaceFuriganaWithHtmlRuby ) {
+			s = Regex.Replace( s, "\t[(][A-Za-z0-9_]+[)]", "" ); // audio/voice commands
+
+			if ( outputAsHtml ) {
 				s = ReplaceFuriganaWithHtmlRuby( s );
+				s = ReplaceColorCommandsWithSpansHtml( s );
 			} else {
 				s = RemoveFurigana( s );
+				s = Regex.Replace( s, "\x03[(][0-9]+[)]", "" ); // color commands
 			}
-			s = Regex.Replace( s, "\t[(][A-Za-z0-9_]+[)]", "" ); // audio/voice commands
-			s = Regex.Replace( s, "\x03[(][0-9]+[)]", "" ); // color commands
+
+			return s;
+		}
+
+		public static string ReplaceColorCommandsWithSpansHtml( string s ) {
+			bool currentlyDefaultColor = true;
+
+			while ( s.Contains( '\x03' ) ) {
+				int commandStart = s.IndexOf( '\x03' );
+				string textFromCommandStart = s.Substring( commandStart );
+				int commandLength = textFromCommandStart.IndexOf( ')' );
+				string dataString = s.Substring( commandStart + 2, commandLength - 2 );
+
+				string textPreCommand = s.Substring( 0, commandStart );
+				string textPostCommand = s.Substring( commandStart + commandLength + 1 );
+
+				// figure out which color to change to
+				string colorClass = "";
+				bool toDefaultColor = false;
+				try {
+					int colorId = Int32.Parse( dataString );
+					switch ( colorId ) {
+						case 0: toDefaultColor = true; break;
+						case 2: colorClass = "textColorWhite"; break;
+						case 4: colorClass = "textColorRed"; break;
+						case 5: colorClass = "textColorGreen"; break;
+						case 6: colorClass = "textColorBlue"; break;
+						default: colorClass = "textColor" + colorId; break;
+					}
+				} catch ( System.FormatException ) {
+					colorClass = "textColorIllegal";
+				}
+
+				// figure out if this menas we need to open and/or close span tags
+				string colorSpan = "";
+				if ( toDefaultColor ) {
+					colorSpan = "</span>";
+					currentlyDefaultColor = true;
+				} else {
+					if ( !currentlyDefaultColor ) {
+						colorSpan = "</span>";
+					}
+					colorSpan += "<span class=\"" + colorClass + "\">";
+					currentlyDefaultColor = false;
+				}
+
+				// and actually add the span tag
+				s = textPreCommand + colorSpan + textPostCommand;
+			}
+
+			// if we're not the default at the end, close the open span tag
+			if ( !currentlyDefaultColor ) {
+				s += "</span>";
+			}
+
 			return s;
 		}
 
@@ -101,7 +159,7 @@ namespace HyoutaTools.Tales.Vesperia {
 			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version, true ).ToString(), true, true ).Replace( "\n", "<br />" );
 		}
 		public static string ToHtmlEng( this string str, GameVersion version ) {
-			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version, false ).ToString(), false, false ).Replace( "\n", "<br />" );
+			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version, false ).ToString(), false, true ).Replace( "\n", "<br />" );
 		}
 
 		private static String[][] InsaneNames = null;

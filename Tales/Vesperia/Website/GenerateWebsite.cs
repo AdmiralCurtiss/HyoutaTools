@@ -802,6 +802,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( ".strategychar { text-align: center; }" );
 			sb.AppendLine( "table.settings td { vertical-align: middle; min-width: 90px; }" );
 			sb.AppendLine( ".difficultyname { font-weight: bold; text-decoration: underline; }" );
+			sb.AppendLine( "span.textColorBlue { color: #558BEA; }" );
+			sb.AppendLine( "span.textColorGreen { color: #05AA51; }" );
+			sb.AppendLine( "span.textColorRed { color: #F5332F; }" );
 			sb.AppendLine( "</style>" );
 			sb.AppendLine( "</head>" );
 		}
