@@ -86,7 +86,10 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 				sb.Append( "</td>" );
 			}
 			sb.Append( "</tr>" );
-			for ( uint x = 0; x < StrategyDefaults.GetLength( 0 ); ++x ) {
+			for ( uint xRaw = 0; xRaw < StrategyDefaults.GetLength( 0 ); ++xRaw ) {
+				uint x = xRaw;
+				// swap around OVL and FS because they're stored the wrong way around compared to how they show up ingame
+				if ( x == 6 ) { x = 7; } else if ( x == 7 ) { x = 6; }
 				sb.Append( "<tr>" );
 				sb.Append( "<td>" );
 				sb.Append( "<span class=\"strategycat\">" );
