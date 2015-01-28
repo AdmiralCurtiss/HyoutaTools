@@ -6,7 +6,7 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 	public class ScenarioFile {
-		private ScenarioFile() { }
+		public ScenarioFile() { }
 
 		public ScenarioFile( String filename ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {

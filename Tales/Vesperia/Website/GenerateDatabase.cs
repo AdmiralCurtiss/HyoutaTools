@@ -51,6 +51,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		enum TextboxType { Bubble, Information, Subtitle };
 		private void ExportScenarioDat() {
 			CleanScenarioStrings( Site.ScenarioFiles );
+			AddBattleStringsToScenario();
 
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
@@ -112,6 +113,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					}
 				}
 				transaction.Commit();
+			}
+		}
+
+		private void AddBattleStringsToScenario() {
+			foreach ( var kvp in Site.BattleTextFiles ) {
+				var fakeScenario = new ScenarioFile.ScenarioFile();
+				fakeScenario.EntryList = kvp.Value.EntryList;
+				Site.ScenarioFiles.Add( kvp.Key, fakeScenario );
 			}
 		}
 

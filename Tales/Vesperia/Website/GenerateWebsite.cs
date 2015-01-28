@@ -142,6 +142,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
 			site.Records = site.GenerateRecordsStringDicList();
 			site.Settings = site.GenerateSettingsStringDicList();
+			site.LoadBattleTextScfombin( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\", @"d:\Dropbox\ToV\PS3\mod\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\" );
 
 			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
@@ -207,12 +208,39 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public List<List<ScenarioData>> ScenarioGroupsStory;
 		public List<List<ScenarioData>> ScenarioGroupsSidequests;
 
+		public Dictionary<string, SCFOMBIN.SCFOMBIN> BattleTextFiles;
+
 		public T8BTXTM.T8BTXTMA NecropolisFloors;
 		public T8BTXTM.T8BTXTMT NecropolisTreasures;
 		public Dictionary<string, T8BTXTM.T8BTXTMM> NecropolisMaps;
 
 		public Dictionary<uint, TSS.TSSEntry> InGameIdDict;
 		public uint[] IconsWithItems;
+
+		public void LoadBattleTextScfombin( string dir, string modDir = null ) {
+			BattleTextFiles = new Dictionary<string, SCFOMBIN.SCFOMBIN>();
+
+			var files = new System.IO.DirectoryInfo( dir ).GetFiles();
+			foreach ( var file in files ) {
+				if ( file.Name.StartsWith( "BTL_" ) ) {
+					uint ptrDiff = 0x1888;
+					if ( file.Name.StartsWith( "BTL_XTM" ) ) { ptrDiff = 0x1B4C; }
+
+					var bin = new SCFOMBIN.SCFOMBIN( Path.Combine( dir, file.Name ), ptrDiff );
+					var name = file.Name.Split( '.' )[0];
+
+					if ( modDir != null ) {
+						var modBin = new SCFOMBIN.SCFOMBIN( Path.Combine( modDir, file.Name ), ptrDiff );
+						for ( int i = 0; i < bin.EntryList.Count; ++i ) {
+							bin.EntryList[i].EnName = modBin.EntryList[i].JpName;
+							bin.EntryList[i].EnText = modBin.EntryList[i].JpText;
+						}
+					}
+
+					BattleTextFiles.Add( name, bin );
+				}
+			}
+		}
 
 		public string GenerateHtmlItems( uint? icon = null, uint? category = null ) {
 			Console.WriteLine( "Generating Website: Items" );
