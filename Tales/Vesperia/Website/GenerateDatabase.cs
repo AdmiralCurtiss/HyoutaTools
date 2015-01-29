@@ -50,12 +50,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		enum TextboxType { Bubble, Information, Subtitle };
 		private void ExportScenarioDat() {
-			CleanScenarioStrings( Site.ScenarioFiles );
 			AddBattleStringsToScenario();
+			CleanScenarioStrings( Site.ScenarioFiles );
 
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE ScenarioDat ( id INTEGER PRIMARY KEY AUTOINCREMENT, episodeId VARCHAR(16), displayOrder INT, type INT, jpName TEXT, jpText TEXT, enName TEXT, enText TEXT )";
+					command.CommandText = "CREATE TABLE ScenarioDat ( id INTEGER PRIMARY KEY AUTOINCREMENT, episodeId VARCHAR(20), displayOrder INT, type INT, jpName TEXT, jpText TEXT, enName TEXT, enText TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -177,7 +177,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		private void ExportScenarioMetadata() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE ScenarioMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, type INT, sceneGroup INT, parent INT, episodeId VARCHAR(16), description TEXT )";
+					command.CommandText = "CREATE TABLE ScenarioMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, type INT, sceneGroup INT, parent INT, episodeId VARCHAR(20), description TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -237,6 +237,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				group.RemoveAll( x => x.EpisodeId == "EP_0960_020" ); // no text
 				group.RemoveAll( x => x.EpisodeId == "EP_0990_010" ); // boat tutorial, game seems to use the one in EP_250_090 instead
 				group.RemoveAll( x => x.EpisodeId == "EP_1040_020" ); // burst arte tutorial, game should use the Battle one instead
+				group.RemoveAll( x => x.EpisodeId == "EP_0960_010" ); // fatal strike scene in caer bocram, copy of EP_170_030
+				group.RemoveAll( x => x.EpisodeId == "EP_1040_010" ); // part of burst arte tutorial, reinserted at proper place later
+				group.RemoveAll( x => x.EpisodeId == "EP_1040_030" ); // part of burst arte tutorial, reinserted at proper place later
+				group.RemoveAll( x => x.EpisodeId == "EP_1530_060" ); // unused variation of BTL_XTM_EVENT
 			}
 
 			if ( sortSkits ) {
@@ -278,14 +282,57 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				InsertSkitAt( groups, "EP_650_030", removedSkits["VC960"] );
 			}
 
+			// add our custom final boss form 3 file
+			InsertScenarioAt( groups, "EP_0030_010", new ScenarioData() { EpisodeId = "EP_650_051b", HumanReadableName = "Radiant Winged One" } );
+
+			// add the battle stuff and the split text from that
+			InsertScenarioAt( groups, "EP_020_040", new ScenarioData() { EpisodeId = "EP_020_040b", HumanReadableName = "Cumore" } );
+			InsertScenarioAt( groups, "EP_020_040", new ScenarioData() { EpisodeId = "BTL_EP_0070_010", HumanReadableName = "Battle Tutorial" } );
+			InsertScenarioAt( groups, "EP_030_040", new ScenarioData() { EpisodeId = "EP_030_040b", HumanReadableName = "Mysterious Girl (2)" } );
+			InsertScenarioAt( groups, "EP_030_040", new ScenarioData() { EpisodeId = "BTL_EP_030_040", HumanReadableName = "Knights Battle" } );
+			InsertScenarioAt( groups, "EP_030_080", new ScenarioData() { EpisodeId = "EP_030_080b", HumanReadableName = "Flynn's Room (2)" } );
+			InsertScenarioAt( groups, "EP_030_080", new ScenarioData() { EpisodeId = "BTL_EP_030_080", HumanReadableName = "Zagi Battle" } );
+			InsertScenarioAt( groups, "EP_130_040", new ScenarioData() { EpisodeId = "EP_130_040b", HumanReadableName = "Adecor/Boccos (2)" } );
+			InsertScenarioAt( groups, "EP_130_040", new ScenarioData() { EpisodeId = "BTL_EP_0950_010", HumanReadableName = "Over Limit Tutorial" } );
+			InsertScenarioAt( groups, "EP_170_030", new ScenarioData() { EpisodeId = "BTL_EP_0960_020", HumanReadableName = "Fatal Strike Tutorial" } );
+			InsertScenarioAt( groups, "EP_180_020", new ScenarioData() { EpisodeId = "EP_1040_030", HumanReadableName = "Adecor/Boccos (2)" } );
+			InsertScenarioAt( groups, "EP_180_020", new ScenarioData() { EpisodeId = "BTL_EP_1040_020", HumanReadableName = "Burst Arte Tutorial" } );
+			InsertScenarioAt( groups, "EP_180_020", new ScenarioData() { EpisodeId = "EP_1040_010", HumanReadableName = "Adecor/Boccos (1)" } );
+			InsertScenarioAt( groups, "EP_150_170", new ScenarioData() { EpisodeId = "BTL_EP_150_170", HumanReadableName = "Zagi (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_170_050", new ScenarioData() { EpisodeId = "EP_170_050b", HumanReadableName = "Dreaded Giant (2)" } );
+			InsertScenarioAt( groups, "EP_170_050", new ScenarioData() { EpisodeId = "BTL_EP_170_050", HumanReadableName = "Dreaded Giant (Battle)" } );
+			InsertScenarioAt( groups, "EP_210_090", new ScenarioData() { EpisodeId = "BTL_EP_210_090", HumanReadableName = "Barbos (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_270_110", new ScenarioData() { EpisodeId = "BTL_EP_270_110b", HumanReadableName = "Zagi (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_270_110", new ScenarioData() { EpisodeId = "EP_270_110b", HumanReadableName = "Coliseum: Zagi" } );
+			InsertScenarioAt( groups, "EP_270_110", new ScenarioData() { EpisodeId = "BTL_EP_270_110", HumanReadableName = "Coliseum: Finals (Battle)" } );
+			InsertScenarioAt( groups, "EP_340_080", new ScenarioData() { EpisodeId = "BTL_EP_340_070", HumanReadableName = "Belius (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_370_050", new ScenarioData() { EpisodeId = "BTL_EP_370_050", HumanReadableName = "Tison/Nan (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_420_080", new ScenarioData() { EpisodeId = "BTL_EP_420_080", HumanReadableName = "Schwann (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_440_040", new ScenarioData() { EpisodeId = "BTL_EP_440_040", HumanReadableName = "Zagi (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_470_030", new ScenarioData() { EpisodeId = "EP_470_030b", HumanReadableName = "Aer Krene (2)" } );
+			InsertScenarioAt( groups, "EP_470_030", new ScenarioData() { EpisodeId = "BTL_EP_470_030", HumanReadableName = "Boss Battle (Karol)" } );
+			InsertScenarioAt( groups, "EP_490_060", new ScenarioData() { EpisodeId = "BTL_EP_490_060_1", HumanReadableName = "Estelle (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_510_050", new ScenarioData() { EpisodeId = "EP_510_050b", HumanReadableName = "Yeager (2)" } );
+			InsertScenarioAt( groups, "EP_510_050", new ScenarioData() { EpisodeId = "BTL_EP_510_050b", HumanReadableName = "Yeager (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_510_050", new ScenarioData() { EpisodeId = "BTL_EP_510_050", HumanReadableName = "Yeager (Battle)" } );
+			InsertScenarioAt( groups, "EP_510_070", new ScenarioData() { EpisodeId = "BTL_EP_510_080b", HumanReadableName = "Alexei (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_510_070", new ScenarioData() { EpisodeId = "BTL_EP_510_080", HumanReadableName = "Alexei (Battle)" } );
+			InsertScenarioAt( groups, "EP_640_050", new ScenarioData() { EpisodeId = "BTL_EP_640_050", HumanReadableName = "Flynn (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_650_030", new ScenarioData() { EpisodeId = "BTL_EP_650_030", HumanReadableName = "Zagi (Secret Mission)" } );
+			InsertScenarioAt( groups, "EP_1530_050", new ScenarioData() { EpisodeId = "BTL_XTM_EVENT", HumanReadableName = "Dungeon Tutorial" } );
+			InsertScenarioAt( groups, "EP_0601_030", new ScenarioData() { EpisodeId = "BTL_LL_MONSTER", HumanReadableName = "Giganto Monster (First Encounter)" } );
+		}
+
+		private bool InsertScenarioAt( List<List<ScenarioData>> groups, string episodeId, ScenarioData newScene ) {
 			foreach ( var group in groups ) {
-				// add our custom final boss form 3 file
-				var scene = group.Find( x => x.EpisodeId == "EP_0030_010" );
-				if ( scene != null ) {
-					group.Add( new ScenarioData() { EpisodeId = "EP_650_051b", HumanReadableName = "Radiant Winged One" } );
-					break;
+				var insertAfterScene = group.Find( x => x.EpisodeId == episodeId );
+				if ( insertAfterScene != null ) {
+					group.Insert( group.IndexOf( insertAfterScene ) + 1, newScene );
+					return true;
 				}
 			}
+
+			return false;
 		}
 
 		private bool InsertSkitAt( List<List<ScenarioData>> groups, string episodeId, TO8CHLI.SkitInfo skit ) {
@@ -397,12 +444,44 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				form12.EntryList.RemoveRange( 0, 9 );
 
 				// split second part of the scene into two files so you can actually read the ending without getting spoiled on the optional 3rd form
-				var ending = files["EP_650_051"];
-				var form3 = ending.CloneShallow();
-				ending.EntryList.RemoveRange( 0, 14 );
-				form3.EntryList.RemoveRange( 14, form3.EntryList.Count - 14 );
-				files.Add( "EP_650_051b", form3 );
+				SplitScenarioFile( files, "EP_650_051", "EP_650_051b", -14 );
 			}
+
+			// line is in EP_1040_030 as well and makes more sense there
+			files["EP_1040_010"].EntryList.RemoveAt( 14 );
+
+			// split a few files that have in-battle dialogue in the middle of them
+			SplitScenarioFile( files, "EP_020_040", "EP_020_040b", 11 ); // battle tutorial
+			SplitScenarioFile( files, "EP_030_040", "EP_030_040b", 18 ); // battle with knights when meeting estelle
+			SplitScenarioFile( files, "EP_030_080", "EP_030_080b", 19 ); // zagi 1
+			SplitScenarioFile( files, "EP_130_040", "EP_130_040b", 12 ); // over limit tutorial
+			SplitScenarioFile( files, "EP_170_050", "EP_170_050b", 45 ); // dreaded giant
+			SplitScenarioFile( files, "BTL_EP_210_090", "BTL_EP_210_090b", -9 ); // barbos battle
+			SplitScenarioFile( files, "EP_270_110", "EP_270_110b", 13 ); // flynn coliseum scene
+			SplitScenarioFile( files, "BTL_EP_270_110", "BTL_EP_270_110b", 16 ); // flynn coliseum battle & zagi 3
+			SplitScenarioFile( files, "EP_470_030", "EP_470_030b", 25 ); // blade drifts boss
+			SplitScenarioFile( files, "BTL_EP_490_060_1", "BTL_EP_490_060_1b", -8 ); // estelle battle
+			SplitScenarioFile( files, "EP_510_050", "EP_510_050b", 17 ); // yeager battle
+			SplitScenarioFile( files, "BTL_EP_510_050", "BTL_EP_510_050b", -1 ); // yeager secret mission
+			SplitScenarioFile( files, "BTL_EP_510_080", "BTL_EP_510_080c", 32 ); // alexei battle
+			SplitScenarioFile( files, "BTL_EP_510_080", "BTL_EP_510_080b", -1 ); // alexei secret mission
+		}
+
+		// sign of splitAt decides which file gets to keep which half, positive => new file gets bottom half, negative => new file gets top half
+		private void SplitScenarioFile( Dictionary<string, ScenarioFile.ScenarioFile> files, string originalName, string newName, int splitAt ) {
+			var orig = files[originalName];
+			var clone = orig.CloneShallow();
+			int totalFiles = clone.EntryList.Count;
+
+			if ( splitAt < 0 ) {
+				orig.EntryList.RemoveRange( 0, -splitAt );
+				clone.EntryList.RemoveRange( -splitAt, totalFiles - -splitAt );
+			} else {
+				orig.EntryList.RemoveRange( splitAt, totalFiles - splitAt );
+				clone.EntryList.RemoveRange( 0, splitAt );
+			}
+
+			files.Add( newName, clone );
 		}
 
 		private void ExportScenarioMetadata( IDbTransaction transaction, List<List<ScenarioData>> groups, int groupType ) {
