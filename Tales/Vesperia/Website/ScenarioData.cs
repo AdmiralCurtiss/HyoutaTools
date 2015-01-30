@@ -23,6 +23,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sceneName = sceneName.Substring( prefix.Length );
 			}
 			sceneName = sceneName.Trim( new char[] { ' ', '-', ':' } );
+			if ( sceneName == "" ) { sceneName = HumanReadableName; }
 			return sceneName;
 		}
 
@@ -54,16 +55,24 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static List<List<ScenarioData>> ProcessScenesToGroups( List<ScenarioData> scenes ) {
+			var digits = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
 			scenes.Sort();
 			List<List<ScenarioData>> groups = new List<List<ScenarioData>>();
 
 			List<ScenarioData> group = new List<ScenarioData>();
 			group.Add( scenes[0] );
 			for ( int i = 1; i < scenes.Count; ++i ) {
-				string currentId = scenes[i].EpisodeId.Split( '_' )[1];
-				string lastId = scenes[i - 1].EpisodeId.Split( '_' )[1];
+				string currId;
+				string lastId;
 
-				if ( currentId != lastId ) {
+				string currEp = scenes[i].EpisodeId;
+				string lastEp = scenes[i - 1].EpisodeId;
+
+				currId = currEp.Contains( '_' ) ? currEp.Split( '_' )[currEp.StartsWith( "EP_" ) ? 1 : 0] : currEp.TrimEnd( digits );
+				lastId = lastEp.Contains( '_' ) ? lastEp.Split( '_' )[lastEp.StartsWith( "EP_" ) ? 1 : 0] : lastEp.TrimEnd( digits );
+
+				if ( currId != lastId ) {
 					groups.Add( group );
 					group = new List<ScenarioData>();
 				}

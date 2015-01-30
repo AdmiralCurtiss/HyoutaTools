@@ -174,8 +174,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-enemies-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "npc-" + site.Version + ".html" ), site.GenerateHtmlNpc(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-" + site.Version + ".html" ), site.GenerateScenarioIndex( out site.ScenarioGroupsStory, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "sidequest-" + site.Version + ".html" ), site.GenerateScenarioIndex( out site.ScenarioGroupsSidequests, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\", sidequests: true ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-story-" + site.Version + ".html" ), site.GenerateScenarioIndex( out site.ScenarioGroupsStory, ScenarioType.Story, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-sidequests-" + site.Version + ".html" ), site.GenerateScenarioIndex( out site.ScenarioGroupsSidequests, ScenarioType.Sidequests, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-maps-" + site.Version + ".html" ), site.GenerateScenarioIndex( out site.ScenarioGroupsMaps, ScenarioType.Maps, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
 
 			databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
 			System.IO.File.Delete( databasePath );
@@ -207,6 +208,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public Dictionary<string, ScenarioFile.ScenarioFile> ScenarioFiles;
 		public List<List<ScenarioData>> ScenarioGroupsStory;
 		public List<List<ScenarioData>> ScenarioGroupsSidequests;
+		public List<List<ScenarioData>> ScenarioGroupsMaps;
 
 		public Dictionary<string, SCFOMBIN.SCFOMBIN> BattleTextFiles;
 
@@ -1053,7 +1055,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			throw new Exception( "Unsupported URL requested." );
 		}
 
-		private string GenerateScenarioIndex( out List<List<ScenarioData>> scenarioGroups, string database, string scenarioDatFolder, string scenarioDatFolderMod = null, bool sidequests = false ) {
+		private enum ScenarioType { Story, Sidequests, Maps };
+		private string GenerateScenarioIndex( out List<List<ScenarioData>> scenarioGroups, ScenarioType type, string database, string scenarioDatFolder, string scenarioDatFolderMod = null ) {
 			var data = SqliteUtil.SelectArray( "Data Source=" + database, "SELECT filename, shortdesc, desc FROM descriptions ORDER BY desc" );
 
 			List<ScenarioData> scenes = new List<ScenarioData>();
@@ -1068,11 +1071,23 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 				humanReadableName = humanReadableName.Trim();
 
-				if ( filename.StartsWith( "VScenario" ) && episodeID.StartsWith( "EP_" ) ) {
-					string group = episodeID.Split( '_' )[1];
+				if ( filename.StartsWith( "VScenario" ) ) {
+					string group;
 					int dummy;
-					bool isStory = group.Length == 3 && Int32.TryParse( group, out dummy );
-					if ( ( !sidequests && isStory ) || ( sidequests && !isStory ) ) {
+					bool isStory;
+					bool isScenario = episodeID.StartsWith( "EP_" );
+
+					if ( isScenario ) {
+						group = episodeID.Split( '_' )[1];
+						isStory = group.Length == 3 && Int32.TryParse( group, out dummy );
+					} else {
+						group = "";
+						isStory = false;
+					}
+
+					bool exportAsScenario = isScenario && ( ( type == ScenarioType.Story && isStory ) || ( type == ScenarioType.Sidequests && !isStory ) );
+					bool exportAsMap = !isScenario && type == ScenarioType.Maps;
+					if ( exportAsScenario || exportAsMap ) {
 						if ( !ScenarioFiles.ContainsKey( episodeID ) ) {
 							string num = filename.Substring( "VScenario".Length );
 							try {
@@ -1092,7 +1107,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 
 			scenarioGroups = ScenarioData.ProcessScenesToGroups( scenes );
-			return ScenarioProcessGroupsToHtml( scenarioGroups, !sidequests );
+			return ScenarioProcessGroupsToHtml( scenarioGroups, type == ScenarioType.Story );
 		}
 
 		private string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, bool addSkits ) {
