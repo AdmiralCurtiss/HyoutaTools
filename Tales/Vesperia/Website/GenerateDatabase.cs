@@ -238,9 +238,28 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				group.RemoveAll( x => x.EpisodeId == "EP_0990_010" ); // boat tutorial, game seems to use the one in EP_250_090 instead
 				group.RemoveAll( x => x.EpisodeId == "EP_1040_020" ); // burst arte tutorial, game should use the Battle one instead
 				group.RemoveAll( x => x.EpisodeId == "EP_0960_010" ); // fatal strike scene in caer bocram, copy of EP_170_030
-				group.RemoveAll( x => x.EpisodeId == "EP_1040_010" ); // part of burst arte tutorial, reinserted at proper place later
-				group.RemoveAll( x => x.EpisodeId == "EP_1040_030" ); // part of burst arte tutorial, reinserted at proper place later
 				group.RemoveAll( x => x.EpisodeId == "EP_1530_060" ); // unused variation of BTL_XTM_EVENT
+
+				// stuff that's reinserted at the proper place later
+				group.RemoveAll( x => x.EpisodeId == "EP_1040_010" ); // part of burst arte tutorial
+				group.RemoveAll( x => x.EpisodeId == "EP_1040_030" ); // part of burst arte tutorial
+				group.RemoveAll( x => x.EpisodeId == "EP_0100_010" ); // airship tutorial
+				group.RemoveAll( x => x.EpisodeId == "EP_0910_010" ); // surprise encounter tutorial
+				group.RemoveAll( x => x.EpisodeId == "EP_0980_010" ); // ovl lv 2
+				group.RemoveAll( x => x.EpisodeId == "EP_1010_010" ); // weather tutorial
+				group.RemoveAll( x => x.EpisodeId == "EP_1070_010" ); // camping tutorial
+				group.RemoveAll( x => x.EpisodeId == "EP_1270_010" ); // encounter link tutorial
+				group.RemoveAll( x => x.EpisodeId == "EP_1560_010" ); // abysmal hollow first visit
+				group.RemoveAll( x => x.EpisodeId == "EP_1160_010" ); // ghasfarost gear puzzle
+				group.RemoveAll( x => x.EpisodeId == "EP_1160_020" ); // ghasfarost gear puzzle
+				group.RemoveAll( x => x.EpisodeId == "EP_1160_030" ); // ghasfarost gear puzzle
+				group.RemoveAll( x => x.EpisodeId == "EP_1160_040" ); // ghasfarost gear puzzle
+				group.RemoveAll( x => x.EpisodeId == "EP_1030_010" ); // caer bocram warp blastia
+				group.RemoveAll( x => x.EpisodeId == "EP_1030_020" ); // caer bocram warp blastia
+				group.RemoveAll( x => x.EpisodeId == "EP_1030_021" ); // caer bocram warp blastia
+				group.RemoveAll( x => x.EpisodeId == "EP_1030_022" ); // caer bocram warp blastia
+				group.RemoveAll( x => x.EpisodeId == "EP_1030_023" ); // caer bocram warp blastia
+				group.RemoveAll( x => x.EpisodeId == "EP_0110_010" ); // undine minigame
 			}
 
 			if ( sortSkits ) {
@@ -321,6 +340,26 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			InsertScenarioAt( groups, "EP_650_030", new ScenarioData() { EpisodeId = "BTL_EP_650_030", HumanReadableName = "Zagi (Secret Mission)" } );
 			InsertScenarioAt( groups, "EP_1530_050", new ScenarioData() { EpisodeId = "BTL_XTM_EVENT", HumanReadableName = "Dungeon Tutorial" } );
 			InsertScenarioAt( groups, "EP_0601_030", new ScenarioData() { EpisodeId = "BTL_LL_MONSTER", HumanReadableName = "Giganto Monster (First Encounter)" } );
+
+			InsertScenarioAt( groups, "EP_370_140", new ScenarioData() { EpisodeId = "EP_0100_010", HumanReadableName = "Airship Tutorial" } );
+			InsertScenarioAt( groups, "EP_110_030", new ScenarioData() { EpisodeId = "EP_0910_010", HumanReadableName = "Surprise Encounter Tutorial" } );
+			InsertScenarioAt( groups, "EP_210_055", new ScenarioData() { EpisodeId = "EP_0980_010", HumanReadableName = "Over Limit Lv. 2 Tutorial" } );
+			InsertScenarioAt( groups, "EP_150_052", new ScenarioData() { EpisodeId = "EP_1010_010", HumanReadableName = "Weather Tutorial" } );
+			InsertScenarioAt( groups, "EP_140_060", new ScenarioData() { EpisodeId = "EP_1070_010", HumanReadableName = "Camping Tutorial" } );
+			InsertScenarioAt( groups, "EP_030_110_1", new ScenarioData() { EpisodeId = "EP_1270_010", HumanReadableName = "Encounter Link Tutorial" } );
+			InsertScenarioAt( groups, "EP_1420_010", new ScenarioData() { EpisodeId = "EP_1560_010", HumanReadableName = "Abysmal Hollow" } );
+			InsertScenarioAt( groups, "EP_210_080", new ScenarioData() { EpisodeId = "EP_1160_040", HumanReadableName = "Gear Puzzle (4)" } );
+			InsertScenarioAt( groups, "EP_210_080", new ScenarioData() { EpisodeId = "EP_1160_030", HumanReadableName = "Gear Puzzle (3)" } );
+			InsertScenarioAt( groups, "EP_210_080", new ScenarioData() { EpisodeId = "EP_1160_020", HumanReadableName = "Gear Puzzle (2)" } );
+			InsertScenarioAt( groups, "EP_210_080", new ScenarioData() { EpisodeId = "EP_1160_010", HumanReadableName = "Gear Puzzle (1)" } );
+			InsertScenarioAt( groups, "EP_170_020", new ScenarioData() { EpisodeId = "EP_1030_023", HumanReadableName = "Warp Blastia (5)" } );
+			InsertScenarioAt( groups, "EP_170_020", new ScenarioData() { EpisodeId = "EP_1030_022", HumanReadableName = "Warp Blastia (4)" } );
+			InsertScenarioAt( groups, "EP_170_020", new ScenarioData() { EpisodeId = "EP_1030_021", HumanReadableName = "Warp Blastia (3)" } );
+			InsertScenarioAt( groups, "EP_170_020", new ScenarioData() { EpisodeId = "EP_1030_020", HumanReadableName = "Warp Blastia (2)" } );
+			InsertScenarioAt( groups, "EP_170_010", new ScenarioData() { EpisodeId = "EP_1030_010", HumanReadableName = "Warp Blastia (1)" } );
+			InsertScenarioAt( groups, "EP_110_030", new ScenarioData() { EpisodeId = "rui_d01", HumanReadableName = "Sorcerer's Ring" } );
+			InsertScenarioAt( groups, "EP_550_030", new ScenarioData() { EpisodeId = "EP_550_030b", HumanReadableName = "Success" } );
+			InsertScenarioAt( groups, "EP_550_030", new ScenarioData() { EpisodeId = "EP_0110_010", HumanReadableName = "Minigame" } );
 		}
 
 		private bool InsertScenarioAt( List<List<ScenarioData>> groups, string episodeId, ScenarioData newScene ) {
@@ -447,6 +486,15 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				SplitScenarioFile( files, "EP_650_051", "EP_650_051b", -14 );
 			}
 
+			{
+				// sorcerer's ring tutorial is only in a map file for some reason, make that presentable
+				var sorcRing = files["rui_d01"];
+				var pressSquareToShoot = sorcRing.EntryList[31];
+				sorcRing.EntryList.RemoveAt( 31 );
+				sorcRing.EntryList.Insert( 9, pressSquareToShoot );
+				SplitScenarioFile( files, "rui_d01", "rui_d01b", 24 );
+			}
+
 			// line is in EP_1040_030 as well and makes more sense there
 			files["EP_1040_010"].EntryList.RemoveAt( 14 );
 
@@ -465,6 +513,16 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			SplitScenarioFile( files, "BTL_EP_510_050", "BTL_EP_510_050b", -1 ); // yeager secret mission
 			SplitScenarioFile( files, "BTL_EP_510_080", "BTL_EP_510_080c", 32 ); // alexei battle
 			SplitScenarioFile( files, "BTL_EP_510_080", "BTL_EP_510_080b", -1 ); // alexei secret mission
+			SplitScenarioFile( files, "EP_550_030", "EP_550_030b", 30 ); // undine scene
+
+			{
+				// Undine minigame failure text? Honestly I have never seen anyone fail this and I don't have
+				// any good save file to check so which lines actually show is a complete guess
+				SplitScenarioFile( files, "EP_0110_010", "EP_0110_010c", 29 );
+				SplitScenarioFile( files, "EP_0110_010", "EP_0110_010b", -5 );
+				var undineMinigame = files["EP_0110_010"];
+				undineMinigame.EntryList.RemoveAt( 5 );
+			}
 		}
 
 		// sign of splitAt decides which file gets to keep which half, positive => new file gets bottom half, negative => new file gets top half
