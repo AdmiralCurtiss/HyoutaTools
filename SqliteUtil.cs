@@ -72,7 +72,14 @@ namespace HyoutaTools {
 				if ( rd.Read() ) {
 					Object[] fields = new Object[rd.FieldCount];
 					do {
-						rd.GetValues( fields );
+						for ( int i = 0; i < rd.FieldCount; ++i ) {
+							try {
+								fields[i] = rd.GetValue( i );
+							} catch ( OverflowException ) {
+								// workaround, GetValue() and GetValues() try to incorrectly cast a signed tinyint to an unsigned byte
+								fields[i] = rd.GetInt32( i );
+							}
+						}
 						rows.Add( fields );
 						fields = new Object[rd.FieldCount];
 					} while ( rd.Read() );
