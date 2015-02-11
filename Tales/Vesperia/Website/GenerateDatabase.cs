@@ -48,10 +48,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
-		enum TextboxType { Bubble, Information, Subtitle };
 		private void ExportScenarioDat() {
 			AddBattleStringsToScenario();
-			CleanScenarioStrings( Site.ScenarioFiles );
+			CleanScenarioStrings( Site.ScenarioFiles, Site.InGameIdDict );
 
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
@@ -79,17 +78,19 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 						for ( int i = 0; i < scenario.EntryList.Count; ++i ) {
 							var entry = scenario.EntryList[i];
-							TextboxType type = TextboxType.Bubble;
-							if ( entry.JpName == "Information"
-							  || entry.JpName.Contains( "：" )
-							  || entry.JpName.EndsWith( "？" )
-							  || entry.EnName.EndsWith( "?" )
-							  || entry.EnName.StartsWith( "Select" )
-							  || entry.EnText == "Yes\nNo"
-							   ) {
-								type = TextboxType.Information;
+							if ( entry.Type == TextboxType.Unknown ) {
+								entry.Type = TextboxType.Bubble;
+								if ( entry.JpName == "Information"
+								  || entry.JpName.Contains( "：" )
+								  || entry.JpName.EndsWith( "？" )
+								  || entry.EnName.EndsWith( "?" )
+								  || entry.EnName.StartsWith( "Select" )
+								  || entry.EnText == "Yes\nNo"
+								   ) {
+									entry.Type = TextboxType.Information;
+								}
+								if ( entry.EnText.StartsWith( "\x03(2)" ) ) { entry.Type = TextboxType.Subtitle; }
 							}
-							if ( entry.EnText.StartsWith( "\x03(2)" ) ) { type = TextboxType.Subtitle; }
 
 							string[] jpTextArray = entry.JpText.Split( '\f' );
 							string[] enTextArray = entry.EnText.Split( '\f' );
@@ -102,7 +103,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 								string enText = j < enTextArray.Length ? enTextArray[j] : "";
 								command.GetParameter( "episodeId" ).Value = episodeId;
 								command.GetParameter( "displayOrder" ).Value = i * maxTextboxCount + j;
-								command.GetParameter( "type" ).Value = (int)type;
+								command.GetParameter( "type" ).Value = (int)entry.Type;
 								command.GetParameter( "jpName" ).Value = entry.JpName.ToHtmlJpn( Site.Version );
 								command.GetParameter( "jpText" ).Value = jpText.ToHtmlJpn( Site.Version );
 								command.GetParameter( "enName" ).Value = entry.EnName.ToHtmlEng( Site.Version );
@@ -358,8 +359,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			InsertScenarioAt( groups, "EP_170_020", new ScenarioData() { EpisodeId = "EP_1030_020", HumanReadableName = "Warp Blastia (2)" } );
 			InsertScenarioAt( groups, "EP_170_010", new ScenarioData() { EpisodeId = "EP_1030_010", HumanReadableName = "Warp Blastia (1)" } );
 			InsertScenarioAt( groups, "EP_110_030", new ScenarioData() { EpisodeId = "rui_d01", HumanReadableName = "Sorcerer's Ring" } );
-			InsertScenarioAt( groups, "EP_550_030", new ScenarioData() { EpisodeId = "EP_550_030b", HumanReadableName = "Success" } );
-			InsertScenarioAt( groups, "EP_550_030", new ScenarioData() { EpisodeId = "EP_0110_010", HumanReadableName = "Minigame" } );
+			InsertScenarioAt( groups, "EP_550_030", new ScenarioData() { EpisodeId = "EP_550_030c", HumanReadableName = "Success" } );
+			InsertScenarioAt( groups, "EP_550_030", new ScenarioData() { EpisodeId = "EP_550_030b", HumanReadableName = "Minigame" } );
 		}
 
 		private bool InsertScenarioAt( List<List<ScenarioData>> groups, string episodeId, ScenarioData newScene ) {
@@ -387,7 +388,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		// removes strings from scenario files that shouldn't be shown to the website user
 		// stuff like spoilery FMV subtitles or debug text
-		private void CleanScenarioStrings( Dictionary<string, ScenarioFile.ScenarioFile> files ) {
+		private void CleanScenarioStrings( Dictionary<string, ScenarioFile.ScenarioFile> files, Dictionary<uint, TSS.TSSEntry> stringDicInGame ) {
 			{
 				// remove FMV subtitles from other FMVs, sort the "start game?" question to the front
 				var intro = files["EP_000_010"];
@@ -513,15 +514,19 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			SplitScenarioFile( files, "BTL_EP_510_050", "BTL_EP_510_050b", -1 ); // yeager secret mission
 			SplitScenarioFile( files, "BTL_EP_510_080", "BTL_EP_510_080c", 32 ); // alexei battle
 			SplitScenarioFile( files, "BTL_EP_510_080", "BTL_EP_510_080b", -1 ); // alexei secret mission
-			SplitScenarioFile( files, "EP_550_030", "EP_550_030b", 30 ); // undine scene
+			SplitScenarioFile( files, "EP_550_030", "EP_550_030c", 30 ); // undine scene
 
 			{
-				// Undine minigame failure text? Honestly I have never seen anyone fail this and I don't have
-				// any good save file to check so which lines actually show is a complete guess
-				SplitScenarioFile( files, "EP_0110_010", "EP_0110_010c", 29 );
-				SplitScenarioFile( files, "EP_0110_010", "EP_0110_010b", -5 );
-				var undineMinigame = files["EP_0110_010"];
-				undineMinigame.EntryList.RemoveAt( 5 );
+				// Undine minigame tutorial
+				var undineMinigame = new ScenarioFile.ScenarioFile();
+				undineMinigame.EntryList = new List<ScenarioFileEntry>();
+				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[240168], stringDicInGame[240169] ) { Type = TextboxType.Information } ); // read the rules?
+				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[240168], stringDicInGame[240165] ) { Type = TextboxType.Information } ); // rules
+				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[33892179], stringDicInGame[240173] ) { Type = TextboxType.Information } ); // success
+				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[33892179], stringDicInGame[240167] ) { Type = TextboxType.Information } ); // failure
+				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[240170], stringDicInGame[240171] ) { Type = TextboxType.Information } ); // ask rita?
+				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[33892179], stringDicInGame[240172] ) { Type = TextboxType.Information } ); // asked rita
+				files.Add( "EP_550_030b", undineMinigame );
 			}
 		}
 

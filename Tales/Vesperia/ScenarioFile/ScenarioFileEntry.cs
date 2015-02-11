@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
+	public enum TextboxType { Unknown = -1, Bubble = 0, Information = 1, Subtitle = 2 }
 	public class ScenarioFileEntry : IComparable<ScenarioFileEntry> {
 		public uint Pointer;
 
@@ -11,6 +12,16 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 		public string JpText;
 		public string EnName;
 		public string EnText;
+
+		public TextboxType Type = TextboxType.Unknown;
+
+		public ScenarioFileEntry() { }
+		public ScenarioFileEntry( TSS.TSSEntry name, TSS.TSSEntry text ) {
+			JpName = name.StringJpn;
+			JpText = text.StringJpn;
+			EnName = name.StringEng;
+			EnText = text.StringEng;
+		}
 
 		public override string ToString() {
 			return EnName + ": " + EnText;
