@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using HyoutaTools.Tales.Vesperia.ScenarioFile;
+using System.Text.RegularExpressions;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateDatabase {
@@ -54,7 +55,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE ScenarioDat ( id INTEGER PRIMARY KEY AUTOINCREMENT, episodeId VARCHAR(20), displayOrder INT, type INT, jpName TEXT, jpText TEXT, enName TEXT, enText TEXT )";
+					command.CommandText = "CREATE TABLE ScenarioDat ( id INTEGER PRIMARY KEY AUTOINCREMENT, episodeId VARCHAR(20), displayOrder INT, type INT, jpName TEXT, jpText TEXT, enName TEXT, enText TEXT, "
+						+ "jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -63,7 +65,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO ScenarioDat ( episodeId, displayOrder, type, jpName, jpText, enName, enText ) VALUES ( @episodeId, @displayOrder, @type, @jpName, @jpText, @enName, @enText )";
+					command.CommandText = "INSERT INTO ScenarioDat ( episodeId, displayOrder, type, jpName, jpText, enName, enText, jpSearchKanji, jpSearchFuri, enSearch ) "
+						+ "VALUES ( @episodeId, @displayOrder, @type, @jpName, @jpText, @enName, @enText, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					command.AddParameter( "episodeId" );
 					command.AddParameter( "displayOrder" );
 					command.AddParameter( "type" );
@@ -71,6 +74,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "jpText" );
 					command.AddParameter( "enName" );
 					command.AddParameter( "enText" );
+					command.AddParameter( "jpSearchKanji" );
+					command.AddParameter( "jpSearchFuri" );
+					command.AddParameter( "enSearch" );
 
 					foreach ( var kvp in Site.ScenarioFiles ) {
 						var episodeId = kvp.Key;
@@ -108,6 +114,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 								command.GetParameter( "jpText" ).Value = jpText.ToHtmlJpn( Site.Version );
 								command.GetParameter( "enName" ).Value = entry.EnName.ToHtmlEng( Site.Version );
 								command.GetParameter( "enText" ).Value = enText.ToHtmlEng( Site.Version );
+								command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( jpText, true, false );
+								command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( jpText, true, true );
+								command.GetParameter( "enSearch" ).Value = CleanStringForSearch( enText, false, false );
 								command.ExecuteNonQuery();
 							}
 						}
@@ -115,6 +124,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 				transaction.Commit();
 			}
+		}
+
+		private string CleanStringForSearch( string s, bool useJapaneseNames, bool removeKanjiWithFurigana ) {
+			s = VesperiaUtil.RemoveTags( s, useJapaneseNames: useJapaneseNames, removeKanjiWithFurigana: removeKanjiWithFurigana );
+			s = s.Replace( '\n', ' ' ); // remove newlines
+			s = Regex.Replace( s, "\\s+", " " ); // remove excessive whitespace
+			s = s.Trim();
+			return s;
 		}
 
 		private void AddBattleStringsToScenario() {
@@ -128,7 +145,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		private void ExportSkitText() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE SkitText ( id INTEGER PRIMARY KEY AUTOINCREMENT, skitId VARCHAR(8), displayOrder INT, jpChar TEXT, enChar TEXT, jpText TEXT, enText TEXT )";
+					command.CommandText = "CREATE TABLE SkitText ( id INTEGER PRIMARY KEY AUTOINCREMENT, skitId VARCHAR(8), displayOrder INT, jpChar TEXT, enChar TEXT, jpText TEXT, enText TEXT, "
+						+ "jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -137,13 +155,17 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO SkitText ( skitId, displayOrder, jpChar, enChar, jpText, enText ) VALUES ( @skitId, @displayOrder, @jpChar, @enChar, @jpText, @enText )";
+					command.CommandText = "INSERT INTO SkitText ( skitId, displayOrder, jpChar, enChar, jpText, enText, jpSearchKanji, jpSearchFuri, enSearch ) "
+						+ "VALUES ( @skitId, @displayOrder, @jpChar, @enChar, @jpText, @enText, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					command.AddParameter( "skitId" );
 					command.AddParameter( "displayOrder" );
 					command.AddParameter( "jpChar" );
 					command.AddParameter( "enChar" );
 					command.AddParameter( "jpText" );
 					command.AddParameter( "enText" );
+					command.AddParameter( "jpSearchKanji" );
+					command.AddParameter( "jpSearchFuri" );
+					command.AddParameter( "enSearch" );
 
 					foreach ( var kvp in Site.SkitText ) {
 						var skitId = kvp.Key;
@@ -161,12 +183,18 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 								nameEn = nameJp;
 							}
 
+							string textJp = skit.Lines[i].SJPN;
+							string textEn = skit.Lines[i].SENG;
+
 							command.GetParameter( "skitId" ).Value = skitId;
 							command.GetParameter( "displayOrder" ).Value = i;
 							command.GetParameter( "jpChar" ).Value = nameJp;
 							command.GetParameter( "enChar" ).Value = nameEn;
-							command.GetParameter( "jpText" ).Value = skit.Lines[i].SJPN.ToHtmlJpn( Site.Version );
-							command.GetParameter( "enText" ).Value = skit.Lines[i].SENG.ToHtmlEng( Site.Version );
+							command.GetParameter( "jpText" ).Value = textJp.ToHtmlJpn( Site.Version );
+							command.GetParameter( "enText" ).Value = textEn.ToHtmlEng( Site.Version );
+							command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( textJp, true, false );
+							command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( textJp, true, true );
+							command.GetParameter( "enSearch" ).Value = CleanStringForSearch( textEn, false, false );
 							command.ExecuteNonQuery();
 						}
 					}
@@ -645,33 +673,35 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		private void ExportStringDic() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE StringDic ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT, language INT, entry TEXT )";
+					command.CommandText = "CREATE TABLE StringDic ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT, jpText TEXT, enText TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE INDEX StringDic_GameId_Index ON StringDic ( gameId, language )";
+					command.CommandText = "CREATE INDEX StringDic_GameId_Index ON StringDic ( gameId )";
 					command.ExecuteNonQuery();
 				}
 
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO StringDic ( gameId, language, entry ) VALUES ( @gameId, @language, @entry )";
+					command.CommandText = "INSERT INTO StringDic ( gameId, jpText, enText, jpSearchKanji, jpSearchFuri, enSearch ) "
+						+ "VALUES ( @gameId, @jpText, @enText, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					command.AddParameter( "gameId" );
-					command.AddParameter( "language" );
-					command.AddParameter( "entry" );
+					command.AddParameter( "jpText" );
+					command.AddParameter( "enText" );
+					command.AddParameter( "jpSearchKanji" );
+					command.AddParameter( "jpSearchFuri" );
+					command.AddParameter( "enSearch" );
 
 					foreach ( var e in Site.StringDic.Entries ) {
-						if ( e.inGameStringId > -1 ) {
+						if ( e.inGameStringId > -1 && e.StringJpn != null ) {
 							string jp = e.StringJpnHtml( Site.Version );
 							string en = e.StringEngHtml( Site.Version );
 
 							command.GetParameter( "gameId" ).Value = e.inGameStringId;
-							command.GetParameter( "language" ).Value = 0;
-							command.GetParameter( "entry" ).Value = jp;
-							command.ExecuteNonQuery();
-
-							command.GetParameter( "gameId" ).Value = e.inGameStringId;
-							command.GetParameter( "language" ).Value = 1;
-							command.GetParameter( "entry" ).Value = en;
+							command.GetParameter( "jpText" ).Value = jp;
+							command.GetParameter( "enText" ).Value = en;
+							command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( e.StringJpn, true, false );
+							command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( e.StringJpn, true, true );
+							command.GetParameter( "enSearch" ).Value = CleanStringForSearch( e.StringEng, false, false );
 							command.ExecuteNonQuery();
 						}
 					}

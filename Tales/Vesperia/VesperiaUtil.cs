@@ -13,7 +13,7 @@ namespace HyoutaTools.Tales.Vesperia {
 	}
 
 	public static class VesperiaUtil {
-		public static String RemoveTags( String s, bool useJapaneseNames = false, bool outputAsHtml = false ) {
+		public static String RemoveTags( String s, bool useJapaneseNames = false, bool outputAsHtml = false, bool removeKanjiWithFurigana = false ) {
 			s = s.Replace( "''", "'" );
 			if ( useJapaneseNames ) {
 				s = s.Replace( "\x04(YUR)", "ユーリ" );
@@ -45,16 +45,21 @@ namespace HyoutaTools.Tales.Vesperia {
 				s = s.Replace( "\x04(ALL)", "Everyone" );
 			}
 
-			s = s.Replace( ""/*0xFF*/, "\n\n" );
+			s = s.Replace( "\f", "\n\n" );
 			s = Regex.Replace( s, "\t[(][A-Za-z0-9_]+[)]", "" ); // audio/voice commands
 
 			if ( outputAsHtml ) {
 				s = ReplaceFuriganaWithHtmlRuby( s );
 				s = ReplaceColorCommandsWithSpansHtml( s );
 			} else {
-				s = RemoveFurigana( s );
+				s = RemoveFurigana( s, removeKanjiWithFurigana );
 				s = Regex.Replace( s, "\x03[(][0-9]+[)]", "" ); // color commands
+				s = Regex.Replace( s, "\x06[(]([A-Za-z0-9]+)[)]", "[Icon: $1]" );
 			}
+
+			s = Regex.Replace( s, "\x02[(]([0-9]+)[)]", "[Unknown: $1]" ); // unknown, is in some system strings
+			s = Regex.Replace( s, "\x0B[(]([0-9]+)[)]", "[Parameter: $1]" );
+			s = Regex.Replace( s, "\x01[(]([0-9]+)[,]([0-9]+)[)]", "[Metrics: $1, $2]" );
 
 			return s;
 		}
@@ -113,7 +118,7 @@ namespace HyoutaTools.Tales.Vesperia {
 			return s;
 		}
 
-		public static string RemoveFurigana( string str ) {
+		public static string RemoveFurigana( string str, bool keepFuriganaInstead ) {
 			while ( str.Contains( '\r' ) ) {
 				int furiStart = str.IndexOf( '\r' );
 				string textFromFuriStart = str.Substring( furiStart );
@@ -128,7 +133,11 @@ namespace HyoutaTools.Tales.Vesperia {
 				string textKanji = str.Substring( furiStart - kanjiLength, kanjiLength );
 				string textPostFurigana = str.Substring( furiEnd + 1 );
 
-				str = textPreFurigana + textKanji + textPostFurigana;
+				if ( keepFuriganaInstead ) {
+					str = textPreFurigana + furigana + textPostFurigana;
+				} else {
+					str = textPreFurigana + textKanji + textPostFurigana;
+				}
 			}
 			return str;
 		}
