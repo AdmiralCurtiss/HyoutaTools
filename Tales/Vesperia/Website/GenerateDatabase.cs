@@ -39,6 +39,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				ExportGradeShop();
 				if ( Site.Version != GameVersion.X360 ) {
 					ExportNecropolis();
+					ExportTrophies();
 					ExportScenarioDat();
 					ExportSkitText();
 					ExportScenarioMetadata();
@@ -1851,6 +1852,33 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "html" ).Value = g.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict );
 						command.ExecuteNonQuery();
 
+					}
+				}
+				transaction.Commit();
+			}
+		}
+
+		public void ExportTrophies() {
+			using ( var transaction = DB.BeginTransaction() ) {
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE TABLE Trophies ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId TEXT, html TEXT )";
+					command.ExecuteNonQuery();
+				}
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "INSERT INTO Trophies ( id, gameId, html ) "
+						+ "VALUES ( @id, @gameId, @html )";
+					command.AddParameter( "id" );
+					command.AddParameter( "gameID" );
+					command.AddParameter( "html" );
+
+					foreach ( var kvp in Site.TrophyJp.Trophies ) {
+						var jp = Site.TrophyJp.Trophies[kvp.Key];
+						var en = Site.TrophyEn.Trophies[kvp.Key];
+
+						command.GetParameter( "id" ).Value = kvp.Key;
+						command.GetParameter( "gameId" ).Value = jp.ID;
+						command.GetParameter( "html" ).Value = GenerateWebsite.TrophyNodeToHtml( Site.Version, jp, en );
+						command.ExecuteNonQuery();
 					}
 				}
 				transaction.Commit();

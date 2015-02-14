@@ -137,6 +137,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			for ( int i = 0; i < filenames.Length; ++i ) {
 				site.NecropolisMaps.Add( System.IO.Path.GetFileNameWithoutExtension( filenames[i] ), new T8BTXTM.T8BTXTMM( filenames[i] ) );
 			}
+			site.TrophyJp = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( @"d:\Dropbox\ToV\PS3\orig\TROPHY.TRP.ext\TROP.SFM", @"d:\Dropbox\ToV\PS3\orig\TROPHY.TRP.ext\TROPCONF.SFM" );
+			site.TrophyEn = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( @"d:\Dropbox\ToV\PS3\mod\TROPHY.TRP.ext\TROP.SFM", @"d:\Dropbox\ToV\PS3\mod\TROPHY.TRP.ext\TROPCONF.SFM" );
 			site.ScenarioFiles = new Dictionary<string, ScenarioFile.ScenarioFile>();
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
@@ -169,6 +171,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, "trophy-" + site.Version + ".html" ), site.GenerateHtmlTrophies(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "skits-" + site.Version + ".html" ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "skit-index-" + site.Version + ".html" ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
@@ -201,6 +204,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public T8BTTA.T8BTTA Strategy;
 		public ShopData.ShopData Shops;
 		public TO8CHLI.TO8CHLI Skits;
+		public HyoutaTools.Trophy.TrophyConfNode TrophyJp;
+		public HyoutaTools.Trophy.TrophyConfNode TrophyEn;
 		public Dictionary<string, TO8CHTX.ChatFile> SkitText;
 		public List<uint> Records;
 		public List<Setting> Settings;
@@ -694,6 +699,53 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 
 		}
+		public string GenerateHtmlTrophies() {
+			Console.WriteLine( "Generating Website: Trophies" );
+			var sb = new StringBuilder();
+			AddHeader( sb, "Trophies" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			sb.Append( "<table>" );
+			foreach ( var kvp in TrophyJp.Trophies ) {
+				var jp = TrophyJp.Trophies[kvp.Key];
+				var en = TrophyEn.Trophies[kvp.Key];
+
+				sb.Append( TrophyNodeToHtml( Version, jp, en ) );
+				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
+			}
+			sb.Append( "</table>" );
+			sb.AppendLine( "</body></html>" );
+			return sb.ToString();
+		}
+		public static string TrophyNodeToHtml( GameVersion version, HyoutaTools.Trophy.TrophyNode jp, HyoutaTools.Trophy.TrophyNode en ) {
+			var sb = new StringBuilder();
+
+			sb.Append( "<tr>" );
+
+			sb.Append( "<td>" );
+			sb.Append( "<img width=\"60\" height=\"60\" src=\"trophies/TROP" + jp.ID + ".PNG\"/>" );
+			sb.Append( "</td>" );
+
+			sb.Append( "<td>" );
+			sb.Append( "<span class=\"itemname\">" );
+			sb.Append( jp.Name );
+			sb.Append( "</span>" );
+			sb.Append( "<br/>" );
+			sb.Append( jp.Detail.ToHtmlJpn( version ) );
+			sb.Append( "</td>" );
+
+			sb.Append( "<td>" );
+			sb.Append( "<span class=\"itemname\">" );
+			sb.Append( en.Name );
+			sb.Append( "</span>" );
+			sb.Append( "<br/>" );
+			sb.Append( en.Detail.ToHtmlEng( version ) );
+			sb.Append( "</td>" );
+
+			sb.Append( "</tr>" );
+
+			return sb.ToString();
+		}
 		public string GenerateHtmlGradeShop() {
 			Console.WriteLine( "Generating Website: Grade Shop" );
 			var sb = new StringBuilder();
@@ -862,6 +914,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<a href=\"gradeshop-" + Version + ".html\"><img src=\"item-categories/cat-01.png\" title=\"Grade Shop\"></a>" );
 			if ( Version == GameVersion.PS3 ) {
 				sb.AppendLine( "<a href=\"necropolis-" + Version + ".html\"><img src=\"menu-icons/weather-4-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
+				sb.AppendLine( "<a href=\"trophy-" + Version + ".html\"><img src=\"trophies/gold.png\" title=\"Trophies\"></a>" );
 			}
 			sb.AppendLine( "<br>" );
 			for ( uint i = 2; i < 12; ++i ) {
