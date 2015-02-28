@@ -31,6 +31,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Console.WriteLine( "   Specify which metadata to write if the bitmask uses bit 0x0040." );
 			//Console.WriteLine( "   f    filename" );
 			Console.WriteLine( "   Combine multiple letters to write multiple." );
+			Console.WriteLine( " -e                     Default: false" );
+			Console.WriteLine( "   Order the files in the archive by extension instead of name." );
+			Console.WriteLine( " -s                     Default: false" );
+			Console.WriteLine( "   Include subdirectories of DirectoryToPack as well." );
 			Console.WriteLine( " -o filename.svo        Default: none" );
 			Console.WriteLine( "   Read header data from another FPS4 file and use it in the new one." );
 			Console.WriteLine( "   Do NOT use this when filenames change or files are added/removed." );
@@ -46,6 +50,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			
 			ushort? bitmask = null;
 			uint? alignment = null;
+			bool orderByExtension = false;
+			bool includeSubdirs = false;
 			string originalFps4 = null;
 			string metadata = null;
 
@@ -60,6 +66,12 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							break;
 						case "-m":
 							metadata = args[++i];
+							break;
+						case "-e":
+							orderByExtension = true;
+							break;
+						case "-s":
+							includeSubdirs = true;
 							break;
 						case "-o":
 							originalFps4 = args[++i];
@@ -88,8 +100,19 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			if ( bitmask != null ) { fps4.ContentBitmask = (ushort)bitmask; }
 			if ( alignment != null ) { fps4.Alignment = (uint)alignment; }
-			
-			fps4.Pack( dir, outName, metadata );
+
+			string[] files;
+			if ( includeSubdirs ) {
+				files = System.IO.Directory.GetFiles( dir, "*", System.IO.SearchOption.AllDirectories );
+			} else {
+				files = System.IO.Directory.GetFiles( dir );
+			}
+
+			if ( orderByExtension ) {
+				files = files.OrderBy( x => x.Split( '.' ).Last() ).ToArray();
+			}
+
+			fps4.Pack( files, outName, metadata );
 
 			return 0;
 		}

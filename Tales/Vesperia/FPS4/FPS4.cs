@@ -25,10 +25,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		uint FirstFileStart;
 		ushort EntrySize;
 		public ushort ContentBitmask;
-		uint Unknown2;
+		public uint Unknown2;
 		uint ArchiveNameLocation;
 
-		string ArchiveName = "";
+		public string ArchiveName = "";
 		public uint Alignment;
 
 		// -- bitmask examples --
@@ -167,7 +167,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		}
 
 		public void Pack( string inPath, string outFilename, string metadata = null ) {
-			var files = System.IO.Directory.GetFiles( inPath );
+			var files = System.IO.Directory.GetFiles( inPath, "*", System.IO.SearchOption.AllDirectories );
+			Pack( files, outFilename, metadata );
+		}
+		public void Pack( string[] files, string outFilename, string metadata = null ) {
 			FileCount = (uint)files.Length + 1;
 			HeaderSize = 0x1C;
 
