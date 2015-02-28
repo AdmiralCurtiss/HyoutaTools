@@ -17,26 +17,29 @@ namespace HyoutaTools.Generic.BlockCopy {
 				return -1;
 			}
 
-			byte[] Source = File.ReadAllBytes( args[0] );
-			byte[] Destination;
-			int SourceStart = Int32.Parse( args[1], NumberStyles.AllowHexSpecifier );
-			int DestinationStart = Int32.Parse( args[3], NumberStyles.AllowHexSpecifier );
+			string srcFilename = args[0];
+			string dstFilename = args[2];
+			using ( var src = new System.IO.FileStream( srcFilename, System.IO.FileMode.Open, FileAccess.Read, FileShare.ReadWrite ) )
+			using ( var dst = new System.IO.FileStream( dstFilename, System.IO.FileMode.Open, FileAccess.Write, FileShare.ReadWrite ) ) {
+				int SourceStart = Int32.Parse( args[1], NumberStyles.AllowHexSpecifier );
+				int DestinationStart = Int32.Parse( args[3], NumberStyles.AllowHexSpecifier );
 
-			int Size;
-			if ( args[4].ToLowerInvariant() == "auto" ) {
-				Size = Source.Length;
-			} else {
-				Size = Int32.Parse( args[4], NumberStyles.AllowHexSpecifier );
+				long Size;
+				if ( args[4].ToLowerInvariant() == "auto" ) {
+					Size = src.Length;
+				} else {
+					Size = Int64.Parse( args[4], NumberStyles.AllowHexSpecifier );
+				}
+
+				src.Position = SourceStart;
+				dst.Position = DestinationStart;
+				for ( int i = 0; i < Size; i++ ) {
+					dst.WriteByte( (byte)src.ReadByte() );
+				}
+
+				dst.Close();
+				src.Close();
 			}
-
-			try { Destination = File.ReadAllBytes( args[2] ); }
-			catch ( FileNotFoundException ) { Destination = new byte[DestinationStart + Size]; }
-
-			for ( int i = 0; i < Size; i++ ) {
-				Destination[DestinationStart + i] = Source[SourceStart + i];
-			}
-
-			File.WriteAllBytes( args[2], Destination );
 			return 0;
 		}
 	}
