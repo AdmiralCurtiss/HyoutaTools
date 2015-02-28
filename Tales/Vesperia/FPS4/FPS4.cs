@@ -231,16 +231,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							infile.Position = f.Position;
 							f.WriteUInt32( infile.ReadUInt32() );
 						} else {
-							if ( metadata == null ) {
-								f.WriteUInt32( 0 );
-							} else {
-								f.WriteUInt32( 0 );
-								// not yet implemented, but the idea is to write a pointer here
-								// and at the target of the pointer you have a nullterminated string
-								// with all the metadata in a param=data format separated by spaces
-								// maybe including a filepath at the start without a param=
-								// strings should be after the filelist block but before the actual files
-							}
+							// place a null for now and go back to fix later
+							f.WriteUInt32( 0 );
 						}
 					}
 					ptr += (uint)fi.Length.Align( (int)Alignment );
@@ -252,11 +244,63 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					f.WriteByte( 0 );
 				}
 
+				// the idea is to write a pointer here
+				// and at the target of the pointer you have a nullterminated string
+				// with all the metadata in a param=data format separated by spaces
+				// maybe including a filepath at the start without a param=
+				// strings should be after the filelist block but before the actual files
+				if ( ContainsFileMetadata && metadata != null ) {
+					for ( int i = 0; i < files.Length; ++i ) {
+						var fi = new System.IO.FileInfo( files[i] );
+						long ptrPos = 0x1C + ( ( i + 1 ) * EntrySize ) - 4;
+
+						// remember pos
+						uint oldPos = (uint)f.Position;
+						// jump to metaptr
+						f.Position = ptrPos;
+						// write remembered pos
+						f.WriteUInt32( oldPos.SwapEndian() );
+						// jump to remembered pos
+						f.Position = oldPos;
+						// write meta + nullterm
+						if ( metadata.Contains( 'p' ) ) {
+							string relativePath = GetRelativePath( f.Name, fi.FullName );
+							f.Write( Util.ShiftJISEncoding.GetBytes( relativePath ) );
+						}
+						if ( metadata.Contains( 'n' ) ) {
+							f.Write( Util.ShiftJISEncoding.GetBytes( "name=" + Path.GetFileNameWithoutExtension( fi.FullName ) ) );
+						}
+						f.WriteByte( 0 );
+					}
+				}
+
 				// write original archive filepath
 				if ( !String.IsNullOrEmpty( ArchiveName ) ) {
 					byte[] archiveNameBytes = Util.ShiftJISEncoding.GetBytes( ArchiveName );
 					f.Write( archiveNameBytes, 0, archiveNameBytes.Length );
 					f.WriteByte( 0 );
+				}
+
+				// fix up header if we inserted metadata
+				if ( ContainsFileMetadata && metadata != null ) {
+					long pos = f.Position;
+					
+					FirstFileStart = ( (uint)( f.Position ) ).Align( Alignment );
+					f.Position = 0xC;
+					f.WriteUInt32( FirstFileStart.SwapEndian() );
+
+					ptr = FirstFileStart;
+					for ( int i = 0; i < files.Length; ++i ) {
+						f.Position = 0x1C + ( i * EntrySize );
+						var fi = new System.IO.FileInfo( files[i] );
+						if ( ContainsStartPointers ) { f.WriteUInt32( ptr.SwapEndian() ); }
+						if ( ContainsEndPointers ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).SwapEndian() ); }
+						ptr += (uint)fi.Length.Align( (int)Alignment );
+					}
+					f.Position = 0x1C + ( files.Length * EntrySize );
+					f.WriteUInt32( ptr.SwapEndian() );
+					
+					f.Position = pos;
 				}
 
 				// pad until files
@@ -291,6 +335,18 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		public void Dispose() {
 			Close();
+		}
+
+		// FIXME: this works only with pretty specific input, good enough for what I need but certainly not usable for generic cases
+		private string GetRelativePath( string fromDirectory, string toFile ) {
+			fromDirectory = System.IO.Path.GetDirectoryName( fromDirectory );
+			string relative = toFile.Substring( fromDirectory.Length );
+			relative = String.Join( "/", relative.Split( new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries ).Skip( 1 ).ToArray() );
+			if ( relative.Contains( '.' ) ) {
+				relative = relative.Substring( 0, relative.LastIndexOf( '.' ) );
+			}
+
+			return relative;
 		}
 	}
 }
