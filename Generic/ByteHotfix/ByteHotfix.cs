@@ -19,17 +19,19 @@ namespace HyoutaTools.Generic.ByteHotfix {
 			 */
 
 			try {
+				string inFilename = args[0];
 
-				byte[] File = System.IO.File.ReadAllBytes( args[0] );
-
-				for ( int i = 1; i < args.Count; i++ ) {
-					String[] v = args[i].Split( new char[] { '-' } );
-					int location = int.Parse( v[0], NumberStyles.AllowHexSpecifier );
-					byte value = byte.Parse( v[1], NumberStyles.AllowHexSpecifier );
-					File[location] = value;
+				using ( var fi = new System.IO.FileStream( inFilename, System.IO.FileMode.Open ) ) {
+					for ( int i = 1; i < args.Count; i++ ) {
+						String[] v = args[i].Split( new char[] { '-' } );
+						int location = int.Parse( v[0], NumberStyles.AllowHexSpecifier );
+						byte value = byte.Parse( v[1], NumberStyles.AllowHexSpecifier );
+						fi.Position = location;
+						fi.WriteByte( value );
+					}
+					fi.Close();
 				}
 
-				System.IO.File.WriteAllBytes( args[0], File );
 				return 0;
 
 			} catch ( Exception ex ) {
