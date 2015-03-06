@@ -103,9 +103,35 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				}
 			}
 
-			int variantCount = ChangeEventTriggers.Count( x => x != 0 ) + 1;
+			int variantCount = 0;
 			for ( int i = 0; i < 4; ++i ) {
 				if ( i >= 1 && ChangeEventTriggers[i] == 0 ) { continue; }
+				var name = inGameIdDict[NameStringDicIDs[i]];
+				var desc = inGameIdDict[DescStringDicIDs[i]];
+				if ( i >= 1
+					&& name.StringJpn == inGameIdDict[NameStringDicIDs[i - 1]].StringJpn
+					&& name.StringEng == inGameIdDict[NameStringDicIDs[i - 1]].StringEng
+					&& desc.StringJpn == inGameIdDict[DescStringDicIDs[i - 1]].StringJpn
+					&& desc.StringEng == inGameIdDict[DescStringDicIDs[i - 1]].StringEng
+					&& RefStrings[i] == RefStrings[i - 1]
+					) {
+					continue;
+				}
+				variantCount++;
+			}
+			for ( int i = 0; i < 4; ++i ) {
+				if ( i >= 1 && ChangeEventTriggers[i] == 0 ) { continue; }
+				var name = inGameIdDict[NameStringDicIDs[i]];
+				var desc = inGameIdDict[DescStringDicIDs[i]];
+				if ( i >= 1
+					&& name.StringJpn == inGameIdDict[NameStringDicIDs[i - 1]].StringJpn
+					&& name.StringEng == inGameIdDict[NameStringDicIDs[i - 1]].StringEng
+					&& desc.StringJpn == inGameIdDict[DescStringDicIDs[i - 1]].StringJpn
+					&& desc.StringEng == inGameIdDict[DescStringDicIDs[i - 1]].StringEng
+					&& RefStrings[i] == RefStrings[i - 1]
+					) {
+						continue;
+				}
 
 				if ( i == 0 ) {
 					sb.Append( "<tr id=\"location" + LocationID + "\">" );
@@ -119,14 +145,14 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				sb.Append( "</td>" );
 				sb.Append( "<td>" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicIDs[i]].StringJpnHtml( version ) + "<br>" );
+				sb.Append( name.StringJpnHtml( version ) + "<br>" );
 				sb.Append( "</span>" );
-				sb.Append( inGameIdDict[DescStringDicIDs[i]].StringJpnHtml( version ) + "<br>" );
+				sb.Append( desc.StringJpnHtml( version ) + "<br>" );
 				sb.Append( "<br>" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicIDs[i]].StringEngHtml( version ) + "<br>" );
+				sb.Append( name.StringEngHtml( version ) + "<br>" );
 				sb.Append( "</span>" );
-				sb.Append( inGameIdDict[DescStringDicIDs[i]].StringEngHtml( version ) + "<br>" );
+				sb.Append( desc.StringEngHtml( version ) + "<br>" );
 				if ( RefStrings[i] == "" ) {
 					sb.Append( "<br>" );
 				}
