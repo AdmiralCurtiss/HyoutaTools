@@ -608,11 +608,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 						long sceneId = GetLastInsertedId();
 						foreach ( var skit in scene.Skits ) {
+							var name = Site.InGameIdDict[skit.StringDicIdName];
+							string d = name.GetStringHtml( 0, GameVersion.PS3 ) + " (" + name.GetStringHtml( 1, GameVersion.PS3 ) + ")";
 							command.GetParameter( "type" ).Value = groupType;
 							command.GetParameter( "sceneGroup" ).Value = groupNumber;
 							command.GetParameter( "parent" ).Value = sceneId;
 							command.GetParameter( "episodeId" ).Value = skit.RefString;
-							command.GetParameter( "description" ).Value = Site.InGameIdDict[skit.StringDicIdName].GetStringHtml( 1, GameVersion.PS3 );
+							command.GetParameter( "description" ).Value = d;
 							command.ExecuteNonQuery();
 						}
 					}
