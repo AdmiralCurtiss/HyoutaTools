@@ -7,7 +7,7 @@ using System.IO;
 namespace HyoutaTools {
 	public static class Util {
 
-		#region SwapEndian
+		#region EndianUtils
 		public static Int16 SwapEndian( this Int16 x ) {
 			return (Int16)SwapEndian( (UInt16)x );
 		}
@@ -39,6 +39,61 @@ namespace HyoutaTools {
 						( ( x >> 24 ) & 0x0000000000FF0000 ) |
 						( ( x >> 40 ) & 0x000000000000FF00 ) |
 						 ( x >> 56 );
+		}
+
+		public enum Endianness { LittleEndian, BigEndian }
+		// man why the hell can you not constraint generic parameters to integers?
+		public static Int16 ToEndian( this Int16 x, Endianness endian ) {
+			return (Int16)ToEndian( (UInt16)x, endian );
+		}
+		public static UInt16 ToEndian( this UInt16 x, Endianness endian ) {
+			switch ( endian ) {
+				case Endianness.LittleEndian: if ( BitConverter.IsLittleEndian ) { return x; } else { return x.SwapEndian(); }
+				case Endianness.BigEndian: if ( BitConverter.IsLittleEndian ) { return x.SwapEndian(); } else { return x; }
+				default: throw new Exception( "Invalid Endianness" );
+			}
+		}
+		public static Int32 ToEndian( this Int32 x, Endianness endian ) {
+			return (Int32)ToEndian( (UInt32)x, endian );
+		}
+		public static UInt32 ToEndian( this UInt32 x, Endianness endian ) {
+			switch ( endian ) {
+				case Endianness.LittleEndian: if ( BitConverter.IsLittleEndian ) { return x; } else { return x.SwapEndian(); }
+				case Endianness.BigEndian: if ( BitConverter.IsLittleEndian ) { return x.SwapEndian(); } else { return x; }
+				default: throw new Exception( "Invalid Endianness" );
+			}
+		}
+		public static Int64 ToEndian( this Int64 x, Endianness endian ) {
+			return (Int64)ToEndian( (UInt64)x, endian );
+		}
+		public static UInt64 ToEndian( this UInt64 x, Endianness endian ) {
+			switch ( endian ) {
+				case Endianness.LittleEndian: if ( BitConverter.IsLittleEndian ) { return x; } else { return x.SwapEndian(); }
+				case Endianness.BigEndian: if ( BitConverter.IsLittleEndian ) { return x.SwapEndian(); } else { return x; }
+				default: throw new Exception( "Invalid Endianness" );
+			}
+		}
+
+		// honestly I'm not sure if it makes sense to have different To and From functions
+		// since all cases I can think of result in the same thing, but better be safe than sorry,
+		// and it also gives some information if we're reading in or writing out data
+		public static Int16 FromEndian( this Int16 x, Endianness endian ) {
+			return ToEndian( x, endian );
+		}
+		public static UInt16 FromEndian( this UInt16 x, Endianness endian ) {
+			return ToEndian( x, endian );
+		}
+		public static Int32 FromEndian( this Int32 x, Endianness endian ) {
+			return ToEndian( x, endian );
+		}
+		public static UInt32 FromEndian( this UInt32 x, Endianness endian ) {
+			return ToEndian( x, endian );
+		}
+		public static Int64 FromEndian( this Int64 x, Endianness endian ) {
+			return ToEndian( x, endian );
+		}
+		public static UInt64 FromEndian( this UInt64 x, Endianness endian ) {
+			return ToEndian( x, endian );
 		}
 		#endregion
 
