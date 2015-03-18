@@ -27,13 +27,16 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Console.WriteLine( "   Align files within the container to a specific boundary." );
 			Console.WriteLine( " -b bitmask             Default: 0x000F" );
 			Console.WriteLine( "   Set the bitmask to a specific value, to in- or exclude header data." );
+			Console.WriteLine( " -l" );
+			Console.WriteLine( "   Write headers etc. as little endian instead of big endian." );
 			Console.WriteLine( " -m metadata            Default: none" );
 			Console.WriteLine( "   Specify which metadata to write if the bitmask uses bit 0x0040." );
-			//Console.WriteLine( "   f    filename" );
+			Console.WriteLine( "    p    filepath" );
+			Console.WriteLine( "    n    filename" );
 			Console.WriteLine( "   Combine multiple letters to write multiple." );
-			Console.WriteLine( " -e                     Default: false" );
+			Console.WriteLine( " -e" );
 			Console.WriteLine( "   Order the files in the archive by extension instead of name." );
-			Console.WriteLine( " -s                     Default: false" );
+			Console.WriteLine( " -s" );
 			Console.WriteLine( "   Include subdirectories of DirectoryToPack as well." );
 			Console.WriteLine( " -o filename.svo        Default: none" );
 			Console.WriteLine( "   Read header data from another FPS4 file and use it in the new one." );
@@ -52,6 +55,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			uint? alignment = null;
 			bool orderByExtension = false;
 			bool includeSubdirs = false;
+			bool littleEndian = false;
 			string originalFps4 = null;
 			string metadata = null;
 
@@ -63,6 +67,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							break;
 						case "-b":
 							bitmask = (ushort)Util.ParseDecOrHex( args[++i] );
+							break;
+						case "-l":
+							littleEndian = true;
 							break;
 						case "-m":
 							metadata = args[++i];
@@ -100,6 +107,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			if ( bitmask != null ) { fps4.ContentBitmask = (ushort)bitmask; }
 			if ( alignment != null ) { fps4.Alignment = (uint)alignment; }
+			if ( littleEndian ) { fps4.Endian = Util.Endianness.LittleEndian; }
 
 			string[] files;
 			if ( includeSubdirs ) {
