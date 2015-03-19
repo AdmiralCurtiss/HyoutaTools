@@ -73,6 +73,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Console.WriteLine( "   Order the files in the archive by extension instead of name." );
 			Console.WriteLine( " -s" );
 			Console.WriteLine( "   Include subdirectories of DirectoryToPack as well." );
+			Console.WriteLine( " -h filename.svo        Default: none" );
+			Console.WriteLine( "   Write header to a different file, only actual data goes to OutputFilename." );
 			Console.WriteLine( " -o filename.svo        Default: none" );
 			Console.WriteLine( "   Read header data from another FPS4 file and use it in the new one." );
 			Console.WriteLine( "   Do NOT use this when filenames change or files are added/removed." );
@@ -85,6 +87,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			string dir = null;
 			string outName = null;
+			string outHeaderName = null;
 
 			ushort? bitmask = null;
 			uint? alignment = null;
@@ -114,6 +117,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							break;
 						case "-s":
 							includeSubdirs = true;
+							break;
+						case "-h":
+							outHeaderName = args[++i];
 							break;
 						case "-o":
 							originalFps4 = args[++i];
@@ -155,7 +161,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				files = files.OrderBy( x => x.Split( '.' ).Last() ).ToArray();
 			}
 
-			fps4.Pack( files, outName, metadata );
+			fps4.Pack( files, outName, headerName: outHeaderName, metadata: metadata );
 
 			return 0;
 		}

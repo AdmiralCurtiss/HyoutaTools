@@ -197,11 +197,11 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 		}
 
-		public void Pack( string inPath, string outFilename, string metadata = null ) {
+		public void Pack( string inPath, string outFilename, string headerName = null, string metadata = null ) {
 			var files = System.IO.Directory.GetFiles( inPath, "*", System.IO.SearchOption.AllDirectories );
-			Pack( files, outFilename, metadata );
+			Pack( files, outFilename, headerName, metadata );
 		}
-		public void Pack( string[] files, string outFilename, string metadata = null ) {
+		public void Pack( string[] files, string outFilename, string headerName = null, string metadata = null ) {
 			FileCount = (uint)files.Length + 1;
 			HeaderSize = 0x1C;
 
@@ -218,11 +218,18 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				ArchiveNameLocation = HeaderEnd;
 			}
 
+			// TODO: Properly handle this
 			if ( infile == null ) { // <- this is hacky and may create broken files when using -o with changed filenames/filecount/metadata/etc
 				FirstFileStart = HeaderEnd.Align( Alignment ); // <- this is inaccurate and will break with metadata
 			}
 
-			using ( FileStream f = new FileStream( outFilename, FileMode.Create ) ) {
+			if ( headerName != null ) {
+				FirstFileStart = 0;
+			}
+
+			string mainOutFilename = headerName == null ? outFilename : headerName;
+
+			using ( FileStream f = new FileStream( mainOutFilename, FileMode.Create ) ) {
 				// header
 				f.Write( Encoding.ASCII.GetBytes( "FPS4" ), 0, 4 );
 				f.WriteUInt32( FileCount.ToEndian( Endian ) );
@@ -312,13 +319,22 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					f.WriteByte( 0 );
 				}
 
+				// fix up header for location of first file
+				{
+					long pos = f.Position;
+					if ( headerName == null ) {
+						FirstFileStart = ( (uint)( f.Position ) ).Align( Alignment );
+					} else {
+						FirstFileStart = 0;
+					}
+					f.Position = 0xC;
+					f.WriteUInt32( FirstFileStart.ToEndian( Endian ) );
+					f.Position = pos;
+				}
+
 				// fix up header if we inserted metadata
 				if ( ContainsFileMetadata && metadata != null ) {
 					long pos = f.Position;
-
-					FirstFileStart = ( (uint)( f.Position ) ).Align( Alignment );
-					f.Position = 0xC;
-					f.WriteUInt32( FirstFileStart.ToEndian( Endian ) );
 
 					ptr = FirstFileStart;
 					for ( int i = 0; i < files.Length; ++i ) {
@@ -334,25 +350,38 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					f.Position = pos;
 				}
 
-				// pad until files
-				if ( infile != null ) {
-					infile.Position = f.Position;
-					for ( long i = f.Length; i < FirstFileStart; ++i ) {
-						f.WriteByte( (byte)infile.ReadByte() );
-					}
-				} else {
-					for ( long i = f.Length; i < FirstFileStart; ++i ) {
-						f.WriteByte( 0 );
+				if ( headerName == null ) {
+					// pad until files
+					if ( infile != null ) {
+						infile.Position = f.Position;
+						for ( long i = f.Length; i < FirstFileStart; ++i ) {
+							f.WriteByte( (byte)infile.ReadByte() );
+						}
+					} else {
+						for ( long i = f.Length; i < FirstFileStart; ++i ) {
+							f.WriteByte( 0 );
+						}
 					}
 				}
 
 				// actually write files
-				for ( int i = 0; i < files.Length; ++i ) {
-					using ( var fs = new System.IO.FileStream( files[i], FileMode.Open ) ) {
-						Console.WriteLine( "Packing #" + i.ToString( "D4" ) + ": " + files[i] );
-						Util.CopyStream( fs, f, (int)fs.Length );
-						while ( f.Length % Alignment != 0 ) { f.WriteByte( 0 ); }
+				if ( headerName == null ) {
+					WriteFilesToFileStream( files, f );
+				} else {
+					using ( FileStream dataStream = new FileStream( outFilename, FileMode.Create ) ) {
+						WriteFilesToFileStream( files, dataStream );
+						dataStream.Close();
 					}
+				}
+			}
+		}
+
+		private void WriteFilesToFileStream( string[] files, FileStream f ) {
+			for ( int i = 0; i < files.Length; ++i ) {
+				using ( var fs = new System.IO.FileStream( files[i], FileMode.Open ) ) {
+					Console.WriteLine( "Packing #" + i.ToString( "D4" ) + ": " + files[i] );
+					Util.CopyStream( fs, f, (int)fs.Length );
+					while ( f.Length % Alignment != 0 ) { f.WriteByte( 0 ); }
 				}
 			}
 		}
