@@ -37,7 +37,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		// 0x0007 -> loc, end, size
 		// 0x0047 -> loc, end, size, ptr to path? attributes? something like that
 		public bool ContainsStartPointers { get { return ( ContentBitmask & 0x0001 ) == 0x0001; } }
-		public bool ContainsEndPointers { get { return ( ContentBitmask & 0x0002 ) == 0x0002; } }
+		public bool ContainsSectorSizes { get { return ( ContentBitmask & 0x0002 ) == 0x0002; } }
 		public bool ContainsFileSizes { get { return ( ContentBitmask & 0x0004 ) == 0x0004; } }
 		public bool ContainsFilenames { get { return ( ContentBitmask & 0x0008 ) == 0x0008; } }
 		public bool ContainsFiletypes { get { return ( ContentBitmask & 0x0020 ) == 0x0020; } }
@@ -92,9 +92,28 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			for ( uint i = 0; i < FileCount - 1; ++i ) {
 				infile.Seek( HeaderSize + ( i * EntrySize ), SeekOrigin.Begin );
 
-				uint fileloc = infile.ReadUInt32().FromEndian( Endian );
-				uint fileend = fileloc + infile.ReadUInt32().FromEndian( Endian );
-				uint filesize = infile.ReadUInt32().FromEndian( Endian );
+				uint fileloc = 0;
+				uint sectsize = 0;
+				uint filesize = 0;
+
+				if ( ContainsStartPointers ) {
+					fileloc = infile.ReadUInt32().FromEndian( Endian );
+				} else {
+					throw new Exception( "FPS4 extraction failure: Doesn't contain file start pointers!" );
+				}
+
+				if ( ContainsFileSizes && ContainsSectorSizes ) {
+					sectsize = infile.ReadUInt32().FromEndian( Endian );
+				}
+
+				if ( ContainsFileSizes ) {
+					filesize = infile.ReadUInt32().FromEndian( Endian );
+				} else if ( ContainsSectorSizes ) {
+					filesize = sectsize;
+				} else {
+					throw new Exception( "FPS4 extraction failure: Doesn't contain filesize information!" );
+				}
+
 				if ( fileloc == 0xFFFFFFFF || fileloc == 0x00 ) {
 					Console.WriteLine( "Skipped #" + i.ToString( "D4" ) + ", can't find file" );
 					continue;
@@ -161,17 +180,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 				Console.WriteLine( "Extracting #" + i.ToString( "D4" ) + ": " + path + '/' + System.IO.Path.GetFileName( outfile.Name ) );
 
-				try {
-					infile.Seek( fileloc, SeekOrigin.Begin );
-					Util.CopyStream( infile, outfile, (int)filesize );
-				} catch ( Exception ) {
-					try {
-						infile.Seek( fileloc, SeekOrigin.Begin );
-						Util.CopyStream( infile, outfile, (int)( fileend - fileloc ) );
-					} catch ( Exception ) {
-						Console.WriteLine( "ERROR on file " + outfile.Name );
-					}
-				}
+				infile.Seek( fileloc, SeekOrigin.Begin );
+				Util.CopyStream( infile, outfile, (int)filesize );
 				outfile.Close();
 			}
 		}
@@ -186,7 +196,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			EntrySize = 0;
 			if ( ContainsStartPointers ) { EntrySize += 4; }
-			if ( ContainsEndPointers ) { EntrySize += 4; }
+			if ( ContainsSectorSizes ) { EntrySize += 4; }
 			if ( ContainsFileSizes ) { EntrySize += 4; }
 			if ( ContainsFilenames ) { EntrySize += 0x20; }
 			if ( ContainsFiletypes ) { EntrySize += 4; }
@@ -217,7 +227,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				for ( int i = 0; i < files.Length; ++i ) {
 					var fi = new System.IO.FileInfo( files[i] );
 					if ( ContainsStartPointers ) { f.WriteUInt32( ptr.ToEndian( Endian ) ); }
-					if ( ContainsEndPointers ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
+					if ( ContainsSectorSizes ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
 					if ( ContainsFileSizes ) { f.WriteUInt32( ( (uint)( fi.Length ) ).ToEndian( Endian ) ); }
 					if ( ContainsFilenames ) {
 						string filename = fi.Name.Truncate( 0x1F );
@@ -304,7 +314,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						f.Position = 0x1C + ( i * EntrySize );
 						var fi = new System.IO.FileInfo( files[i] );
 						if ( ContainsStartPointers ) { f.WriteUInt32( ptr.ToEndian( Endian ) ); }
-						if ( ContainsEndPointers ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
+						if ( ContainsSectorSizes ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
 						ptr += (uint)fi.Length.Align( (int)Alignment );
 					}
 					f.Position = 0x1C + ( files.Length * EntrySize );
