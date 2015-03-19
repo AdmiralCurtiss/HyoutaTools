@@ -15,11 +15,17 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				throw new Exception( "Failed loading FPS4: " + inFilename );
 			}
 		}
+		public FPS4( string headerFilename, string contentFilename ) {
+			if ( !LoadFile( headerFilename, contentFilename ) ) {
+				throw new Exception( "Failed loading FPS4: " + headerFilename + " + " + contentFilename );
+			}
+		}
 		~FPS4() {
 			Close();
 		}
 
 		FileStream infile = null;
+		FileStream contentFile = null;
 		uint FileCount;
 		uint HeaderSize;
 		uint FirstFileStart;
@@ -43,11 +49,16 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public bool ContainsFiletypes { get { return ( ContentBitmask & 0x0020 ) == 0x0020; } }
 		public bool ContainsFileMetadata { get { return ( ContentBitmask & 0x0040 ) == 0x0040; } }
 
-		private bool LoadFile( string inFilename ) {
+		private bool LoadFile( string headerFilename, string contentFilename = null ) {
 			try {
-				infile = new FileStream( inFilename, FileMode.Open );
+				infile = new FileStream( headerFilename, FileMode.Open );
+				if ( contentFilename != null ) {
+					contentFile = new FileStream( contentFilename, FileMode.Open );
+				} else {
+					contentFile = infile;
+				}
 			} catch ( Exception ) {
-				Console.WriteLine( "ERROR: can't open " + inFilename );
+				Console.WriteLine( "ERROR: can't open " + headerFilename );
 				return false;
 			}
 
@@ -114,7 +125,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					throw new Exception( "FPS4 extraction failure: Doesn't contain filesize information!" );
 				}
 
-				if ( fileloc == 0xFFFFFFFF || fileloc == 0x00 ) {
+				if ( fileloc == 0xFFFFFFFF ) {
 					Console.WriteLine( "Skipped #" + i.ToString( "D4" ) + ", can't find file" );
 					continue;
 				}
@@ -180,8 +191,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 				Console.WriteLine( "Extracting #" + i.ToString( "D4" ) + ": " + path + '/' + System.IO.Path.GetFileName( outfile.Name ) );
 
-				infile.Seek( fileloc, SeekOrigin.Begin );
-				Util.CopyStream( infile, outfile, (int)filesize );
+				contentFile.Seek( fileloc, SeekOrigin.Begin );
+				Util.CopyStream( contentFile, outfile, (int)filesize );
 				outfile.Close();
 			}
 		}

@@ -5,17 +5,52 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public class Program {
+		public static void PrintExtractUsage() {
+			Console.WriteLine( "Usage: file.svo [-h file.header] [OutputDirectory] [-nometa]" );
+		}
 		public static int Extract( List<string> args ) {
-			if ( args.Count < 1 ) {
-				Console.WriteLine( "Usage: file.svo [OutputDirectory] [-nometa]" );
+			string inFile = null;
+			string headerFile = null;
+			string outFile = null;
+			bool nometa = false;
+
+			try {
+				for ( int i = 0; i < args.Count; ++i ) {
+					switch ( args[i] ) {
+						case "-h":
+							headerFile = args[++i];
+							break;
+						case "-nometa":
+							nometa = true;
+							break;
+						default:
+							if ( inFile == null ) { inFile = args[i]; }
+							else if ( outFile == null ) { outFile = args[i]; }
+							else { PrintExtractUsage(); return -1; }
+							break;
+					}
+				}
+			} catch ( IndexOutOfRangeException ) {
+				PrintExtractUsage();
 				return -1;
 			}
 
-			string inFile = args[0];
-			string outFile = args.Count >= 2 ? args[1] : inFile + ".ext";
-			bool nometa = args.Count >= 3 ? args[2] == "-nometa" : false;
+			if ( inFile == null ) {
+				PrintExtractUsage();
+				return -1;
+			}
 
-			new FPS4( inFile ).Extract( outFile, noMetadataParsing: nometa );
+			if ( outFile == null ) {
+				outFile = inFile + ".ext";
+			}
+
+			FPS4 fps4;
+			if ( headerFile != null ) {
+				fps4 = new FPS4( headerFile, inFile );
+			} else {
+				fps4 = new FPS4( inFile );
+			}
+			fps4.Extract( outFile, noMetadataParsing: nometa );
 
 			return 0;
 		}
@@ -50,7 +85,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			string dir = null;
 			string outName = null;
-			
+
 			ushort? bitmask = null;
 			uint? alignment = null;
 			bool orderByExtension = false;
