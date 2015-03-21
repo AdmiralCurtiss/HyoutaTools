@@ -442,6 +442,13 @@ namespace HyoutaTools {
 			s.Write( BitConverter.GetBytes( num ), 0, 2 );
 		}
 
+		public static string ReadAsciiNulltermFromLocationAndReset( this Stream s, long location ) {
+			long pos = s.Position;
+			s.Position = location;
+			string str = s.ReadAsciiNullterm();
+			s.Position = pos;
+			return str;
+		}
 		public static string ReadAsciiNullterm( this Stream s ) {
 			StringBuilder sb = new StringBuilder();
 			int b = s.ReadByte();

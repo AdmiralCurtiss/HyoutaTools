@@ -245,6 +245,12 @@
     <Compile Include="Tales\Vesperia\TO8CHLI\SkitCondition.cs" />
     <Compile Include="Tales\Vesperia\TO8CHLI\UnknownSkitData4.cs" />
     <Compile Include="Tales\Vesperia\TO8CHLI\UnknownSkitData5.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\TO8CHRD.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\CharacterModelDefinition.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\OtherModelAddition.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\Unknown0x20byteAreaB.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\CustomModelAddition.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\Unknown0x80byteArea.cs" />
     <Compile Include="Tales\Vesperia\TO8CHTX\ChatFile.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\NpcDialogueDefinition.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\NpcFileReference.cs" />
