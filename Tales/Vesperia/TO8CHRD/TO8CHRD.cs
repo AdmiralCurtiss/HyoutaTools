@@ -88,6 +88,44 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 				}
 			}
 
+			// ---------------------------------------------------------------------------------
+
+			// since there's *something* not right with my logic above, extract data from the strings only
+			// by extracting all strings between the model name strings into separate files
+			// this is super hacky and only happens to work thanks to how the strings are inserted in the official file
+			/*
+			List<uint> startpts = new List<uint>();
+			for ( uint i = 0; i < modelDefCount; ++i ) {
+				stream.Position = modelDefStart + i * 0x200;
+				stream.DiscardBytes( 0x20 );
+				startpts.Add( stream.ReadUInt32().SwapEndian() );
+			}
+			startpts.Sort();
+
+			Dictionary<uint, List<string>> d = new Dictionary<uint, List<string>>();
+			startpts.Add( filesize - refStringStart );
+			for ( int i = 0; i < startpts.Count - 1; ++i ) {
+				List<string> strs = new List<string>();
+				long curr = startpts[i] + refStringStart;
+				long next = startpts[i + 1] + refStringStart;
+
+				stream.Position = curr;
+				while ( stream.Position < next ) {
+					strs.Add( stream.ReadAsciiNullterm() );
+				}
+				if ( strs.Count > 0 ) {
+					d.Add( startpts[i], strs );
+				}
+			}
+
+			uint idx = 0;
+			foreach ( var kvp in d ) {
+				string p = @"d:\Dropbox\ToV\chrd\" + idx.ToString( "D4" ) + "_" + kvp.Value[0] + ".txt";
+				System.IO.File.WriteAllLines( p, kvp.Value.Skip( 1 ).ToArray() );
+				++idx;
+			}
+			//*/
+
 			return true;
 		}
 	}
