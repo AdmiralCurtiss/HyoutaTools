@@ -241,6 +241,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				group.RemoveAll( x => x.EpisodeId == "EP_260_080_0" ); // partial duplicate of EP_260_080
 				group.RemoveAll( x => x.EpisodeId == "EP_260_080_1" ); // no text
 				group.RemoveAll( x => x.EpisodeId == "EP_260_080_2" ); // partial duplicate of EP_260_080
+				group.RemoveAll( x => x.EpisodeId == "EP_270_030" ); // scene with tokunaga in nordopolica, presumably not in PS3 version
 				group.RemoveAll( x => x.EpisodeId == "EP_320_065" ); // no text
 				group.RemoveAll( x => x.EpisodeId == "EP_370_070" ); // no text
 				group.RemoveAll( x => x.EpisodeId == "EP_420_011" ); // effectively duplicate of EP_420_010
@@ -332,7 +333,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 
 			// add our custom final boss form 3 file
-			InsertScenarioAt( groups, "EP_0030_010", new ScenarioData() { EpisodeId = "EP_650_051b", HumanReadableName = "Radiant Winged One" } );
+			InsertScenarioAt( groups, "EP_0030_070", new ScenarioData() { EpisodeId = "EP_650_051b", HumanReadableName = "Radiant Winged One" } );
 
 			// add the battle stuff and the split text from that
 			InsertScenarioAt( groups, "EP_020_040", new ScenarioData() { EpisodeId = "EP_020_040b", HumanReadableName = "Cumore" } );
@@ -390,6 +391,25 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			InsertScenarioAt( groups, "EP_110_030", new ScenarioData() { EpisodeId = "rui_d01", HumanReadableName = "Sorcerer's Ring" } );
 			InsertScenarioAt( groups, "EP_550_030", new ScenarioData() { EpisodeId = "EP_550_030c", HumanReadableName = "Success" } );
 			InsertScenarioAt( groups, "EP_550_030", new ScenarioData() { EpisodeId = "EP_550_030b", HumanReadableName = "Minigame" } );
+
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050pat2", HumanReadableName = "Final Boss (Patty 2)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050fre2", HumanReadableName = "Final Boss (Flynn 2)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050rap2", HumanReadableName = "Final Boss (Repede 2)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050jud2", HumanReadableName = "Final Boss (Judith 2)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050rav2", HumanReadableName = "Final Boss (Raven 2)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050rit2", HumanReadableName = "Final Boss (Rita 2)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050kar2", HumanReadableName = "Final Boss (Karol 2)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050est2", HumanReadableName = "Final Boss (Estelle 2)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050yur2", HumanReadableName = "Final Boss (Yuri 2)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050pat1", HumanReadableName = "Final Boss (Patty 1)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050fre1", HumanReadableName = "Final Boss (Flynn 1)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050rap1", HumanReadableName = "Final Boss (Repede 1)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050jud1", HumanReadableName = "Final Boss (Judith 1)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050rav1", HumanReadableName = "Final Boss (Raven 1)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050rit1", HumanReadableName = "Final Boss (Rita 1)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050kar1", HumanReadableName = "Final Boss (Karol 1)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050est1", HumanReadableName = "Final Boss (Estelle 1)" } );
+			InsertScenarioAt( groups, "EP_650_050", new ScenarioData() { EpisodeId = "EP_650_050yur1", HumanReadableName = "Final Boss (Yuri 1)" } );
 		}
 
 		private bool InsertScenarioAt( List<List<ScenarioData>> groups, string episodeId, ScenarioData newScene ) {
@@ -511,6 +531,27 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				form12.EntryList.Insert( 63, form12.EntryList[1] );
 				form12.EntryList.Insert( 57, form12.EntryList[0] );
 				form12.EntryList.RemoveRange( 0, 9 );
+
+				// split off each character's conversation parts into separate files for ease of navigation
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050pat2", 152 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050fre2", 147 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050rap2", 143 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050jud2", 138 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050rav2", 133 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050rit2", 123 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050kar2", 116 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050est2", 109 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050yur2", 102 );
+
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050pat1", 95 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050fre1", 89 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050rap1", 82 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050jud1", 73 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050rav1", 68 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050rit1", 62 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050kar1", 56 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050est1", 49 );
+				SplitScenarioFile( files, "EP_650_050", "EP_650_050yur1", 44 );
 
 				// split second part of the scene into two files so you can actually read the ending without getting spoiled on the optional 3rd form
 				SplitScenarioFile( files, "EP_650_051", "EP_650_051b", -14 );
