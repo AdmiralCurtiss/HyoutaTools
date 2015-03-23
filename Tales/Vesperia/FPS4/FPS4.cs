@@ -213,6 +213,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( ContainsFiletypes ) { EntrySize += 4; }
 			if ( ContainsFileMetadata ) { EntrySize += 4; }
 
+			bool headerToSeparateFile = false;
+			if ( headerName != null ) { headerToSeparateFile = true; }
+
 			uint HeaderEnd = HeaderSize + EntrySize * FileCount;
 			if ( ArchiveName != null ) {
 				ArchiveNameLocation = HeaderEnd;
@@ -223,13 +226,11 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				FirstFileStart = HeaderEnd.Align( Alignment ); // <- this is inaccurate and will break with metadata
 			}
 
-			if ( headerName != null ) {
+			if ( headerToSeparateFile ) {
 				FirstFileStart = 0;
 			}
 
-			string mainOutFilename = headerName == null ? outFilename : headerName;
-
-			using ( FileStream f = new FileStream( mainOutFilename, FileMode.Create ) ) {
+			using ( FileStream f = new FileStream( headerToSeparateFile ? headerName : outFilename, FileMode.Create ) ) {
 				// header
 				f.Write( Encoding.ASCII.GetBytes( "FPS4" ), 0, 4 );
 				f.WriteUInt32( FileCount.ToEndian( Endian ) );
@@ -322,10 +323,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				// fix up header for location of first file
 				{
 					long pos = f.Position;
-					if ( headerName == null ) {
-						FirstFileStart = ( (uint)( f.Position ) ).Align( Alignment );
-					} else {
+					if ( headerToSeparateFile ) {
 						FirstFileStart = 0;
+					} else {
+						FirstFileStart = ( (uint)( f.Position ) ).Align( Alignment );
 					}
 					f.Position = 0xC;
 					f.WriteUInt32( FirstFileStart.ToEndian( Endian ) );
@@ -350,7 +351,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					f.Position = pos;
 				}
 
-				if ( headerName == null ) {
+				if ( !headerToSeparateFile ) {
 					// pad until files
 					if ( infile != null ) {
 						infile.Position = f.Position;
@@ -365,13 +366,13 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				// actually write files
-				if ( headerName == null ) {
-					WriteFilesToFileStream( files, f );
-				} else {
+				if ( headerToSeparateFile ) {
 					using ( FileStream dataStream = new FileStream( outFilename, FileMode.Create ) ) {
 						WriteFilesToFileStream( files, dataStream );
 						dataStream.Close();
 					}
+				} else {
+					WriteFilesToFileStream( files, f );
 				}
 			}
 		}
