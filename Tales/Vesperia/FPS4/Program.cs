@@ -71,6 +71,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Console.WriteLine( "   Combine multiple letters to write multiple." );
 			Console.WriteLine( " -c comment             Default: none" );
 			Console.WriteLine( "   Write a comment at the end of the header, unclear what this string actually means." );
+			Console.WriteLine( "   This input uses escape sequences." );
 			Console.WriteLine( " -e" );
 			Console.WriteLine( "   Order the files in the archive by extension instead of name." );
 			Console.WriteLine( " -s" );
@@ -116,7 +117,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							metadata = args[++i];
 							break;
 						case "-c":
-							comment = args[++i];
+							comment = args[++i].UnEscape();
 							break;
 						case "-e":
 							orderByExtension = true;
