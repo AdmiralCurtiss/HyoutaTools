@@ -69,6 +69,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Console.WriteLine( "    p    filepath" );
 			Console.WriteLine( "    n    filename" );
 			Console.WriteLine( "   Combine multiple letters to write multiple." );
+			Console.WriteLine( " -c comment             Default: none" );
+			Console.WriteLine( "   Write a comment at the end of the header, unclear what this string actually means." );
 			Console.WriteLine( " -e" );
 			Console.WriteLine( "   Order the files in the archive by extension instead of name." );
 			Console.WriteLine( " -s" );
@@ -96,6 +98,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			bool littleEndian = false;
 			string originalFps4 = null;
 			string metadata = null;
+			string comment = null;
 
 			try {
 				for ( int i = 0; i < args.Count; ++i ) {
@@ -111,6 +114,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							break;
 						case "-m":
 							metadata = args[++i];
+							break;
+						case "-c":
+							comment = args[++i];
 							break;
 						case "-e":
 							orderByExtension = true;
@@ -149,6 +155,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( bitmask != null ) { fps4.ContentBitmask = (ushort)bitmask; }
 			if ( alignment != null ) { fps4.Alignment = (uint)alignment; }
 			if ( littleEndian ) { fps4.Endian = Util.Endianness.LittleEndian; }
+			if ( comment != null ) { fps4.ArchiveName = comment; }
 
 			string[] files;
 			if ( includeSubdirs ) {

@@ -34,7 +34,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public uint Unknown2;
 		uint ArchiveNameLocation;
 
-		public string ArchiveName = "";
+		public string ArchiveName = null;
 		public uint Alignment;
 		public Util.Endianness Endian = Util.Endianness.BigEndian;
 
@@ -214,7 +214,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( ContainsFileMetadata ) { EntrySize += 4; }
 
 			uint HeaderEnd = HeaderSize + EntrySize * FileCount;
-			if ( !String.IsNullOrEmpty( ArchiveName ) ) {
+			if ( ArchiveName != null ) {
 				ArchiveNameLocation = HeaderEnd;
 			}
 
@@ -313,7 +313,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				// write original archive filepath
-				if ( !String.IsNullOrEmpty( ArchiveName ) ) {
+				if ( ArchiveName != null ) {
 					byte[] archiveNameBytes = Util.ShiftJISEncoding.GetBytes( ArchiveName );
 					f.Write( archiveNameBytes, 0, archiveNameBytes.Length );
 					f.WriteByte( 0 );
