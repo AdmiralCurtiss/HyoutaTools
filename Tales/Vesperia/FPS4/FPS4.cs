@@ -216,37 +216,22 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			bool headerToSeparateFile = false;
 			if ( headerName != null ) { headerToSeparateFile = true; }
 
-			uint HeaderEnd = HeaderSize + EntrySize * FileCount;
-			if ( ArchiveName != null ) {
-				ArchiveNameLocation = HeaderEnd;
-			}
-
-			// TODO: Properly handle this
-			if ( infile == null ) { // <- this is hacky and may create broken files when using -o with changed filenames/filecount/metadata/etc
-				FirstFileStart = HeaderEnd.Align( Alignment ); // <- this is inaccurate and will break with metadata
-			}
-
-			if ( headerToSeparateFile ) {
-				FirstFileStart = 0;
-			}
-
 			using ( FileStream f = new FileStream( headerToSeparateFile ? headerName : outFilename, FileMode.Create ) ) {
 				// header
 				f.Write( Encoding.ASCII.GetBytes( "FPS4" ), 0, 4 );
 				f.WriteUInt32( FileCount.ToEndian( Endian ) );
 				f.WriteUInt32( HeaderSize.ToEndian( Endian ) );
-				f.WriteUInt32( FirstFileStart.ToEndian( Endian ) );
+				f.WriteUInt32( 0 ); // start of first file goes here, will be filled in later
 				f.WriteUInt16( EntrySize.ToEndian( Endian ) );
 				f.WriteUInt16( ContentBitmask.ToEndian( Endian ) );
 				f.WriteUInt32( Unknown2.ToEndian( Endian ) );
-				f.WriteUInt32( ArchiveNameLocation.ToEndian( Endian ) );
+				f.WriteUInt32( 0 ); // ArchiveNameLocation, will be filled in later
 
 				// file list
-				uint ptr = FirstFileStart;
 				for ( int i = 0; i < files.Length; ++i ) {
 					var fi = new System.IO.FileInfo( files[i] );
-					if ( ContainsStartPointers ) { f.WriteUInt32( ptr.ToEndian( Endian ) ); }
-					if ( ContainsSectorSizes ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
+					if ( ContainsStartPointers ) { f.WriteUInt32( 0 ); } // properly written later
+					if ( ContainsSectorSizes ) { f.WriteUInt32( 0 ); } // properly written later
 					if ( ContainsFileSizes ) { f.WriteUInt32( ( (uint)( fi.Length ) ).ToEndian( Endian ) ); }
 					if ( ContainsFilenames ) {
 						string filename = fi.Name.Truncate( 0x1F );
@@ -274,12 +259,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							f.WriteUInt32( 0 );
 						}
 					}
-					ptr += (uint)fi.Length.Align( (int)Alignment );
 				}
 
-				// at the end of the file list, a final entry pointing to the end of the container
-				f.WriteUInt32( ptr.ToEndian( Endian ) );
-				for ( int j = 4; j < EntrySize; ++j ) {
+				// at the end of the file list, reserve space for a final entry pointing to the end of the container
+				for ( int j = 0; j < EntrySize; ++j ) {
 					f.WriteByte( 0 );
 				}
 
@@ -315,29 +298,38 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 				// write original archive filepath
 				if ( ArchiveName != null ) {
+					// put the location into the header
+					ArchiveNameLocation = Convert.ToUInt32( f.Position );
+					f.Position = 0x18;
+					f.WriteUInt32( ArchiveNameLocation.ToEndian( Endian ) );
+					f.Position = ArchiveNameLocation;
+
+					// and actually write it
 					byte[] archiveNameBytes = Util.ShiftJISEncoding.GetBytes( ArchiveName );
 					f.Write( archiveNameBytes, 0, archiveNameBytes.Length );
 					f.WriteByte( 0 );
 				}
 
-				// fix up header for location of first file
+				// fix up file pointers
 				{
 					long pos = f.Position;
+
+					// location of first file
 					if ( headerToSeparateFile ) {
 						FirstFileStart = 0;
 					} else {
-						FirstFileStart = ( (uint)( f.Position ) ).Align( Alignment );
+						if ( infile != null ) {
+							// keep FirstFileStart from loaded file, this is a hack
+							// will break if file metadata (names, count, etc.) changes!
+						} else {
+							FirstFileStart = ( (uint)( f.Position ) ).Align( Alignment );
+						}
 					}
 					f.Position = 0xC;
 					f.WriteUInt32( FirstFileStart.ToEndian( Endian ) );
-					f.Position = pos;
-				}
 
-				// fix up header if we inserted metadata
-				if ( ContainsFileMetadata && metadata != null ) {
-					long pos = f.Position;
-
-					ptr = FirstFileStart;
+					// file entries
+					uint ptr = FirstFileStart;
 					for ( int i = 0; i < files.Length; ++i ) {
 						f.Position = 0x1C + ( i * EntrySize );
 						var fi = new System.IO.FileInfo( files[i] );
