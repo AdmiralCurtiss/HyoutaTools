@@ -30,6 +30,9 @@ namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 		}
 
 		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			var nameEn = inGameIdDict[NameStringDicID].StringEng;
+			var nameJp = inGameIdDict[NameStringDicID].StringJpn;
+
 			StringBuilder sb = new StringBuilder();
 			sb.Append( "<tr>" );
 			sb.Append( "<td>" );
@@ -44,7 +47,14 @@ namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
 			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
+
+			if ( nameEn.Contains( "\x06(COS)" ) && !nameJp.Contains( "\x06(COS)" ) ) {
+				sb.Append( nameEn.Replace( "\x06(COS)", "" ).ToHtmlEng( version ) );
+				Console.WriteLine( "Removed EN costume icon for " + nameEn );
+			} else {
+				sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
+			}
+
 			sb.Append( "</span>" );
 			sb.Append( "<br>" );
 			sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
