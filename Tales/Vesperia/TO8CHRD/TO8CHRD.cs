@@ -73,58 +73,23 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 			}
 
 			foreach ( var model in ModelDefList ) {
-				// this isn't right but I'm not sure what the actual logic here is and this gives a decently close result
-				if ( model.CustomIndex > 0 ) {
-					model.Custom = ModelCustomList[(int)model.CustomIndex - 1];
+				model.Custom = new CustomModelAddition[model.CustomCount];
+				for ( int i = 0; i < model.Custom.Length; ++i ) {
+					model.Custom[i] = ModelCustomList[(int)model.CustomIndex + i];
 				}
-				if ( model.OtherIndex > 0 ) {
-					model.Other = ModelOtherList[(int)model.OtherIndex - 1];
+				model.Other = new OtherModelAddition[model.OtherCount];
+				for ( int i = 0; i < model.Other.Length; ++i ) {
+					model.Other[i] = ModelOtherList[(int)model.OtherIndex + i];
 				}
-				if ( model.U20BIndex > 0 ) {
-					model.Unknown0x20Area = U20BList[(int)model.U20BIndex - 1];
+				model.Unknown0x20Area = new Unknown0x20byteAreaB[model.Unknown0x20AreaCount];
+				for ( int i = 0; i < model.Unknown0x20Area.Length; ++i ) {
+					model.Unknown0x20Area[i] = U20BList[(int)model.Unknown0x20AreaIndex + i];
 				}
-				if ( model.U80Index > 0 ) {
-					model.Unknown0x80Area = U80List[(int)model.U80Index - 1];
-				}
-			}
-
-			// ---------------------------------------------------------------------------------
-
-			// since there's *something* not right with my logic above, extract data from the strings only
-			// by extracting all strings between the model name strings into separate files
-			// this is super hacky and only happens to work thanks to how the strings are inserted in the official file
-			/*
-			List<uint> startpts = new List<uint>();
-			for ( uint i = 0; i < modelDefCount; ++i ) {
-				stream.Position = modelDefStart + i * 0x200;
-				stream.DiscardBytes( 0x20 );
-				startpts.Add( stream.ReadUInt32().SwapEndian() );
-			}
-			startpts.Sort();
-
-			Dictionary<uint, List<string>> d = new Dictionary<uint, List<string>>();
-			startpts.Add( filesize - refStringStart );
-			for ( int i = 0; i < startpts.Count - 1; ++i ) {
-				List<string> strs = new List<string>();
-				long curr = startpts[i] + refStringStart;
-				long next = startpts[i + 1] + refStringStart;
-
-				stream.Position = curr;
-				while ( stream.Position < next ) {
-					strs.Add( stream.ReadAsciiNullterm() );
-				}
-				if ( strs.Count > 0 ) {
-					d.Add( startpts[i], strs );
+				model.Unknown0x80Area = new Unknown0x80byteArea[model.Unknown0x80AreaCount];
+				for ( int i = 0; i < model.Unknown0x80Area.Length; ++i ) {
+					model.Unknown0x80Area[i] = U80List[(int)model.Unknown0x80AreaIndex + i];
 				}
 			}
-
-			uint idx = 0;
-			foreach ( var kvp in d ) {
-				string p = @"d:\Dropbox\ToV\chrd\" + idx.ToString( "D4" ) + "_" + kvp.Value[0] + ".txt";
-				System.IO.File.WriteAllLines( p, kvp.Value.Skip( 1 ).ToArray() );
-				++idx;
-			}
-			//*/
 
 			return true;
 		}
