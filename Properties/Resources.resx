@@ -121,11 +121,17 @@
   <data name="gndb_template" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Files\gndb_template;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="gngj_template" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Files\gngj_template;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="todr_char_table_without_header" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Files\todr_char_table_without_header.dat;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="vesperia_website_general_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Tales\Vesperia\Website\style.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="vesperia_website_scenario_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Tales\Vesperia\Website\scenario.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>

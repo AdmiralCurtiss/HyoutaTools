@@ -380,6 +380,10 @@
   <ItemGroup>
     <Folder Include="Other\N64\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Tales\Vesperia\Website\scenario.css" />
+    <None Include="Tales\Vesperia\Website\style.css" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" copy /b "$(TargetPath)" "$(SolutionDir)\..\..\Tools\$(TargetFileName)"</PostBuildEvent>
