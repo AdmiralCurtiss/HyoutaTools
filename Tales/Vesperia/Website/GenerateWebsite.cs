@@ -7,7 +7,9 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public enum WebsiteSection {
-		Enemy, Item, Recipe, Skill, Location, Shop, NecropolisMap
+		Item, Enemy, EnemyGroup, EncounterGroup, Skill, Arte, Synopsis, Recipe, Location, Strategy,
+		Shop, Title, BattleBook, Record, Settings, GradeShop, Trophy, SkitInfo, SkitIndex, NecropolisMap,
+		NecropolisEnemy, ScenarioStoryIndex, ScenarioSidequestIndex, ScenarioMapIndex, StringDic
 	}
 
 	public class Setting {
@@ -68,33 +70,33 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.Delete( databasePath );
 			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath ) ).ExportAll();
 
-			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Item, site.Version, false ) ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
-				System.IO.File.WriteAllText( Path.Combine( dir, "items-i" + i + "-" + site.Version + ".html" ), site.GenerateHtmlItems( icon: i ), Encoding.UTF8 );
+				System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Item, site.Version, false, icon: (int)i ) ), site.GenerateHtmlItems( icon: i ), Encoding.UTF8 );
 			}
 			for ( uint i = 2; i < 12; ++i ) {
-				System.IO.File.WriteAllText( Path.Combine( dir, "items-c" + i + "-" + site.Version + ".html" ), site.GenerateHtmlItems( category: i ), Encoding.UTF8 );
+				System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Item, site.Version, false, category: (int)i ) ), site.GenerateHtmlItems( category: i ), Encoding.UTF8 );
 			}
-			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-" + site.Version + ".html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Enemy, site.Version, false ) ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
 			for ( int i = 0; i < 9; ++i ) {
-				System.IO.File.WriteAllText( Path.Combine( dir, "enemies-c" + i + "-" + site.Version + ".html" ), site.GenerateHtmlEnemies( category: i ), Encoding.UTF8 );
+				System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Enemy, site.Version, false, category: (int)i ) ), site.GenerateHtmlEnemies( category: i ), Encoding.UTF8 );
 			}
-			System.IO.File.WriteAllText( Path.Combine( dir, "enemygroups-" + site.Version + ".html" ), site.GenerateHtmlEnemyGroups(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "encountergroups-" + site.Version + ".html" ), site.GenerateHtmlEncounterGroups(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "skills-" + site.Version + ".html" ), site.GenerateHtmlSkills(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "artes-" + site.Version + ".html" ), site.GenerateHtmlArtes(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "synopsis-" + site.Version + ".html" ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "recipes-" + site.Version + ".html" ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "locations-" + site.Version + ".html" ), site.GenerateHtmlLocations(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "strategy-" + site.Version + ".html" ), site.GenerateHtmlStrategy(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "shops-" + site.Version + ".html" ), site.GenerateHtmlShops(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "titles-" + site.Version + ".html" ), site.GenerateHtmlTitles(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "battlebook-" + site.Version + ".html" ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "skits-" + site.Version + ".html" ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "skit-index-" + site.Version + ".html" ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.EnemyGroup, site.Version, false ) ), site.GenerateHtmlEnemyGroups(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.EncounterGroup, site.Version, false ) ), site.GenerateHtmlEncounterGroups(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Skill, site.Version, false ) ), site.GenerateHtmlSkills(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Arte, site.Version, false ) ), site.GenerateHtmlArtes(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Synopsis, site.Version, false ) ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Recipe, site.Version, false ) ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Location, site.Version, false ) ), site.GenerateHtmlLocations(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Strategy, site.Version, false ) ), site.GenerateHtmlStrategy(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Shop, site.Version, false ) ), site.GenerateHtmlShops(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Title, site.Version, false ) ), site.GenerateHtmlTitles(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.BattleBook, site.Version, false ) ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Record, site.Version, false ) ), site.GenerateHtmlRecords(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Settings, site.Version, false ) ), site.GenerateHtmlSettings(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.GradeShop, site.Version, false ) ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SkitInfo, site.Version, false ) ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SkitIndex, site.Version, false ) ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
 
 			Console.WriteLine( "Initializing PS3" );
 
@@ -146,40 +148,40 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Settings = site.GenerateSettingsStringDicList();
 			site.LoadBattleTextScfombin( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\", @"d:\Dropbox\ToV\PS3\mod\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\" );
 
-			System.IO.File.WriteAllText( Path.Combine( dir, "items-" + site.Version + ".html" ), site.GenerateHtmlItems(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Item, site.Version, false ) ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
-				System.IO.File.WriteAllText( Path.Combine( dir, "items-i" + i + "-" + site.Version + ".html" ), site.GenerateHtmlItems( icon: i ), Encoding.UTF8 );
+				System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Item, site.Version, false, icon: (int)i ) ), site.GenerateHtmlItems( icon: i ), Encoding.UTF8 );
 			}
 			for ( uint i = 2; i < 12; ++i ) {
-				System.IO.File.WriteAllText( Path.Combine( dir, "items-c" + i + "-" + site.Version + ".html" ), site.GenerateHtmlItems( category: i ), Encoding.UTF8 );
+				System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Item, site.Version, false, category: (int)i ) ), site.GenerateHtmlItems( category: i ), Encoding.UTF8 );
 			}
-			System.IO.File.WriteAllText( Path.Combine( dir, "enemies-" + site.Version + ".html" ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Enemy, site.Version, false ) ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
 			for ( int i = 0; i < 9; ++i ) {
-				System.IO.File.WriteAllText( Path.Combine( dir, "enemies-c" + i + "-" + site.Version + ".html" ), site.GenerateHtmlEnemies( category: i ), Encoding.UTF8 );
+				System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Enemy, site.Version, false, category: (int)i ) ), site.GenerateHtmlEnemies( category: i ), Encoding.UTF8 );
 			}
-			System.IO.File.WriteAllText( Path.Combine( dir, "enemygroups-" + site.Version + ".html" ), site.GenerateHtmlEnemyGroups(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "encountergroups-" + site.Version + ".html" ), site.GenerateHtmlEncounterGroups(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "skills-" + site.Version + ".html" ), site.GenerateHtmlSkills(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "artes-" + site.Version + ".html" ), site.GenerateHtmlArtes(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "synopsis-" + site.Version + ".html" ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "recipes-" + site.Version + ".html" ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "locations-" + site.Version + ".html" ), site.GenerateHtmlLocations(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "strategy-" + site.Version + ".html" ), site.GenerateHtmlStrategy(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "shops-" + site.Version + ".html" ), site.GenerateHtmlShops(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "titles-" + site.Version + ".html" ), site.GenerateHtmlTitles(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "battlebook-" + site.Version + ".html" ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "records-" + site.Version + ".html" ), site.GenerateHtmlRecords(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "settings-" + site.Version + ".html" ), site.GenerateHtmlSettings(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "gradeshop-" + site.Version + ".html" ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "trophy-" + site.Version + ".html" ), site.GenerateHtmlTrophies(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "skits-" + site.Version + ".html" ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "skit-index-" + site.Version + ".html" ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-enemies-" + site.Version + ".html" ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "npc-" + site.Version + ".html" ), site.GenerateHtmlNpc(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-story-" + site.Version + ".html" ), site.GenerateScenarioIndex( out site.ScenarioGroupsStory, ScenarioType.Story, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-sidequests-" + site.Version + ".html" ), site.GenerateScenarioIndex( out site.ScenarioGroupsSidequests, ScenarioType.Sidequests, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, "scenario-maps-" + site.Version + ".html" ), site.GenerateScenarioIndex( out site.ScenarioGroupsMaps, ScenarioType.Maps, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.EnemyGroup, site.Version, false ) ), site.GenerateHtmlEnemyGroups(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.EncounterGroup, site.Version, false ) ), site.GenerateHtmlEncounterGroups(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Skill, site.Version, false ) ), site.GenerateHtmlSkills(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Arte, site.Version, false ) ), site.GenerateHtmlArtes(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Synopsis, site.Version, false ) ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Recipe, site.Version, false ) ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Location, site.Version, false ) ), site.GenerateHtmlLocations(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Strategy, site.Version, false ) ), site.GenerateHtmlStrategy(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Shop, site.Version, false ) ), site.GenerateHtmlShops(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Title, site.Version, false ) ), site.GenerateHtmlTitles(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.BattleBook, site.Version, false ) ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Record, site.Version, false ) ), site.GenerateHtmlRecords(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Settings, site.Version, false ) ), site.GenerateHtmlSettings(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.GradeShop, site.Version, false ) ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Trophy, site.Version, false ) ), site.GenerateHtmlTrophies(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SkitInfo, site.Version, false ) ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SkitIndex, site.Version, false ) ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.NecropolisMap, site.Version, false ) ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.NecropolisEnemy, site.Version, false ) ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.StringDic, site.Version, false ) ), site.GenerateHtmlNpc(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioStoryIndex, site.Version, false ) ), site.GenerateScenarioIndex( out site.ScenarioGroupsStory, ScenarioType.Story, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioSidequestIndex, site.Version, false ) ), site.GenerateScenarioIndex( out site.ScenarioGroupsSidequests, ScenarioType.Sidequests, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioMapIndex, site.Version, false ) ), site.GenerateScenarioIndex( out site.ScenarioGroupsMaps, ScenarioType.Maps, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
 
 			databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
 			System.IO.File.Delete( databasePath );
@@ -784,7 +786,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb2.Append( "<body>" );
 				sb2.Append( html );
 				sb2.Append( "</body></html>" );
-				System.IO.File.WriteAllText( Path.Combine( dir, "necropolis-single-" + floorStratum + floorNumber + "-" + ( showEnemies ? "enemies-" : "" ) + Version + ".html" ), sb2.ToString(), Encoding.UTF8 );
+				System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( showEnemies ? WebsiteSection.NecropolisEnemy : WebsiteSection.NecropolisMap, Version, false, extra: floorStratum + floorNumber ) ), sb2.ToString(), Encoding.UTF8 );
 			}
 
 			/*
@@ -859,45 +861,45 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 		public void AddMenuBar( StringBuilder sb ) {
 			sb.AppendLine( "<div>" );
-			sb.AppendLine( "<a href=\"artes-" + Version + ".html\"><img src=\"menu-icons/main-01.png\" title=\"Artes\"></a>" );
-			//sb.AppendLine( "<a href=\"equip-" + Version + ".html\"><img src=\"menu-icons/main-02.png\" title=\"Equipment\"></a>" );
-			//sb.AppendLine( "<a href=\"items-" + Version + ".html\"><img src=\"menu-icons/main-03.png\" title=\"Items\"></a>" );
-			sb.AppendLine( "<a href=\"skills-" + Version + ".html\"><img src=\"menu-icons/main-04.png\" title=\"Skills\"></a>" );
-			sb.AppendLine( "<a href=\"strategy-" + Version + ".html\"><img src=\"menu-icons/main-05.png\" title=\"Strategy\"></a>" );
-			sb.AppendLine( "<a href=\"recipes-" + Version + ".html\"><img src=\"menu-icons/main-06.png\" title=\"Recipes\"></a>" );
-			sb.AppendLine( "<a href=\"shops-" + Version + ".html\"><img src=\"menu-icons/main-02.png\" title=\"Shops\"></a>" );
-			sb.AppendLine( "<a href=\"titles-" + Version + ".html\"><img src=\"menu-icons/main-07.png\" title=\"Titles\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Arte, Version, false ) + "\"><img src=\"menu-icons/main-01.png\" title=\"Artes\"></a>" );
+			//sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Equipment, Version, false ) + "\"><img src=\"menu-icons/main-02.png\" title=\"Equipment\"></a>" );
+			//sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Item, Version, false ) + "\"><img src=\"menu-icons/main-03.png\" title=\"Items\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Skill, Version, false ) + "\"><img src=\"menu-icons/main-04.png\" title=\"Skills\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Strategy, Version, false ) + "\"><img src=\"menu-icons/main-05.png\" title=\"Strategy\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Recipe, Version, false ) + "\"><img src=\"menu-icons/main-06.png\" title=\"Recipes\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Shop, Version, false ) + "\"><img src=\"menu-icons/main-02.png\" title=\"Shops\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Title, Version, false ) + "\"><img src=\"menu-icons/main-07.png\" title=\"Titles\"></a>" );
 			//sb.AppendLine( "<img src=\"menu-icons/main-08.png\" title=\"Library\">" );
-			sb.AppendLine( "<a href=\"synopsis-" + Version + ".html\"><img src=\"menu-icons/sub-09.png\" title=\"Synopsis\"></a>" );
-			sb.AppendLine( "<a href=\"battlebook-" + Version + ".html\"><img src=\"menu-icons/sub-14.png\" title=\"Battle Book\"></a>" );
-			sb.AppendLine( "<a href=\"enemies-" + Version + ".html\"><img src=\"menu-icons/sub-13.png\" title=\"Monster Book\"></a>" );
-			sb.AppendLine( "<a href=\"items-" + Version + ".html\"><img src=\"menu-icons/sub-11.png\" title=\"Collector's Book\"></a>" );
-			sb.AppendLine( "<a href=\"locations-" + Version + ".html\"><img src=\"menu-icons/sub-10.png\" title=\"World Map\"></a>" );
-			sb.AppendLine( "<a href=\"records-" + Version + ".html\"><img src=\"menu-icons/sub-08.png\" title=\"Records\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Synopsis, Version, false ) + "\"><img src=\"menu-icons/sub-09.png\" title=\"Synopsis\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.BattleBook, Version, false ) + "\"><img src=\"menu-icons/sub-14.png\" title=\"Battle Book\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Enemy, Version, false ) + "\"><img src=\"menu-icons/sub-13.png\" title=\"Monster Book\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Item, Version, false ) + "\"><img src=\"menu-icons/sub-11.png\" title=\"Collector's Book\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Location, Version, false ) + "\"><img src=\"menu-icons/sub-10.png\" title=\"World Map\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Record, Version, false ) + "\"><img src=\"menu-icons/sub-08.png\" title=\"Records\"></a>" );
 			//sb.AppendLine( "<img src=\"menu-icons/main-09.png\" title=\"Save & Load\">" );
 			//sb.AppendLine( "<img src=\"menu-icons/sub-06.png\" title=\"Save\">" );
 			//sb.AppendLine( "<img src=\"menu-icons/sub-05.png\" title=\"Load\">" );
-			sb.AppendLine( "<a href=\"settings-" + Version + ".html\"><img src=\"menu-icons/sub-07.png\" title=\"Settings\"></a>" );
-			sb.AppendLine( "<a href=\"gradeshop-" + Version + ".html\"><img src=\"item-categories/cat-01.png\" title=\"Grade Shop\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Settings, Version, false ) + "\"><img src=\"menu-icons/sub-07.png\" title=\"Settings\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.GradeShop, Version, false ) + "\"><img src=\"item-categories/cat-01.png\" title=\"Grade Shop\"></a>" );
 			if ( Version == GameVersion.PS3 ) {
-				sb.AppendLine( "<a href=\"necropolis-" + Version + ".html\"><img src=\"menu-icons/weather-4-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
-				sb.AppendLine( "<a href=\"trophy-" + Version + ".html\"><img src=\"trophies/gold.png\" title=\"Trophies\"></a>" );
+				sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.NecropolisMap, Version, false ) + "\"><img src=\"menu-icons/weather-4-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
+				sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Trophy, Version, false ) + "\"><img src=\"trophies/gold.png\" title=\"Trophies\"></a>" );
 			}
 			sb.AppendLine( "<br>" );
 			for ( uint i = 2; i < 12; ++i ) {
-				sb.Append( "<a href=\"items-c" + i + "-" + Version + ".html\">" );
+				sb.Append( "<a href=\"" + GetUrl( WebsiteSection.Item, Version, false, category: (int)i ) + "\">" );
 				sb.Append( "<img src=\"item-categories/cat-" + i.ToString( "D2" ) + ".png\" title=\"" + InGameIdDict[33912572u + i].StringEngOrJpnHtml( Version ) + "\" height=\"32\">" );
 				sb.Append( "</a>" );
 			}
 			sb.AppendLine();
 			for ( uint i = 0; i < 9; ++i ) {
-				sb.Append( "<a href=\"enemies-c" + i + "-" + Version + ".html\">" );
+				sb.Append( "<a href=\"" + GetUrl( WebsiteSection.Enemy, Version, false, category: (int)i ) + "\">" );
 				sb.Append( "<img src=\"monster-categories/cat-" + i + ".png\" title=\"" + InGameIdDict[33912323u + i].StringEngOrJpnHtml( Version ) + "\" height=\"32\">" );
 				sb.Append( "</a>" );
 			}
 			sb.AppendLine( "<br>" );
 			foreach ( uint i in IconsWithItems ) {
-				sb.Append( "<a href=\"items-i" + i + "-" + Version + ".html\">" );
+				sb.Append( "<a href=\"" + GetUrl( WebsiteSection.Item, Version, false, icon: (int)i ) + "\">" );
 				sb.Append( "<img src=\"item-icons/ICON" + i + ".png\" height=\"16\" width=\"16\">" );
 				sb.Append( "</a>" );
 			}
@@ -1050,29 +1052,43 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public static string GetPhpUrlGameVersion( GameVersion version ) {
 			return ( version == GameVersion.PS3 ? "ps3" : "360" );
 		}
-		public static string GetUrl( WebsiteSection section, GameVersion version, bool phpLink, int? id = null, int? category = null, int? icon = null ) {
+		public static string GetUrl( WebsiteSection section, GameVersion version, bool phpLink, int? id = null, int? category = null, int? icon = null, string extra = null ) {
 			if ( phpLink ) {
 				string v = GetPhpUrlGameVersion( version );
 				switch ( section ) {
-					case WebsiteSection.Enemy: return "?version=" + v + "&section=enemies&category=" + category + "#enemy" + id;
-					case WebsiteSection.Item: return "?version=" + v + "&section=items&icon=" + icon + "#item" + id;
-					case WebsiteSection.Recipe: return "?version=" + v + "&section=recipes#recipe" + id;
-					case WebsiteSection.Skill: return "?version=" + v + "&section=skills#skill" + id;
-					case WebsiteSection.Location: return "?version=" + v + "&section=locations#location" + id;
-					case WebsiteSection.Shop: return "?version=" + v + "&section=shops#shop" + id;
+					case WebsiteSection.Enemy: return "?version=" + v + "&section=enemies&category=" + category + id != null ? "#enemy" + id : "";
+					case WebsiteSection.Item: return "?version=" + v + "&section=items&icon=" + icon + id != null ? "#item" + id : "";
+					case WebsiteSection.Recipe: return "?version=" + v + "&section=recipes" + id != null ? "#recipe" + id : "";
+					case WebsiteSection.Skill: return "?version=" + v + "&section=skills" + id != null ? "#skill" + id : "";
+					case WebsiteSection.Location: return "?version=" + v + "&section=locations" + id != null ? "#location" + id : "";
+					case WebsiteSection.Shop: return "?version=" + v + "&section=shops" + id != null ? "#shop" + id : "";
+					default: throw new Exception( "Unsupported PHP URL requested." );
 				}
 			} else {
-				switch ( section ) {
-					case WebsiteSection.Enemy: return "enemies-c" + category + "-" + version + ".html#enemy" + id;
-					case WebsiteSection.Item: return "items-i" + icon + "-" + version + ".html#item" + id;
-					case WebsiteSection.Recipe: return "recipes-" + version + ".html#recipe" + id;
-					case WebsiteSection.Skill: return "skills-" + version + ".html#skill" + id;
-					case WebsiteSection.Location: return "locations-" + version + ".html#location" + id;
-					case WebsiteSection.Shop: return "shops-" + version + ".html#shop" + id;
+				StringBuilder sb = new StringBuilder();
+				sb.Append( version.ToString() );
+				sb.Append( "-" );
+				sb.Append( section.ToString() );
+				if ( category != null ) {
+					sb.Append( "-c" );
+					sb.Append( category );
 				}
+				if ( icon != null ) {
+					sb.Append( "-i" );
+					sb.Append( icon );
+				}
+				if ( extra != null ) {
+					sb.Append( "-" );
+					sb.Append( extra );
+				}
+				sb.Append( ".html" );
+				if ( id != null ) {
+					sb.Append( "#" );
+					sb.Append( section.ToString().ToLowerInvariant() );
+					sb.Append( id );
+				}
+				return sb.ToString();
 			}
-
-			throw new Exception( "Unsupported URL requested." );
 		}
 
 		private enum ScenarioType { Story, Sidequests, Maps };
