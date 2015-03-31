@@ -211,7 +211,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public Dictionary<string, TO8CHTX.ChatFile> SkitText;
 		public List<uint> Records;
 		public List<Setting> Settings;
-		
+
 		public Dictionary<string, ScenarioFile.ScenarioFile> ScenarioFiles;
 		public List<List<ScenarioData>> ScenarioGroupsStory;
 		public List<List<ScenarioData>> ScenarioGroupsSidequests;
@@ -255,8 +255,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			Console.WriteLine( "Generating Website: Items" );
 			var sb = new StringBuilder();
 			AddHeader( sb, "Items" );
-			sb.AppendLine( "<body><table>" );
+			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
+			sb.Append( "<table>" );
 			foreach ( var item in Items.items ) {
 				int itemCat = (int)item.Data[(int)ItemData.Category];
 				int itemIcon = (int)item.Data[(int)ItemData.Icon];
@@ -268,7 +269,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.AppendLine( ItemDat.ItemDat.GetItemDataAsHtml( Version, Items, item, Skills, Enemies, Recipes, Locations, StringDic, InGameIdDict ) );
 				sb.AppendLine( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
-			sb.AppendLine( "</table></body></html>" );
+			sb.Append( "</table>" );
+			AddFooter( sb );
+			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
 		public string GenerateHtmlEnemies( int? category = null ) {
@@ -285,6 +288,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.AppendLine( "<tr><td colspan=\"7\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -300,6 +304,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.AppendLine( "<tr><td colspan=\"9\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -315,6 +320,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.AppendLine( "<tr><td colspan=\"9\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -331,6 +337,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -354,6 +361,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -368,6 +376,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.AppendLine( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
 				sb.AppendLine( "<hr>" );
 			}
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -381,6 +390,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.AppendLine( entry.GetDataAsHtml( Version, Skits, InGameIdDict ) );
 				sb.AppendLine( "<hr>" );
 			}
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -395,6 +405,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.AppendLine( entry.GetIndexDataAsHtml( Version, Skits, InGameIdDict ) );
 			}
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -413,6 +424,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -429,6 +441,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
 			}
 			sb.AppendLine( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -482,6 +495,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -509,6 +523,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -563,6 +578,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 			sb.Append( "</table>" );
 
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -636,6 +652,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 			sb.Append( "</table>" );
 
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -716,6 +733,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -761,6 +779,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -785,6 +804,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				AddHeader( sb2, floorStratum + "-" + floorNumber + " - Necropolis of Nostalgia" );
 				sb2.Append( "<body>" );
 				sb2.Append( html );
+				AddFooter( sb2 );
 				sb2.Append( "</body></html>" );
 				System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( showEnemies ? WebsiteSection.NecropolisEnemy : WebsiteSection.NecropolisMap, Version, false, extra: floorStratum + floorNumber ) ), sb2.ToString(), Encoding.UTF8 );
 			}
@@ -796,6 +816,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 			//*/
 
+			AddFooter( sb );
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
@@ -860,7 +881,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "</head>" );
 		}
 		public void AddMenuBar( StringBuilder sb ) {
-			sb.AppendLine( "<div>" );
+			sb.AppendLine( "<div id=\"header-name\">" );
+			sb.AppendLine( "<a href=\"index.html\">Tales of Vesperia - Data &amp; Translation Guide</a>" );
+			sb.AppendLine( "</div>" );
+
+			sb.AppendLine( "<div id=\"topmenu\">" );
 			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Arte, Version, false ) + "\"><img src=\"menu-icons/main-01.png\" title=\"Artes\"></a>" );
 			//sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Equipment, Version, false ) + "\"><img src=\"menu-icons/main-02.png\" title=\"Equipment\"></a>" );
 			//sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Item, Version, false ) + "\"><img src=\"menu-icons/main-03.png\" title=\"Items\"></a>" );
@@ -872,8 +897,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			//sb.AppendLine( "<img src=\"menu-icons/main-08.png\" title=\"Library\">" );
 			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Synopsis, Version, false ) + "\"><img src=\"menu-icons/sub-09.png\" title=\"Synopsis\"></a>" );
 			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.BattleBook, Version, false ) + "\"><img src=\"menu-icons/sub-14.png\" title=\"Battle Book\"></a>" );
-			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Enemy, Version, false ) + "\"><img src=\"menu-icons/sub-13.png\" title=\"Monster Book\"></a>" );
-			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Item, Version, false ) + "\"><img src=\"menu-icons/sub-11.png\" title=\"Collector's Book\"></a>" );
+			//sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Enemy, Version, false ) + "\"><img src=\"menu-icons/sub-13.png\" title=\"Monster Book\"></a>" );
+			//sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Item, Version, false ) + "\"><img src=\"menu-icons/sub-11.png\" title=\"Collector's Book\"></a>" );
 			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Location, Version, false ) + "\"><img src=\"menu-icons/sub-10.png\" title=\"World Map\"></a>" );
 			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Record, Version, false ) + "\"><img src=\"menu-icons/sub-08.png\" title=\"Records\"></a>" );
 			//sb.AppendLine( "<img src=\"menu-icons/main-09.png\" title=\"Save & Load\">" );
@@ -903,9 +928,18 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "<img src=\"item-icons/ICON" + i + ".png\" height=\"16\" width=\"16\">" );
 				sb.Append( "</a>" );
 			}
-
+			sb.AppendLine( "<br>" );
+			sb.Append( "<a href=\"" + GetUrl( WebsiteSection.ScenarioStoryIndex, Version, false ) + "\">Story</a> / " );
+			sb.Append( "<a href=\"" + GetUrl( WebsiteSection.ScenarioSidequestIndex, Version, false ) + "\">Sidequests</a> / " );
+			sb.Append( "<a href=\"" + GetUrl( WebsiteSection.SkitIndex, Version, false ) + "\">Skits</a>" );
+			sb.AppendLine();
 			sb.AppendLine( "</div>" );
 			sb.AppendLine( "<hr>" );
+			sb.AppendLine( "<div id=\"content\">" );
+		}
+		public void AddFooter( StringBuilder sb ) {
+			sb.AppendLine( "</div>" );
+			sb.AppendLine( "<div id=\"footer\">All Tales of Vesperia game content © 2008/2009 Bandai Namco Games Inc.</div>" );
 		}
 		public static StringBuilder ReplaceIconsWithHtml( StringBuilder sb, GameVersion Version, bool japaneseStyle ) {
 			sb.Replace( "\x06(ST1)", "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" );
