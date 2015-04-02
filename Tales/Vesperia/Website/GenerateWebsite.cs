@@ -179,13 +179,20 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.NecropolisMap, site.Version, false ) ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.NecropolisEnemy, site.Version, false ) ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.StringDic, site.Version, false ) ), site.GenerateHtmlNpc(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioStoryIndex, site.Version, false ) ), site.GenerateScenarioIndex( out site.ScenarioGroupsStory, ScenarioType.Story, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioSidequestIndex, site.Version, false ) ), site.GenerateScenarioIndex( out site.ScenarioGroupsSidequests, ScenarioType.Sidequests, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioMapIndex, site.Version, false ) ), site.GenerateScenarioIndex( out site.ScenarioGroupsMaps, ScenarioType.Maps, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" ), Encoding.UTF8 );
+
+			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" );
+			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" );
+			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\PS3\orig\scenario.dat.ext\", @"d:\Dropbox\ToV\PS3\mod\scenario.dat.ext\" );
+			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
 			System.IO.File.Delete( databasePath );
 			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath ) ).ExportAll();
+
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioStoryIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsStory, ScenarioType.Story ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioSidequestIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsSidequests, ScenarioType.Sidequests ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioMapIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsMaps, ScenarioType.Maps ), Encoding.UTF8 );
+
 			return 0;
 		}
 
@@ -1126,7 +1133,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		private enum ScenarioType { Story, Sidequests, Maps };
-		private string GenerateScenarioIndex( out List<List<ScenarioData>> scenarioGroups, ScenarioType type, string database, string scenarioDatFolder, string scenarioDatFolderMod = null ) {
+		private List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, string database, string scenarioDatFolder, string scenarioDatFolderMod = null ) {
 			var data = SqliteUtil.SelectArray( "Data Source=" + database, "SELECT filename, shortdesc, desc FROM descriptions ORDER BY desc" );
 
 			List<ScenarioData> scenes = new List<ScenarioData>();
@@ -1176,23 +1183,63 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 			}
 
-			scenarioGroups = ScenarioData.ProcessScenesToGroups( scenes );
-			return ScenarioProcessGroupsToHtml( scenarioGroups, type == ScenarioType.Story );
+			return ScenarioData.ProcessScenesToGroups( scenes );
 		}
 
-		private string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, bool addSkits ) {
-			var sb = new StringBuilder();
+		private void ScenarioAddSkits( List<List<ScenarioData>> groups ) {
+			Skits.SkitInfoList.Sort();
+			List<TO8CHLI.SkitInfo> skitsToProcess = new List<TO8CHLI.SkitInfo>();
+			foreach ( var skit in Skits.SkitInfoList ) {
+				if ( skit.Category == 0 ) {
+					skitsToProcess.Add( skit );
+				}
+			}
 
-			List<TO8CHLI.SkitInfo> skitsToProcess = null;
-			if ( addSkits ) {
-				Skits.SkitInfoList.Sort();
-				skitsToProcess = new List<TO8CHLI.SkitInfo>();
-				foreach ( var skit in Skits.SkitInfoList ) {
-					if ( skit.Category == 0 ) {
-						skitsToProcess.Add( skit );
+			for ( int i = 0; i < groups.Count; ++i ) {
+				var group = groups[i];
+				for ( int j = 0; j < group.Count; ++j ) {
+					var scene = group[j];
+
+					ScenarioData nextScene = null;
+					if ( j != group.Count - 1 ) {
+						nextScene = group[j + 1];
+					} else {
+						if ( i != groups.Count - 1 ) {
+							nextScene = groups[i + 1][0];
+						}
+					}
+
+					uint nextScenarioId = 1000000u;
+					if ( nextScene != null ) {
+						string scenarioIdStr = nextScene.EpisodeId.Substring( 3, 7 ).Replace( "_", "" );
+						nextScenarioId = UInt32.Parse( scenarioIdStr.TrimStart( '0' ) );
+					}
+
+					List<TO8CHLI.SkitInfo> skitsToRemove = new List<TO8CHLI.SkitInfo>();
+					foreach ( var skit in skitsToProcess ) {
+						uint skitTrigger = skit.FlagTrigger % 1000000u;
+						if ( skitTrigger < nextScenarioId ) {
+							skitsToRemove.Add( skit );
+
+							if ( !scene.Skits.Contains( skit ) ) {
+								scene.Skits.Add( skit );
+							}
+						}
+					}
+					foreach ( var skit in skitsToRemove ) {
+						skitsToProcess.Remove( skit );
 					}
 				}
 			}
+		}
+
+		private string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, ScenarioType type ) {
+			var sb = new StringBuilder();
+
+			AddHeader( sb, "Scenario Index (" + type.ToString() + ")" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			sb.Append( "<div class=\"scenario-index\">" );
 
 			sb.Append( "<ul>" );
 			for ( int i = 0; i < groups.Count; ++i ) {
@@ -1217,48 +1264,19 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					sb.Append( scene.HumanReadableNameWithoutPrefix( commonBegin ) );
 					sb.Append( "</a>" );
 
-					if ( addSkits ) {
-						ScenarioData nextScene = null;
-						if ( j != group.Count - 1 ) {
-							nextScene = group[j + 1];
-						} else {
-							if ( i != groups.Count - 1 ) {
-								nextScene = groups[i + 1][0];
-							}
-						}
-
-						uint nextScenarioId = 1000000u;
-						if ( nextScene != null ) {
-							string scenarioIdStr = nextScene.EpisodeId.Substring( 3, 7 ).Replace( "_", "" );
-							nextScenarioId = UInt32.Parse( scenarioIdStr.TrimStart( '0' ) );
-						}
-
-						List<TO8CHLI.SkitInfo> skitsToRemove = new List<TO8CHLI.SkitInfo>();
-						foreach ( var skit in skitsToProcess ) {
-							uint skitTrigger = skit.FlagTrigger % 1000000u;
-							if ( skitTrigger < nextScenarioId ) {
-								sb.Append( "<ul>" );
-								sb.Append( "<li>" );
-								sb.Append( "<a href=\"?version=ps3&section=skit&name=" );
-								sb.Append( skit.RefString );
-								sb.Append( "\">" );
-								sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 1, GameVersion.PS3 ) );
-								//sb.Append( " (" );
-								//sb.Append( skit.FlagTrigger );
-								//sb.Append( ")" );
-								sb.Append( "</a>" );
-								sb.Append( "</li>" );
-								sb.Append( "</ul>" );
-								skitsToRemove.Add( skit );
-
-								if ( !scene.Skits.Contains( skit ) ) {
-									scene.Skits.Add( skit );
-								}
-							}
-						}
-						foreach ( var skit in skitsToRemove ) {
-							skitsToProcess.Remove( skit );
-						}
+					foreach ( var skit in scene.Skits ) {
+						sb.Append( "<ul>" );
+						sb.Append( "<li>" );
+						sb.Append( "<a href=\"?version=ps3&section=skit&name=" );
+						sb.Append( skit.RefString );
+						sb.Append( "\">" );
+						sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 0, GameVersion.PS3 ) );
+						sb.Append( " (" );
+						sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 1, GameVersion.PS3 ) );
+						sb.Append( ")" );
+						sb.Append( "</a>" );
+						sb.Append( "</li>" );
+						sb.Append( "</ul>" );
 					}
 
 					sb.Append( "</li>" );
@@ -1268,9 +1286,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "</li>" );
 			}
 			sb.Append( "</ul>" );
+			sb.Append( "</div>" );
+
+			AddFooter( sb );
+			sb.AppendLine( "</body></html>" );
 
 			return sb.ToString();
 		}
-
 	}
 }
