@@ -82,12 +82,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 		public string GetIndexDataAsHtml( GameVersion version, TO8CHLI skits, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 
-			string url;
-			if ( phpLinks ) {
-				url = "?version=" + Website.GenerateWebsite.GetPhpUrlGameVersion( version ) + "&section=skit&name=" + RefString;
-			} else {
-				url = "skit-" + RefString + "-" + version + ".html";
-			}
+			string url = HyoutaTools.Tales.Vesperia.Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Skit, version, phpLinks, extra: RefString );
 
 			sb.Append( "<tr>" );
 

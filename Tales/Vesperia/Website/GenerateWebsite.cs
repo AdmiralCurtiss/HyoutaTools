@@ -9,7 +9,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 	public enum WebsiteSection {
 		Item, Enemy, EnemyGroup, EncounterGroup, Skill, Arte, Synopsis, Recipe, Location, Strategy,
 		Shop, Title, BattleBook, Record, Settings, GradeShop, Trophy, SkitInfo, SkitIndex, NecropolisMap,
-		NecropolisEnemy, ScenarioStoryIndex, ScenarioSidequestIndex, ScenarioMapIndex, StringDic
+		NecropolisEnemy, ScenarioStoryIndex, ScenarioSidequestIndex, ScenarioMapIndex, StringDic, Skit, Scenario,
 	}
 
 	public class Setting {
@@ -1103,6 +1103,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					case WebsiteSection.Skill: return "?version=" + v + "&section=skills" + id != null ? "#skill" + id : "";
 					case WebsiteSection.Location: return "?version=" + v + "&section=locations" + id != null ? "#location" + id : "";
 					case WebsiteSection.Shop: return "?version=" + v + "&section=shops" + id != null ? "#shop" + id : "";
+					case WebsiteSection.Skit: return "?version=" + v + "&section=skit" + extra != null ? "&name=" + extra : "";
+					case WebsiteSection.Scenario: return "?version=" + v + "&section=scenario" + extra != null ? "&name=" + extra : "";
 					default: throw new Exception( "Unsupported PHP URL requested." );
 				}
 			} else {
@@ -1233,7 +1235,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
-		private string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, ScenarioType type ) {
+		private string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, ScenarioType type, bool phpLinks = false ) {
 			var sb = new StringBuilder();
 
 			AddHeader( sb, "Scenario Index (" + type.ToString() + ")" );
@@ -1247,10 +1249,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 				string commonBegin = ScenarioData.FindMostCommonStart( group );
 				sb.Append( "<li>" );
-				if ( commonBegin != "" ) {
-					sb.Append( commonBegin );
+				if ( type == ScenarioType.Maps ) {
+					sb.Append( commonBegin.Split( new char[] { '_', '0' } )[0] );
 				} else {
-					sb.Append( "Intro" );
+					if ( commonBegin != "" ) {
+						sb.Append( commonBegin );
+					} else {
+						sb.Append( "Intro" );
+					}
 				}
 
 				sb.Append( "<ul>" );
@@ -1258,8 +1264,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					var scene = group[j];
 
 					sb.Append( "<li>" );
-					sb.Append( "<a href=\"?version=ps3&section=scenario&name=" );
-					sb.Append( scene.EpisodeId );
+					sb.Append( "<a href=\"" );
+					sb.Append( GetUrl( WebsiteSection.Scenario, GameVersion.PS3, phpLinks, extra: scene.EpisodeId ) );
 					sb.Append( "\">" );
 					sb.Append( scene.HumanReadableNameWithoutPrefix( commonBegin ) );
 					sb.Append( "</a>" );
@@ -1267,8 +1273,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					foreach ( var skit in scene.Skits ) {
 						sb.Append( "<ul>" );
 						sb.Append( "<li>" );
-						sb.Append( "<a href=\"?version=ps3&section=skit&name=" );
-						sb.Append( skit.RefString );
+						sb.Append( "<a href=\"" );
+						sb.Append( GetUrl( WebsiteSection.Skit, GameVersion.PS3, phpLinks, extra: skit.RefString ) );
 						sb.Append( "\">" );
 						sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 0, GameVersion.PS3 ) );
 						sb.Append( " (" );
