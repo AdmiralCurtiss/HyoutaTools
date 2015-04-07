@@ -62,11 +62,16 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 		}
 
 		public static int Execute( List<string> args ) {
-			Translate( args[0], args[1] );
+			if ( args.Count < 2 ) {
+				Console.WriteLine( "Usage: db gj [newgj]" );
+				return -1;
+			}
+
+			Translate( args[0], args[1], args.Count > 2 ? args[2] : null );
 			return 0;
 		}
 
-		public static void Translate( string Filename, string FilenameGracesJapanese ) {
+		public static void Translate( string Filename, string FilenameGracesJapanese, string outputToOtherGracesJapanese = null ) {
 			SetupReplacements();
 			CleanGoogleTranslatedString( "" );
 
@@ -107,10 +112,17 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 				}
 			}
 
+			SQLiteConnection otherGJconn = null;
+			if ( outputToOtherGracesJapanese != null ) {
+				if ( !File.Exists( outputToOtherGracesJapanese ) ) {
+					System.IO.File.WriteAllBytes( outputToOtherGracesJapanese, Properties.Resources.gngj_template );
+				}
+				otherGJconn = new SQLiteConnection( "Data Source=" + outputToOtherGracesJapanese );
+				otherGJconn.Open();
+			}
 
 			SQLiteConnection conn = new SQLiteConnection( "Data Source=" + Filename );
 			conn.Open();
-			Object[] param = new Object[2];
 
 			FileStream FailLog = new FileStream( "googletranslate.log", FileMode.Append );
 			StreamWriter LogWriter = new StreamWriter( FailLog );
@@ -121,6 +133,19 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 				if ( e.Entry.Status == -1 ) { continue; }
 				if ( e.Entry.UpdatedBy == "GoogleTranslate" ) { continue; }
 				if ( e.Entry.TextJP.Trim() == "" ) { continue; }
+				if ( otherGJconn != null ) {
+					long exists = (long)SqliteUtil.SelectScalar( otherGJconn, "SELECT COUNT(1) FROM Japanese WHERE ID = ?", new object[1] { e.Entry.JPID } );
+					if ( exists > 0 ) { continue; }
+				}
+
+				string jp = e.Entry.TextJP;
+				string startTag = "";
+				if ( jp.StartsWith( "<" ) && jp.Contains( '>' ) ) {
+					int idx = jp.IndexOf( '>' );
+					startTag = jp.Substring( 0, idx + 1 );
+					jp = jp.Substring( idx + 1 );
+				}
+
 				try {
 					Console.WriteLine( "Processing Entry " + entryCount + "/" + entries.Length + "..." );
 					webClient.Encoding = Encoding.UTF8;
@@ -129,16 +154,20 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 					webClient.QueryString["client"] = "t";
 					webClient.QueryString["sl"] = "ja";
 					webClient.QueryString["tl"] = "en";
-					webClient.QueryString["text"] = e.Entry.TextJP;
+					webClient.QueryString["text"] = jp;
 					string translateResult = webClient.DownloadString( "/translate_a/t" );
 					string english = CleanGoogleTranslatedString( translateResult );
-					e.Entry.TextEN = english;
+					e.Entry.TextEN = startTag + english;
 
-					ReinsertEntry( conn, e, param );
+					if ( otherGJconn != null ) {
+						ReinsertEntry( otherGJconn, e, true );
+					} else {
+						ReinsertEntry( conn, e );
+					}
 				} catch ( WebException ex ) {
 					LogWriter.WriteLine( "Failure in File " + Filename + ":" );
 					LogWriter.WriteLine( "ID: " + e.Entry.ID );
-					LogWriter.WriteLine( e.Entry.TextJP );
+					LogWriter.WriteLine( jp );
 					LogWriter.WriteLine( ex.ToString() );
 					LogWriter.WriteLine();
 					Console.WriteLine( ex.ToString() );
@@ -151,12 +180,14 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			FailLog.Close();
 
 			conn.Close();
+			if ( otherGJconn != null ) {
+				otherGJconn.Close();
+			}
 
 			return;
 		}
 
-		public static void ReinsertEntry( SQLiteConnection conn, TranslatableGraceNoteEntry e, Object[] param ) {
-
+		public static void ReinsertEntry( SQLiteConnection conn, TranslatableGraceNoteEntry e, bool isGracesJapanese = false ) {
 			Console.WriteLine( "ENGLISH WITHOUT LINEBREAKS:" );
 			Console.WriteLine( e.Entry.TextEN );
 
@@ -204,9 +235,15 @@ namespace HyoutaTools.GraceNote.GoogleTranslate {
 			Console.WriteLine( "----------------------------------------" );
 			Console.WriteLine();
 
+			Object[] param = new Object[2];
 			param[0] = e.Entry.TextEN;
-			param[1] = e.Entry.ID;
-			SqliteUtil.Update( conn, "UPDATE Text SET english = ?, UpdatedBy = 'GoogleTranslate', UpdatedTimestamp = " + Util.DateTimeToUnixTime( DateTime.Now ) + " WHERE ID = ?", param );
+			if ( isGracesJapanese ) {
+				param[1] = e.Entry.JPID;
+				SqliteUtil.Update( conn, "INSERT INTO Japanese ( string, ID, debug ) VALUES ( ?, ?, 0 )", param );
+			} else {
+				param[1] = e.Entry.ID;
+				SqliteUtil.Update( conn, "UPDATE Text SET english = ?, UpdatedBy = 'GoogleTranslate', UpdatedTimestamp = " + Util.DateTimeToUnixTime( DateTime.Now ) + " WHERE ID = ?", param );
+			}
 		}
 
 
