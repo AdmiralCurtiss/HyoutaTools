@@ -106,7 +106,8 @@
     <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
     <Compile Include="GraceNote\Narisokonai\scrExport.cs" />
     <Compile Include="GraceNote\Narisokonai\scrImport.cs" />
-    <Compile Include="GraceNote\Sting\BlazeUnionScriptImport\Importer.cs" />
+    <Compile Include="GraceNote\Sting\BlazeUnionScript\Exporter.cs" />
+    <Compile Include="GraceNote\Sting\BlazeUnionScript\Importer.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicImport\Importer.cs" />

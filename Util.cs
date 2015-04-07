@@ -489,6 +489,12 @@ namespace HyoutaTools {
 			s.Position = pos;
 			return retval;
 		}
+		public static byte PeekByte( this Stream s ) {
+			long pos = s.Position;
+			int retval = s.ReadByte();
+			s.Position = pos;
+			return Convert.ToByte( retval );
+		}
 		public static void DiscardBytes( this Stream s, uint count ) {
 			s.Position = s.Position + count;
 		}

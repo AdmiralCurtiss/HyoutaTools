@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using HyoutaTools.Sting;
 
-namespace HyoutaTools.GraceNote.Sting.BlazeUnionScriptImport {
+namespace HyoutaTools.GraceNote.Sting.BlazeUnionScript {
 	public class Importer {
 		public static int Import( List<string> args ) {
 			if ( args.Count < 3 ) {
