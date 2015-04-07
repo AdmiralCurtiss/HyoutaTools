@@ -106,6 +106,7 @@
     <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
     <Compile Include="GraceNote\Narisokonai\scrExport.cs" />
     <Compile Include="GraceNote\Narisokonai\scrImport.cs" />
+    <Compile Include="GraceNote\Sting\BlazeUnionScriptImport\Importer.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
     <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicImport\Importer.cs" />
@@ -163,6 +164,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SqliteUtil.cs" />
+    <Compile Include="Sting\BlazeUnionScriptFile.cs" />
+    <Compile Include="Sting\BlazeUnionScriptFileSection.cs" />
     <Compile Include="Tales\Abyss\FPS2\Program.cs" />
     <Compile Include="Tales\Abyss\FPS3\Program.cs" />
     <Compile Include="Tales\Abyss\PKF\Split.cs" />
