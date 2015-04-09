@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Textures {
-	public enum DDSFormat {
+	public enum TextureFormat {
+		ABGR,
+		RGBA,
 		DXT1 = 0x31545844,
 		DXT5 = 0x35545844,
 	}
@@ -25,7 +27,9 @@ namespace HyoutaTools.Textures {
 		public uint Caps4;
 		public uint Reserved2;
 
-		public static byte[] Generate( uint width, uint height, uint mipmaps, DDSFormat format ) {
+		public static byte[] Generate( uint width, uint height, uint mipmaps, TextureFormat format ) {
+			if ( !IsDDSTextureFormat( format ) ) { throw new Exception( "Texture format must be compatible with the DDS file format!" ); }
+
 			byte[] data = new byte[0x80];
 
 			DDSHeader header = new DDSHeader();
@@ -62,11 +66,21 @@ namespace HyoutaTools.Textures {
 
 			return data;
 		}
+
+		public static bool IsDDSTextureFormat( TextureFormat format ) {
+			switch ( format ) {
+				case TextureFormat.DXT1:
+				case TextureFormat.DXT5:
+					return true;
+				default:
+					return false;
+			}
+		}
 	}
 	public class DDSPixelFormat {
 		public uint Size = 0x20;
 		public uint Flags;
-		public DDSFormat FourCC;
+		public TextureFormat FourCC;
 		public uint RGBBitCount;
 		public uint RBitMask;
 		public uint GBitMask;

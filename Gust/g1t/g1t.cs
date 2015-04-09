@@ -9,29 +9,70 @@ namespace HyoutaTools.Gust.g1t {
 		public byte[] Data;
 		public uint Width;
 		public uint Height;
-		public uint Mipmaps;
-		public Textures.DDSFormat Format;
+		public byte Mipmaps;
+		public Textures.TextureFormat Format;
 
-		public g1tTexture( Stream stream ) {
+		uint BitPerPixel;
+
+		public g1tTexture( Stream stream, Util.Endianness endian ) {
 			Mipmaps = (byte)stream.ReadByte();
 			byte format = (byte)stream.ReadByte();
 			byte dimensions = (byte)stream.ReadByte();
 			byte unknown4 = (byte)stream.ReadByte();
-			uint bitPerPixel = 8;
+			byte unknown5 = (byte)stream.ReadByte();
+			byte unknown6 = (byte)stream.ReadByte();
+			byte unknown7 = (byte)stream.ReadByte();
+			byte unknown8 = (byte)stream.ReadByte();
 
-			stream.DiscardBytes( 0x10 );
+			if ( endian == Util.Endianness.LittleEndian ) {
+				Mipmaps = Mipmaps.SwapEndian4Bits();
+				dimensions = dimensions.SwapEndian4Bits();
+				unknown4 = unknown4.SwapEndian4Bits();
+				unknown5 = unknown5.SwapEndian4Bits();
+				unknown6 = unknown6.SwapEndian4Bits();
+				unknown7 = unknown7.SwapEndian4Bits();
+				unknown8 = unknown8.SwapEndian4Bits();
+			}
+
+			if ( unknown8 == 0x01 ) {
+				stream.DiscardBytes( 0x0C );
+			}
 
 			switch ( format ) {
-				case 0x06: Format = Textures.DDSFormat.DXT1; bitPerPixel = 4; break;
-				case 0x08: Format = Textures.DDSFormat.DXT5; bitPerPixel = 8; break;
-				default: throw new Exception( "g1t: Unknown Format" );
+				case 0x00: Format = Textures.TextureFormat.ABGR; BitPerPixel = 32; break;
+				case 0x01: Format = Textures.TextureFormat.RGBA; BitPerPixel = 32; break;
+				case 0x06: Format = Textures.TextureFormat.DXT1; BitPerPixel = 4; break;
+				case 0x08: Format = Textures.TextureFormat.DXT5; BitPerPixel = 8; break;
+				default: throw new Exception( String.Format( "g1t: Unknown Format ({0:X2})", format ) );
 			}
 
 			Width = (uint)( 1 << ( dimensions >> 4 ) );
 			Height = (uint)( 1 << ( dimensions & 0x0F ) );
 
-			Data = new byte[( Width * Height * bitPerPixel ) / 8];
+			uint highestMipmapSize = ( Width * Height * BitPerPixel ) / 8;
+			long textureSize = highestMipmapSize;
+			for ( int i = 0; i < Mipmaps - 1; ++i ) {
+				textureSize += highestMipmapSize / ( 4 << ( i * 2 ) );
+			}
+
+			Data = new byte[textureSize];
 			stream.Read( Data, 0, Data.Length );
+		}
+
+		public long GetDataStart( int mipmapLevel ) {
+			if ( mipmapLevel == 0 ) { return 0; }
+
+			uint highestMipmapSize = ( Width * Height * BitPerPixel ) / 8;
+			long textureSize = highestMipmapSize;
+			for ( int i = 0; i < mipmapLevel - 1; ++i ) {
+				textureSize += highestMipmapSize / ( 4 << ( i * 2 ) );
+			}
+			return textureSize;
+		}
+
+		public long GetDataLength( int mipmapLevel ) {
+			uint highestMipmapSize = ( Width * Height * BitPerPixel ) / 8;
+			return highestMipmapSize / ( 1 << ( mipmapLevel * 2 ) );
 		}
 	}
 
@@ -51,21 +92,35 @@ namespace HyoutaTools.Gust.g1t {
 		}
 
 		public List<g1tTexture> Textures;
+		public Util.Endianness Endian = Util.Endianness.BigEndian;
 
 		private bool LoadFile( Stream stream ) {
-			string magic = stream.ReadAscii( 8 );
+			string magic = stream.ReadAscii( 4 );
+			switch ( magic ) {
+				case "G1TG": Endian = Util.Endianness.BigEndian; break;
+				case "GT1G": Endian = Util.Endianness.LittleEndian; break;
+				default: throw new Exception( "Not a g1t file!" );
+			}
 
-			uint fileSize = stream.ReadUInt32().SwapEndian();
-			uint headerSize = stream.ReadUInt32().SwapEndian();
-			uint numberTextures = stream.ReadUInt32().SwapEndian();
-			uint unknown = stream.ReadUInt32().SwapEndian();
+			uint version = stream.ReadUInt32().FromEndian( Endian );
+
+			switch ( version ) {
+				case 0x30303530: break;
+				case 0x30303630: break;
+				default: throw new Exception( "Unsupported g1t version!" );
+			}
+
+			uint fileSize = stream.ReadUInt32().FromEndian( Endian );
+			uint headerSize = stream.ReadUInt32().FromEndian( Endian );
+			uint numberTextures = stream.ReadUInt32().FromEndian( Endian );
+			uint unknown = stream.ReadUInt32().FromEndian( Endian );
 
 			stream.Position = headerSize;
-			uint bytesUnknownData = stream.ReadUInt32().SwapEndian();
+			uint bytesUnknownData = stream.ReadUInt32().FromEndian( Endian );
 			stream.Position = headerSize + bytesUnknownData;
 			Textures = new List<g1tTexture>( (int)numberTextures );
 			for ( uint i = 0; i < numberTextures; ++i ) {
-				var g = new g1tTexture( stream );
+				var g = new g1tTexture( stream, Endian );
 				Textures.Add( g );
 			}
 

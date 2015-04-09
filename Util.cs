@@ -9,6 +9,10 @@ namespace HyoutaTools {
 	public static class Util {
 
 		#region EndianUtils
+		// baffling thing seen in Gust textures, 0xXY <-> 0xYX
+		public static byte SwapEndian4Bits( this byte x ) {
+			return (byte)( ( ( x & 0x0F ) << 4 ) | ( ( x & 0xF0 ) >> 4 ) );
+		}
 		public static Int16 SwapEndian( this Int16 x ) {
 			return (Int16)SwapEndian( (UInt16)x );
 		}
