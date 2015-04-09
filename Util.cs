@@ -531,6 +531,15 @@ namespace HyoutaTools {
 			}
 			return sb.ToString();
 		}
+		public static string ReadUTF8Nullterm( this Stream s ) {
+			List<byte> data = new List<byte>();
+			int b = s.ReadByte();
+			while ( b != 0 && b != -1 ) {
+				data.Add( (byte)( b ) );
+				b = s.ReadByte();
+			}
+			return Encoding.UTF8.GetString( data.ToArray() );
+		}
 		public static string ReadUTF16Nullterm( this Stream s ) {
 			StringBuilder sb = new StringBuilder();
 			byte[] b = new byte[2];

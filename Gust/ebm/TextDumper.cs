@@ -19,16 +19,18 @@ namespace HyoutaTools.Gust.ebm {
 			string infile = args[1];
 			string outfile = args.Count >= 3 ? args[2] : args[1] + ".txt";
 
-			var ebm = new ebm( infile );
-
 			bool debug = args.Contains( "--debug" );
+			bool oneLine = args.Contains( "--oneLine" );
+			bool isUtf8 = false;
 
 			Dictionary<int, string> names;
 			switch ( game.ToLowerInvariant() ) {
-				case "at3": names = GenerateAt3Dict(); break;
-				case "ans": names = GenerateAnSDict(); break;
+				case "at3": names = GenerateAt3Dict(); isUtf8 = false; break;
+				case "ans": names = GenerateAnSDict(); isUtf8 = true; break;
 				default: names = new Dictionary<int, string>(); break;
 			}
+
+			var ebm = new ebm( infile, isUtf8 );
 
 			List<string> text = new List<string>();
 			foreach ( var e in ebm.EntryList ) {
@@ -41,13 +43,21 @@ namespace HyoutaTools.Gust.ebm {
 					text.Add( "[Unk7] " + e.Unknown7 );
 					text.Add( "[Unk8] " + e.Unknown8 );
 				}
+
+				string name;
 				if ( names.ContainsKey( e.CharacterId ) ) {
-					text.Add( names[e.CharacterId] );
+					name = names[e.CharacterId];
 				} else {
-					text.Add( "[Unknown_" + e.CharacterId + "]" );
+					name = "Unknown_" + e.CharacterId;
 				}
-				text.Add( e.Text.Replace( "<CR>", "\r\n" ) );
-				text.Add( "" );
+
+				if ( oneLine ) {
+					text.Add( ( name != "" ? "[" + name + "] " : "" ) + e.Text.Replace( " <CR>", " " ).Replace( "<CR>", " " ) );
+				} else {
+					text.Add( "[" + name + "]" );
+					text.Add( e.Text.Replace( "<CR>", "\r\n" ) );
+					text.Add( "" );
+				}
 			}
 
 			System.IO.File.WriteAllLines( outfile, text.ToArray() );
@@ -291,18 +301,157 @@ namespace HyoutaTools.Gust.ebm {
 				{  5, "Cass"},
 				{  6, "Ion"},
 				{  7, "Delta"},
+				{  9, "Kanon"},
+				{ 10, "Nay"},
 				{ 11, "Zill"},
+				{ 12, "Nelico"},
 				{ 13, "Nelo"},
+				{ 14, "Cosal"},
+				{ 15, "Prim"},
+				{ 16, "Renall"},
 				{ 17, "Undou"},
 				{ 18, "Shirotaka"},
+				{ 19, "Tattoria"},
 				{ 20, "Sarly"},
+				{ 21, "Ayatane"},
+				{ 22, "Shurelia"},
+				{ 23, "Divine Empress"},
+				{ 24, "Prime Minister"},
+				{ 25, "Vio"},
 				{ 26, "Prime"},
+				{ 27, "Sharluun"},
+				{ 28, "Sharluneli"},
+				{ 29, "Sargeant Catty"},
+				{ 30, "Cassulu the Great"},
+				{ 31, "Tsunderain"},
+				{ 32, "Random Brother"},
 				{ 33, "Urijou"},
+				{ 34, "Evangelist of Love"},
+				{ 35, "Evangelist of Bonds"},
 				{ 36, "Nyuroki"},
 				{ 37, "Gennori"},
+				{ 38, "Super Gennori"},
 				{ 39, "Love Commander"},
+				{ 40, "Evangelist of Mystery"},
+				{ 41, "Everyone in Town"},
 				{ 42, "Urijou & Nyuroki"},
+				{ 43, "Chairman Nay"},
+				{ 44, "Spartan Liv"},
+				{ 45, "President Smiles"},
+				{ 46, "Space Empress"},
+				{ 47, "Garibena"},
+				{ 48, "Enlightened Sovereign"},
+				{ 49, "Saborina"},
+				{ 50, "Townsperson"},
+				{ 51, "Boss"},
+				{ 52, "Delinquent"},
+				{ 53, "Teacher"},
+				{ 54, "Agent"},
+				{ 55, "Schizoidrophia"},
+				{ 56, "Miss Pandemi"},
+				{ 58, "Sarlynate"},
+				{ 59, "King Nyuroki"},
+				{ 60, "Sarly & Sarlynate"},
+				{ 61, "Bridal Launch"},
+				{ 62, "Heart of Light"},
+				{ 63, "Tim Pirajan"},
+				{ 64, "Sen Seija"},
+				{ 65, "Morota no Mikoto"},
+				{ 66, "Kusako"},
+				{ 67, "Nanako"},
+				{ 68, "Blue Demon"},
+				{ 69, "Iwako"},
+				{ 70, "Yellow Demon"},
+				{ 71, "Kanui"},
+				{ 72, "Chunpi"},
+				{ 73, "Hyaha"},
+				{ 74, "Doctor Planck"},
+				{ 75, "Shawarl"},
+				{ 76, "Emperor Hakke"},
+				{ 77, "Amenomurakumo Mikuji"},
+				{ 78, "Ar Cielno"},
+				{ 79, "Armored Adehime"},
+				{ 80, "Nei Yuuki"},
+				{ 81, "Doctor Leolm"},
+				{ 82, "Ixit"},
+				{ 85, "Loria"},
+				{ 86, "Shelshu"},
+				{ 87, "Faylon"},
+				{ 88, "Honey"},
+				{ 89, "PLASMA Troop"},
+				{ 90, "PLASMA Troop A"},
+				{ 91, "PLASMA Troop B"},
+				{ 92, "PLASMA Troop C"},
+				{ 94, "Imperial Guard A"},
+				{ 95, "Imperial Guard B"},
+				{ 97, "Temple Knight A"},
+				{ 98, "Temple Knight B"},
+				{ 99, "Guard"},
+				{100, "Weaver"},
+				{101, "Solius of the Storm"},
+				{102, "Sonwe"},
+				{103, "Priest"},
+				{104, "Elder"},
+				{105, "Announcement"},
+				{106, "Soldier"},
+				{107, "General Store"},
+				{108, "Station Attendant"},
+				{109, "Bios Shop"},
+				{110, "Sharl"},
+				{111, "Sharl A"},
+				{112, "Sharl B"},
+				{113, "Sharl C"},
+				{114, "Sharl C"},
+				{115, "Sharl Chief"},
+				{116, "Man"},
+				{117, "Woman"},
+				{118, "Older Man"},
+				{119, "Older Woman"},
+				{120, "Man A"},
+				{121, "Man B"},
+				{122, "Man C"},
+				{123, "Older Man A"},
+				{124, "Older Man B"},
+				{125, "Older Woman A"},
+				{126, "Older Woman B"},
+				{127, "Boy"},
+				{128, "Girl"},
+				{129, "Postman"},
+				{130, "Felie"},
+				{131, "Young Delta"},
+				{132, "Young Cass"},
+				{133, "Charming Chatter"},
+				{134, "Uukun Puppet"},
+				{135, "Ai-chan"},
+				{136, "Sho-kun"},
+				{137, "Cannon de Kanon"},
 				{138, "Nyuroki & Urijou"},
+				{140, "Delta & Cass"},
+				{141, "Sharl A & Sharl B"},
+				{142, "Man & Older Man"},
+				{143, "Maternal Overseer"},
+				{144, "Horus"},
+				{145, "Seven"},
+				{146, "Casty Monami"},
+				{147, "Daichi Monami"},
+				{148, "Reon Ururiya"},
+				{149, "Kanon Shijima"},
+				{150, "Sayuri Furaku"},
+				{151, "Rena Tatara"},
+				{152, "Everyone"},
+				{153, "Reira Tougasaki"},
+				{154, "Waitress"},
+				{155, "Kanna Yuuki"},
+				{156, "Aya Yuuki"},
+				{158, "Sayo Ogura"},
+				{159, "Ms. Kanon Shijima"},
+				{160, "Maki Mizuno"},
+				{161, "Sayuri Seo"},
+				{162, "Reo Seo"},
+				{163, "Reo & Nei"},
+				{164, "Piko"},
+				{165, "Mysterious Girl"},
+				{166, "Aya & Nei"},
 			};
 		}
 	}

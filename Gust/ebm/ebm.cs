@@ -20,7 +20,7 @@ namespace HyoutaTools.Gust.ebm {
 
 		public string Text;
 
-		public ebmEntry( Stream stream ) {
+		public ebmEntry( Stream stream, bool isUtf8 = false ) {
 			Ident = stream.ReadUInt32();
 			Unknown2 = stream.ReadUInt32();
 			Unknown3 = stream.ReadUInt32();
@@ -32,7 +32,11 @@ namespace HyoutaTools.Gust.ebm {
 			TextLength = stream.ReadUInt32();
 
 			long pos = stream.Position;
-			Text = stream.ReadShiftJisNullterm();
+			if ( isUtf8 ) {
+				Text = stream.ReadUTF8Nullterm();
+			} else {
+				Text = stream.ReadShiftJisNullterm();
+			}
 			stream.Position = pos + TextLength;
 		}
 
@@ -42,28 +46,28 @@ namespace HyoutaTools.Gust.ebm {
 	}
 
 	public class ebm {
-		public ebm( String filename ) {
+		public ebm( String filename, bool isUtf8 = false ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
-				if ( !LoadFile( stream ) ) {
+				if ( !LoadFile( stream, isUtf8 ) ) {
 					throw new Exception( "Loading ebm failed!" );
 				}
 			}
 		}
 
-		public ebm( Stream stream ) {
-			if ( !LoadFile( stream ) ) {
+		public ebm( Stream stream, bool isUtf8 = false ) {
+			if ( !LoadFile( stream, isUtf8 ) ) {
 				throw new Exception( "Loading ebm failed!" );
 			}
 		}
 
 		public List<ebmEntry> EntryList;
 
-		private bool LoadFile( Stream stream ) {
+		private bool LoadFile( Stream stream, bool isUtf8 = false ) {
 			uint entryCount = stream.ReadUInt32();
 
 			EntryList = new List<ebmEntry>( (int)entryCount );
 			for ( uint i = 0; i < entryCount; ++i ) {
-				ebmEntry e = new ebmEntry( stream );
+				ebmEntry e = new ebmEntry( stream, isUtf8 );
 				EntryList.Add( e );
 			}
 
