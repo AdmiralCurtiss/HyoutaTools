@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.IO.Compression;
 
 namespace HyoutaTools.Tales.tlzc {
 	class TLZC {
@@ -42,9 +43,16 @@ namespace HyoutaTools.Tales.tlzc {
 
 		class Compression2 {
 			public byte[] Decompress( byte[] buffer ) {
-				throw new NotImplementedException();
-				//byte[] result = new byte[BitConverter.ToInt32( buffer, 12 )];
-				//return result;
+				MemoryStream result = new MemoryStream();
+				int inSize = BitConverter.ToInt32( buffer, 8 );
+				int outSize = BitConverter.ToInt32( buffer, 12 );
+				int offset = 0x18;
+
+				using ( DeflateStream decompressionStream = new DeflateStream( new MemoryStream( buffer, offset, inSize - offset ), CompressionMode.Decompress ) ) {
+					Util.CopyStream( decompressionStream, result, outSize );
+				}
+
+				return result.ToArray();
 			}
 		}
 
