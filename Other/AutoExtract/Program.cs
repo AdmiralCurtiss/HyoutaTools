@@ -195,11 +195,13 @@ namespace HyoutaTools.Other.AutoExtract {
 						if ( firstbyte == (int)'T' ) {
 							if ( secondbyte == (int)'L' && thirdbyte == (int)'Z' && fourthbyte == (int)'C' ) {
 								fs.Close();
-								prog = "tlzc";
-								args = "-d \"" + f + "\" \"" + f + ".dec\"";
+								List<string> tlzcargs = new List<string>();
+								tlzcargs.Add( "-d" );
+								tlzcargs.Add( f );
+								tlzcargs.Add( f + ".dec" );
 								Console.WriteLine();
-								Console.WriteLine( prog + " " + args );
-								if ( RunProgram( prog, args ) ) {
+								Console.WriteLine( "tlzc -d \"" + f + "\" \"" + f + ".dec\"" );
+								if ( HyoutaTools.Tales.tlzc.tlzcmain.Execute( tlzcargs ) == 0 ) {
 									queue.Enqueue( new FileStruct( f + ".dec", fstr.Indirection ) );
 									System.IO.File.Delete( f );
 									HasBeenProcessed = true;
