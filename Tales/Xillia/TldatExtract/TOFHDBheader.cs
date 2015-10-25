@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Tales.Xillia.TldatExtract {
-	public class TOFHDBEntry {
+	public class TOFHDBhash {
+		public UInt32 Key;
+		public UInt32 Value;
+	}
+	public class TOFHDBfile {
 		public UInt64 Filesize;
 		public UInt64 CompressedSize;
 		public UInt64 Offset;
@@ -14,50 +18,84 @@ namespace HyoutaTools.Tales.Xillia.TldatExtract {
 	}
 
 	public class TOFHDBheader {
-		public List<TOFHDBEntry> EntryList;
-		public UInt32 FileAmount;
 		public Util.Endianness Endian = Util.Endianness.BigEndian;
 
+		public UInt64 CreationTime;
+		public UInt32 FileHashArrayOffset;
+		public UInt32 FileHashArraySize;
+		public UInt32 VirtualHashArrayOffset;
+		public UInt32 VirtualHashArraySize;
+		public UInt32 FileArrayOffset;
+		public UInt32 FileArraySize;
+		public UInt32 VirtualPackArrayOffset;
+		public UInt32 VirtualPackArraySize;
+
+		public List<TOFHDBhash> FileHashArray;
+		public List<TOFHDBfile> FileArray;
+
 		public TOFHDBheader( String Filename ) {
-			Load( System.IO.File.ReadAllBytes( Filename ) );
+			Load( new System.IO.FileStream( Filename, System.IO.FileMode.Open ) );
 		}
 
 		public UInt64 BiggestFile() {
 			UInt64 Biggest = 0;
 
-			foreach ( TOFHDBEntry e in EntryList ) {
+			foreach ( TOFHDBfile e in FileArray ) {
 				if ( e.Filesize > Biggest ) Biggest = e.Filesize;
 			}
 
 			return Biggest;
 		}
 
-		private bool Load( Byte[] Bytes ) {
-			UInt32 unknown = BitConverter.ToUInt32( Bytes, 0x8 );
-			// should be 0x20 or a similarly small number, use to detect endianness
-			if ( unknown < 0xFFFF ) {
+		private bool Load( System.IO.FileStream stream ) {
+			CreationTime = stream.ReadUInt64();
+			FileHashArrayOffset = stream.ReadUInt32();
+
+			// This should always be 0x20, so we can use it to detect endianness
+			if ( FileHashArrayOffset <= 0xFFFF ) {
 				Endian = Util.Endianness.LittleEndian;
 			} else {
 				Endian = Util.Endianness.BigEndian;
+				CreationTime = CreationTime.SwapEndian();
+				FileHashArrayOffset = FileHashArrayOffset.SwapEndian();
 			}
 
-			FileAmount = BitConverter.ToUInt32( Bytes, 0xC ).FromEndian( Endian );
+			// We adjust the offsets to be from file start rather than from position, makes them easier to seek to.
+			FileHashArrayOffset += (uint)stream.Position - 4;
+			FileHashArraySize = stream.ReadUInt32().FromEndian( Endian );
+			VirtualHashArrayOffset = (uint)stream.Position;
+			VirtualHashArrayOffset += stream.ReadUInt32().FromEndian( Endian );
+			VirtualHashArraySize = stream.ReadUInt32().FromEndian( Endian );
+			FileArrayOffset = (uint)stream.Position;
+			FileArrayOffset += stream.ReadUInt32().FromEndian( Endian );
+			FileArraySize = stream.ReadUInt32().FromEndian( Endian );
+			VirtualPackArrayOffset = (uint)stream.Position;
+			VirtualPackArrayOffset += stream.ReadUInt32().FromEndian( Endian );
+			VirtualPackArraySize = stream.ReadUInt32().FromEndian( Endian );
 
-			UInt32 FileListStart = 0x18 + BitConverter.ToUInt32( Bytes, 0x18 ).FromEndian( Endian );
-
-			EntryList = new List<TOFHDBEntry>( (int)FileAmount );
-
-			for ( UInt32 i = 0; i < FileAmount; i++ ) {
-				TOFHDBEntry e = new TOFHDBEntry();
-				e.Filesize = BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x00 ) ).FromEndian( Endian );
-				e.CompressedSize = BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x08 ) ).FromEndian( Endian );
-				e.Offset = BitConverter.ToUInt64( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x10 ) ).FromEndian( Endian );
-				e.Hash = BitConverter.ToUInt32( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x18 ) ).FromEndian( Endian );
-				e.Extension = Util.TrimNull( Encoding.ASCII.GetString( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x1C ), 0x0A ) );
-				e.Unknown = BitConverter.ToUInt16( Bytes, (int)( FileListStart + ( i * 0x28 ) + 0x26 ) ).FromEndian( Endian );
-				EntryList.Add( e );
+			// Hashes
+			stream.Position = FileHashArrayOffset;
+			FileHashArray = new List<TOFHDBhash>( (int)FileHashArraySize );
+			for ( UInt32 i = 0; i < FileHashArraySize; i++ ) {
+				FileHashArray.Add( new TOFHDBhash() {
+					Key = stream.ReadUInt32().FromEndian( Endian ),
+					Value = stream.ReadUInt32().FromEndian( Endian ),
+				} );
 			}
 
+			// Files
+			stream.Position = FileArrayOffset;
+			FileArray = new List<TOFHDBfile>( (int)FileArraySize );
+			for ( UInt32 i = 0; i < FileArraySize; i++ ) {
+				FileArray.Add( new TOFHDBfile() {
+					Filesize = stream.ReadUInt64().FromEndian( Endian ),
+					CompressedSize = stream.ReadUInt64().FromEndian( Endian ),
+					Offset = stream.ReadUInt64().FromEndian( Endian ),
+					Hash = stream.ReadUInt32().FromEndian( Endian ),
+					Extension = stream.ReadAscii( 0x0A ).TrimNull(),
+					Unknown = stream.ReadUInt16().FromEndian( Endian ),
+				} );
+			}
 
 			return true;
 		}

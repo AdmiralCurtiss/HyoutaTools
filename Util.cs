@@ -451,6 +451,24 @@ namespace HyoutaTools {
 			return true;
 		}
 
+		public static ulong ReadUInt64( this Stream s ) {
+			ulong b1 = (ulong)s.ReadByte();
+			ulong b2 = (ulong)s.ReadByte();
+			ulong b3 = (ulong)s.ReadByte();
+			ulong b4 = (ulong)s.ReadByte();
+			ulong b5 = (ulong)s.ReadByte();
+			ulong b6 = (ulong)s.ReadByte();
+			ulong b7 = (ulong)s.ReadByte();
+			ulong b8 = (ulong)s.ReadByte();
+
+			return (ulong)( b8 << 56 | b7 << 48 | b6 << 40 | b5 << 32 | b4 << 24 | b3 << 16 | b2 << 8 | b1 );
+		}
+		public static ulong PeekUInt64( this Stream s ) {
+			long pos = s.Position;
+			ulong retval = s.ReadUInt64();
+			s.Position = pos;
+			return retval;
+		}
 		public static uint ReadUInt32( this Stream s ) {
 			int b1 = s.ReadByte();
 			int b2 = s.ReadByte();

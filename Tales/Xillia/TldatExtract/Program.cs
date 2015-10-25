@@ -29,7 +29,7 @@ namespace HyoutaTools.Tales.Xillia.TldatExtract {
 
 			int counter = 1;
 
-			foreach ( TOFHDBEntry e in header.EntryList ) {
+			foreach ( TOFHDBfile e in header.FileArray ) {
 				fs.Position = (long)e.Offset;
 				fs.Read( buffer, 0, (int)e.CompressedSize );
 				String ExtensionFolder = ExtractFolder + e.Extension + '/';
