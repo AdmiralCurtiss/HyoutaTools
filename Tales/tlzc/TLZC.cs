@@ -35,12 +35,6 @@ namespace HyoutaTools.Tales.tlzc {
 			throw new Exception();
 		}
 
-		private static byte[] Decompress2( byte[] buffer ) {
-			throw new NotImplementedException();
-			//byte[] result = new byte[BitConverter.ToInt32( buffer, 12 )];
-			//return result;
-		}
-
 		class Compression2 {
 			public byte[] Decompress( byte[] buffer ) {
 				MemoryStream result = new MemoryStream();
