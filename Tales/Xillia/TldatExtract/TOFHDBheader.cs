@@ -99,5 +99,31 @@ namespace HyoutaTools.Tales.Xillia.TldatExtract {
 
 			return true;
 		}
+
+		public void Write( System.IO.FileStream stream ) {
+			stream.WriteUInt64( CreationTime.ToEndian( Endian ) );
+			stream.WriteUInt32( ( FileHashArrayOffset - (uint)stream.Position ).ToEndian( Endian ) );
+			stream.WriteUInt32( FileHashArraySize.ToEndian( Endian ) );
+			stream.WriteUInt32( ( VirtualHashArrayOffset - (uint)stream.Position ).ToEndian( Endian ) );
+			stream.WriteUInt32( VirtualHashArraySize.ToEndian( Endian ) );
+			stream.WriteUInt32( ( FileArrayOffset - (uint)stream.Position ).ToEndian( Endian ) );
+			stream.WriteUInt32( FileArraySize.ToEndian( Endian ) );
+			stream.WriteUInt32( ( VirtualPackArrayOffset - (uint)stream.Position ).ToEndian( Endian ) );
+			stream.WriteUInt32( VirtualPackArraySize.ToEndian( Endian ) );
+
+			foreach ( var h in FileHashArray ) {
+				stream.WriteUInt32( h.Key.ToEndian( Endian ) );
+				stream.WriteUInt32( h.Value.ToEndian( Endian ) );
+			}
+
+			foreach ( var f in FileArray ) {
+				stream.WriteUInt64( f.Filesize.ToEndian( Endian ) );
+				stream.WriteUInt64( f.CompressedSize.ToEndian( Endian ) );
+				stream.WriteUInt64( f.Offset.ToEndian( Endian ) );
+				stream.WriteUInt32( f.Hash.ToEndian( Endian ) );
+				stream.WriteAscii( f.Extension, 0x0A );
+				stream.WriteUInt16( f.Unknown.ToEndian( Endian ) );
+			}
+		}
 	}
 }

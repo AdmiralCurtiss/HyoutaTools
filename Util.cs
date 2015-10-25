@@ -469,6 +469,9 @@ namespace HyoutaTools {
 			s.Position = pos;
 			return retval;
 		}
+		public static void WriteUInt64( this Stream s, ulong num ) {
+			s.Write( BitConverter.GetBytes( num ), 0, 8 );
+		}
 		public static uint ReadUInt32( this Stream s ) {
 			int b1 = s.ReadByte();
 			int b2 = s.ReadByte();
@@ -548,6 +551,20 @@ namespace HyoutaTools {
 				sb.Append( (char)( b ) );
 			}
 			return sb.ToString();
+		}
+        public static void WriteAscii( this Stream s, string str, int count = 0, bool trim = false ) {
+			byte[] chars = Encoding.ASCII.GetBytes( str );
+			if ( !trim && count > 0 && count < chars.Length ) {
+				throw new Exception( "String won't fit in provided space!" );
+			}
+
+			int i;
+			for ( i = 0; i < chars.Length; ++i ) {
+				s.WriteByte( chars[i] );
+			}
+			for ( ; i < count; ++i ) {
+				s.WriteByte( 0 );
+			}
 		}
 		public static string ReadUTF8Nullterm( this Stream s ) {
 			List<byte> data = new List<byte>();
