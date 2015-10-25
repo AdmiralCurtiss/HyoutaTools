@@ -24,18 +24,45 @@ namespace HyoutaTools.Tales.tlzc {
 		}
 
 		public static byte[] Compress( byte[] data, byte compressionType, int numFastBytes = 64 ) {
-			if ( compressionType != 4 )
-				throw new ArgumentException( "only compressionType 4 is supported currently", "compressionType" );
-
 			switch ( compressionType ) {
+				case 2:
+					return new Compression2().Compress( data );
 				case 4:
 					return new Compression4().Compress( data, numFastBytes );
 			}
 
-			throw new Exception();
+			throw new InvalidDataException( "unknown TLZC compression type" );
 		}
 
 		class Compression2 {
+			public byte[] Compress( byte[] buffer ) {
+				MemoryStream result = new MemoryStream();
+				int offset = 0;
+
+				BinaryWriter bw = new BinaryWriter( result );
+
+				bw.Write( new byte[] { 0x54, 0x4C, 0x5A, 0x43 } );
+				bw.Write( (byte)0x01 );
+				bw.Write( (byte)0x02 );
+				bw.Write( (byte)0x00 );
+				bw.Write( (byte)0x00 );
+				bw.Write( (int)0 );   // compressed size - we'll fill this in once we know it
+				bw.Write( (int)buffer.Length );   // decompressed size
+				bw.Write( (int)0 );   // unknown, 0
+				bw.Write( (int)0 );   // unknown, 0
+
+				using ( DeflateStream compressionStream = new DeflateStream( result, CompressionLevel.Optimal ) ) {
+					compressionStream.Write( buffer );
+				}
+
+				byte[] retval = result.ToArray();
+
+				// fill in compressed size
+				Util.CopyByteArrayPart( BitConverter.GetBytes( (int)retval.Length ), 0, retval, 8, 4 );
+
+				return retval;
+			}
+
 			public byte[] Decompress( byte[] buffer ) {
 				MemoryStream result = new MemoryStream();
 				int inSize = BitConverter.ToInt32( buffer, 8 );

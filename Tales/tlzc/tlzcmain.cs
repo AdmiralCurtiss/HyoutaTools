@@ -6,7 +6,7 @@ namespace HyoutaTools.Tales.tlzc {
 	class tlzcmain {
 		public static int Execute( List<string> args ) {
 
-			String Usage = "usage: tlzc [-c/-d] infile outfile";
+			String Usage = "usage: tlzc [-c/-d] [--type number] infile outfile";
 
 			bool ForceDecompress = false;
 			bool ForceCompress = false;
@@ -14,6 +14,7 @@ namespace HyoutaTools.Tales.tlzc {
 			String FilenameOut = null;
 
 			int compressionNumFastBytes = 64;
+			int compressionType = 4;
 
 			if ( args.Count < 1 ) {
 				Console.WriteLine( Usage );
@@ -27,6 +28,7 @@ namespace HyoutaTools.Tales.tlzc {
 					switch ( arg ) {
 						case "-c": ForceCompress = true; break;
 						case "-d": ForceDecompress = true; break;
+						case "--type": compressionType = Int32.Parse( args[++i] ); break;
 						case "--fastbytes": compressionNumFastBytes = Int32.Parse( args[++i] ); break;
 					}
 				} else {
@@ -63,7 +65,7 @@ namespace HyoutaTools.Tales.tlzc {
 			} else {
 				try {
 					Console.WriteLine( "compressing {0}", Filename );
-					output = TLZC.Compress( input, 4, compressionNumFastBytes );
+					output = TLZC.Compress( input, (byte)compressionType, compressionNumFastBytes );
 					if ( FilenameOut == null ) FilenameOut = Filename + ".tlzc";
 					File.WriteAllBytes( FilenameOut, output );
 				} catch ( Exception ex ) {
