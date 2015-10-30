@@ -527,6 +527,12 @@ namespace HyoutaTools {
 			s.Write( BitConverter.GetBytes( num ), 0, 2 );
 		}
 
+		public static void WriteAlign( this Stream s, long alignment, byte paddingByte = 0 ) {
+			while ( s.Position % alignment != 0 ) {
+				s.WriteByte( paddingByte );
+			}
+		}
+
 		public static string ReadAsciiNulltermFromLocationAndReset( this Stream s, long location ) {
 			long pos = s.Position;
 			s.Position = location;
@@ -552,8 +558,11 @@ namespace HyoutaTools {
 			}
 			return sb.ToString();
 		}
-        public static void WriteAscii( this Stream s, string str, int count = 0, bool trim = false ) {
-			byte[] chars = Encoding.ASCII.GetBytes( str );
+		public static void WriteAscii( this Stream s, string str, int count = 0, bool trim = false ) {
+			WriteString( s, Encoding.ASCII, str, count, trim );
+		}
+        public static void WriteString( this Stream s, Encoding encoding, string str, int count = 0, bool trim = false ) {
+			byte[] chars = encoding.GetBytes( str );
 			if ( !trim && count > 0 && count < chars.Length ) {
 				throw new Exception( "String won't fit in provided space!" );
 			}
@@ -574,6 +583,13 @@ namespace HyoutaTools {
 				b = s.ReadByte();
 			}
 			return Encoding.UTF8.GetString( data.ToArray() );
+		}
+		public static void WriteUTF8( this Stream s, string str, int count = 0, bool trim = false ) {
+			WriteString( s, Encoding.UTF8, str, count, trim );
+		}
+		public static void WriteUTF8Nullterm( this Stream s, string str ) {
+			WriteUTF8( s, str, 0, false );
+			s.WriteByte( 0 );
 		}
 		public static string ReadUTF16Nullterm( this Stream s ) {
 			StringBuilder sb = new StringBuilder();
@@ -607,6 +623,7 @@ namespace HyoutaTools {
 			}
 			return sb.ToString();
 		}
+
 		public static void Write( this Stream s, byte[] data ) {
 			s.Write( data, 0, data.Length );
 		}

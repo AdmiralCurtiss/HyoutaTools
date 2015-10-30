@@ -15,7 +15,7 @@ namespace HyoutaTools.Tales.Xillia.SDB {
 	class SDB {
 		public uint Type;
 		public List<uint> OtherData;
-        public List<SDBEntry> TextList;
+		public List<SDBEntry> TextList;
 		public Util.Endianness Endian;
 
 		public SDB( String filename ) {
@@ -34,7 +34,7 @@ namespace HyoutaTools.Tales.Xillia.SDB {
 
 		private bool LoadFile( System.IO.Stream stream ) {
 			// not entirely sure if this is actually type information?
-			uint Type = stream.ReadUInt32();
+			Type = stream.ReadUInt32();
 			if ( Type <= 0xFFFF ) {
 				Endian = Util.Endianness.LittleEndian;
 			} else {
@@ -81,6 +81,46 @@ namespace HyoutaTools.Tales.Xillia.SDB {
 			}
 
 			return true;
+		}
+
+		public void Write( System.IO.Stream stream ) {
+			stream.WriteUInt32( Type.ToEndian( Endian ) );
+
+			bool ToZ = Type != 0x08;
+			if ( ToZ ) {
+				stream.WriteUInt32( Util.ToEndian( 0x0Cu, Endian ) );
+			}
+
+			stream.WriteUInt32( ( (uint)TextList.Count ).ToEndian( Endian ) );
+
+			if ( ToZ ) {
+				stream.WriteUInt32( ( (uint)OtherData.Count ).ToEndian( Endian ) );
+				foreach ( uint d in OtherData ) {
+					stream.WriteUInt32( d.ToEndian( Endian ) );
+				}
+				stream.WriteUInt32( (uint)( TextList.Count * 8 + 4 ) );
+			}
+
+			uint pointerLocation = (uint)stream.Position;
+			for ( int i = 0; i < TextList.Count; ++i ) {
+				// reserve space for pointers
+				stream.WriteUInt32( 0 );
+				stream.WriteUInt32( 0 );
+			}
+
+			foreach ( SDBEntry e in TextList ) {
+				for ( int i = 0; i < 2; ++i ) {
+					if ( ToZ ) {
+						stream.WriteAlign( 2 );
+					}
+					uint pos = (uint)stream.Position;
+					stream.Position = pointerLocation;
+					stream.WriteUInt32( ( pos - pointerLocation ).ToEndian( Endian ) );
+					stream.Position = pos;
+					pointerLocation += 4;
+					stream.WriteUTF8Nullterm( i == 0 ? e.IDString : e.Text );
+				}
+			}
 		}
 	}
 }
