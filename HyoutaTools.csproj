@@ -339,7 +339,7 @@
     <Compile Include="Tales\Vesperia\TSS\TSSHeader.cs" />
     <Compile Include="Tales\Xillia\TldatExtract\Program.cs" />
     <Compile Include="Tales\Xillia\TldatExtract\TOFHDBheader.cs" />
-    <Compile Include="Tales\Xillia\XilliaScriptFile.cs" />
+    <Compile Include="Tales\Xillia\SDB\SDB.cs" />
     <Compile Include="Trophy\Viewer\CustomDrawListBox.cs">
       <SubType>Component</SubType>
     </Compile>

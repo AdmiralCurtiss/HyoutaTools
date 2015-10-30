@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
-using HyoutaTools.Tales.Xillia;
+using HyoutaTools.Tales.Xillia.SDB;
 
 namespace HyoutaTools.GraceNote.XilliaScriptFileDump {
 	class Program {
@@ -16,12 +16,15 @@ namespace HyoutaTools.GraceNote.XilliaScriptFileDump {
 			String NewDB = args[1];
 			String GracesDB = args[2];
 
-			XilliaScriptFile XSF = new XilliaScriptFile( Filename );
+			SDB XSF = new SDB( Filename );
 			System.IO.File.WriteAllBytes( NewDB, Properties.Resources.gndb_template );
+			if ( !System.IO.File.Exists( GracesDB ) ) {
+				System.IO.File.WriteAllBytes( GracesDB, Properties.Resources.gngj_template );
+			}
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( XSF.TextList.Count );
-			foreach ( XS entry in XSF.TextList ) {
-				GraceNoteDatabaseEntry gn = new GraceNoteDatabaseEntry( entry.Text, entry.Text, "", 0, entry.PointerText, entry.IDString, entry.PointerIDString );
+			foreach ( SDBEntry entry in XSF.TextList ) {
+				GraceNoteDatabaseEntry gn = new GraceNoteDatabaseEntry( entry.Text, entry.Text, "", 0, (int)entry.PointerText, entry.IDString, (int)entry.PointerIDString );
 				Entries.Add( gn );
 			}
 
