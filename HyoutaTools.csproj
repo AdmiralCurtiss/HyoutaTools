@@ -295,6 +295,7 @@
     <Compile Include="Tales\Vesperia\Website\ScenarioData.cs" />
     <Compile Include="Tales\Vesperia\WRLDDAT\Location.cs" />
     <Compile Include="Tales\Vesperia\WRLDDAT\WRLDDAT.cs" />
+    <Compile Include="Tales\Vesperia\xma\FixHeader.cs" />
     <Compile Include="Tales\Xillia\TldatPack\Program.cs" />
     <Compile Include="Textures\DDS.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />
