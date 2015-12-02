@@ -96,6 +96,7 @@
     <Compile Include="DanganRonpa\PakText\PakText.cs" />
     <Compile Include="DanganRonpa\Pak\Program.cs" />
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
+    <Compile Include="Generic\AddDDSHeader\Program.cs" />
     <Compile Include="Generic\ArbitraryTextDump\Dump.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />

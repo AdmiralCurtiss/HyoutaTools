@@ -108,6 +108,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Gust.g1t.Extract",                        "-"           ),  Gust.g1t.DDSConverter.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Sting.BlazeUnion.ScriptImport", "-"           ),  GraceNote.Sting.BlazeUnionScript.Importer.Import) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Sting.BlazeUnion.ScriptExport", "-"           ),  GraceNote.Sting.BlazeUnionScript.Exporter.Export) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.AddDDSHeader",                    "DDSHeader"   ),  Generic.AddDDSHeader.Program.Execute) },
 		};
 
 		[STAThread]
