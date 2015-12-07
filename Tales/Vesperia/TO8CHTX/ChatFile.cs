@@ -34,15 +34,15 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public ChatFileHeader Header;
 		public ChatFileLine[] Lines;
 
-		public ChatFile( string filename ) {
-			LoadFile( System.IO.File.ReadAllBytes( filename ) );
+		public ChatFile( string filename, bool isUtf8 = false ) {
+			LoadFile( System.IO.File.ReadAllBytes( filename ), isUtf8 );
 		}
 
-		public ChatFile( byte[] file ) {
-			LoadFile( file );
+		public ChatFile( byte[] file, bool isUtf8 = false ) {
+			LoadFile( file, isUtf8 );
 		}
 
-		private void LoadFile( byte[] TO8CHTX ) {
+		private void LoadFile( byte[] TO8CHTX, bool isUtf8 ) {
 			Header = new ChatFileHeader();
 
 			Header.Identify = Util.SwapEndian( BitConverter.ToUInt64( TO8CHTX, 0x00 ) );
@@ -62,9 +62,15 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 				Lines[i].ENG = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x28 + i * 0x10 ) );
 				Lines[i].Unknown = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x2C + i * 0x10 ) );
 
-				Lines[i].SName = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].Name + Header.TextStart ) );
-				Lines[i].SJPN = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].JPN + Header.TextStart ) );
-				Lines[i].SENG = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].ENG + Header.TextStart ) ).Replace( '@', ' ' );
+				if ( isUtf8 ) {
+					Lines[i].SName = Util.GetTextUTF8( TO8CHTX, (int)( Lines[i].Name + Header.TextStart ) );
+					Lines[i].SJPN = Util.GetTextUTF8( TO8CHTX, (int)( Lines[i].JPN + Header.TextStart ) );
+					Lines[i].SENG = Util.GetTextUTF8( TO8CHTX, (int)( Lines[i].ENG + Header.TextStart ) ).Replace( '@', ' ' );
+				} else {
+					Lines[i].SName = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].Name + Header.TextStart ) );
+					Lines[i].SJPN = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].JPN + Header.TextStart ) );
+					Lines[i].SENG = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].ENG + Header.TextStart ) ).Replace( '@', ' ' );
+				}
 			}
 		}
 

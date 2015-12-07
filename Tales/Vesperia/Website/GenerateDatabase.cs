@@ -41,7 +41,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					ExportNecropolis();
 					ExportTrophies();
 					ExportScenarioDat();
-					ExportSkitText();
+				}
+				ExportSkitText();
+				if ( Site.Version != GameVersion.X360 ) {
 					ExportScenarioMetadata();
 					ExportSkitMetadata();
 				}

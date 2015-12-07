@@ -119,6 +119,7 @@ namespace HyoutaTools.Tales.Vesperia {
 		}
 
 		public static string RemoveFurigana( string str, bool keepFuriganaInstead ) {
+			str = str.TrimEnd( '\r' ); // 360 skit files have this for some odd reason
 			while ( str.Contains( '\r' ) ) {
 				int furiStart = str.IndexOf( '\r' );
 				string textFromFuriStart = str.Substring( furiStart );
@@ -142,6 +143,7 @@ namespace HyoutaTools.Tales.Vesperia {
 			return str;
 		}
 		public static string ReplaceFuriganaWithHtmlRuby( string str ) {
+			str = str.TrimEnd( '\r' ); // 360 skit files have this for some odd reason
 			while ( str.Contains( '\r' ) ) {
 				int furiStart = str.IndexOf( '\r' );
 				string textFromFuriStart = str.Substring( furiStart );

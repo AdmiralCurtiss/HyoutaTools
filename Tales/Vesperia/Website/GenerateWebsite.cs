@@ -53,6 +53,16 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.BattleBook = new BTLBDAT.BTLBDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\BATTLEBOOKDATA.BIN" );
 			site.Strategy = new T8BTTA.T8BTTA( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0011.ext\ALL.0000" );
 			site.Skits = new TO8CHLI.TO8CHLI( @"d:\Dropbox\ToV\360\chat.svo.ext\CHAT.DAT.dec" );
+			site.SkitText = new Dictionary<string, TO8CHTX.ChatFile>();
+			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
+				string name = site.Skits.SkitInfoList[i].RefString;
+				try {
+					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( @"d:\Dropbox\ToV\360\chat.svo.ext\" + name + @"UK.DAT.dec.ext\0003", true );
+					site.SkitText.Add( name, chatFile );
+				} catch ( DirectoryNotFoundException ) {
+					Console.WriteLine( "Couldn't find 360 chat file " + name + "!" );
+				}
+			}
 			site.Shops = new ShopData.ShopData( @"d:\Dropbox\ToV\360\scenario0", 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56 );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 9, 16, 18, 2, 17, 19, 10, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
