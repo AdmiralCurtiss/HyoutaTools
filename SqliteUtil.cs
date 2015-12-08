@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 using System.Data.SQLite;
 
 namespace HyoutaTools {
@@ -15,17 +16,17 @@ namespace HyoutaTools {
 				return SelectScalar( connection, statement, parameters );
 			}
 		}
-		public static object SelectScalar( SQLiteConnection connection, string statement, IEnumerable<object> parameters ) {
+		public static object SelectScalar( IDbConnection connection, string statement, IEnumerable<object> parameters ) {
 			object retval = null;
-			using ( SQLiteTransaction transaction = connection.BeginTransaction() ) {
+			using ( IDbTransaction transaction = connection.BeginTransaction() ) {
 				retval = SelectScalar( transaction, statement, parameters );
 				transaction.Commit();
 			}
 			return retval;
 		}
-		public static object SelectScalar( SQLiteTransaction transaction, string statement, IEnumerable<object> parameters ) {
+		public static object SelectScalar( IDbTransaction transaction, string statement, IEnumerable<object> parameters ) {
 			object retval = null;
-			using ( SQLiteCommand Command = new SQLiteCommand() ) {
+			using ( IDbCommand Command = new SQLiteCommand() ) {
 				Command.Connection = transaction.Connection;
 				Command.CommandText = statement;
 				foreach ( object p in parameters ) {
@@ -47,17 +48,17 @@ namespace HyoutaTools {
 				return SelectArray( Connection, statement, parameters );
 			}
 		}
-		public static List<Object[]> SelectArray( SQLiteConnection connection, string statement, IEnumerable<object> parameters ) {
+		public static List<Object[]> SelectArray( IDbConnection connection, string statement, IEnumerable<object> parameters ) {
 			List<Object[]> retval = null;
-			using ( SQLiteTransaction transaction = connection.BeginTransaction() ) {
+			using ( IDbTransaction transaction = connection.BeginTransaction() ) {
 				retval = SelectArray( transaction, statement, parameters );
 				transaction.Commit();
 			}
 			return retval;
 		}
-		public static List<Object[]> SelectArray( SQLiteTransaction transaction, string statement, IEnumerable<object> parameters ) {
+		public static List<Object[]> SelectArray( IDbTransaction transaction, string statement, IEnumerable<object> parameters ) {
 			List<Object[]> rows = null;
-			using ( SQLiteCommand Command = new SQLiteCommand() ) {
+			using ( IDbCommand Command = new SQLiteCommand() ) {
 				Command.Connection = transaction.Connection;
 				Command.CommandText = statement;
 				foreach ( object p in parameters ) {
@@ -66,7 +67,7 @@ namespace HyoutaTools {
 					Command.Parameters.Add( sqp );
 				}
 
-				SQLiteDataReader rd = Command.ExecuteReader();
+				IDataReader rd = Command.ExecuteReader();
 
 				rows = new List<object[]>();
 				if ( rd.Read() ) {
@@ -98,24 +99,24 @@ namespace HyoutaTools {
 			Connection.Close();
 			return retval;
 		}
-		public static int Update( SQLiteConnection connection, string statement ) {
+		public static int Update( IDbConnection connection, string statement ) {
 			return Update( connection, statement, new object[0] );
 		}
-		public static int Update( SQLiteConnection connection, string statement, IEnumerable<object> parameters ) {
+		public static int Update( IDbConnection connection, string statement, IEnumerable<object> parameters ) {
 			int affected = -1;
-			using ( SQLiteTransaction Transaction = connection.BeginTransaction() ) {
+			using ( IDbTransaction Transaction = connection.BeginTransaction() ) {
 				affected = Update( Transaction, statement, parameters );
 				Transaction.Commit();
 			}
 			return affected;
 		}
-		public static int Update( SQLiteTransaction transaction, string statement ) {
+		public static int Update( IDbTransaction transaction, string statement ) {
 			return Update( transaction, statement, new object[0] );
 		}
-		public static int Update( SQLiteTransaction transaction, string statement, IEnumerable<object> parameters ) {
+		public static int Update( IDbTransaction transaction, string statement, IEnumerable<object> parameters ) {
 			int affected = -1;
 
-			using ( SQLiteCommand Command = new SQLiteCommand() ) {
+			using ( IDbCommand Command = new SQLiteCommand() ) {
 				Command.Connection = transaction.Connection;
 				Command.CommandText = statement;
 				foreach ( object p in parameters ) {
