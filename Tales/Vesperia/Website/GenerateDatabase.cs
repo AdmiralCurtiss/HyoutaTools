@@ -9,12 +9,16 @@ using System.Text.RegularExpressions;
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateDatabase {
 		private GenerateWebsite Site;
+		private GenerateWebsite SiteCompare;
 		private IDbConnection DB;
 
-		public GenerateDatabase( GenerateWebsite website, IDbConnection databaseConnection ) {
+		public GenerateDatabase( GenerateWebsite website, IDbConnection databaseConnection, GenerateWebsite websiteForComparison = null ) {
 			this.Site = website;
 			this.DB = databaseConnection;
+			this.SiteCompare = websiteForComparison;
 		}
+
+		enum ChangeStatus { NoComparison, SameLine, ChangedOrAddedLine, NewFile }
 
 		public void ExportAll() {
 			Console.WriteLine( "Exporting database" );
@@ -149,7 +153,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE SkitText ( id INTEGER PRIMARY KEY AUTOINCREMENT, skitId VARCHAR(8), displayOrder INT, jpChar TEXT, enChar TEXT, jpText TEXT, enText TEXT, "
-						+ "jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
+						+ "jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT, changeStatus INT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -158,8 +162,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO SkitText ( skitId, displayOrder, jpChar, enChar, jpText, enText, jpSearchKanji, jpSearchFuri, enSearch ) "
-						+ "VALUES ( @skitId, @displayOrder, @jpChar, @enChar, @jpText, @enText, @jpSearchKanji, @jpSearchFuri, @enSearch )";
+					command.CommandText = "INSERT INTO SkitText ( skitId, displayOrder, jpChar, enChar, jpText, enText, jpSearchKanji, jpSearchFuri, enSearch, changeStatus ) "
+						+ "VALUES ( @skitId, @displayOrder, @jpChar, @enChar, @jpText, @enText, @jpSearchKanji, @jpSearchFuri, @enSearch, @changeStatus )";
 					command.AddParameter( "skitId" );
 					command.AddParameter( "displayOrder" );
 					command.AddParameter( "jpChar" );
@@ -169,10 +173,17 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "jpSearchKanji" );
 					command.AddParameter( "jpSearchFuri" );
 					command.AddParameter( "enSearch" );
+					command.AddParameter( "changeStatus" );
 
 					foreach ( var kvp in Site.SkitText ) {
 						var skitId = kvp.Key;
 						var skit = kvp.Value;
+						Tales.Vesperia.TO8CHTX.ChatFile skitCmp = null;
+						if ( SiteCompare != null ) {
+							if ( SiteCompare.SkitText.ContainsKey( skitId ) ) {
+								skitCmp = SiteCompare.SkitText[skitId];
+							}
+						}
 
 						for ( int i = 0; i < skit.Lines.Length; ++i ) {
 							string nameJp = skit.Lines[i].SName;
@@ -188,6 +199,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 							string textJp = skit.Lines[i].SJPN;
 							string textEn = skit.Lines[i].SENG;
+							string textJpSearchKanji = CleanStringForSearch( textJp, true, false );
 
 							command.GetParameter( "skitId" ).Value = skitId;
 							command.GetParameter( "displayOrder" ).Value = i;
@@ -195,9 +207,26 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 							command.GetParameter( "enChar" ).Value = nameEn;
 							command.GetParameter( "jpText" ).Value = textJp.ToHtmlJpn( Site.Version );
 							command.GetParameter( "enText" ).Value = textEn.ToHtmlEng( Site.Version );
-							command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( textJp, true, false );
+							command.GetParameter( "jpSearchKanji" ).Value = textJpSearchKanji;
 							command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( textJp, true, true );
 							command.GetParameter( "enSearch" ).Value = CleanStringForSearch( textEn, false, false );
+
+							ChangeStatus changeStatus = ChangeStatus.NoComparison;
+							if ( SiteCompare != null ) {
+								if ( skitCmp != null ) {
+									changeStatus = ChangeStatus.ChangedOrAddedLine;
+									foreach ( var lineCmp in skitCmp.Lines ) {
+										if ( textJpSearchKanji == CleanStringForSearch( lineCmp.SJPN, true, false ) ) {
+											changeStatus = ChangeStatus.SameLine;
+											break;
+										}
+									}
+                                } else {
+									changeStatus = ChangeStatus.NewFile;
+								}
+							}
+							command.GetParameter( "changeStatus" ).Value = (int)changeStatus;
+
 							command.ExecuteNonQuery();
 						}
 					}
