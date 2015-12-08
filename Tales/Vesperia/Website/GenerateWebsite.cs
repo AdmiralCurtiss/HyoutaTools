@@ -68,6 +68,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 9, 16, 18, 2, 17, 19, 10, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
 			site.Records = site.GenerateRecordsStringDicList();
 			site.Settings = site.GenerateSettingsStringDicList();
+			site.LoadBattleTextScfombin( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0003.ext\" );
+
+			site.ScenarioFiles = new Dictionary<string, ScenarioFile.ScenarioFile>();
+			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\360\scenario_uk.dat.ext\", isUtf8: true );
+			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\360\scenario_uk.dat.ext\", isUtf8: true );
+			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\360\scenario_uk.dat.ext\", isUtf8: true );
+			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			// copy over Japanese stuff into UK StringDic
 			var StringDicUs = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"d:\Dropbox\ToV\360\string_dic_us.so" ), true );
@@ -107,6 +114,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.GradeShop, site.Version, false ) ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SkitInfo, site.Version, false ) ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SkitIndex, site.Version, false ) ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioStoryIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsStory, ScenarioType.Story ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioSidequestIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsSidequests, ScenarioType.Sidequests ), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioMapIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsMaps, ScenarioType.Maps ), Encoding.UTF8 );
 
 			Console.WriteLine( "Initializing PS3" );
 
@@ -1145,7 +1155,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		private enum ScenarioType { Story, Sidequests, Maps };
-		private List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, string database, string scenarioDatFolder, string scenarioDatFolderMod = null ) {
+		private List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, string database, string scenarioDatFolder, string scenarioDatFolderMod = null, bool isUtf8 = false ) {
 			var data = SqliteUtil.SelectArray( "Data Source=" + database, "SELECT filename, shortdesc, desc FROM descriptions ORDER BY desc" );
 
 			List<ScenarioData> scenes = new List<ScenarioData>();
@@ -1180,12 +1190,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						if ( !ScenarioFiles.ContainsKey( episodeID ) ) {
 							string num = filename.Substring( "VScenario".Length );
 							try {
-								var orig = new ScenarioFile.ScenarioFile( Path.Combine( scenarioDatFolder, num + ".d" ) );
-								var mod = new ScenarioFile.ScenarioFile( Path.Combine( scenarioDatFolderMod, num + ".d" ) );
-								Util.Assert( orig.EntryList.Count == mod.EntryList.Count );
-								for ( int i = 0; i < orig.EntryList.Count; ++i ) {
-									orig.EntryList[i].EnName = mod.EntryList[i].JpName;
-									orig.EntryList[i].EnText = mod.EntryList[i].JpText;
+								var orig = new ScenarioFile.ScenarioFile( Path.Combine( scenarioDatFolder, num + ".d" ), isUtf8 );
+								if ( scenarioDatFolderMod != null ) {
+									var mod = new ScenarioFile.ScenarioFile( Path.Combine( scenarioDatFolderMod, num + ".d" ), isUtf8 );
+									Util.Assert( orig.EntryList.Count == mod.EntryList.Count );
+									for ( int i = 0; i < orig.EntryList.Count; ++i ) {
+										orig.EntryList[i].EnName = mod.EntryList[i].JpName;
+										orig.EntryList[i].EnText = mod.EntryList[i].JpText;
+									}
 								}
 								this.ScenarioFiles.Add( episodeID, orig );
 								scenes.Add( new ScenarioData() { EpisodeId = episodeID, HumanReadableName = humanReadableName, DatabaseName = filename } );

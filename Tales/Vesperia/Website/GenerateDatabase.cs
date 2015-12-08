@@ -40,13 +40,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				if ( Site.Version != GameVersion.X360 ) {
 					ExportNecropolis();
 					ExportTrophies();
-					ExportScenarioDat();
 				}
+				ExportScenarioDat();
 				ExportSkitText();
-				if ( Site.Version != GameVersion.X360 ) {
-					ExportScenarioMetadata();
-					ExportSkitMetadata();
-				}
+				ExportScenarioMetadata();
+				ExportSkitMetadata();
 			} finally {
 				DB.Close();
 			}
@@ -54,7 +52,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		private void ExportScenarioDat() {
 			AddBattleStringsToScenario();
-			CleanScenarioStrings( Site.ScenarioFiles, Site.InGameIdDict );
+			if ( Site.Version == GameVersion.PS3 ) {
+				CleanScenarioStrings( Site.ScenarioFiles, Site.InGameIdDict );
+			}
 
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
@@ -217,8 +217,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.ExecuteNonQuery();
 				}
 
-				CleanScenarioMetadata( Site.ScenarioGroupsStory, true );
-				CleanScenarioMetadata( Site.ScenarioGroupsSidequests, false );
+				if ( Site.Version == GameVersion.PS3 ) {
+					CleanScenarioMetadata( Site.ScenarioGroupsStory, true );
+					CleanScenarioMetadata( Site.ScenarioGroupsSidequests, false );
+				}
 
 				ExportScenarioMetadata( transaction, Site.ScenarioGroupsStory, 1 );
 				ExportScenarioMetadata( transaction, Site.ScenarioGroupsSidequests, 2 );

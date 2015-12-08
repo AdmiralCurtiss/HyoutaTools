@@ -8,23 +8,23 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 	public class ScenarioFile {
 		public ScenarioFile() { }
 
-		public ScenarioFile( String filename ) {
+		public ScenarioFile( String filename, bool isUtf8 = false ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
-				if ( !LoadFile( stream ) ) {
+				if ( !LoadFile( stream, isUtf8 ) ) {
 					throw new Exception( "Loading ScenarioFile failed!" );
 				}
 			}
 		}
 
-		public ScenarioFile( Stream stream ) {
-			if ( !LoadFile( stream ) ) {
+		public ScenarioFile( Stream stream, bool isUtf8 = false ) {
+			if ( !LoadFile( stream, isUtf8 ) ) {
 				throw new Exception( "Loading ScenarioFile failed!" );
 			}
 		}
 
 		public List<ScenarioFileEntry> EntryList;
 
-		private bool LoadFile( Stream stream ) {
+		private bool LoadFile( Stream stream, bool isUtf8 ) {
 			uint magic = stream.ReadUInt32().SwapEndian();
 			uint headerSize = stream.ReadUInt32().SwapEndian();
 			stream.ReadUInt32().SwapEndian();
@@ -35,12 +35,12 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 			uint textLength = stream.ReadUInt32().SwapEndian();
 			stream.ReadUInt32().SwapEndian();
 
-			EntryList = FindText( stream, textStart );
+			EntryList = FindText( stream, textStart, isUtf8 );
 
 			return true;
 		}
 
-		private static List<ScenarioFileEntry> FindText( Stream stream, uint textStart ) {
+		private static List<ScenarioFileEntry> FindText( Stream stream, uint textStart, bool isUtf8 ) {
 			var list = new List<ScenarioFileEntry>();
 
 			while ( stream.Position < textStart ) {
@@ -57,10 +57,10 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 					uint jpTextPtr = stream.ReadUInt32().SwapEndian();
 					uint enNamePtr = stream.ReadUInt32().SwapEndian();
 					uint enTextPtr = stream.ReadUInt32().SwapEndian();
-					stream.Position = jpNamePtr + textStart; string jpName = stream.ReadShiftJisNullterm();
-					stream.Position = jpTextPtr + textStart; string jpText = stream.ReadShiftJisNullterm();
-					stream.Position = enNamePtr + textStart; string enName = stream.ReadShiftJisNullterm();
-					stream.Position = enTextPtr + textStart; string enText = stream.ReadShiftJisNullterm();
+					stream.Position = jpNamePtr + textStart; string jpName = isUtf8 ? stream.ReadUTF8Nullterm() : stream.ReadShiftJisNullterm();
+					stream.Position = jpTextPtr + textStart; string jpText = isUtf8 ? stream.ReadUTF8Nullterm() : stream.ReadShiftJisNullterm();
+					stream.Position = enNamePtr + textStart; string enName = isUtf8 ? stream.ReadUTF8Nullterm() : stream.ReadShiftJisNullterm();
+					stream.Position = enTextPtr + textStart; string enText = isUtf8 ? stream.ReadUTF8Nullterm() : stream.ReadShiftJisNullterm();
 
 					var entry = new ScenarioFileEntry() { Pointer = pos, JpName = jpName, EnName = enName, JpText = jpText, EnText = enText };
 					list.Add( entry );
