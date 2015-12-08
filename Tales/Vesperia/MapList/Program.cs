@@ -8,30 +8,32 @@ namespace HyoutaTools.Tales.Vesperia.MapList {
 		public static int Execute( List<string> args ) {
 			// 0xCB20
 
-			if ( args.Count != 1 ) {
-				Console.WriteLine( "MAPLIST path/to/MAPLIST.DAT" );
+			if ( args.Count != 2 ) {
+				Console.WriteLine( "Generates a scenario db for use in Tales.Vesperia.Website from a MAPLIST.DAT." );
+				Console.WriteLine( "Usage: maplist.dat scenario.db" );
 				return -1;
 			}
 
-			String Path = args[0];
+			String maplistFilename = args[0];
+			string connStr = "Data Source=" + args[1];
 
-			byte[] Bytes = System.IO.File.ReadAllBytes( Path );
-
-
-			int i = 0;
-
-			bool print_rename = false;
-
-			foreach ( MapName m in new MapList( Bytes ).MapNames ) {
-				if ( !print_rename ) {
-					Console.WriteLine( i + " = " + m.ToString() );
-				} else {
-					if ( m.Name3 != "dummy" ) {
-						Console.WriteLine( "REN VScenario" + i + "_360.txt VScenario_360_" + m.Name3 + "_[" + i.ToString( "D4" ) + "].txt" );
+			using ( var conn = new System.Data.SQLite.SQLiteConnection( connStr ) ) {
+				conn.Open();
+				using ( var ta = conn.BeginTransaction() ) {
+					SqliteUtil.Update( ta, "CREATE TABLE descriptions( filename TEXT PRIMARY KEY, shortdesc TEXT, desc TEXT )" );
+					int i = 0;
+					foreach ( MapName m in new MapList( System.IO.File.ReadAllBytes( maplistFilename ) ).MapNames ) {
+						Console.WriteLine( i + " = " + m.ToString() );
+						List<string> p = new List<string>();
+						p.Add( "VScenario" + i );
+						p.Add( m.Name1 != "dummy" ? m.Name1 : m.Name3 );
+						p.Add( m.Name1 != "dummy" ? m.Name1 : m.Name3 );
+						SqliteUtil.Update( ta, "INSERT INTO descriptions ( filename, shortdesc, desc ) VALUES ( ?, ?, ? )", p );
+						++i;
 					}
+					ta.Commit();
 				}
-
-				i++;
+				conn.Close();
 			}
 
 			return 0;
