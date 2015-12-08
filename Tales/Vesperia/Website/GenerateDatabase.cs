@@ -735,8 +735,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		private void ExportSkitMetadata() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE SkitMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, skitId VARCHAR(8), flagTrigger INT, flagCancel INT, category INT, "
-						+ "skitFlag INT, skitFlagUnique INT, characterBitmask INT, jpName TEXT, enName TEXT, jpCond TEXT, enCond TEXT, changeStatus INT, html TEXT )";
+					command.CommandText = "CREATE TABLE SkitMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, skitId VARCHAR(8), flagTrigger INT, flagCancel INT, category INT, categoryStr TEXT, "
+						+ "skitFlag INT, skitFlagUnique INT, characterBitmask INT, jpName TEXT, enName TEXT, jpCond TEXT, enCond TEXT, changeStatus INT, charHtml TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -753,14 +753,15 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				int skitidx = 0;
 
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO SkitMeta ( skitId, flagTrigger, flagCancel, category, skitFlag, skitFlagUnique, characterBitmask, jpName,"
-						+ " enName, jpCond, enCond, changeStatus, html ) VALUES ( @skitId, @flagTrigger, @flagCancel, @category, @skitFlag, @skitFlagUnique,"
-						+ " @characterBitmask, @jpName, @enName, @jpCond, @enCond, @changeStatus, @html )";
+					command.CommandText = "INSERT INTO SkitMeta ( skitId, flagTrigger, flagCancel, category, categoryStr, skitFlag, skitFlagUnique, characterBitmask, jpName,"
+						+ " enName, jpCond, enCond, changeStatus, charHtml ) VALUES ( @skitId, @flagTrigger, @flagCancel, @category, @categoryStr, @skitFlag, @skitFlagUnique,"
+						+ " @characterBitmask, @jpName, @enName, @jpCond, @enCond, @changeStatus, @charHtml )";
 
 					command.AddParameter( "skitId" );
 					command.AddParameter( "flagTrigger" );
 					command.AddParameter( "flagCancel" );
 					command.AddParameter( "category" );
+					command.AddParameter( "categoryStr" );
 					command.AddParameter( "skitFlag" );
 					command.AddParameter( "skitFlagUnique" );
 					command.AddParameter( "characterBitmask" );
@@ -769,13 +770,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "jpCond" );
 					command.AddParameter( "enCond" );
 					command.AddParameter( "changeStatus" );
-					command.AddParameter( "html" );
+					command.AddParameter( "charHtml" );
 
 					foreach ( var skit in Site.Skits.SkitInfoList ) {
 						command.GetParameter( "skitId" ).Value = skit.RefString;
 						command.GetParameter( "flagTrigger" ).Value = skit.FlagTrigger;
 						command.GetParameter( "flagCancel" ).Value = skit.FlagCancel;
 						command.GetParameter( "category" ).Value = skit.Category;
+						command.GetParameter( "categoryStr" ).Value = skit.CategoryString;
 						command.GetParameter( "skitFlag" ).Value = skit.SkitFlag;
 						command.GetParameter( "skitFlagUnique" ).Value = skit.SkitFlagUnique;
 						command.GetParameter( "characterBitmask" ).Value = skit.CharacterBitmask;
@@ -784,7 +786,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "enName" ).Value = Site.InGameIdDict[skit.StringDicIdName].StringEngHtml( Site.Version );
 						command.GetParameter( "enCond" ).Value = Site.InGameIdDict[skit.StringDicIdCondition].StringEngHtml( Site.Version );
 						command.GetParameter( "changeStatus" ).Value = changeStatus[skitidx++];
-						command.GetParameter( "html" ).Value = skit.GetIndexDataAsHtml( Site.Version, Site.Skits, Site.InGameIdDict, phpLinks: true );
+						StringBuilder sb = new StringBuilder();
+						Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, Site.Version, skit.CharacterBitmask );
+						command.GetParameter( "charHtml" ).Value = sb.ToString();
 						command.ExecuteNonQuery();
 					}
 				}
