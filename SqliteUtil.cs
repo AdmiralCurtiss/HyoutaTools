@@ -98,6 +98,9 @@ namespace HyoutaTools {
 			Connection.Close();
 			return retval;
 		}
+		public static int Update( SQLiteConnection connection, string statement ) {
+			return Update( connection, statement, new object[0] );
+		}
 		public static int Update( SQLiteConnection connection, string statement, IEnumerable<object> parameters ) {
 			int affected = -1;
 			using ( SQLiteTransaction Transaction = connection.BeginTransaction() ) {
@@ -105,6 +108,9 @@ namespace HyoutaTools {
 				Transaction.Commit();
 			}
 			return affected;
+		}
+		public static int Update( SQLiteTransaction transaction, string statement ) {
+			return Update( transaction, statement, new object[0] );
 		}
 		public static int Update( SQLiteTransaction transaction, string statement, IEnumerable<object> parameters ) {
 			int affected = -1;
