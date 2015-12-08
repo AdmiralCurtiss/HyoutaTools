@@ -71,9 +71,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.LoadBattleTextScfombin( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0003.ext\" );
 
 			site.ScenarioFiles = new Dictionary<string, ScenarioFile.ScenarioFile>();
-			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\360\scenario_uk.dat.ext\", isUtf8: true );
-			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\360\scenario_uk.dat.ext\", isUtf8: true );
-			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, @"d:\Dropbox\ToV\PS3\scenarioDB", @"d:\Dropbox\ToV\360\scenario_uk.dat.ext\", isUtf8: true );
+			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, @"d:\Dropbox\ToV\360\scenarioDB", @"d:\Dropbox\ToV\360\scenario_uk.dat.ext\", isUtf8: true );
+			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, @"d:\Dropbox\ToV\360\scenarioDB", @"d:\Dropbox\ToV\360\scenario_uk.dat.ext\", isUtf8: true );
+			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, @"d:\Dropbox\ToV\360\scenarioDB", @"d:\Dropbox\ToV\360\scenario_uk.dat.ext\", isUtf8: true );
 			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			// copy over Japanese stuff into UK StringDic
