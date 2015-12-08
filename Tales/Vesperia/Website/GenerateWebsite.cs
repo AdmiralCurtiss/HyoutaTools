@@ -1107,14 +1107,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			if ( phpLink ) {
 				string v = GetPhpUrlGameVersion( version );
 				switch ( section ) {
-					case WebsiteSection.Enemy: return "?version=" + v + "&section=enemies&category=" + category + id != null ? "#enemy" + id : "";
-					case WebsiteSection.Item: return "?version=" + v + "&section=items&icon=" + icon + id != null ? "#item" + id : "";
-					case WebsiteSection.Recipe: return "?version=" + v + "&section=recipes" + id != null ? "#recipe" + id : "";
-					case WebsiteSection.Skill: return "?version=" + v + "&section=skills" + id != null ? "#skill" + id : "";
-					case WebsiteSection.Location: return "?version=" + v + "&section=locations" + id != null ? "#location" + id : "";
-					case WebsiteSection.Shop: return "?version=" + v + "&section=shops" + id != null ? "#shop" + id : "";
-					case WebsiteSection.Skit: return "?version=" + v + "&section=skit" + extra != null ? "&name=" + extra : "";
-					case WebsiteSection.Scenario: return "?version=" + v + "&section=scenario" + extra != null ? "&name=" + extra : "";
+					case WebsiteSection.Enemy: return "?version=" + v + "&section=enemies&category=" + category + ( id != null ? "#enemy" + id : "" );
+					case WebsiteSection.Item: return "?version=" + v + "&section=items&icon=" + icon + ( id != null ? "#item" + id : "" );
+					case WebsiteSection.Recipe: return "?version=" + v + "&section=recipes" + ( id != null ? "#recipe" + id : "" );
+					case WebsiteSection.Skill: return "?version=" + v + "&section=skills" + ( id != null ? "#skill" + id : "" );
+					case WebsiteSection.Location: return "?version=" + v + "&section=locations" + ( id != null ? "#location" + id : "" );
+					case WebsiteSection.Shop: return "?version=" + v + "&section=shops" + ( id != null ? "#shop" + id : "" );
+					case WebsiteSection.Skit: return "?version=" + v + "&section=skit" + ( extra != null ? "&name=" + extra : "" );
+					case WebsiteSection.Scenario: return "?version=" + v + "&section=scenario" + ( extra != null ? "&name=" + extra : "" );
 					default: throw new Exception( "Unsupported PHP URL requested." );
 				}
 			} else {
