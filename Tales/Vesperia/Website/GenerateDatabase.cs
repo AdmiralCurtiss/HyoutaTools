@@ -141,6 +141,37 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return s;
 		}
 
+		private string CleanCleanedStringForVersionComparision( string s ) {
+			s = s.Replace( " ", "" );
+			s = s.Replace( "!", "" );
+			s = s.Replace( "?", "" );
+			s = s.Replace( "@", "" );
+			s = s.Replace( "[", "" );
+			s = s.Replace( "]", "" );
+			s = s.Replace( "(", "" );
+			s = s.Replace( ")", "" );
+			s = s.Replace( "{", "" );
+			s = s.Replace( "}", "" );
+			s = s.Replace( "`", "" );
+			s = s.Replace( "´", "" );
+			s = s.Replace( "'", "" );
+			s = s.Replace( "…", "" );
+			s = s.Replace( "∀", "" );
+			s = s.Replace( "♪", "" );
+			s = s.Replace( "、", "" );
+			s = s.Replace( "。", "" );
+			s = s.Replace( "『", "" );
+			s = s.Replace( "』", "" );
+			s = s.Replace( "・", "" );
+			s = s.Replace( "　", "" );
+			s = s.Replace( "！", "" );
+			s = s.Replace( "？", "" );
+			s = s.Replace( "（", "" );
+			s = s.Replace( "）", "" );
+			s = s.Replace( "～", "" );
+			return s;
+		}
+
 		private void AddBattleStringsToScenario() {
 			foreach ( var kvp in Site.BattleTextFiles ) {
 				var fakeScenario = new ScenarioFile.ScenarioFile();
@@ -214,14 +245,17 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 							ChangeStatus changeStatus = ChangeStatus.NoComparison;
 							if ( SiteCompare != null ) {
 								if ( skitCmp != null ) {
+									string textJpCleanCmp = CleanCleanedStringForVersionComparision( textJpSearchKanji );
 									changeStatus = ChangeStatus.ChangedOrAddedLine;
 									foreach ( var lineCmp in skitCmp.Lines ) {
-										if ( textJpSearchKanji == CleanStringForSearch( lineCmp.SJPN, true, false ) ) {
+										string cmpclean = CleanStringForSearch( lineCmp.SJPN, true, false );
+										cmpclean = CleanCleanedStringForVersionComparision( cmpclean );
+										if ( textJpCleanCmp == cmpclean ) {
 											changeStatus = ChangeStatus.SameLine;
 											break;
 										}
 									}
-                                } else {
+								} else {
 									changeStatus = ChangeStatus.NewFile;
 								}
 							}
@@ -332,7 +366,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					"VC921", // also for fetching Harry late game one skit seems misplaced
 					"VC927", "VC960", // final zagi skits should be one scene higher
 				};
-				Dictionary<string, TO8CHLI.SkitInfo> removedSkits = new Dictionary<string,TO8CHLI.SkitInfo>();
+				Dictionary<string, TO8CHLI.SkitInfo> removedSkits = new Dictionary<string, TO8CHLI.SkitInfo>();
 
 				// grab skits and remove them from their files
 				foreach ( var group in groups ) {
@@ -348,7 +382,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 
 				Util.Assert( skitsToRemove.Length == removedSkits.Count );
-				
+
 				// insert them in other places instead
 				InsertSkitAt( groups, "EP_570_020", removedSkits["VC911"] );
 				InsertSkitAt( groups, "EP_580_030", removedSkits["VC912"] );
@@ -702,7 +736,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE SkitMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, skitId VARCHAR(8), flagTrigger INT, flagCancel INT, category INT, "
-						+ "skitFlag INT, skitFlagUnique INT, characterBitmask INT, jpName TEXT, enName TEXT, jpCond TEXT, enCond TEXT, html TEXT )";
+						+ "skitFlag INT, skitFlagUnique INT, characterBitmask INT, jpName TEXT, enName TEXT, jpCond TEXT, enCond TEXT, changeStatus INT, html TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -710,10 +744,19 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.ExecuteNonQuery();
 				}
 
+				List<long> changeStatus = new List<long>();
+				foreach ( var skit in Site.Skits.SkitInfoList ) {
+					object o = SqliteUtil.SelectScalar( transaction, "SELECT MAX(changeStatus) FROM SkitText WHERE skitId = ?", new object[1] { skit.RefString } );
+					if ( o == null || o == System.DBNull.Value ) { o = -1L; }
+					changeStatus.Add( (long)o );
+				}
+				int skitidx = 0;
+
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "INSERT INTO SkitMeta ( skitId, flagTrigger, flagCancel, category, skitFlag, skitFlagUnique, characterBitmask, jpName,"
-						+ " enName, jpCond, enCond, html ) VALUES ( @skitId, @flagTrigger, @flagCancel, @category, @skitFlag, @skitFlagUnique, @characterBitmask,"
-						+ " @jpName, @enName, @jpCond, @enCond, @html )";
+						+ " enName, jpCond, enCond, changeStatus, html ) VALUES ( @skitId, @flagTrigger, @flagCancel, @category, @skitFlag, @skitFlagUnique,"
+						+ " @characterBitmask, @jpName, @enName, @jpCond, @enCond, @changeStatus, @html )";
+
 					command.AddParameter( "skitId" );
 					command.AddParameter( "flagTrigger" );
 					command.AddParameter( "flagCancel" );
@@ -725,6 +768,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "enName" );
 					command.AddParameter( "jpCond" );
 					command.AddParameter( "enCond" );
+					command.AddParameter( "changeStatus" );
 					command.AddParameter( "html" );
 
 					foreach ( var skit in Site.Skits.SkitInfoList ) {
@@ -739,6 +783,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "jpCond" ).Value = Site.InGameIdDict[skit.StringDicIdCondition].StringJpnHtml( Site.Version );
 						command.GetParameter( "enName" ).Value = Site.InGameIdDict[skit.StringDicIdName].StringEngHtml( Site.Version );
 						command.GetParameter( "enCond" ).Value = Site.InGameIdDict[skit.StringDicIdCondition].StringEngHtml( Site.Version );
+						command.GetParameter( "changeStatus" ).Value = changeStatus[skitidx++];
 						command.GetParameter( "html" ).Value = skit.GetIndexDataAsHtml( Site.Version, Site.Skits, Site.InGameIdDict, phpLinks: true );
 						command.ExecuteNonQuery();
 					}
@@ -746,7 +791,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				transaction.Commit();
 			}
 		}
-		
+
 		private void ExportStringDic() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
