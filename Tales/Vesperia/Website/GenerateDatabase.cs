@@ -63,7 +63,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE ScenarioDat ( id INTEGER PRIMARY KEY AUTOINCREMENT, episodeId VARCHAR(20), displayOrder INT, type INT, jpName TEXT, jpText TEXT, enName TEXT, enText TEXT, "
-						+ "jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
+						+ "jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT, changeStatus INT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -72,8 +72,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO ScenarioDat ( episodeId, displayOrder, type, jpName, jpText, enName, enText, jpSearchKanji, jpSearchFuri, enSearch ) "
-						+ "VALUES ( @episodeId, @displayOrder, @type, @jpName, @jpText, @enName, @enText, @jpSearchKanji, @jpSearchFuri, @enSearch )";
+					command.CommandText = "INSERT INTO ScenarioDat ( episodeId, displayOrder, type, jpName, jpText, enName, enText, jpSearchKanji, jpSearchFuri, enSearch, changeStatus ) "
+						+ "VALUES ( @episodeId, @displayOrder, @type, @jpName, @jpText, @enName, @enText, @jpSearchKanji, @jpSearchFuri, @enSearch, @changeStatus )";
 					command.AddParameter( "episodeId" );
 					command.AddParameter( "displayOrder" );
 					command.AddParameter( "type" );
@@ -84,10 +84,18 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "jpSearchKanji" );
 					command.AddParameter( "jpSearchFuri" );
 					command.AddParameter( "enSearch" );
+					command.AddParameter( "changeStatus" );
 
 					foreach ( var kvp in Site.ScenarioFiles ) {
 						var episodeId = kvp.Key;
 						var scenario = kvp.Value;
+
+						Tales.Vesperia.ScenarioFile.ScenarioFile sceCmp = null;
+						if ( SiteCompare != null ) {
+							if ( SiteCompare.ScenarioFiles.ContainsKey( kvp.Value.EpisodeID ) ) {
+								sceCmp = SiteCompare.ScenarioFiles[kvp.Value.EpisodeID];
+							}
+						}
 
 						for ( int i = 0; i < scenario.EntryList.Count; ++i ) {
 							var entry = scenario.EntryList[i];
@@ -114,6 +122,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 							for ( int j = 0; j < textboxCount; ++j ) {
 								string jpText = j < jpTextArray.Length ? jpTextArray[j] : "";
 								string enText = j < enTextArray.Length ? enTextArray[j] : "";
+								string jpTextSearchKanji = CleanStringForSearch( jpText, true, false );
 								command.GetParameter( "episodeId" ).Value = episodeId;
 								command.GetParameter( "displayOrder" ).Value = i * maxTextboxCount + j;
 								command.GetParameter( "type" ).Value = (int)entry.Type;
@@ -121,9 +130,29 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 								command.GetParameter( "jpText" ).Value = jpText.ToHtmlJpn( Site.Version );
 								command.GetParameter( "enName" ).Value = entry.EnName.ToHtmlEng( Site.Version );
 								command.GetParameter( "enText" ).Value = enText.ToHtmlEng( Site.Version );
-								command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( jpText, true, false );
+								command.GetParameter( "jpSearchKanji" ).Value = jpTextSearchKanji;
 								command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( jpText, true, true );
 								command.GetParameter( "enSearch" ).Value = CleanStringForSearch( enText, false, false );
+
+								ChangeStatus changeStatus = ChangeStatus.NoComparison;
+								if ( SiteCompare != null ) {
+									if ( sceCmp != null ) {
+										string textJpCleanCmp = CleanCleanedStringForVersionComparision( jpTextSearchKanji );
+										changeStatus = ChangeStatus.ChangedOrAddedLine;
+										foreach ( var lineCmp in sceCmp.EntryList ) {
+											string cmpclean = CleanStringForSearch( lineCmp.JpText, true, false );
+											cmpclean = CleanCleanedStringForVersionComparision( cmpclean );
+											if ( textJpCleanCmp == cmpclean ) {
+												changeStatus = ChangeStatus.SameLine;
+												break;
+											}
+										}
+									} else {
+										changeStatus = ChangeStatus.NewFile;
+									}
+								}
+								command.GetParameter( "changeStatus" ).Value = (int)changeStatus;
+
 								command.ExecuteNonQuery();
 							}
 						}
@@ -176,6 +205,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			foreach ( var kvp in Site.BattleTextFiles ) {
 				var fakeScenario = new ScenarioFile.ScenarioFile();
 				fakeScenario.EntryList = kvp.Value.EntryList;
+				fakeScenario.EpisodeID = kvp.Key;
 				Site.ScenarioFiles.Add( kvp.Key, fakeScenario );
 			}
 		}
@@ -663,6 +693,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[33892179], stringDicInGame[240167] ) { Type = TextboxType.Information } ); // failure
 				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[240170], stringDicInGame[240171] ) { Type = TextboxType.Information } ); // ask rita?
 				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[33892179], stringDicInGame[240172] ) { Type = TextboxType.Information } ); // asked rita
+				undineMinigame.EpisodeID = "EP_550_030";
 				files.Add( "EP_550_030b", undineMinigame );
 			}
 		}

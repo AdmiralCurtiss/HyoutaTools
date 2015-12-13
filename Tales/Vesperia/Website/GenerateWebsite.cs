@@ -1201,6 +1201,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 										orig.EntryList[i].EnText = mod.EntryList[i].JpText;
 									}
 								}
+								orig.EpisodeID = episodeID;
 								this.ScenarioFiles.Add( episodeID, orig );
 								scenes.Add( new ScenarioData() { EpisodeId = episodeID, HumanReadableName = humanReadableName, DatabaseName = filename } );
 							} catch ( FileNotFoundException ) { }

@@ -23,6 +23,7 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 		}
 
 		public List<ScenarioFileEntry> EntryList;
+		public string EpisodeID;
 
 		private bool LoadFile( Stream stream, bool isUtf8 ) {
 			uint magic = stream.ReadUInt32().SwapEndian();
@@ -77,8 +78,13 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 			
 			clone.EntryList = new List<ScenarioFileEntry>( this.EntryList.Count );
 			clone.EntryList.AddRange( this.EntryList );
+			clone.EpisodeID = EpisodeID;
 
 			return clone;
+		}
+
+		public override string ToString() {
+			return EpisodeID + ": " + EntryList.Count + " entries";
 		}
 	}
 }
