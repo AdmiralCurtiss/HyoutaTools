@@ -302,7 +302,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		private void ExportScenarioMetadata() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE ScenarioMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, type INT, sceneGroup INT, parent INT, episodeId VARCHAR(20), description TEXT )";
+					command.CommandText = "CREATE TABLE ScenarioMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, type INT, sceneGroup INT, parent INT, episodeId VARCHAR(20), description TEXT, changeStatus INT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -717,12 +717,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		private void ExportScenarioMetadata( IDbTransaction transaction, List<List<ScenarioData>> groups, int groupType ) {
 			using ( var command = DB.CreateCommand() ) {
-				command.CommandText = "INSERT INTO ScenarioMeta ( type, sceneGroup, parent, episodeId, description ) VALUES ( @type, @sceneGroup, @parent, @episodeId, @description )";
+				command.CommandText = "INSERT INTO ScenarioMeta ( type, sceneGroup, parent, episodeId, description, changeStatus ) VALUES ( @type, @sceneGroup, @parent, @episodeId, @description, @changeStatus )";
 				command.AddParameter( "type" );
 				command.AddParameter( "sceneGroup" );
 				command.AddParameter( "parent" );
 				command.AddParameter( "episodeId" );
 				command.AddParameter( "description" );
+				command.AddParameter( "changeStatus" );
 
 				int groupNumber = 0;
 				foreach ( var group in groups ) {
@@ -734,6 +735,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.GetParameter( "parent" ).Value = null;
 					command.GetParameter( "episodeId" ).Value = null;
 					command.GetParameter( "description" ).Value = commonBegin;
+					command.GetParameter( "changeStatus" ).Value = -1;
 					command.ExecuteNonQuery();
 
 					long parentId = GetLastInsertedId();
@@ -743,6 +745,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "parent" ).Value = parentId;
 						command.GetParameter( "episodeId" ).Value = scene.EpisodeId;
 						command.GetParameter( "description" ).Value = scene.HumanReadableNameWithoutPrefix( commonBegin );
+						object chst = SqliteUtil.SelectScalar( transaction, "SELECT MAX(changeStatus) FROM ScenarioDat WHERE episodeId = ?", new object[1] { scene.EpisodeId } );
+						command.GetParameter( "changeStatus" ).Value = chst == null ? -1L : chst == System.DBNull.Value ? -1L : chst;
 						command.ExecuteNonQuery();
 
 						long sceneId = GetLastInsertedId();
@@ -754,6 +758,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 							command.GetParameter( "parent" ).Value = sceneId;
 							command.GetParameter( "episodeId" ).Value = skit.RefString;
 							command.GetParameter( "description" ).Value = d;
+							command.GetParameter( "changeStatus" ).Value = -1;
 							command.ExecuteNonQuery();
 						}
 					}
