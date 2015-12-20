@@ -139,12 +139,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 									if ( sceCmp != null ) {
 										string textJpCleanCmp = CleanCleanedStringForVersionComparision( jpTextSearchKanji );
 										changeStatus = ChangeStatus.ChangedOrAddedLine;
-										foreach ( var lineCmp in sceCmp.EntryList ) {
-											string cmpclean = CleanStringForSearch( lineCmp.JpText, true, false );
-											cmpclean = CleanCleanedStringForVersionComparision( cmpclean );
-											if ( textJpCleanCmp == cmpclean ) {
-												changeStatus = ChangeStatus.SameLine;
-												break;
+										foreach ( var entry360 in sceCmp.EntryList ) {
+											foreach ( var lineCmp in entry360.JpText.Split( '\f' ) ) {
+												string cmpclean = CleanStringForSearch( lineCmp, true, false );
+												cmpclean = CleanCleanedStringForVersionComparision( cmpclean );
+												if ( textJpCleanCmp == cmpclean ) {
+													changeStatus = ChangeStatus.SameLine;
+													break;
+												}
 											}
 										}
 									} else {
@@ -197,6 +199,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			s = s.Replace( "？", "" );
 			s = s.Replace( "（", "" );
 			s = s.Replace( "）", "" );
+			s = s.Replace( "~", "" );
+			s = s.Replace( "〜", "" );
 			s = s.Replace( "～", "" );
 			return s;
 		}
