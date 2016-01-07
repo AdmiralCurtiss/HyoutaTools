@@ -202,6 +202,21 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			s = s.Replace( "~", "" );
 			s = s.Replace( "〜", "" );
 			s = s.Replace( "～", "" );
+			for ( int i = 0; i < 26; ++i ) {
+				char ascii = Convert.ToChar( Convert.ToInt32( 'A' ) + i );
+				char fullwidth = Convert.ToChar( Convert.ToInt32( 'Ａ' ) + i );
+				s = s.Replace( fullwidth, ascii );
+			}
+			for ( int i = 0; i < 26; ++i ) {
+				char ascii = Convert.ToChar( Convert.ToInt32( 'a' ) + i );
+				char fullwidth = Convert.ToChar( Convert.ToInt32( 'ａ' ) + i );
+				s = s.Replace( fullwidth, ascii );
+			}
+			for ( int i = 0; i < 10; ++i ) {
+				char ascii = Convert.ToChar( Convert.ToInt32( '0' ) + i );
+				char fullwidth = Convert.ToChar( Convert.ToInt32( '０' ) + i );
+				s = s.Replace( fullwidth, ascii );
+			}
 			return s;
 		}
 
