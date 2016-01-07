@@ -7,6 +7,8 @@ using HyoutaTools.Tales.Vesperia.ScenarioFile;
 
 namespace HyoutaTools.Tales.Vesperia.SCFOMBIN {
 	public class SCFOMBIN {
+		public SCFOMBIN() { }
+
 		public SCFOMBIN( String filename, uint textPointerLocationDiff = 0x1888 ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
 				if ( !LoadFile( stream, textPointerLocationDiff ) ) {
@@ -76,6 +78,10 @@ namespace HyoutaTools.Tales.Vesperia.SCFOMBIN {
 			}
 
 			return true;
+		}
+
+		public override string ToString() {
+			return EntryList.Count + " entries";
 		}
 	}
 }

@@ -68,7 +68,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 9, 16, 18, 2, 17, 19, 10, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
 			site.Records = site.GenerateRecordsStringDicList();
 			site.Settings = site.GenerateSettingsStringDicList();
-			site.LoadBattleTextScfombin( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0003.ext\" );
+			site.LoadBattleTextTSS( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0003.ext\" );
 
 			site.ScenarioFiles = new Dictionary<string, ScenarioFile.ScenarioFile>();
 			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, @"d:\Dropbox\ToV\360\scenarioDB", @"d:\Dropbox\ToV\360\scenario_uk.dat.ext\", isUtf8: true );
@@ -254,6 +254,22 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		public Dictionary<uint, TSS.TSSEntry> InGameIdDict;
 		public uint[] IconsWithItems;
+
+		public void LoadBattleTextTSS( string dir ) {
+			BattleTextFiles = new Dictionary<string, SCFOMBIN.SCFOMBIN>();
+
+			var files = new System.IO.DirectoryInfo( dir ).GetFiles();
+			foreach ( var file in files ) {
+				if ( file.Name.StartsWith( "BTL_" ) ) {
+					var bin = new ScenarioFile.ScenarioFile( Path.Combine( dir, file.Name ), true );
+					var name = file.Name.Split( '.' )[0];
+
+					var btl = new SCFOMBIN.SCFOMBIN();
+					btl.EntryList = bin.EntryList;
+					BattleTextFiles.Add( name, btl );
+				}
+			}
+		}
 
 		public void LoadBattleTextScfombin( string dir, string modDir = null ) {
 			BattleTextFiles = new Dictionary<string, SCFOMBIN.SCFOMBIN>();

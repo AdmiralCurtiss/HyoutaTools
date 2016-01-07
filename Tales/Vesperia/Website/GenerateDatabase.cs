@@ -749,7 +749,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "parent" ).Value = parentId;
 						command.GetParameter( "episodeId" ).Value = scene.EpisodeId;
 						command.GetParameter( "description" ).Value = scene.HumanReadableNameWithoutPrefix( commonBegin );
-						object chst = SqliteUtil.SelectScalar( transaction, "SELECT MAX(changeStatus) FROM ScenarioDat WHERE episodeId = ?", new object[1] { scene.EpisodeId } );
+						object chst = SqliteUtil.SelectScalar( transaction, "SELECT MAX(changeStatus) FROM ScenarioDat WHERE episodeId = ? AND type != ?", new object[2] { scene.EpisodeId, (int)TextboxType.Information } );
 						command.GetParameter( "changeStatus" ).Value = chst == null ? -1L : chst == System.DBNull.Value ? -1L : chst;
 						command.ExecuteNonQuery();
 
