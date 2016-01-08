@@ -57,7 +57,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
 				string name = site.Skits.SkitInfoList[i].RefString;
 				try {
-					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( @"d:\Dropbox\ToV\360\chat.svo.ext\" + name + @"UK.DAT.dec.ext\0003", true );
+					bool isUtf8 = name != "VC084";
+                    TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( @"d:\Dropbox\ToV\360\chat.svo.ext\" + name + @"UK.DAT.dec.ext\0003", isUtf8 );
 					site.SkitText.Add( name, chatFile );
 				} catch ( DirectoryNotFoundException ) {
 					Console.WriteLine( "Couldn't find 360 chat file " + name + "!" );
