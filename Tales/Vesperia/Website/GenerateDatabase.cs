@@ -143,7 +143,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 											foreach ( var lineCmp in entry360.JpText.Split( '\f' ) ) {
 												string cmpclean = CleanStringForSearch( lineCmp, true, false );
 												cmpclean = CleanCleanedStringForVersionComparision( cmpclean );
-												if ( textJpCleanCmp == cmpclean ) {
+												if ( textJpCleanCmp.Like( cmpclean ) ) {
 													changeStatus = ChangeStatus.SameLine;
 													break;
 												}
@@ -176,6 +176,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			s = s.Replace( " ", "" );
 			s = s.Replace( "!", "" );
 			s = s.Replace( "?", "" );
+			s = s.Replace( "*", "" );
 			s = s.Replace( "@", "" );
 			s = s.Replace( "[", "" );
 			s = s.Replace( "]", "" );
@@ -193,7 +194,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			s = s.Replace( "。", "" );
 			s = s.Replace( "『", "" );
 			s = s.Replace( "』", "" );
-			s = s.Replace( "・", "" );
 			s = s.Replace( "　", "" );
 			s = s.Replace( "！", "" );
 			s = s.Replace( "？", "" );
@@ -217,6 +217,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				char fullwidth = Convert.ToChar( Convert.ToInt32( '０' ) + i );
 				s = s.Replace( fullwidth, ascii );
 			}
+			// some 360 JP strings contain stray ・ where there should be kanji, maybe a shiftjis->utf8 conversion problem
+			// that was never caught since JP text is unused in EU game anyway, so do some wildcard comparsion for those
+			s = s.Replace( "・", "*" );
 			return s;
 		}
 
@@ -299,7 +302,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 									foreach ( var lineCmp in skitCmp.Lines ) {
 										string cmpclean = CleanStringForSearch( lineCmp.SJPN, true, false );
 										cmpclean = CleanCleanedStringForVersionComparision( cmpclean );
-										if ( textJpCleanCmp == cmpclean ) {
+										if ( textJpCleanCmp.Like( cmpclean ) ) {
 											changeStatus = ChangeStatus.SameLine;
 											break;
 										}
