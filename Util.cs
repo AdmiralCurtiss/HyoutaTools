@@ -589,6 +589,11 @@ namespace HyoutaTools {
 			s.Write( BitConverter.GetBytes( num ), 0, 2 );
 		}
 
+		public static void ReadAlign( this Stream s, long alignment ) {
+			while ( s.Position % alignment != 0 ) {
+				s.DiscardBytes( 1 );
+			}
+		}
 		public static void WriteAlign( this Stream s, long alignment, byte paddingByte = 0 ) {
 			while ( s.Position % alignment != 0 ) {
 				s.WriteByte( paddingByte );
