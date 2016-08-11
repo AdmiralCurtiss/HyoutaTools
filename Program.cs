@@ -110,6 +110,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Sting.BlazeUnion.ScriptExport", "-"           ),  GraceNote.Sting.BlazeUnionScript.Exporter.Export) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.AddDDSHeader",                    "DDSHeader"   ),  Generic.AddDDSHeader.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.FixXmaHeader",             "-"		   ),  Tales.Vesperia.xma.FixHeader.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "FinalFantasyCrystalChronicles.TextDumper","-"           ),  FinalFantasyCrystalChronicles.TextDumper.Execute) },
 		};
 
 		[STAThread]
