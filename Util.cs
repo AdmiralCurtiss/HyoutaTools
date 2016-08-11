@@ -486,6 +486,54 @@ namespace HyoutaTools {
 		public static void WriteUInt64( this Stream s, ulong num ) {
 			s.Write( BitConverter.GetBytes( num ), 0, 8 );
 		}
+		public static ulong ReadUInt56( this Stream s ) {
+			ulong b1 = (ulong)s.ReadByte();
+			ulong b2 = (ulong)s.ReadByte();
+			ulong b3 = (ulong)s.ReadByte();
+			ulong b4 = (ulong)s.ReadByte();
+			ulong b5 = (ulong)s.ReadByte();
+			ulong b6 = (ulong)s.ReadByte();
+			ulong b7 = (ulong)s.ReadByte();
+
+			return (ulong)( b7 << 48 | b6 << 40 | b5 << 32 | b4 << 24 | b3 << 16 | b2 << 8 | b1 );
+		}
+		public static ulong PeekUInt56( this Stream s ) {
+			long pos = s.Position;
+			ulong retval = s.ReadUInt56();
+			s.Position = pos;
+			return retval;
+		}
+		public static ulong ReadUInt48( this Stream s ) {
+			ulong b1 = (ulong)s.ReadByte();
+			ulong b2 = (ulong)s.ReadByte();
+			ulong b3 = (ulong)s.ReadByte();
+			ulong b4 = (ulong)s.ReadByte();
+			ulong b5 = (ulong)s.ReadByte();
+			ulong b6 = (ulong)s.ReadByte();
+
+			return (ulong)( b6 << 40 | b5 << 32 | b4 << 24 | b3 << 16 | b2 << 8 | b1 );
+		}
+		public static ulong PeekUInt48( this Stream s ) {
+			long pos = s.Position;
+			ulong retval = s.ReadUInt48();
+			s.Position = pos;
+			return retval;
+		}
+		public static ulong ReadUInt40( this Stream s ) {
+			ulong b1 = (ulong)s.ReadByte();
+			ulong b2 = (ulong)s.ReadByte();
+			ulong b3 = (ulong)s.ReadByte();
+			ulong b4 = (ulong)s.ReadByte();
+			ulong b5 = (ulong)s.ReadByte();
+
+			return (ulong)( b5 << 32 | b4 << 24 | b3 << 16 | b2 << 8 | b1 );
+		}
+		public static ulong PeekUInt40( this Stream s ) {
+			long pos = s.Position;
+			ulong retval = s.ReadUInt40();
+			s.Position = pos;
+			return retval;
+		}
 		public static uint ReadUInt32( this Stream s ) {
 			int b1 = s.ReadByte();
 			int b2 = s.ReadByte();
