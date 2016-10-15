@@ -10,6 +10,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		Item, Enemy, EnemyGroup, EncounterGroup, Skill, Arte, Synopsis, Recipe, Location, Strategy,
 		Shop, Title, BattleBook, Record, Settings, GradeShop, Trophy, SkitInfo, SkitIndex, NecropolisMap,
 		NecropolisEnemy, ScenarioStoryIndex, ScenarioSidequestIndex, ScenarioMapIndex, StringDic, Skit, Scenario,
+		SearchPoint,
 	}
 
 	public class Setting {
@@ -140,6 +141,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.BattleBook = new BTLBDAT.BTLBDAT( @"d:\Dropbox\ToV\PS3\orig\menu.svo.ext\BATTLEBOOKDATA.BIN" );
 			site.Strategy = new T8BTTA.T8BTTA( @"d:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0011.ext\ALL.0000" );
 			site.Skits = new TO8CHLI.TO8CHLI( @"d:\Dropbox\ToV\PS3\orig\chat.svo.ext\CHAT.DAT.dec" );
+			site.SearchPoints = new TOVSEAF.TOVSEAF( @"d:\Dropbox\ToV\PS3\orig\npc.svo.ext\FIELD.DAT.dec.ext\0005.dec" );
 			site.SkitText = new Dictionary<string, TO8CHTX.ChatFile>();
 			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
 				string name = site.Skits.SkitInfoList[i].RefString;
@@ -199,6 +201,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Trophy, site.Version, false ) ), site.GenerateHtmlTrophies(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SkitInfo, site.Version, false ) ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SkitIndex, site.Version, false ) ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SearchPoint, site.Version, false ) ), site.GenerateHtmlSearchPoints(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.NecropolisMap, site.Version, false ) ), site.GenerateHtmlNecropolis( false ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.NecropolisEnemy, site.Version, false ) ), site.GenerateHtmlNecropolis( true ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.StringDic, site.Version, false ) ), site.GenerateHtmlNpc(), Encoding.UTF8 );
@@ -236,6 +239,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public T8BTTA.T8BTTA Strategy;
 		public ShopData.ShopData Shops;
 		public TO8CHLI.TO8CHLI Skits;
+		public TOVSEAF.TOVSEAF SearchPoints;
 		public HyoutaTools.Trophy.TrophyConfNode TrophyJp;
 		public HyoutaTools.Trophy.TrophyConfNode TrophyEn;
 		public Dictionary<string, TO8CHTX.ChatFile> SkitText;
@@ -449,6 +453,27 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Append( "<table>" );
 			foreach ( var entry in Skits.SkitInfoList ) {
 				sb.AppendLine( entry.GetIndexDataAsHtml( Version, Skits, InGameIdDict ) );
+			}
+			sb.Append( "</table>" );
+			AddFooter( sb );
+			sb.AppendLine( "</body></html>" );
+			return sb.ToString();
+		}
+		public string GenerateHtmlSearchPoints() {
+			Console.WriteLine( "Generating Website: Search Points" );
+			var sb = new StringBuilder();
+			AddHeader( sb, "Search Points" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			sb.Append( "<table>" );
+			for ( int i = 1; i < SearchPoints.SearchPointDefinitions.Count; ++i ) {
+				var sp = SearchPoints.SearchPointDefinitions[i];
+				sb.Append( "<tr>" );
+				sb.Append( "<td>" );
+				sb.Append( sp.GetDataAsHtml( Version, Items, StringDic, InGameIdDict, SearchPoints.SearchPointContents, SearchPoints.SearchPointItems ) );
+				sb.Append( "</td>" );
+				sb.Append( "</tr>" );
+				sb.Append( "<tr><td colspan=\"1\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
 			AddFooter( sb );

@@ -288,6 +288,7 @@
     <Compile Include="Tales\Vesperia\TOVNPC\NpcFileReference.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\TOVNPCL.cs" />
     <Compile Include="Tales\Vesperia\TOVNPC\TOVNPCT.cs" />
+    <Compile Include="Tales\Vesperia\TOVSEAF\TOVSEAF.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTile.cs" />

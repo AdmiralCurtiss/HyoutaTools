@@ -198,6 +198,18 @@ namespace HyoutaTools {
 			}
 		}
 
+		public static sbyte AsSigned( this byte Number ) {
+			return (sbyte)Number;
+		}
+		public static short AsSigned( this ushort Number ) {
+			return (short)Number;
+		}
+		public static int AsSigned( this uint Number ) {
+			return (int)Number;
+		}
+		public static long AsSigned( this ulong Number ) {
+			return (long)Number;
+		}
 		#endregion
 
 		#region TextUtils
