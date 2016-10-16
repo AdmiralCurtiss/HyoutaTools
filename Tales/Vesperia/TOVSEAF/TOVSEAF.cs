@@ -58,7 +58,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			return true;
 		}
 
-		public System.Drawing.Bitmap GenerateMap() {
+		public System.Drawing.Bitmap GenerateMap( System.Drawing.Bitmap background = null ) {
 			int minx = int.MaxValue;
 			int maxx = int.MinValue;
 			int miny = int.MaxValue;
@@ -77,36 +77,48 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			int extentx = maxx - minx;
 			int extenty = maxy - miny;
 			int extentz = maxz - minz;
-			int div = 20;
-			int padx = 125;
-			int pady = 100;
+			double factor = 0.05115;
+			int padx = 222;
+			int pady = 185;
 
-			System.Drawing.Bitmap bmp = new System.Drawing.Bitmap( extentx / div + 1 + padx * 2, extentz / div + 1 + pady * 2 );
+			System.Drawing.Bitmap bmp;
+			if ( background == null ) {
+				bmp = new System.Drawing.Bitmap( (int)( extentx * factor + 1 + padx * 2 ), (int)( extentz * factor + 1 + pady * 2 ) );
+			} else {
+				bmp = new System.Drawing.Bitmap( background );
+			}
+
 			foreach ( var spd in SearchPointDefinitions ) {
 				System.Drawing.Color color = System.Drawing.Color.Black;
+				System.Drawing.Color border = System.Drawing.Color.White;
 				switch ( spd.SearchPointType ) {
-					case 0: color = System.Drawing.Color.Green; break; // tree stump
+					case 0: color = System.Drawing.Color.Green; border = System.Drawing.Color.Black; break; // tree stump
 					case 1: // shells
 						if ( spd.CoordY < 0 ) {
 							color = System.Drawing.Color.Red; // in water
+							border = System.Drawing.Color.White;
 						} else {
 							color = System.Drawing.Color.Aqua; // on beach
+							border = System.Drawing.Color.Black;
 						}
 						break;
-					case 2: color = System.Drawing.Color.Yellow; break; // bones
-					case 3: color = System.Drawing.Color.DarkBlue; break; // seagulls
+					case 2: color = System.Drawing.Color.Yellow; border = System.Drawing.Color.Black; break; // bones
+					case 3: color = System.Drawing.Color.DarkBlue; border = System.Drawing.Color.White; break; // seagulls
 				}
-				SetPixelArea( bmp, ( spd.CoordX - minx ) / div + padx, ( extentz - ( spd.CoordZ - minz ) ) / div + pady, color );
+				SetPixelArea( bmp, (int)( ( spd.CoordX - minx ) * factor + padx ), (int)( ( extentz - ( spd.CoordZ - minz ) ) * factor + pady ), color, border );
 			}
 			return bmp;
 		}
 
-		public static void SetPixelArea( System.Drawing.Bitmap bmp, int x, int y, System.Drawing.Color color ) {
-			int xext = 10, yext = 10;
+		public static void SetPixelArea( System.Drawing.Bitmap bmp, int x, int y, System.Drawing.Color color, System.Drawing.Color border ) {
+			int xext = 15, yext = 15;
+			int bordersize = 3;
 			for ( int i = x - xext; i < x + xext; ++i ) {
+				bool isBorderX = i < x - xext + bordersize || i > x + xext - 1 - bordersize;
 				for ( int j = y - yext; j < y + yext; ++j ) {
+					bool isBorderY = j < y - yext + bordersize || j > y + yext - 1 - bordersize;
 					if ( i >= 0 && i < bmp.Width && j >= 0 && j < bmp.Height ) {
-						bmp.SetPixel( i, j, color );
+						bmp.SetPixel( i, j, isBorderX || isBorderY ? border : color );
 					}
 				}
 			}
