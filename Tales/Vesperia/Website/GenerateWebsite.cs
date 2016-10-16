@@ -467,7 +467,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
 			sb.Append( "<table>" );
-			for ( int i = 1; i < SearchPoints.SearchPointDefinitions.Count; ++i ) {
+			for ( int i = 0; i < SearchPoints.SearchPointDefinitions.Count; ++i ) {
 				var sp = SearchPoints.SearchPointDefinitions[i];
 				sb.Append( "<tr>" );
 				sb.Append( "<td>" );
