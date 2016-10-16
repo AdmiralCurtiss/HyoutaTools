@@ -57,13 +57,67 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 
 			return true;
 		}
+
+		public System.Drawing.Bitmap GenerateMap() {
+			int minx = int.MaxValue;
+			int maxx = int.MinValue;
+			int miny = int.MaxValue;
+			int maxy = int.MinValue;
+			int minz = int.MaxValue;
+			int maxz = int.MinValue;
+			foreach ( var spd in SearchPointDefinitions ) {
+				minx = Math.Min( minx, spd.CoordX );
+				miny = Math.Min( miny, spd.CoordY );
+				minz = Math.Min( minz, spd.CoordZ );
+				maxx = Math.Max( maxx, spd.CoordX );
+				maxy = Math.Max( maxy, spd.CoordY );
+				maxz = Math.Max( maxz, spd.CoordZ );
+			}
+
+			int extentx = maxx - minx;
+			int extenty = maxy - miny;
+			int extentz = maxz - minz;
+			int div = 20;
+			int padx = 125;
+			int pady = 100;
+
+			System.Drawing.Bitmap bmp = new System.Drawing.Bitmap( extentx / div + 1 + padx * 2, extentz / div + 1 + pady * 2 );
+			foreach ( var spd in SearchPointDefinitions ) {
+				System.Drawing.Color color = System.Drawing.Color.Black;
+				switch ( spd.SearchPointType ) {
+					case 0: color = System.Drawing.Color.Green; break; // tree stump
+					case 1: // shells
+						if ( spd.CoordY < 0 ) {
+							color = System.Drawing.Color.Red; // in water
+						} else {
+							color = System.Drawing.Color.Aqua; // on beach
+						}
+						break;
+					case 2: color = System.Drawing.Color.Yellow; break; // bones
+					case 3: color = System.Drawing.Color.DarkBlue; break; // seagulls
+				}
+				SetPixelArea( bmp, ( spd.CoordX - minx ) / div + padx, ( extentz - ( spd.CoordZ - minz ) ) / div + pady, color );
+			}
+			return bmp;
+		}
+
+		public static void SetPixelArea( System.Drawing.Bitmap bmp, int x, int y, System.Drawing.Color color ) {
+			int xext = 10, yext = 10;
+			for ( int i = x - xext; i < x + xext; ++i ) {
+				for ( int j = y - yext; j < y + yext; ++j ) {
+					if ( i >= 0 && i < bmp.Width && j >= 0 && j < bmp.Height ) {
+						bmp.SetPixel( i, j, color );
+					}
+				}
+			}
+		}
 	}
 
 	public class SearchPointDefinition {
 		public uint Index;
 		public uint ScenarioBegin; // shows up once scenario counter is this value, usually 1000999 (start of game)
 		public uint ScenarioEnd; // disappears once scenario counter is this value, always 9999999 (which means none disappear)
-		public uint Unknown4; // range [0,3]
+		public uint SearchPointType; // range [0,3]
 
 		public uint Unknown5; // always 0
 		public int CoordX; // these are definitely signed ints but I'm not sure what they actually mean, they feel like world position but why are they ints and not floats then?
@@ -85,7 +139,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			Index = stream.ReadUInt32().SwapEndian();
 			ScenarioBegin = stream.ReadUInt32().SwapEndian();
 			ScenarioEnd = stream.ReadUInt32().SwapEndian();
-			Unknown4 = stream.ReadUInt32().SwapEndian();
+			SearchPointType = stream.ReadUInt32().SwapEndian();
 
 			Unknown5 = stream.ReadUInt32().SwapEndian();
 			CoordX = stream.ReadUInt32().SwapEndian().AsSigned();
@@ -110,7 +164,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			sb.Append( "Index: " ).Append( Index ).Append( "<br>" );
 			sb.Append( "2: " ).Append( ScenarioBegin ).Append( "<br>" );
 			sb.Append( "3: " ).Append( ScenarioEnd ).Append( "<br>" );
-			sb.Append( "4: " ).Append( Unknown4 ).Append( "<br>" );
+			sb.Append( "4: " ).Append( SearchPointType ).Append( "<br>" );
 
 			sb.Append( "5: " ).Append( Unknown5 ).Append( "<br>" );
 			sb.Append( "6: " ).Append( CoordX ).Append( "<br>" );
