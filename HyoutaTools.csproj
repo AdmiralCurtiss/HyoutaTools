@@ -265,6 +265,7 @@
     <Compile Include="Tales\Vesperia\T8BTTA\StrategyOption.cs" />
     <Compile Include="Tales\Vesperia\T8BTTA\StrategySet.cs" />
     <Compile Include="Tales\Vesperia\T8BTTA\T8BTTA.cs" />
+    <Compile Include="Tales\Vesperia\T8BTVA\T8BTVA.cs" />
     <Compile Include="Tales\Vesperia\T8BTXTM\FloorInfo.cs" />
     <Compile Include="Tales\Vesperia\T8BTXTM\MapTile.cs" />
     <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMA.cs" />

@@ -10,7 +10,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		Item, Enemy, EnemyGroup, EncounterGroup, Skill, Arte, Synopsis, Recipe, Location, Strategy,
 		Shop, Title, BattleBook, Record, Settings, GradeShop, Trophy, SkitInfo, SkitIndex, NecropolisMap,
 		NecropolisEnemy, ScenarioStoryIndex, ScenarioSidequestIndex, ScenarioMapIndex, StringDic, Skit, Scenario,
-		SearchPoint,
+		SearchPoint, PostBattleVoices,
 	}
 
 	public class Setting {
@@ -53,6 +53,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.GradeShop = new T8BTGR.T8BTGR( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0016.ext\ALL.0000" );
 			site.BattleBook = new BTLBDAT.BTLBDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\BATTLEBOOKDATA.BIN" );
 			site.Strategy = new T8BTTA.T8BTTA( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0011.ext\ALL.0000" );
+			site.BattleVoicesEnd = new T8BTVA.T8BTVA( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0019.ext\END.0000" );
 			site.Skits = new TO8CHLI.TO8CHLI( @"d:\Dropbox\ToV\360\chat.svo.ext\CHAT.DAT.dec" );
 			site.SkitText = new Dictionary<string, TO8CHTX.ChatFile>();
 			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
@@ -114,6 +115,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Record, site.Version, false ) ), site.GenerateHtmlRecords(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.Settings, site.Version, false ) ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.GradeShop, site.Version, false ) ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
+			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.PostBattleVoices, site.Version, false ) ), site.GenerateHtmlBattleVoicesEnd(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SkitInfo, site.Version, false ) ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.SkitIndex, site.Version, false ) ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, GetUrl( WebsiteSection.ScenarioStoryIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsStory, ScenarioType.Story ), Encoding.UTF8 );
@@ -241,6 +243,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public ShopData.ShopData Shops;
 		public TO8CHLI.TO8CHLI Skits;
 		public TOVSEAF.TOVSEAF SearchPoints;
+		public T8BTVA.T8BTVA BattleVoicesEnd;
 		public HyoutaTools.Trophy.TrophyConfNode TrophyJp;
 		public HyoutaTools.Trophy.TrophyConfNode TrophyEn;
 		public Dictionary<string, TO8CHTX.ChatFile> SkitText;
@@ -454,6 +457,44 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Append( "<table>" );
 			foreach ( var entry in Skits.SkitInfoList ) {
 				sb.AppendLine( entry.GetIndexDataAsHtml( Version, Skits, InGameIdDict ) );
+			}
+			sb.Append( "</table>" );
+			AddFooter( sb );
+			sb.AppendLine( "</body></html>" );
+			return sb.ToString();
+		}
+		public string GenerateHtmlBattleVoicesEnd() {
+			Console.WriteLine( "Generating Website: Battle Voices (End)" );
+			var sb = new StringBuilder();
+			AddHeader( sb, "Battle Voices (End)" );
+			sb.AppendLine( "<body>" );
+			AddMenuBar( sb );
+			sb.Append( "<table>" );
+			for ( int i = 0; i < BattleVoicesEnd.Blocks.Count; ++i ) {
+				sb.Append( "<tr>" );
+				{
+					var v = BattleVoicesEnd.Blocks[i];
+					sb.Append( "<td>" ).Append( v.Identifier ).Append( "</td>" );
+					sb.Append( "<td>" ).Append( v.Entries[0].ScenarioStart ).Append( "</td>" );
+					sb.Append( "<td>" ).Append( v.Entries[0].ScenarioEnd ).Append( "</td>" );
+					sb.Append( "<td>" );
+					Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, Version, v.Entries[0].CharacterBitmask );
+					sb.Append( "</td>" );
+					sb.Append( "<td>" );
+					bool first = true;
+					foreach ( var e in v.Entries ) {
+						if ( !String.IsNullOrWhiteSpace( e.RefString ) ) {
+							if ( !first ) {
+								sb.Append( ", " );
+							}
+							sb.Append( e.RefString );
+							first = false;
+						}
+					}
+					sb.Append( "</td>" );
+				}
+				sb.Append( "</tr>" );
+				sb.Append( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
 			AddFooter( sb );
