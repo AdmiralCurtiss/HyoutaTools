@@ -41,15 +41,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 		public uint IndexInGame;
 		public uint IdentifierLocation;
 		public string Identifier;
-		public uint Unknown5;
-		public uint Unknown6;
-		public uint Unknown7;
-		public uint Unknown8;
-		public uint Unknown9;
-		public uint Unknown10;
-		public uint Unknown11;
-		public uint Unknown12;
-		public uint Unknown13;
+		public uint[] CharacterSpecificData;
 		public uint EntryCount;
 
 		public List<T8BTVAEntry> Entries;
@@ -62,15 +54,10 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 			IndexInArray = stream.ReadUInt32().SwapEndian();
 			IndexInGame = stream.ReadUInt32().SwapEndian();
 			IdentifierLocation = stream.ReadUInt32().SwapEndian();
-			Unknown5 = stream.ReadUInt32().SwapEndian();
-			Unknown6 = stream.ReadUInt32().SwapEndian();
-			Unknown7 = stream.ReadUInt32().SwapEndian();
-			Unknown8 = stream.ReadUInt32().SwapEndian();
-			Unknown9 = stream.ReadUInt32().SwapEndian();
-			Unknown10 = stream.ReadUInt32().SwapEndian();
-			Unknown11 = stream.ReadUInt32().SwapEndian();
-			Unknown12 = stream.ReadUInt32().SwapEndian();
-			Unknown13 = stream.ReadUInt32().SwapEndian();
+			CharacterSpecificData = new uint[9];
+			for ( int i = 0; i < 9; ++i ) {
+				CharacterSpecificData[i] = stream.ReadUInt32().SwapEndian();
+			}
 			EntryCount = stream.ReadUInt32().SwapEndian();
 
 			Identifier = stream.ReadAsciiNulltermFromLocationAndReset( IdentifierLocation + refStringStart );

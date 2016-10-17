@@ -491,6 +491,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						}
 					}
 					sb.Append( "</td>" );
+					for ( int j = 0; j < v.CharacterSpecificData.Length; ++j ) {
+						if ( v.CharacterSpecificData[j] != 0 ) {
+							sb.Append( "<td>" );
+							Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, Version, (uint)( 1 << j ) );
+							sb.Append( v.CharacterSpecificData[j] );
+							sb.Append( "</td>" );
+						}
+					}
 					sb.Append( "</tr>" );
 
 					sb.Append( "<tr>" );
