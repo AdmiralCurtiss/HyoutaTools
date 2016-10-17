@@ -529,7 +529,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			for ( int i = 0; i < SearchPoints.SearchPointDefinitions.Count; ++i ) {
 				var sp = SearchPoints.SearchPointDefinitions[i];
 				sb.Append( sp.GetDataAsHtml( Version, Items, StringDic, InGameIdDict, SearchPoints.SearchPointContents, SearchPoints.SearchPointItems ) );
-				sb.Append( "<tr><td colspan=\"1\"><hr></td></tr>" );
+				sb.Append( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
 			AddFooter( sb );

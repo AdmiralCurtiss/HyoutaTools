@@ -175,11 +175,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 
 			sb.Append( "<tr id=\"searchpoint").Append( Index ).Append( "\">" );
 			sb.Append( "<td colspan=\"5\">" );
-			if ( ScenarioBegin > 1000999 ) {
-				sb.Append( "Only appears after scenario " ).Append( ScenarioBegin ).Append( "<br>" );
-			}
 			sb.Append( "[#" ).Append( Index ).Append( "] " );
-			sb.Append( "Model: " );
 			switch ( SearchPointType ) {
 				case 0: sb.Append( "Tree Stump" ); break;
 				case 1: sb.Append( "Shell" ); break;
@@ -190,11 +186,17 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			if ( CoordY < 0 ) {
 				sb.Append( " (Underwater)" );
 			}
-			sb.Append( "<br>" );
-
-			sb.Append( "9: " ).Append( Unknown9 ).Append( "<br>" );
-			sb.Append( "11: " ).Append( Unknown11 ).Append( "<br>" );
-			sb.Append( "14a: " ).Append( Unknown14a ).Append( "<br>" );
+			if ( ScenarioBegin > 1000999 ) {
+				switch ( ScenarioBegin ) {
+					case 3000000: sb.Append( " (Chapter 3 only)" ); break;
+					case 3590000: sb.Append( " (once Erealumen Crystallands accessible)" ); break;
+					default: sb.Append( " (Appears after scenario " ).Append( ScenarioBegin ).Append( ")" ); break;
+				}
+			}
+			//sb.Append( "<br>" )
+			//sb.Append( "9: " ).Append( Unknown9 ).Append( "<br>" );
+			//sb.Append( "11: " ).Append( Unknown11 ).Append( "<br>" );
+			//sb.Append( "14a: " ).Append( Unknown14a ).Append( "<br>" );
 
 			sb.Append( "</td>" );
 			sb.Append( "</tr>" );
@@ -230,9 +232,9 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 
 		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, TSSFile stringDic, Dictionary<uint, TSSEntry> inGameIdDict, List<SearchPointItem> searchPointItems, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
-			sb.Append( "Percentage: " ).Append( Percentage ).Append( "%" ).Append( "<br>" );
+			//sb.Append( "Percentage: " ).Append( Percentage ).Append( "%" ).Append( "<br>" );
 			for ( uint i = 0; i < SearchPointItemCount; ++i ) {
-				sb.Append( "Item #" ).Append( i ).Append( ":" );
+				//sb.Append( "Item #" ).Append( i ).Append( ":" );
 				sb.Append( searchPointItems[(int)( SearchPointItemIndex + i )].GetDataAsHtml( version, items, stringDic, inGameIdDict ) );
 				sb.Append( "<br>" );
 			}
