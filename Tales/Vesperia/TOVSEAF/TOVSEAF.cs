@@ -132,9 +132,9 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 		public uint SearchPointType; // range [0,3]
 
 		public uint Unknown5; // always 0
-		public int CoordX; // these are definitely signed ints but I'm not sure what they actually mean, they feel like world position but why are they ints and not floats then?
-		public int CoordY;
-		public int CoordZ;
+		public int CoordX; // world XYZ positions, zero XY is the middle, north/east is positive
+		public int CoordY; // zero Y is sea level, positive is higher
+		public int CoordZ; // no clue why these are integers and not floats
 
 		public uint Unknown9; // spawn chance, maybe? has numbers like 75, 80, 85, 90, etc, rarely lower, always in 5 increments
 		public uint Unknown10; // always 10000
@@ -173,31 +173,43 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, TSSFile stringDic, Dictionary<uint, TSSEntry> inGameIdDict, List<SearchPointContent> searchPointContents, List<SearchPointItem> searchPointItems, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 
-			sb.Append( "Index: " ).Append( Index ).Append( "<br>" );
-			sb.Append( "2: " ).Append( ScenarioBegin ).Append( "<br>" );
-			sb.Append( "3: " ).Append( ScenarioEnd ).Append( "<br>" );
-			sb.Append( "4: " ).Append( SearchPointType ).Append( "<br>" );
-
-			sb.Append( "5: " ).Append( Unknown5 ).Append( "<br>" );
-			sb.Append( "6: " ).Append( CoordX ).Append( "<br>" );
-			sb.Append( "7: " ).Append( CoordY ).Append( "<br>" );
-			sb.Append( "8: " ).Append( CoordZ ).Append( "<br>" );
-
-			sb.Append( "9: " ).Append( Unknown9 ).Append( "<br>" );
-			sb.Append( "10: " ).Append( Unknown10 ).Append( "<br>" );
-			sb.Append( "11: " ).Append( Unknown11 ).Append( "<br>" );
-			sb.Append( "12: " ).Append( Unknown12 ).Append( "<br>" );
-
-			sb.Append( "13: " ).Append( Unknown13 ).Append( "<br>" );
-			sb.Append( "14a: " ).Append( Unknown14a ).Append( "<br>" );
-			sb.Append( "14b: " ).Append( Unknown14b ).Append( "<br>" );
-
+			sb.Append( "<tr id=\"searchpoint").Append( Index ).Append( "\">" );
+			sb.Append( "<td colspan=\"5\">" );
+			if ( ScenarioBegin > 1000999 ) {
+				sb.Append( "Only appears after scenario " ).Append( ScenarioBegin ).Append( "<br>" );
+			}
+			sb.Append( "[#" ).Append( Index ).Append( "] " );
+			sb.Append( "Model: " );
+			switch ( SearchPointType ) {
+				case 0: sb.Append( "Tree Stump" ); break;
+				case 1: sb.Append( "Shell" ); break;
+				case 2: sb.Append( "Bones" ); break;
+				case 3: sb.Append( "Seagulls" ); break;
+				default: sb.Append( SearchPointType ); break;
+			}
+			if ( CoordY < 0 ) {
+				sb.Append( " (Underwater)" );
+			}
 			sb.Append( "<br>" );
 
+			sb.Append( "9: " ).Append( Unknown9 ).Append( "<br>" );
+			sb.Append( "11: " ).Append( Unknown11 ).Append( "<br>" );
+			sb.Append( "14a: " ).Append( Unknown14a ).Append( "<br>" );
+
+			sb.Append( "</td>" );
+			sb.Append( "</tr>" );
+
+			sb.Append( "<tr>" );
 			for ( uint i = 0; i < SearchPointContentCount; ++i ) {
-				sb.Append( "Content #" ).Append( i ).Append( ":" ).Append( "<br>" );
+				sb.Append( "<td>" );
 				sb.Append( searchPointContents[(int)( SearchPointContentIndex + i )].GetDataAsHtml( version, items, stringDic, inGameIdDict, searchPointItems ) );
+				sb.Append( "</td>" );
 			}
+			for ( uint i = SearchPointContentCount; i < 5; ++i ) {
+				sb.Append( "<td>" );
+				sb.Append( "</td>" );
+			}
+			sb.Append( "</tr>" );
 
 			return sb.ToString();
 		}
