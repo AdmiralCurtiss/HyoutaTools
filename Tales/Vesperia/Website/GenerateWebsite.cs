@@ -53,7 +53,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.GradeShop = new T8BTGR.T8BTGR( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0016.ext\ALL.0000" );
 			site.BattleBook = new BTLBDAT.BTLBDAT( @"d:\Dropbox\ToV\360\menu.svo.ext\BATTLEBOOKDATA.BIN" );
 			site.Strategy = new T8BTTA.T8BTTA( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0011.ext\ALL.0000" );
-			site.BattleVoicesEnd = new T8BTVA.T8BTVA( @"d:\Dropbox\ToV\360\btl.svo.ext\BTL_PACK_UK.DAT.ext\0019.ext\END.0000" );
 			site.Skits = new TO8CHLI.TO8CHLI( @"d:\Dropbox\ToV\360\chat.svo.ext\CHAT.DAT.dec" );
 			site.SkitText = new Dictionary<string, TO8CHTX.ChatFile>();
 			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
@@ -471,8 +470,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddMenuBar( sb );
 			sb.Append( "<table>" );
 			for ( int i = 0; i < BattleVoicesEnd.Blocks.Count; ++i ) {
-				sb.Append( "<tr>" );
 				{
+					sb.Append( "<tr>" );
 					var v = BattleVoicesEnd.Blocks[i];
 					sb.Append( "<td>" ).Append( v.Identifier ).Append( "</td>" );
 					sb.Append( "<td>" ).Append( v.Entries[0].ScenarioStart ).Append( "</td>" );
@@ -492,8 +491,18 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						}
 					}
 					sb.Append( "</td>" );
+					sb.Append( "</tr>" );
+
+					sb.Append( "<tr>" );
+					foreach ( var e in v.Entries ) {
+						sb.Append( "<td style=\"min-width:60px\">" );
+						for ( int j = 0; j < e.Data.Length; ++j ) {
+							sb.Append( j ).Append( ": " ).Append( e.Data[j] ).Append( "<br>" );
+						}
+						sb.Append( "</td>" );
+					}
+					sb.Append( "</tr>" );
 				}
-				sb.Append( "</tr>" );
 				sb.Append( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
