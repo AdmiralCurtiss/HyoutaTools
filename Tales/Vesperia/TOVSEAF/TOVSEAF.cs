@@ -222,7 +222,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			sb.Append( "<tr>" );
 			for ( uint i = 0; i < SearchPointContentCount; ++i ) {
 				sb.Append( "<td>" );
-				sb.Append( searchPointContents[(int)( SearchPointContentIndex + i )].GetDataAsHtml( version, items, stringDic, inGameIdDict, searchPointItems ) );
+				sb.Append( searchPointContents[(int)( SearchPointContentIndex + i )].GetDataAsHtml( version, items, stringDic, inGameIdDict, searchPointItems, phpLinks: phpLinks ) );
 				sb.Append( "</td>" );
 			}
 			for ( uint i = SearchPointContentCount; i < 5; ++i ) {
@@ -263,7 +263,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			//sb.Append( "Percentage: " ).Append( Percentage ).Append( "%" ).Append( "<br>" );
 			for ( uint i = 0; i < SearchPointItemCount; ++i ) {
 				//sb.Append( "Item #" ).Append( i ).Append( ":" );
-				sb.Append( searchPointItems[(int)( SearchPointItemIndex + i )].GetDataAsHtml( version, items, stringDic, inGameIdDict ) );
+				sb.Append( searchPointItems[(int)( SearchPointItemIndex + i )].GetDataAsHtml( version, items, stringDic, inGameIdDict, phpLinks: phpLinks ) );
 				sb.Append( "<br>" );
 			}
 			return sb.ToString();

@@ -42,6 +42,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				ExportSettings();
 				ExportGradeShop();
 				if ( Site.Version != GameVersion.X360 ) {
+					ExportSearchPoints();
 					ExportNecropolis();
 					ExportTrophies();
 				}
@@ -2036,6 +2037,33 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "html" ).Value = g.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict );
 						command.ExecuteNonQuery();
 
+					}
+				}
+				transaction.Commit();
+			}
+		}
+
+		public void ExportSearchPoints() {
+			using ( var transaction = DB.BeginTransaction() ) {
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "CREATE TABLE SearchPoints ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, displayId INT, html TEXT )";
+					command.ExecuteNonQuery();
+				}
+				using ( var command = DB.CreateCommand() ) {
+					command.CommandText = "INSERT INTO SearchPoints ( gameId, displayId, html ) VALUES ( @gameId, @displayId, @html )";
+					command.AddParameter( "gameId" );
+					command.AddParameter( "displayId" );
+					command.AddParameter( "html" );
+
+					int idx = 1;
+					foreach ( var sp in Site.SearchPoints.SearchPointDefinitions ) {
+						command.GetParameter( "gameId" ).Value = sp.Index;
+						command.GetParameter( "displayId" ).Value = sp.Unknown11 == 1 ? idx : -1;
+						command.GetParameter( "html" ).Value = sp.GetDataAsHtml( Site.Version, Site.Items, Site.StringDic, Site.InGameIdDict, Site.SearchPoints.SearchPointContents, Site.SearchPoints.SearchPointItems, sp.Unknown11 == 1 ? idx : -1, phpLinks: true );
+						command.ExecuteNonQuery();
+						if ( sp.Unknown11 == 1 ) {
+							++idx;
+						}
 					}
 				}
 				transaction.Commit();
