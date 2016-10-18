@@ -526,10 +526,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
 			sb.Append( "<table>" );
+			int idx = 1;
 			for ( int i = 0; i < SearchPoints.SearchPointDefinitions.Count; ++i ) {
 				var sp = SearchPoints.SearchPointDefinitions[i];
-				sb.Append( sp.GetDataAsHtml( Version, Items, StringDic, InGameIdDict, SearchPoints.SearchPointContents, SearchPoints.SearchPointItems ) );
+				if ( sp.Unknown11 != 1 ) { continue; } // not sure what these mean exactly but only the ones with an '1' here show up in game
+				sb.Append( sp.GetDataAsHtml( Version, Items, StringDic, InGameIdDict, SearchPoints.SearchPointContents, SearchPoints.SearchPointItems, idx ) );
 				sb.Append( "<tr><td colspan=\"5\"><hr></td></tr>" );
+				++idx;
 			}
 			sb.Append( "</table>" );
 			AddFooter( sb );

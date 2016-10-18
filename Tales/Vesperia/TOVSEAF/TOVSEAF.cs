@@ -88,11 +88,13 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 				bmp = new System.Drawing.Bitmap( background );
 			}
 
+			int idx = 1;
 			foreach ( var spd in SearchPointDefinitions ) {
+				if ( spd.Unknown11 != 1 ) { continue; } // not sure what these mean exactly but only the ones with an '1' here show up in game
 				System.Drawing.Color color = System.Drawing.Color.Black;
 				System.Drawing.Color border = System.Drawing.Color.White;
 				switch ( spd.SearchPointType ) {
-					case 0: color = System.Drawing.Color.Green; border = System.Drawing.Color.Black; break; // tree stump
+					case 0: color = System.Drawing.Color.SpringGreen; border = System.Drawing.Color.Black; break; // tree stump
 					case 1: // shells
 						if ( spd.CoordY < 0 ) {
 							color = System.Drawing.Color.Red; // in water
@@ -102,11 +104,27 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 							border = System.Drawing.Color.Black;
 						}
 						break;
-					case 2: color = System.Drawing.Color.Yellow; border = System.Drawing.Color.Black; break; // bones
+					case 2: color = System.Drawing.Color.FromArgb( 212, 212, 0 ); border = System.Drawing.Color.Black; break; // bones
 					case 3: color = System.Drawing.Color.DarkBlue; border = System.Drawing.Color.White; break; // seagulls
 				}
-				SetPixelArea( bmp, (int)( ( spd.CoordX - minx ) * factor + padx ), (int)( ( extentz - ( spd.CoordZ - minz ) ) * factor + pady ), color, border );
+				//SetPixelArea( bmp, (int)( ( spd.CoordX - minx ) * factor + padx ), (int)( ( extentz - ( spd.CoordZ - minz ) ) * factor + pady ), color, border );
+
+				System.Drawing.Graphics g = System.Drawing.Graphics.FromImage( bmp );
+				g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+				g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+				g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+				System.Drawing.StringFormat fmt = new System.Drawing.StringFormat( System.Drawing.StringFormatFlags.NoClip ) { Alignment = System.Drawing.StringAlignment.Center, LineAlignment = System.Drawing.StringAlignment.Center };
+				//System.Drawing.Font font = new System.Drawing.Font( "Gentium Book", 32.0f, System.Drawing.GraphicsUnit.Pixel );
+				int x = (int)( ( spd.CoordX - minx ) * factor + padx );
+				int y = (int)( ( extentz - ( spd.CoordZ - minz ) ) * factor + pady );
+				System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+				path.AddString( idx.ToString(), new System.Drawing.FontFamily( "Gentium Book" ), (int)System.Drawing.FontStyle.Regular, 80.0f, new System.Drawing.Point( x, y + 4 ), fmt );
+				g.DrawPath( new System.Drawing.Pen( border, 8 ), path );
+				g.FillPath( new System.Drawing.SolidBrush( color ), path );
+				g.Flush();
+				++idx;
 			}
+
 			return bmp;
 		}
 
@@ -170,12 +188,12 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			SearchPointContentCount = stream.ReadUInt32().SwapEndian();
 		}
 
-		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, TSSFile stringDic, Dictionary<uint, TSSEntry> inGameIdDict, List<SearchPointContent> searchPointContents, List<SearchPointItem> searchPointItems, bool phpLinks = false ) {
+		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, TSSFile stringDic, Dictionary<uint, TSSEntry> inGameIdDict, List<SearchPointContent> searchPointContents, List<SearchPointItem> searchPointItems, int index, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append( "<tr id=\"searchpoint").Append( Index ).Append( "\">" );
 			sb.Append( "<td colspan=\"5\">" );
-			sb.Append( "[#" ).Append( Index ).Append( "] " );
+			sb.Append( "[#" ).Append( index ).Append( "] " );
 			switch ( SearchPointType ) {
 				case 0: sb.Append( "Tree Stump" ); break;
 				case 1: sb.Append( "Shell" ); break;
@@ -213,6 +231,16 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			}
 			sb.Append( "</tr>" );
 
+			return sb.ToString();
+		}
+
+		public override string ToString() {
+			StringBuilder sb = new StringBuilder();
+			sb.Append( "#" ).Append( Index );
+			sb.Append( " Type[" ).Append( SearchPointType ).Append( "]" );
+			sb.Append( " Pos[" ).Append( CoordX ).Append( ", " ).Append( CoordY ).Append( ", " ).Append( CoordZ ).Append( "]" );
+			sb.Append( " u11[" ).Append( Unknown11 ).Append( "]" );
+			sb.Append( " u14a[" ).Append( Unknown14a ).Append( "]" );
 			return sb.ToString();
 		}
 	}
