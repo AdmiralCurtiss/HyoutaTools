@@ -525,6 +525,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddHeader( sb, "Search Points" );
 			sb.AppendLine( "<body>" );
 			AddMenuBar( sb );
+			sb.Append( "<img src=\"PS3-SearchPoint.png\" width=\"1280\" height=\"1024\">" );
+			sb.Append( "<hr>" );
 			sb.Append( "<table>" );
 			int idx = 1;
 			for ( int i = 0; i < SearchPoints.SearchPointDefinitions.Count; ++i ) {
@@ -1030,6 +1032,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			//sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Enemy, Version, false ) + "\"><img src=\"menu-icons/sub-13.png\" title=\"Monster Book\"></a>" );
 			//sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Item, Version, false ) + "\"><img src=\"menu-icons/sub-11.png\" title=\"Collector's Book\"></a>" );
 			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Location, Version, false ) + "\"><img src=\"menu-icons/sub-10.png\" title=\"World Map\"></a>" );
+			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.SearchPoint, Version, false ) + "\"><img src=\"etc/U_ITEM_IRIKIAGRASS-64px.png\" title=\"Search Points\"></a>" );
 			sb.AppendLine( "<a href=\"" + GetUrl( WebsiteSection.Record, Version, false ) + "\"><img src=\"menu-icons/sub-08.png\" title=\"Records\"></a>" );
 			//sb.AppendLine( "<img src=\"menu-icons/main-09.png\" title=\"Save & Load\">" );
 			//sb.AppendLine( "<img src=\"menu-icons/sub-06.png\" title=\"Save\">" );
