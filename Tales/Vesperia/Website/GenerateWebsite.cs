@@ -481,16 +481,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, Version, v.Entries[0].CharacterBitmask );
 					sb.Append( "</td>" );
 					sb.Append( "<td>" );
-					bool first = true;
-					foreach ( var e in v.Entries ) {
-						if ( !String.IsNullOrWhiteSpace( e.RefString ) ) {
-							if ( !first ) {
-								sb.Append( ", " );
-							}
-							sb.Append( e.RefString );
-							first = false;
-						}
-					}
+					sb.Append( "Kill: " );
+					Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, Version, v.Entries[0].KillCharacterBitmask );
 					sb.Append( "</td>" );
 					for ( int j = 0; j < v.CharacterSpecificData.Length; ++j ) {
 						if ( v.CharacterSpecificData[j] != 0 ) {
@@ -505,9 +497,72 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					sb.Append( "<tr>" );
 					foreach ( var e in v.Entries ) {
 						sb.Append( "<td style=\"min-width:60px\">" );
-						for ( int j = 0; j < e.Data.Length; ++j ) {
-							sb.Append( j ).Append( ": " ).Append( e.Data[j] ).Append( "<br>" );
+						if ( !String.IsNullOrWhiteSpace( e.RefString ) ) {
+							sb.Append( e.RefString ).Append( "<br>" );
 						}
+						for ( int j = 0; j < e.Data.Length; ++j ) {
+							switch ( j ) {
+								case 1:
+									if ( e.Data[j] != 0 ) {
+										sb.Append( "Chance: " ).Append( e.Data[j] ).Append( "%" ).Append( "<br>" );
+									}
+									break;
+								case 2:
+								case 3:
+								case 5:
+								case 6:
+								case 22:
+									break;
+								case 7:
+								case 8:
+								case 9:
+								case 10:
+								case 11:
+								case 12:
+								case 13:
+								case 14:
+								case 15:
+									if ( e.Data[j] != 16 ) {
+										sb.Append( j ).Append( ": " ).Append( e.Data[j] );
+										Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, Version, (uint)( 1 << (int)( j - 7 ) ) );
+										sb.Append( "<br>" );
+									}
+									break;
+								case 16:
+									if ( e.Data[j] != 0 ) {
+										sb.Append( "Arte Type (?): " ).Append( ( (T8BTMA.Arte.ArteType)e.Data[j] - 1 ).ToString() ).Append( "<br>" );
+									}
+									break;
+								case 19:
+									if ( e.Data[j] != 0 ) {
+										sb.Append( "Max Battle Time: " ).Append( e.Data[j] ).Append( " frames" ).Append( "<br>" );
+									}
+									break;
+								case 20:
+									if ( e.Data[j] != 0 ) {
+										sb.Append( "HP: " );
+										switch ( e.Data[j] ) {
+											case 1: sb.Append( "Full" ); break;
+											case 3: sb.Append( "Low" ); break;
+											default: sb.Append( "? (" ).Append( e.Data[j] ).Append( ")" ); break;
+										}
+										sb.Append( "<br>" );
+									}
+									break;
+								case 9999:
+									if ( e.Data[j] != 0 ) {
+										sb.Append( j ).Append( ": " );
+										Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, Version, e.Data[j] );
+										sb.Append( "<br>" );
+									}
+									break;
+								default:
+									if ( e.Data[j] != 0 ) {
+										sb.Append( j ).Append( ": " ).Append( e.Data[j] ).Append( "<br>" );
+									}
+									break;
+							}
+					}
 						sb.Append( "</td>" );
 					}
 					sb.Append( "</tr>" );

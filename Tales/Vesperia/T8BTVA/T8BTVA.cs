@@ -87,6 +87,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 		public uint ScenarioStart;
 		public uint ScenarioEnd;
 		public uint CharacterBitmask;
+		public uint KillCharacterBitmask;
 
 		public T8BTVAEntry( System.IO.Stream stream, uint refStringStart ) {
 			Data = new uint[33];
@@ -98,6 +99,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 			ScenarioStart = Data[2];
 			ScenarioEnd = Data[3];
 			CharacterBitmask = Data[5];
+			KillCharacterBitmask = Data[6];
 		}
 
 		public override string ToString() {
