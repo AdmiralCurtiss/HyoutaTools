@@ -37,8 +37,8 @@ namespace HyoutaTools.Pokemon.Gen5.PWT {
 				Util.CopyByteArrayPart( Tournaments[i].Data, 0, data, i * 4628, 4628 );
 			}
 
-			var checksum = Checksum.Crc16Ccitt.StandardAlgorithm.ComputeChecksumBytes( data, 0, 55536 );
-			Util.CopyByteArrayPart( checksum, 0, data, 55536, 2 );
+			ushort checksum = Checksums.Ccitt.Update( Checksums.Ccitt.Init(), data, 55536 );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( checksum ), 0, data, 55536, 2 );
 			data[55538] = 0x00; data[55539] = 0x00;
 
 			return data;

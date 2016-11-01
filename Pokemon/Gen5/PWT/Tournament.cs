@@ -64,8 +64,8 @@ namespace HyoutaTools.Pokemon.Gen5.PWT {
 		}
 
 		public void RecalculateChecksum() {
-			var checksum = Checksum.Crc16Ccitt.StandardAlgorithm.ComputeChecksumBytes( Data, 0, 4624 );
-			Util.CopyByteArrayPart( checksum, 0, Data, 4624, 2 );
+			ushort checksum = Checksums.Ccitt.Update( Checksums.Ccitt.Init(), Data, 4624 );
+			Util.CopyByteArrayPart( BitConverter.GetBytes( checksum ), 0, Data, 4624, 2 );
 		}
 	}
 }
