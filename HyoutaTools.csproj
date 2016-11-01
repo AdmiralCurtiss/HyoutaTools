@@ -72,7 +72,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AceAttorney\Script.cs" />
     <Compile Include="Checksum\ccitt.cs" />
     <Compile Include="DanganRonpa\DanganUtil.cs" />
     <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
