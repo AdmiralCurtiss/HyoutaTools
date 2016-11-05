@@ -81,16 +81,6 @@ namespace HyoutaTools.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] todr_char_table_without_header {
-            get {
-                object obj = ResourceManager.GetObject("todr_char_table_without_header", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to body { background-color: #68504F; color: #EFD1AE; font-size: 16; }
         ///.itemname { color: #FFEBD2; font-size: 20; }
         ///.itemdesc { }

@@ -409,7 +409,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Files\gngj_template" />
-    <None Include="Files\todr_char_table_without_header.dat" />
     <None Include="Files\gndb_template" />
   </ItemGroup>
   <ItemGroup>

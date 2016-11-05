@@ -54,14 +54,15 @@ namespace HyoutaTools.Tales.DestinyRemake {
 			//}		
 		}
 		private static Dictionary<ushort, char> PseudoShiftJisMap = null;
-		public static char GetCharPseudoShiftJis( ushort character ) {
+		public static void InitPseudoShiftJis( string filename ) {
 			if ( PseudoShiftJisMap == null ) {
 				PseudoShiftJisMap = new Dictionary<ushort, char>();
 
-				byte[] tbl = HyoutaTools.Properties.Resources.todr_char_table_without_header;
+				// this is file #14 in DAT.BIN, 7177 bytes with comptoe header, 7168 without comptoe header
+				byte[] tbl = System.IO.File.ReadAllBytes( filename );
 				byte[] shiftJisChar = new byte[2];
 				ushort TodChar = 0x9940;
-				for ( int i = 0; i < tbl.Length; i += 2 ) {
+				for ( int i = ( tbl[0] == 0x00 ? 9 : 0 ); i < tbl.Length; i += 2 ) {
 					shiftJisChar[1] = tbl[i];
 					shiftJisChar[0] = tbl[i + 1];
 
@@ -219,6 +220,8 @@ namespace HyoutaTools.Tales.DestinyRemake {
 			  // 率
 			  */
 			}
+		}
+		public static char GetCharPseudoShiftJis( ushort character ) {
 			return PseudoShiftJisMap[character];
 		}
 	}
