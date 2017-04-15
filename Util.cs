@@ -131,7 +131,7 @@ namespace HyoutaTools {
 
 			byte[] arr = new byte[hex.Length >> 1];
 
-			for ( int i = 0; i < hex.Length >> 1; ++i ) {
+			for ( int i = 0; i < (hex.Length >> 1); ++i ) {
 				arr[i] = (byte)( ( GetHexVal( hex[i << 1] ) << 4 ) + ( GetHexVal( hex[( i << 1 ) + 1] ) ) );
 			}
 
