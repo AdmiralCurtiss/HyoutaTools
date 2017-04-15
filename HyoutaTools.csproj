@@ -181,6 +181,9 @@
     <Compile Include="Other\TrailsInTheSkyScenarioDump\ScenarioBin.cs" />
     <Compile Include="Other\TrailsInTheSkyScenarioDump\DumpText.cs" />
     <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
+    <Compile Include="Pokemon\Gen3\Checksum.cs" />
+    <Compile Include="Pokemon\Gen3\HallOfFame.cs" />
+    <Compile Include="Pokemon\Gen3\String3.cs" />
     <Compile Include="Pokemon\Gen4\String4.cs" />
     <Compile Include="Pokemon\Gen5\PWT\DownloadFile.cs" />
     <Compile Include="Pokemon\Gen5\PWT\Program.cs" />
