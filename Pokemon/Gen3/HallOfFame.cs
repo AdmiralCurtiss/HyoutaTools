@@ -26,6 +26,10 @@ namespace HyoutaTools.Pokemon.Gen3 {
                 Nickname = new String3( String3.Region.Western, stream, 10 );
             }
 
+            public bool IsValid() {
+                return Species != 0;
+            }
+
             public void Serialize( System.IO.Stream stream ) {
                 stream.WriteUInt16( TrainerId );
                 stream.WriteUInt16( SecretId );
@@ -49,6 +53,11 @@ namespace HyoutaTools.Pokemon.Gen3 {
                     Pokemon[i] = new HallOfFamePokemon( stream );
                 }
             }
+
+            public bool IsValid() {
+                return Pokemon[0].IsValid();
+            }
+
             public void Serialize( System.IO.Stream stream ) {
                 for ( int i = 0; i < Pokemon.Length; ++i ) {
                     Pokemon[i].Serialize( stream );
