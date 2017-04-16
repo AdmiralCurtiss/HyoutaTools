@@ -15,6 +15,18 @@ namespace HyoutaTools.Pokemon.Gen3 {
         public string Text { get; private set; }
         public byte[] Raw { get; private set; }
 
+        public String3( Region language, int length ) {
+            Language = language;
+            Raw = new byte[length];
+            if ( length > 0 ) {
+                Raw[0] = 0xFF;
+            }
+            for ( int i = 1; i < length; ++i ) {
+                Raw[i] = 0;
+            }
+            Text = "";
+        }
+
         public String3( Region language, System.IO.Stream stream, int length ) {
             Language = language;
             Raw = new byte[length];
@@ -30,8 +42,12 @@ namespace HyoutaTools.Pokemon.Gen3 {
                         done = true;
                     } else if ( b < 0xFA ) {
                         switch ( currentLanguage ) {
-                            case Region.Japanese: sb.Append( Generation3JapaneseTextLookupTable[b] ); break;
-                            case Region.Western:  sb.Append( Generation3WesternTextLookupTable[b] ); break;
+                            case Region.Japanese:
+                                sb.Append( Generation3JapaneseTextLookupTable[b] );
+                                break;
+                            case Region.Western:
+                                sb.Append( Generation3WesternTextLookupTable[b] );
+                                break;
                         }
                     } else if ( b == 0xFC ) {
                         byte func = (byte)stream.ReadByte();

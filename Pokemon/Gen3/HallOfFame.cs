@@ -13,6 +13,16 @@ namespace HyoutaTools.Pokemon.Gen3 {
             public ushort Species;
             public byte Level;
             public String3 Nickname;
+
+            public HallOfFamePokemon() {
+                TrainerId = 0;
+                SecretId = 0;
+                PersonalityValue = 0;
+                Species = 0;
+                Level = 0;
+                Nickname = new String3( String3.Region.Western, 10 );
+            }
+
             public HallOfFamePokemon( System.IO.Stream stream ) {
                 TrainerId = stream.ReadUInt16();
                 SecretId = stream.ReadUInt16();
@@ -47,6 +57,14 @@ namespace HyoutaTools.Pokemon.Gen3 {
         }
         public class HallOfFameEntry {
             public HallOfFamePokemon[] Pokemon;
+
+            public HallOfFameEntry() {
+                Pokemon = new HallOfFamePokemon[6];
+                for ( int i = 0; i < 6; ++i ) {
+                    Pokemon[i] = new HallOfFamePokemon();
+                }
+            }
+
             public HallOfFameEntry( System.IO.Stream stream ) {
                 Pokemon = new HallOfFamePokemon[6];
                 for ( int i = 0; i < 6; ++i ) {
@@ -80,6 +98,48 @@ namespace HyoutaTools.Pokemon.Gen3 {
             }
         }
 
+        public static HallOfFameStructure ReadHallOfFameFromSave( System.IO.Stream file, int offset = 0x1C000, int pages = 2 ) {
+            using ( System.IO.Stream buffer = new System.IO.MemoryStream( 0xF80 * pages ) ) {
+                // Read
+                for ( int i = 0; i < pages; ++i ) {
+                    file.Position = offset + i * 0x1000;
+                    Util.CopyStream( file, buffer, 0xF80 );
+                }
+
+                // Deserialize
+                buffer.Position = 0;
+                HallOfFameStructure hofs = new HallOfFameStructure( buffer );
+                return hofs;
+            }
+        }
+
+        public static void WriteHallOfFameDataToSave( HallOfFameStructure hofs, System.IO.Stream file, int offset = 0x1C000, int pages = 2 ) {
+            using ( System.IO.Stream buffer = new System.IO.MemoryStream( 0xF80 * pages ) ) {
+                // Serialize
+                buffer.Position = 0;
+                hofs.Serialize( buffer );
+                buffer.WriteAlign( 0xF80 );
+
+                // Calculate checksums
+                buffer.Position = 0;
+                ushort[] checksums = new ushort[pages];
+                for ( int i = 0; i < pages; ++i ) {
+                    checksums[i] = Checksum.CalculateSaveChecksum( buffer, 0xF80 );
+                }
+
+                // Write back into save
+                buffer.Position = 0;
+                for ( int i = 0; i < pages; ++i ) {
+                    file.Position = offset + i * 0x1000;
+                    Util.CopyStream( buffer, file, 0xF80 );
+                    file.Position = offset + i * 0x1000 + 0xFF4;
+                    file.WriteUInt16( checksums[i] );
+                    file.Position = offset + i * 0x1000 + 0xFF8;
+                    file.WriteUInt32( 0x08012025 );
+                }
+            }
+        }
+
         public static int Execute( List<string> args ) {
             if ( args.Count < 1 ) {
                 Console.WriteLine( "Usage: pokemon-emerald.sav (maybe other Gen3 works too?)" );
@@ -87,17 +147,9 @@ namespace HyoutaTools.Pokemon.Gen3 {
             }
 
             String filename = args[0];
-            using ( System.IO.Stream file = new System.IO.FileStream( filename, System.IO.FileMode.Open ) )
-            using ( System.IO.Stream buffer = new System.IO.MemoryStream( 0xF80 * 2 ) ) {
+            using ( System.IO.Stream file = new System.IO.FileStream( filename, System.IO.FileMode.Open ) ) {
                 // Read
-                file.Position = 0x1C000;
-                Util.CopyStream( file, buffer, 0xF80 );
-                file.Position = 0x1D000;
-                Util.CopyStream( file, buffer, 0xF80 );
-                buffer.Position = 0;
-
-                // Deserialize
-                HallOfFameStructure hofs = new HallOfFameStructure( buffer );
+                HallOfFameStructure hofs = ReadHallOfFameFromSave( file );
 
                 // Do something, whatever
                 {
@@ -107,26 +159,8 @@ namespace HyoutaTools.Pokemon.Gen3 {
                     }
                 }
 
-                // Serialize
-                buffer.Position = 0;
-                hofs.Serialize( buffer );
-
-                // Calculate checksums
-                buffer.Position = 0;
-                ushort checksum1C = Checksum.CalculateSaveChecksum( buffer, 0xF80 );
-                ushort checksum1D = Checksum.CalculateSaveChecksum( buffer, 0xF80 );
-
-                // Write back into save
-                file.Position = 0x1C000;
-                buffer.Position = 0;
-                Util.CopyStream( buffer, file, 0xF80 );
-                file.Position = 0x1CFF4;
-                file.WriteUInt16( checksum1C );
-
-                file.Position = 0x1D000;
-                Util.CopyStream( buffer, file, 0xF80 );
-                file.Position = 0x1DFF4;
-                file.WriteUInt16( checksum1D );
+                // Write
+                WriteHallOfFameDataToSave( hofs, file );
             }
 
             return 0;
