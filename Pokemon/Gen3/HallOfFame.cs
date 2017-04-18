@@ -85,9 +85,9 @@ namespace HyoutaTools.Pokemon.Gen3 {
 
         public class HallOfFameStructure {
             public HallOfFameEntry[] Entries;
-            public HallOfFameStructure( System.IO.Stream stream ) {
-                Entries = new HallOfFameEntry[50];
-                for ( int i = 0; i < 50; ++i ) {
+            public HallOfFameStructure( System.IO.Stream stream, int maxEntries ) {
+                Entries = new HallOfFameEntry[maxEntries];
+                for ( int i = 0; i < maxEntries; ++i ) {
                     Entries[i] = new HallOfFameEntry( stream );
                 }
             }
@@ -102,13 +102,31 @@ namespace HyoutaTools.Pokemon.Gen3 {
             using ( System.IO.Stream buffer = new System.IO.MemoryStream( 0xF80 * pages ) ) {
                 // Read
                 for ( int i = 0; i < pages; ++i ) {
-                    file.Position = offset + i * 0x1000;
+                    int secpos = offset + i * 0x1000;
+                    file.Position = secpos + 0xFF8;
+                    uint magic = file.ReadUInt32();
+                    if ( magic != 0x08012025 ) {
+                        Console.WriteLine( "Magic number of sector at 0x" + secpos.ToString( "X" ) + " is wrong, Hall of Fame is probably empty." );
+                        return null;
+                    }
+
+                    file.Position = secpos + 0xFF4;
+                    ushort checksumRead = file.ReadUInt16();
+
+                    file.Position = secpos;
+                    ushort checksum = Checksum.CalculateSaveChecksum( file, 0xF80 );
+                    if ( checksumRead != checksum ) {
+                        Console.WriteLine( "Checksum of sector at 0x" + secpos.ToString( "X" ) + " is wrong." );
+                        return null;
+                    }
+
+                    file.Position = secpos;
                     Util.CopyStream( file, buffer, 0xF80 );
                 }
 
                 // Deserialize
                 buffer.Position = 0;
-                HallOfFameStructure hofs = new HallOfFameStructure( buffer );
+                HallOfFameStructure hofs = new HallOfFameStructure( buffer, ( pages * 0xF80 ) / 0x78 );
                 return hofs;
             }
         }
@@ -118,7 +136,7 @@ namespace HyoutaTools.Pokemon.Gen3 {
                 // Serialize
                 buffer.Position = 0;
                 hofs.Serialize( buffer );
-                buffer.WriteAlign( 0xF80 );
+                buffer.WriteAlign( 0xF80 * pages, 0x00 );
 
                 // Calculate checksums
                 buffer.Position = 0;
@@ -130,12 +148,17 @@ namespace HyoutaTools.Pokemon.Gen3 {
                 // Write back into save
                 buffer.Position = 0;
                 for ( int i = 0; i < pages; ++i ) {
-                    file.Position = offset + i * 0x1000;
+                    int secpos = offset + i * 0x1000;
+                    file.WriteAlign( secpos + 0x1000, 0x00 );
+
+                    file.Position = secpos;
                     Util.CopyStream( buffer, file, 0xF80 );
-                    file.Position = offset + i * 0x1000 + 0xFF4;
+                    file.Position = secpos + 0xFF4;
                     file.WriteUInt16( checksums[i] );
-                    file.Position = offset + i * 0x1000 + 0xFF8;
+                    file.Position = secpos + 0xFF8;
                     file.WriteUInt32( 0x08012025 );
+
+                    file.Position = secpos + 0x1000;
                 }
             }
         }
