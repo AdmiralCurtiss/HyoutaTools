@@ -111,6 +111,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.FixXmaHeader",             "-"		   ),  Tales.Vesperia.xma.FixHeader.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "FinalFantasyCrystalChronicles.TextDumper","-"           ),  FinalFantasyCrystalChronicles.TextDumper.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Pokemon.Gen3.HallOfFame",                 "-"           ),  Pokemon.Gen3.HallOfFame.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Pokemon.Gen3.Save",                       "-"           ),  Pokemon.Gen3.Save.Execute) },
 		};
 
 		[STAThread]
