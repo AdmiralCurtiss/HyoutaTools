@@ -6,8 +6,12 @@ using System.Text;
 namespace HyoutaTools.Other.NisPakEx {
 	class Program {
 		public static int Execute( List<string> args ) {
-			string Filename = @"c:\Users\Georg\Music\disgaea4\disg4.pak";
-			string OutPath = @"c:\Users\Georg\Music\disgaea4\";
+			if ( args.Count != 2 ) {
+				Console.WriteLine( "Usage: NisPakEx data.pak outdir" );
+				return -1;
+			}
+			string Filename = args[0];
+			string OutPath = args[1];
 
 			Console.WriteLine( "Opening " + Filename + "..." );
 
@@ -15,10 +19,11 @@ namespace HyoutaTools.Other.NisPakEx {
 
 			uint FileAmount = BitConverter.ToUInt32( b, 0 );
 
+			System.IO.Directory.CreateDirectory( OutPath );
 			for ( int i = 0; i < FileAmount; i++ ) {
 				uint Offset = BitConverter.ToUInt32( b, ( i * 8 ) + 4 );
 				uint FileSize = BitConverter.ToUInt32( b, ( i * 8 ) + 8 );
-				String f = OutPath + "0x" + Offset.ToString( "X8" ) + ".ex";
+				String f = System.IO.Path.Combine( OutPath , "0x" + Offset.ToString( "X8" ) + ".ex" );
 
 				Console.WriteLine( "Writing " + f + "... (" + ( i + 1 ).ToString() + "/" + FileAmount.ToString() + ")" );
 
