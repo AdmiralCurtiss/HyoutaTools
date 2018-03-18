@@ -313,7 +313,6 @@
     <Compile Include="Trophy\TrophyConfNode.cs" />
     <Compile Include="Trophy\TrophyNode.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicExport\Program.cs" />
-    <Compile Include="GraceNote\Vesperia\StringDicNpcCompare360\Program.cs" />
     <Compile Include="GraceNote\Vesperia\VVoicesGenerate\Program.cs" />
     <Compile Include="Other\AutoExtract\Program.cs" />
     <Compile Include="Other\GoldenSunDarkDawnMsgExtract\Program.cs" />
