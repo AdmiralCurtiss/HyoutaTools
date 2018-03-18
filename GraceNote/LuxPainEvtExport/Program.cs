@@ -13,19 +13,9 @@ namespace HyoutaTools.GraceNote.LuxPainEvtExport {
 				return -1;
 			}
 
-			//*
 			String InFilename = args[0];
 			String OutFilename = args[1];
 			String DB = args[2];
-			//String GracesDB = args[3];
-			//*/
-
-			/*
-			String Filename = @"c:\Users\Georg\Downloads\Xillia Script files\69753.SDBJPN";
-			String NewDB = @"c:\Users\Georg\Downloads\Xillia Script files\X69753";
-			String TemplateDB = @"c:\Users\Georg\Downloads\Xillia Script files\XTemplate";
-			String GracesDB = @"c:\Users\Georg\Downloads\Xillia Script files\GracesJapanese";
-			//*/
 
 			LuxPainEvt Evt;
 			byte[] EvtFile;

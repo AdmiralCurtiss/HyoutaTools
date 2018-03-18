@@ -105,14 +105,6 @@ namespace HyoutaTools.GraceNote.DumpDatabase {
 			String TxtFilename;
 			String GracesJapanese;
 
-			/*
-			args = new string[] {
-				@"c:\Users\Georg\Documents\Tales of Vesperia\GraceNote92\Databases\VScenario723",
-				@"c:\Users\Georg\Documents\Tales of Vesperia\GraceNote92\Databases\VScenario723.txt",
-				@"c:\Users\Georg\Documents\Tales of Vesperia\GraceNote92\Databases\GracesJapanese"
-			};
-			//*/
-
 			bool IdentifyNames = false;
 			bool RemovingNewlines = false;
 			bool VesperiaTagReplacement = false;

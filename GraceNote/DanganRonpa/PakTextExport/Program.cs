@@ -17,18 +17,8 @@ namespace HyoutaTools.GraceNote.DanganRonpa.PakTextExport {
 			 * CREATE TABLE Text(ID int primary key, StringID int, english text, comment text, updated tinyint, status tinyint, PointerRef integer, IdentifyString text, IdentifyPointerRef integer);
 			 ***/
 
-			//*
 			String Filename = args[0];
 			String DB = args[1];
-			//String GracesDB = args[2];
-			//*/
-
-			/*
-			String Filename = @"c:\Users\Georg\Downloads\Xillia Script files\69753.SDBJPN";
-			String NewDB = @"c:\Users\Georg\Downloads\Xillia Script files\X69753";
-			String TemplateDB = @"c:\Users\Georg\Downloads\Xillia Script files\XTemplate";
-			String GracesDB = @"c:\Users\Georg\Downloads\Xillia Script files\GracesJapanese";
-			//*/
 
 			PakText DRMF;
 			try {
@@ -41,9 +31,6 @@ namespace HyoutaTools.GraceNote.DanganRonpa.PakTextExport {
 			}
 			byte[] newfile = DRMF.CreateFile();
 			System.IO.File.WriteAllBytes( Filename, newfile );
-
-			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophyConf.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(true)));
-			//System.IO.File.WriteAllBytes(@"C:\TROPHY\newTrophy.trp", Encoding.UTF8.GetBytes(TROPSFM.ExportTropSFM(false)));
 
 			return 0;
 		}
