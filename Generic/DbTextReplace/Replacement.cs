@@ -7,7 +7,7 @@ using System.Data.SQLite;
 namespace HyoutaTools.Generic.DbTextReplace {
 	public static class Replacement {
 		public static int Replace( List<string> args ) {
-			string Database = args[0]; //@"c:\_svn\GraceNote\GraceNote\DanganRonpaBestOfDB\GracesJapanese";
+			string Database = args[0];
 
 			// remove the dumb unicode byte order mark
 			object o1 = SqliteUtil.SelectScalar( "Data Source=" + args[0], "SELECT cast(english as blob) FROM text WHERE id = 12" );
