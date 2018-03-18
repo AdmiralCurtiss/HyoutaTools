@@ -126,7 +126,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 					int i = cnt / 8;
 					switch ( BitPerPixel ) {
 						case 4:
-							if ( cnt % 8 == 0 ) {
+							if ( cnt % 8 != 0 ) {
 								color = ( img[i] & 0xF0u ) >> 4;
 							} else {
 								color = ( img[i] & 0x0Fu );
@@ -337,7 +337,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 					uint col = img[i];
 					switch ( BitPerPixel ) {
 						case 4:
-							col = ( img[i] << 4 ) | ( img[i + 1] );
+							col = ( img[i + 1] << 4 ) | ( img[i] );
 							serialized.Add( (byte)col );
 							++i;
 							break;
