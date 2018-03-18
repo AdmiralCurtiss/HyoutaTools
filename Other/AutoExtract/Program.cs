@@ -46,18 +46,11 @@ namespace HyoutaTools.Other.AutoExtract {
 						case "comptoe":
 							success = output.EndsWith( "Success\r\n" );
 							break;
-						case "tlzc":
-							success = !output.Contains( "ompression failed" );
-							break;
 						case "Graceful":
 							success = !output.Contains( "Exception" );
 							break;
 						default:
-							if ( prog.Contains( "GimConv" ) ) {
-								success = !output.Contains( "ERROR" );
-							} else {
-								return true;
-							}
+							return true;
 							break;
 					}
 
@@ -278,13 +271,11 @@ namespace HyoutaTools.Other.AutoExtract {
 						if ( firstbyte == 0x4D ) {
 							if ( secondbyte == 0x49 && thirdbyte == 0x47 && fourthbyte == 0x2E ) {
 								fs.Close();
-								f = RenameToWithExtension( f, ".gim" );
-
-								prog = @"d:\_svn\Dangan Ronpa\GimConv\GimConv.exe";
-								args = "\"" + f + "\" -o \"" + f + ".png\"";
 								Console.WriteLine();
-								Console.WriteLine( prog + " " + args );
-								if ( RunProgram( prog, args ) ) {
+								Console.WriteLine( "GimToPng " + f );
+								List<string> converted = PSP.GIM.GimToPng.GimToPng.ConvertGimFileToPngFiles( f );
+
+								if ( converted != null && converted.Count > 0 ) {
 									System.IO.File.Delete( f );
 									HasBeenProcessed = true;
 								}

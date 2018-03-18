@@ -15,14 +15,20 @@ namespace HyoutaTools.Other.PSP.GIM.GimToPng {
 			}
 
 			string filename = args[0];
+			List<string> convertedFilenames = ConvertGimFileToPngFiles( filename );
+			return ( convertedFilenames != null && convertedFilenames.Count > 0 ) ? 0 : -1;
+		}
 
+		public static List<string> ConvertGimFileToPngFiles( string filename ) {
 			GIM gim = new GIM( filename );
 			int filenum = 0;
+			List<string> names = new List<string>();
 			foreach ( Bitmap bmp in gim.ConvertToBitmaps() ) {
-				bmp.Save( filename + "." + filenum + ".png" );
+				string newname = filename + "." + filenum + ".png";
+				bmp.Save( newname );
+				names.Add( newname );
 			}
-
-			return 0;
+			return names;
 		}
 	}
 }
