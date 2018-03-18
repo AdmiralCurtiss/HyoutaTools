@@ -80,6 +80,8 @@ namespace HyoutaTools.Pokemon.Gen3 {
             return Text;
         }
 
+        // lookup tables adapted from: https://bulbapedia.bulbagarden.net/wiki/Character_encoding_in_Generation_III
+
         public static Dictionary<byte, string> Generation3JapaneseTextLookupTable = new Dictionary<byte, string> {
             {0x00," "},{0x01,"あ"},{0x02,"い"},{0x03,"う"},{0x04,"え"},{0x05,"お"},{0x06,"か"},{0x07,"き"},{0x08,"く"},{0x09,"け"},{0x0A,"こ"},{0x0B,"さ"},{0x0C,"し"},{0x0D,"す"},{0x0E,"せ"},{0x0F,"そ"},
             {0x10,"た"},{0x11,"ち"},{0x12,"つ"},{0x13,"て"},{0x14,"と"},{0x15,"な"},{0x16,"に"},{0x17,"ぬ"},{0x18,"ね"},{0x19,"の"},{0x1A,"は"},{0x1B,"ひ"},{0x1C,"ふ"},{0x1D,"へ"},{0x1E,"ほ"},{0x1F,"ま"},

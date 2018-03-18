@@ -38,6 +38,7 @@ namespace HyoutaTools.Pokemon.Gen4 {
 			return _Text;
 		}
 
+		// lookup table adapted from: https://www.pokecommunity.com/showthread.php?p=5788594#post5788594
 		public static Dictionary<ushort, char> Generation4TextLookupTable = new Dictionary<ushort, char> {
 			{0x0000,'\u0000'},{0x0001,'\u3000'},{0x0002,'\u3041'},{0x0003,'\u3042'},{0x0004,'\u3043'},{0x0005,'\u3044'},{0x0006,'\u3045'},{0x0007,'\u3046'},
 			{0x0008,'\u3047'},{0x0009,'\u3048'},{0x000A,'\u3049'},{0x000B,'\u304A'},{0x000C,'\u304B'},{0x000D,'\u304C'},{0x000E,'\u304D'},{0x000F,'\u304E'},
