@@ -7,15 +7,10 @@ using HyoutaTools.Tales.Vesperia.TSS;
 namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 	class Program {
 		public static int Execute( List<string> args ) {
-			bool UseInsaneNames = false;
 			bool RealMode = false;
 			bool UpdateInGameId = false;
 			bool GenerateGracesEnglish = false;
 
-			if ( args.Contains( "-insane" ) ) {
-				Console.WriteLine( "Wesker-Dumbledore Mode Activated!" );
-				UseInsaneNames = true;
-			}
 			if ( args.Contains( "-real" ) ) {
 				Console.WriteLine( "Real Mode activated, resulting file will contain both English and Japanese data as expected by an unmodified game." );
 				RealMode = true;
@@ -57,15 +52,11 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 			}
 
 
-			// Empty unused strings, alter names if wanted
+			// Empty unused strings
 			if ( !RealMode ) {
 				foreach ( TSSEntry e in TSS.Entries ) {
 					if ( e.StringEng != null ) {
 						e.StringEng = "";
-					}
-
-					if ( UseInsaneNames ) {
-						e.StringJpn = HyoutaTools.Tales.Vesperia.VesperiaUtil.ReplaceWithInsaneNames( e.StringJpn );
 					}
 				}
 			}
