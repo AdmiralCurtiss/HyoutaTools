@@ -19,11 +19,7 @@ namespace HyoutaTools.GraceNote.Vesperia.TO8CHTXExport {
 				Database = args[1];
 				NewFilename = args[2];
 			}
-			/*
-			Filename = @"c:\#gracenote_chat_repack\oldchat\VC002J";
-			Database = @"c:\#gracenote_chat_repack\db\VC002J";
-			NewFilename = @"c:\#gracenote_chat_repack\newchat\VC002J";
-			//*/
+
 			ChatFile c = new ChatFile( System.IO.File.ReadAllBytes( Filename ) );
 
 			c.GetSQL( "Data Source=" + Database );
