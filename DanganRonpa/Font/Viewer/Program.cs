@@ -13,22 +13,18 @@ namespace HyoutaTools.DanganRonpa.Font.Viewer {
 
 	static class Program {
 		static void PrintUsage() {
-			Console.WriteLine( "FontDisplay" );
-			Console.WriteLine( " -fontinfofile ffinfo.bin/tov.elf" );
-			Console.WriteLine( " -fontinfofiletype fontinfo/elf" );
-			Console.WriteLine( " -textfile text.txt" );
-			Console.WriteLine( " -mode gui/png" );
-			Console.WriteLine( " -font FONTTEX10.TXV" );
-			Console.WriteLine( " -fontblock 0" );
-			Console.WriteLine( " -outfile text.png" );
-			Console.WriteLine( " -boxbybox" );
-			Console.WriteLine( " -dialoguebubble" );
+			Console.WriteLine( "Usage: FontViewer fontimage fontinfo" );
 		}
 
 		public static int Execute( List<string> args ) {
+			if ( args.Count != 2 ) {
+				PrintUsage();
+				return -1;
+			}
+
 			string Filepath = args[1];
 			string ImagePath = args[0];
-			//string Filepath2 = @"d:\_svn\GraceNote\GraceNote\DanganRonpaBestOfRebuild\assets\i";
+			//string Filepath2 = args[2];
 
 
 			FontViewer form;
