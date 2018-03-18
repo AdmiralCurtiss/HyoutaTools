@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -32,7 +33,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 		public ushort DataOffset;
 		public ushort Unknown3;
 		public ImageFormat Format;
-		public ushort PixelOrder;
+		public PixelOrder PxOrder;
 		public ushort Width;
 		public ushort Height;
 		public ushort ColorDepth;
@@ -72,7 +73,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 			DataOffset = BitConverter.ToUInt16( File, Offset + 0x10 );
 			Unknown3 = BitConverter.ToUInt16( File, Offset + 0x12 );
 			Format = (ImageFormat)BitConverter.ToUInt16( File, Offset + 0x14 );
-			PixelOrder = BitConverter.ToUInt16( File, Offset + 0x16 );
+			PxOrder = (PixelOrder)BitConverter.ToUInt16( File, Offset + 0x16 );
 			Width = BitConverter.ToUInt16( File, Offset + 0x18 );
 			Height = BitConverter.ToUInt16( File, Offset + 0x1A );
 			ColorDepth = BitConverter.ToUInt16( File, Offset + 0x1C );
@@ -192,6 +193,105 @@ namespace HyoutaTools.Other.PSP.GIM {
 
 		}
 
+		private static Color ColorFromRGBA5650( uint color ) {
+			int r = (int)( ( ( color & 0x0000001F )       ) << 3 );
+			int g = (int)( ( ( color & 0x000007E0 ) >>  5 ) << 2 );
+			int b = (int)( ( ( color & 0x0000F800 ) >> 11 ) << 3 );
+			return Color.FromArgb( 0, r, g, b );
+		}
+		private static Color ColorFromRGBA5551( uint color ) {
+			int r = (int)( ( ( color & 0x0000001F )       ) << 3 );
+			int g = (int)( ( ( color & 0x000003E0 ) >>  5 ) << 3 );
+			int b = (int)( ( ( color & 0x00007C00 ) >> 10 ) << 3 );
+			int a = (int)( ( ( color & 0x00008000 ) >> 15 ) << 7 );
+			return Color.FromArgb( a, r, g, b );
+		}
+		private static Color ColorFromRGBA4444( uint color ) {
+			int r = (int)( ( ( color & 0x0000000F )       ) << 4 );
+			int g = (int)( ( ( color & 0x000000F0 ) >>  4 ) << 4 );
+			int b = (int)( ( ( color & 0x00000F00 ) >>  8 ) << 4 );
+			int a = (int)( ( ( color & 0x0000F000 ) >> 12 ) << 4 );
+			return Color.FromArgb( a, r, g, b );
+		}
+		private static Color ColorFromRGBA8888( uint color ) {
+			int r = (int)( ( color & 0x000000FF )       );
+			int g = (int)( ( color & 0x0000FF00 ) >>  8 );
+			int b = (int)( ( color & 0x00FF0000 ) >> 16 );
+			int a = (int)( ( color & 0xFF000000 ) >> 24 );
+			return Color.FromArgb( a, r, g, b );
+		}
+
+		public List<Bitmap> ConvertToBitmaps( PaletteSection psec ) {
+			List<Bitmap> bitmaps = new List<Bitmap>();
+			for ( int i = 0; i < Images.Count; ++i ) {
+				int w = (ushort)( Width >> i );
+				int h = (ushort)( Height >> i );
+
+				Bitmap bmp = new Bitmap( w, h );
+
+				PixelOrderIterator pixelPosition;
+				switch ( PxOrder ) {
+					case PixelOrder.Normal:
+						pixelPosition = new PixelOrderNormalIterator( w, h );
+						break;
+					case PixelOrder.Faster:
+						pixelPosition = new PixelOrderFasterIterator( w, h, GetBitPerPixel() );
+						break;
+					default:
+						throw new Exception( "Unexpected pixel order: " + PxOrder );
+				}
+
+				for ( int idx = 0; idx < Images[i].Count; ++idx ) {
+					uint rawcolor = Images[i][idx];
+					Color color;
+
+					switch ( Format ) {
+						case ImageFormat.RGBA5650:
+							color = ColorFromRGBA5650( rawcolor );
+							break;
+						case ImageFormat.RGBA5551:
+							color = ColorFromRGBA5551( rawcolor );
+							break;
+						case ImageFormat.RGBA4444:
+							color = ColorFromRGBA4444( rawcolor );
+							break;
+						case ImageFormat.RGBA8888:
+							color = ColorFromRGBA8888( rawcolor );
+							break;
+						case ImageFormat.Index4:
+						case ImageFormat.Index8:
+						case ImageFormat.Index16:
+						case ImageFormat.Index32:
+							switch ( psec.Format ) {
+								case ImageFormat.RGBA5650:
+									color = ColorFromRGBA5650( psec.Palettes[i][(int)rawcolor] );
+									break;
+								case ImageFormat.RGBA5551:
+									color = ColorFromRGBA5551( psec.Palettes[i][(int)rawcolor] );
+									break;
+								case ImageFormat.RGBA4444:
+									color = ColorFromRGBA4444( psec.Palettes[i][(int)rawcolor] );
+									break;
+								case ImageFormat.RGBA8888:
+									color = ColorFromRGBA8888( psec.Palettes[i][(int)rawcolor] );
+									break;
+								default:
+									throw new Exception( "Unexpected palette color type: " + psec.Format );
+							}
+							break;
+						default:
+							throw new Exception( "Unexpected image color type: " + psec.Format );
+					}
+
+					if ( pixelPosition.X < w && pixelPosition.Y < h ) {
+						bmp.SetPixel( pixelPosition.X, pixelPosition.Y, color );
+					}
+					pixelPosition.Next();
+				}
+				bitmaps.Add( bmp );
+			}
+			return bitmaps;
+		}
 
 		public byte[] Serialize() {
 			List<byte> serialized = new List<byte>( (int)PartSize );
@@ -204,7 +304,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 			serialized.AddRange( BitConverter.GetBytes( DataOffset ) );
 			serialized.AddRange( BitConverter.GetBytes( Unknown3 ) );
 			serialized.AddRange( BitConverter.GetBytes( (ushort)Format ) );
-			serialized.AddRange( BitConverter.GetBytes( PixelOrder ) );
+			serialized.AddRange( BitConverter.GetBytes( (ushort)PxOrder ) );
 			serialized.AddRange( BitConverter.GetBytes( Width ) );
 			serialized.AddRange( BitConverter.GetBytes( Height ) );
 			serialized.AddRange( BitConverter.GetBytes( ColorDepth ) );
@@ -320,6 +420,69 @@ namespace HyoutaTools.Other.PSP.GIM {
 			}
 
 			paletteSection.Palettes[paletteNumber] = newPal;
+		}
+	}
+
+	interface PixelOrderIterator {
+		int X { get; }
+		int Y { get; }
+		void Next();
+	}
+
+	class PixelOrderNormalIterator : PixelOrderIterator {
+		int Width;
+		int Height;
+		int Counter;
+
+		public PixelOrderNormalIterator( int width, int height ) {
+			Width = width;
+			Height = height;
+			Counter = 0;
+		}
+
+		public int X { get { return Counter % Width; } }
+		public int Y { get { return Counter / Width; } }
+
+		public void Next() {
+			++Counter;
+		}
+	}
+
+	class PixelOrderFasterIterator : PixelOrderIterator {
+		int Width;
+		int Height;
+
+		int CurrentTileX;
+		int CurrentTileY;
+		int CounterInTile;
+
+		int TileWidth;
+		int TileHeight;
+
+		public PixelOrderFasterIterator( int width, int height, int bpp ) {
+			Width = width;
+			Height = height;
+			CurrentTileX = 0;
+			CurrentTileY = 0;
+			CounterInTile = 0;
+			TileWidth = 0x80 / bpp;
+			TileHeight = 0x08;
+		}
+
+		public int X { get { return CurrentTileX + ( CounterInTile % TileWidth ); } }
+		public int Y { get { return CurrentTileY + ( CounterInTile / TileWidth ); } }
+
+		public void Next() {
+			++CounterInTile;
+
+			if (CounterInTile == TileWidth * TileHeight) {
+				CounterInTile = 0;
+				CurrentTileX += TileWidth;
+				if (CurrentTileX >= Width) {
+					CurrentTileX = 0;
+					CurrentTileY += TileHeight;
+				}
+			}
 		}
 	}
 }

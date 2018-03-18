@@ -91,6 +91,20 @@ namespace HyoutaTools.Other.PSP.GIM {
 			}
 		}
 
+		public List<System.Drawing.Bitmap> ConvertToBitmaps() {
+			ImageSection isec = null;
+			PaletteSection psec = null;
+			foreach ( var section in Sections ) {
+				if ( section.GetType() == typeof( ImageSection ) ) {
+					isec = (ImageSection)section;
+				}
+				if ( section.GetType() == typeof( PaletteSection ) ) {
+					psec = (PaletteSection)section;
+				}
+			}
+
+			return isec.ConvertToBitmaps( psec );
+		}
 
 		public void HomogenizePalette() {
 			ImageSection isec = null;

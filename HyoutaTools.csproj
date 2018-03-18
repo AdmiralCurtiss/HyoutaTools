@@ -170,6 +170,7 @@
     <Compile Include="Other\PSP\GIM\EndOfImageSection.cs" />
     <Compile Include="Other\PSP\GIM\FileInfoSection.cs" />
     <Compile Include="Other\PSP\GIM\GIM.cs" />
+    <Compile Include="Other\PSP\GIM\GimToPng\GimToPng.cs" />
     <Compile Include="Other\PSP\GIM\HeaderSection.cs" />
     <Compile Include="Other\PSP\GIM\HomogenizePalette\Program.cs" />
     <Compile Include="Other\PSP\GIM\ImageSection.cs" />
