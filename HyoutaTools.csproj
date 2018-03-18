@@ -155,7 +155,6 @@
     <Compile Include="Narisokonai\scr.cs" />
     <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
     <Compile Include="Other\GZip\GZipHandler.cs" />
-    <Compile Include="Other\InvokeGimConv\Program.cs" />
     <Compile Include="Other\PicrossDS\ClassicPuzzle.cs" />
     <Compile Include="Other\PicrossDS\OriginalPuzzle.cs" />
     <Compile Include="Other\PicrossDS\PuzzleEditorForm.cs">
