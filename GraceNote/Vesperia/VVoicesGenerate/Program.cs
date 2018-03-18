@@ -7,16 +7,20 @@ using System.Data.SQLite;
 namespace HyoutaTools.GraceNote.Vesperia.VVoicesGenerate {
 	class Program {
 		public static int Execute( List<string> args ) {
-			String VOBTLDir = @"c:\Users\Georg\Documents\Tales of Vesperia\ToV_Voices_Japanese_PS3_mp3v8\PS3_JP\VOBTL\";
-			String VoiceDB = @"c:\Users\Georg\Documents\Tales of Vesperia\_voice\VVoices";
-			String GracesDB = @"c:\Users\Georg\Documents\Tales of Vesperia\_voice\GracesJapanese";
+			if ( args.Count != 3 ) {
+				Console.WriteLine( "Usage: VVoicesGenerate VOBTLdir VVoices.db GracesJapanese.db" );
+				return -1;
+			}
 
+			String VOBTLDir = args[0];
+			String VoiceDB  = args[1];
+			String GracesDB = args[2];
 
 			String[] VOBTLFiles = System.IO.Directory.GetFiles( VOBTLDir );
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>();
 			foreach ( String VOBTL in VOBTLFiles ) {
-				String VOBTLcut = VOBTL.Substring( VOBTL.LastIndexOf( '\\' ) + 1 );
+				String VOBTLcut = VOBTL.Substring( VOBTL.LastIndexOfAny( new char[] { '/', '\\' } ) + 1 );
 				if ( VOBTLcut.Contains( '.' ) ) {
 					VOBTLcut = VOBTLcut.Remove( VOBTLcut.LastIndexOf( '.' ) );
 				}
