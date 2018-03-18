@@ -392,9 +392,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		// FIXME: this works only with pretty specific input, good enough for what I need but certainly not usable for generic cases
 		private string GetRelativePath( string fromDirectory, string toFile ) {
-			fromDirectory = System.IO.Path.GetDirectoryName( fromDirectory );
+			fromDirectory = System.IO.Path.GetDirectoryName( System.IO.Path.GetFullPath( fromDirectory ) );
 			string relative = toFile.Substring( fromDirectory.Length );
-			relative = String.Join( "/", relative.Split( new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries ).Skip( 1 ).ToArray() );
+			relative = String.Join( "/", relative.Split( new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries ).Skip( 1 ).ToArray() );
 			if ( relative.Contains( '.' ) ) {
 				relative = relative.Substring( 0, relative.LastIndexOf( '.' ) );
 			}
