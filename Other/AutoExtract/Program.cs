@@ -116,13 +116,11 @@ namespace HyoutaTools.Other.AutoExtract {
 				string prog, args;
 
 				if ( !System.IO.File.Exists( f ) ) continue;
-				if ( fstr.Indirection > 3 ) continue;
-				if ( fstr.Filename.EndsWith( "fps4.type" ) ) continue;
 
 				try {
-					bool isTexture;
-					isTexture = f.EndsWith( ".TXV" );
-					if ( isTexture ) {
+					bool isMaybeVesperiaStyleTexture;
+					isMaybeVesperiaStyleTexture = f.EndsWith( ".TXV" );
+					if ( isMaybeVesperiaStyleTexture ) {
 						prog = "Graceful";
 						args = "6 \"" + f + "\"";
 						Console.WriteLine();
@@ -252,25 +250,10 @@ namespace HyoutaTools.Other.AutoExtract {
 							}
 						}
 
-						if ( firstbyte == (int)'C' ) {
-							if ( secondbyte == (int)'P' && thirdbyte == (int)'K' ) {
-								fs.Close();
-								prog = "Graceful";
-								args = "3 \"" + f + "\"";
-								Console.WriteLine();
-								Console.WriteLine( prog + " " + args );
-								if ( RunProgram( prog, args ) ) {
-									EnqueueDirectoryRecursively( queue, f + ".ext" );
-									System.IO.File.Delete( f );
-									HasBeenProcessed = true;
-								}
-							}
-						}
-
 						string fname = System.IO.Path.GetFileName( f );
 						if (
 							( firstbyte == 0x00 && secondbyte == 0x02 && thirdbyte == 0x00 && fourthbyte == 0x00 &&
-							!isTexture
+							!isMaybeVesperiaStyleTexture
 							&& !( fname.EndsWith( ".TXM" ) || fname.EndsWith( ".TXV" ) ) )
 							|| ( firstbyte == 'M' && secondbyte == 'T' && thirdbyte == 'E' && fourthbyte == 'X' ) // Tales of Xillia texture
 							 ) {
@@ -311,16 +294,6 @@ namespace HyoutaTools.Other.AutoExtract {
 							fs.Close();
 							f = RenameToWithExtension( f, ".gmo" );
 							HasBeenProcessed = true;
-
-							/*
-							prog = @"d:\_svn\Dangan Ronpa\GimConv\GimConv.exe";
-							args = "\"" + f + "\" -o \"" + f + ".png\"";
-							Console.WriteLine();
-							Console.WriteLine( prog + " " + args );
-							if ( RunProgram( prog, args ) ) {
-								System.IO.File.Delete( f );
-							}
-								* */
 						}
 
 						if ( firstbyte == 'L' && secondbyte == 'L' && thirdbyte == 'F' && fourthbyte == 'S' ) {
@@ -332,10 +305,17 @@ namespace HyoutaTools.Other.AutoExtract {
 						if ( AllowDrPak ) {
 							if ( f.ToLowerInvariant().EndsWith( ".pak" ) || ( secondbyte < 0x10 && thirdbyte == 0x00 && fourthbyte == 0x00 ) ) {
 								// could maybe possibly be a PAK file who knows
-								fs.Close();
-								prog = @"HyoutaTools";
-								args = "DrPakE \"" + f + "\"";
-								if ( RunProgram( prog, args ) ) {
+								bool drpaksuccess = false;
+								try {
+									fs.Position = 0;
+									DanganRonpa.Pak.Program.Extract( fs, f + ".ex" );
+									fs.Close();
+									drpaksuccess = true;
+								} catch ( Exception ex ) {
+									Console.WriteLine( "Extracting " + f + " as DanganRonpa PAK file failed: " + ex.ToString() );
+								}
+
+								if ( drpaksuccess ) {
 									EnqueueDirectoryRecursively( queue, f + ".ex" );
 									System.IO.File.Delete( f );
 									HasBeenProcessed = true;
@@ -402,17 +382,6 @@ namespace HyoutaTools.Other.AutoExtract {
 							//System.IO.File.Delete( f );
 							HasBeenProcessed = true;
 						}
-
-						//// Tales of Xillia texture
-						//if ( firstbyte == 'M' && secondbyte == 'T' && thirdbyte == 'E' && fourthbyte == 'X' ) {
-						//    fs.Close();
-						//    prog = @"Graceful";
-						//    args = "6 \"" + f + "\"";
-						//    if ( RunProgram( prog, args ) ) {
-						//        //System.IO.File.Delete( f );
-						//        HasBeenProcessed = true;
-						//    }
-						//}
 
 						if ( !HasBeenProcessed && DeepSearchForPTMD ) {
 							fs.Close();

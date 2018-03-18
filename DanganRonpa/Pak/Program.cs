@@ -7,7 +7,7 @@ using System.IO;
 namespace HyoutaTools.DanganRonpa.Pak {
 	class Program {
 
-		static void Extract( FileStream file, String destination ) {
+		public static void Extract( FileStream file, String destination ) {
 			System.IO.Directory.CreateDirectory( destination );
 
 			byte[] buffer = new byte[4];
