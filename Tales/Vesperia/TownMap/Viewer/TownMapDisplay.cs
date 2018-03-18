@@ -12,6 +12,7 @@ namespace HyoutaTools.Tales.Vesperia.TownMap.Viewer
     public partial class TownMapDisplay : Form
     {
         TownMapTable Table;
+        string TownMapImagePath;
 
         int XCorrection = Int32.MaxValue;
         int YCorrection = Int32.MaxValue;
@@ -21,10 +22,11 @@ namespace HyoutaTools.Tales.Vesperia.TownMap.Viewer
             InitializeComponent();
         }
 
-        public TownMapDisplay(TownMapTable Table)
+        public TownMapDisplay(TownMapTable Table, string imagepath)
         {
             InitializeComponent();
             this.Table = Table;
+            this.TownMapImagePath = imagepath;
 
             UpdateFields();
         }
@@ -52,14 +54,14 @@ namespace HyoutaTools.Tales.Vesperia.TownMap.Viewer
                 int TileAmount;
                 if (English)
                 {
-                    ImageFilename = @"..\..\TownMapImages\U_MAP_" + Table.TownMapInfos[(int)TownMapIDBox.Value].Filename + ".png";
+                    ImageFilename = System.IO.Path.Combine( TownMapImagePath, "U_MAP_" + Table.TownMapInfos[(int)TownMapIDBox.Value].Filename + ".png" );
                     tile = Table.TownMapInfos[(int)TownMapIDBox.Value].TownMapTilesENG[(int)numericUpDownTileNumber.Value];
                     TileAmount = Table.TownMapInfos[(int)TownMapIDBox.Value].TileAmountENG;
                     textBoxTileOffLoc.Text = (Table.LocationOffsetTableENG + (((int)TownMapIDBox.Value) * 0x08)).ToString("X");
                 }
                 else
                 {
-                    ImageFilename = @"..\..\TownMapImages\U_MAP_E" + Table.TownMapInfos[(int)TownMapIDBox.Value].Filename + ".png";
+                    ImageFilename = System.IO.Path.Combine( TownMapImagePath, "U_MAP_E" + Table.TownMapInfos[(int)TownMapIDBox.Value].Filename + ".png" );
                     tile = Table.TownMapInfos[(int)TownMapIDBox.Value].TownMapTilesJPN[(int)numericUpDownTileNumber.Value];
                     TileAmount = Table.TownMapInfos[(int)TownMapIDBox.Value].TileAmountJPN;
                     textBoxTileOffLoc.Text = (Table.LocationOffsetTableJPN + (((int)TownMapIDBox.Value) * 0x08)).ToString("X");
