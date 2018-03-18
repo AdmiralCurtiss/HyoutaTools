@@ -118,12 +118,10 @@
     <Compile Include="GraceNote\DanganRonpa\PakTextExport\Program.cs" />
     <Compile Include="GraceNote\DanganRonpa\PakTextImport\Program.cs" />
     <Compile Include="GraceNote\FindIdenticalEntries\Finder.cs" />
-    <Compile Include="GraceNote\GoogleTranslate\TranslatableGraceNoteEntry.cs" />
     <Compile Include="GraceNote\GraceNoteDatabaseEntry.cs" />
     <Compile Include="GraceNote\DumpDatabase\Program.cs" />
     <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
-    <Compile Include="GraceNote\GoogleTranslate\TranslateDatabase.cs" />
     <Compile Include="GraceNote\LastRanker\bscrExport.cs" />
     <Compile Include="GraceNote\LastRanker\bscrImport.cs" />
     <Compile Include="GraceNote\LastRanker\SscrExport.cs" />
