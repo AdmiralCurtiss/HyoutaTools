@@ -9,14 +9,9 @@ namespace HyoutaTools.Generic.ByteHotfix {
 		public static int Execute( List<string> args ) {
 			if ( args.Count < 2 ) {
 				Console.WriteLine( "Usage: ByteHotfix [filename] [location-byte] [location-byte] etc." );
-				Console.WriteLine( "example: ByteHotfix 325.new 3A9A3-94 3AA72-A4 3AA73-32 3AB53-51" );
+				Console.WriteLine( "example: ByteHotfix file.ext 77D0-20 77D1-45 77D2-46 77D3-FF" );
 				return -1;
 			}
-
-			/*
-			args = new string[] { @"c:\#gn_chat\scenario.dat.ext.ex\325.new" ,
-				"3A9A3-94", "3AA72-A4", "3AA73-32", "3AB53-51" };
-			 */
 
 			try {
 				string inFilename = args[0];
