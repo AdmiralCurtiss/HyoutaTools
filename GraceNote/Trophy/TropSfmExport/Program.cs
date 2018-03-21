@@ -98,23 +98,22 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmExport {
 		}
 
 		public static int Execute( List<string> args ) {
-			String Database;
-			String GracesJapanese;
-
-			/*
-			args = new string[] {
-				@"c:\Users\Georg\Documents\Tales of Vesperia\GraceNoteGrenade\Databases\VTrophies",
-				@"c:\Users\Georg\Documents\Tales of Vesperia\GraceNoteGrenade\Databases\GracesJapanese"
-			};
-			//*/
-
-			if ( args.Count != 2 ) {
-				Console.WriteLine( "Usage: GraceNote_TropSFM VTrophies GracesJapanese" );
+			if ( args.Count < 11 ) {
+				Console.WriteLine( "Usage: GraceNote_TropSFM VTrophies GracesJapanese SceNpTrophySignature_Trop SceNpTrophySignature_TropConf version npcommid trophyset-version parental-level parental-level_license-area title-name title-detail" );
 				return -1;
-			} else {
-				Database = args[0];
-				GracesJapanese = args[1];
 			}
+
+			String Database = args[0];
+			String GracesJapanese = args[1];
+			String SceNpTrophySignature_Trop = args[2];
+			String SceNpTrophySignature_TropConf = args[3];
+			String version = args[4];
+			String npcommid = args[5];
+			String trophysetversion = args[6];
+			String parentallevel = args[7];
+			String parentallevel_licensearea = args[8];
+			String TitleName = args[9];
+			String TitleDetail = args[10];
 
 			List<TrophyNode> EnglishTrophies;
 			try {
@@ -124,11 +123,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmExport {
 				return -1;
 			}
 
-			TrophyConfNode TROPSFM = new TrophyConfNode(
-				"4c39b98c0100000000000000b4bb7de046f205e74b24eabf731497511b639be57ca1ae0a3efd0519adba789cb32b91d97d3e11a7bf8302544fab919062647245e95796f11dd01c8db63f391756e0a1ddf6ddc7d64b0b8c86ec962e4ea2ef3b4caf82d178afb91a0a6fe3a082299c4a2fb1e3764ac6d42a7a11f52980a2e5149e9a8256fbc9dc438a4490ddace9a96c4d23f4652bbbb1cee1819a26e390724d7c",
-				"4c39b98c010000000000000074abfed402a679fdff35652737f80e2368488f2f524b8721ab07366434ba133c4b545d55130ce41e31c07f8dc7c166cef530cd5f340c489b55626fd20a5d6b4b3851a3cb1ba04fc353619307033fc3b208e1e08d1de80c2c5e4be2ff131f22ed1f31e22f93697e9bd91b1e1e5285a1e2f50f8c324a03e515e006a85322f19c246d538c08177fcd9d302e34bb3b250ab40b704c61",
-				"1.0", "NPWR00642_00", "01.00", "0", "default", "Tales of Vesperia", "Tales of Vesperia Trophy Set", "BLJS10053" // not sure on the folder but whatever, shouldn't matter
-				);
+			TrophyConfNode TROPSFM = new TrophyConfNode( SceNpTrophySignature_Trop, SceNpTrophySignature_TropConf, version, npcommid, trophysetversion, parentallevel, parentallevel_licensearea, TitleName, TitleDetail, "" );
 
 			Dictionary<uint, TrophyNode> EngTrophyDict = new Dictionary<uint, TrophyNode>( EnglishTrophies.Count );
 			foreach ( TrophyNode tn in EnglishTrophies ) {
