@@ -66,7 +66,6 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Xillia.TldatPack",                  "ToXtldatp"   ),  Tales.Xillia.TldatPack.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.tlzc",                              "tlzc"        ),  Tales.tlzc.tlzcmain.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Abyss.PKF.Split",                   "TotApkfspl"  ),  Tales.Abyss.PKF.Split.Execute) },
-			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.Xbox360.Rebundler",                 "-"           ),  Other.Xbox360.Rebundler.Rebundler.Rebundle) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.DbTextReplace",                   "-"           ),  Generic.DbTextReplace.Replacement.Replace) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PSP.GIM.LayerSplitter",             "gimSplit"    ),  Other.PSP.GIM.LayerSplitter.Splitter.Split) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PSP.GIM.HomogenizePalette",         "gimSamePal"  ),  Other.PSP.GIM.HomogenizePalette.Program.Homogenize) },

@@ -178,7 +178,6 @@
     <Compile Include="Other\PSP\GIM\ISection.cs" />
     <Compile Include="Other\TrailsInTheSkyScenarioDump\ScenarioBin.cs" />
     <Compile Include="Other\TrailsInTheSkyScenarioDump\DumpText.cs" />
-    <Compile Include="Other\Xbox360\Rebundler\Rebundler.cs" />
     <Compile Include="Pokemon\Gen3\Checksum.cs" />
     <Compile Include="Pokemon\Gen3\HallOfFame.cs" />
     <Compile Include="Pokemon\Gen3\Save.cs" />
