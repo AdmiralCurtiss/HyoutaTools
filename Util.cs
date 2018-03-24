@@ -457,12 +457,12 @@ namespace HyoutaTools {
 		#endregion
 
 		#region StreamUtils
-		public static void CopyStream( System.IO.Stream input, System.IO.Stream output, int count ) {
+		public static void CopyStream( System.IO.Stream input, System.IO.Stream output, long count ) {
 			byte[] buffer = new byte[4096];
 			int read;
 
-			int bytesLeft = count;
-			while ( ( read = input.Read( buffer, 0, Math.Min( buffer.Length, bytesLeft ) ) ) > 0 ) {
+			long bytesLeft = count;
+			while ( ( read = input.Read( buffer, 0, (int)Math.Min( buffer.LongLength, bytesLeft ) ) ) > 0 ) {
 				output.Write( buffer, 0, read );
 				bytesLeft -= read;
 				if ( bytesLeft <= 0 ) return;

@@ -272,6 +272,9 @@
     <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMM.cs" />
     <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMT.cs" />
     <Compile Include="Tales\Vesperia\T8BTXTM\TreasureInfo.cs" />
+    <Compile Include="Tales\Vesperia\Texture\Decode.cs" />
+    <Compile Include="Tales\Vesperia\Texture\TXM.cs" />
+    <Compile Include="Tales\Vesperia\Texture\TXV.cs" />
     <Compile Include="Tales\Vesperia\TO8CHLI\SkitInfo.cs" />
     <Compile Include="Tales\Vesperia\TO8CHLI\TO8CHLI.cs" />
     <Compile Include="Tales\Vesperia\TO8CHLI\SkitConditionForwarder.cs" />
