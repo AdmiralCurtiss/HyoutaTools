@@ -383,56 +383,6 @@ namespace HyoutaTools {
 		}
 		#endregion
 
-		#region ProgramUtils
-		public static bool RunProgram( String prog, String args, bool displayCommandLine, bool displayOutput, bool useShell = false ) {
-			if ( displayCommandLine ) {
-				Console.Write( prog );
-				Console.Write( " " );
-				Console.WriteLine( args );
-			}
-
-			// Use ProcessStartInfo class
-			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.CreateNoWindow = false;
-			startInfo.UseShellExecute = useShell;
-			startInfo.FileName = prog;
-			startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-			startInfo.Arguments = args;
-			startInfo.RedirectStandardOutput = !useShell;
-			startInfo.RedirectStandardError = !useShell;
-			//startInfo.RedirectStandardInput = !useShell;
-			//startInfo.UserName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-
-			using ( System.Diagnostics.Process exeProcess = System.Diagnostics.Process.Start( startInfo ) ) {
-				exeProcess.WaitForExit();
-				if ( useShell ) {
-					return exeProcess.ExitCode == 0;
-				}
-
-				string output;
-				string err;
-				output = exeProcess.StandardOutput.ReadToEnd();
-				err = exeProcess.StandardError.ReadToEnd();
-				int exitCode = exeProcess.ExitCode;
-
-				if ( exitCode != 0 ) {
-					Console.WriteLine( prog + " returned nonzero:" );
-					Console.WriteLine( output );
-					throw new Exception( output );
-					//return false;
-				}
-
-				if ( displayOutput ) {
-					Console.WriteLine( output );
-					Console.WriteLine( err );
-				}
-
-				return true;
-			}
-		}
-
-		#endregion
-
 		#region ArrayUtils
 		public static void CopyByteArrayPart( IList<byte> from, int locationFrom, IList<byte> to, int locationTo, int count ) {
 			for ( int i = 0; i < count; i++ ) {

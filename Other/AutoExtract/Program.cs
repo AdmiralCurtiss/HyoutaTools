@@ -17,53 +17,6 @@ namespace HyoutaTools.Other.AutoExtract {
 	}
 
 	class Program {
-		static bool RunProgram( String prog, String args ) {
-			// Use ProcessStartInfo class
-			ProcessStartInfo startInfo = new ProcessStartInfo();
-			startInfo.CreateNoWindow = false;
-			startInfo.UseShellExecute = false;
-			startInfo.FileName = prog;
-			startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-			startInfo.Arguments = args;
-			startInfo.RedirectStandardOutput = true;
-			startInfo.RedirectStandardError = true;
-
-			try {
-				// Start the process with the info we specified.
-				// Call WaitForExit and then the using statement will close.
-				using ( Process exeProcess = Process.Start( startInfo ) ) {
-					exeProcess.WaitForExit();
-					string output = exeProcess.StandardOutput.ReadToEnd();
-
-					if ( exeProcess.ExitCode != 0 ) {
-						Console.WriteLine( prog + " returned nonzero:" );
-						Console.WriteLine( output );
-						return false;
-					}
-
-					bool success = false;
-					switch ( prog ) {
-						case "comptoe":
-							success = output.EndsWith( "Success\r\n" );
-							break;
-						default:
-							return true;
-							break;
-					}
-
-					if ( !success ) {
-						Console.WriteLine( prog + " reported failure:" );
-						Console.WriteLine( output );
-					}
-
-					return success;
-				}
-			} catch ( Exception ) {
-				return false;
-			}
-		}
-
-
 		public static void EnqueueDirectoryRecursively( Queue<FileStruct> queue, string Directory ) {
 			foreach ( string f in System.IO.Directory.GetFiles( Directory ) ) {
 				queue.Enqueue( new FileStruct( f, 0 ) );
@@ -147,15 +100,21 @@ namespace HyoutaTools.Other.AutoExtract {
 									args = "-d \"" + f + "\" \"" + f + ".d\"";
 									Console.WriteLine();
 									Console.WriteLine( prog + " " + args );
-									if ( RunProgram( prog, args ) ) {
-										queue.Enqueue( new FileStruct( f + ".d", fstr.Indirection ) );
-										FileInfo decInfo = new FileInfo( f + ".d" );
-										if ( ( decInfo.Length == uncompressedfilesizeBigEndian ) || ( decInfo.Length == uncompressedfilesizeLitEndian ) ) {
-											System.IO.File.Delete( f );
-											HasBeenProcessed = true;
+									try {
+										if ( ExternalProgramExecution.RunProgramSynchronous( prog, new string[] { "-d", f, f + ".d" } ).StdOut.EndsWith( "Success" ) ) {
+											queue.Enqueue( new FileStruct( f + ".d", fstr.Indirection ) );
+											FileInfo decInfo = new FileInfo( f + ".d" );
+											if ( ( decInfo.Length == uncompressedfilesizeBigEndian ) || ( decInfo.Length == uncompressedfilesizeLitEndian ) ) {
+												System.IO.File.Delete( f );
+												HasBeenProcessed = true;
+											} else {
+												Console.WriteLine( "Uncompressed comptoe Filesize does not match!" );
+											}
 										} else {
-											Console.WriteLine( "Uncompressed comptoe Filesize does not match!" );
+											Console.WriteLine( "comptoe decompression failure" );
 										}
+									} catch ( Exception ex ) {
+										Console.WriteLine( "comptoe failure: " + ex.ToString() );
 									}
 								} else {
 									Console.WriteLine();

@@ -95,6 +95,7 @@
     <Compile Include="DanganRonpa\PakText\PakText.cs" />
     <Compile Include="DanganRonpa\Pak\Program.cs" />
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
+    <Compile Include="ExternalProgramExecution.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\DATA.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\FileSectionFactory.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\MES.cs" />
