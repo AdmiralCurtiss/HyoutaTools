@@ -316,6 +316,7 @@
     <Compile Include="Textures\ColorFetchingIterators\IColorFetchingIterator.cs" />
     <Compile Include="Textures\DDS.cs" />
     <Compile Include="Textures\PixelOrderIterators\IPixelOrderIterator.cs" />
+    <Compile Include="Textures\PixelOrderIterators\TiledPixelOrderIterator.cs" />
     <Compile Include="Textures\PixelOrderIterators\LinearPixelOrderIterator.cs" />
     <Compile Include="Textures\TextureUtil.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />

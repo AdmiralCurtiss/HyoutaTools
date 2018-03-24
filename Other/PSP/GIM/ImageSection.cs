@@ -424,41 +424,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 		}
 	}
 
-	class GimPixelOrderFasterIterator : IPixelOrderIterator {
-		int Width;
-		int Height;
-
-		int CurrentTileX;
-		int CurrentTileY;
-		int CounterInTile;
-
-		int TileWidth;
-		int TileHeight;
-
-		public GimPixelOrderFasterIterator( int width, int height, int bpp ) {
-			Width = width;
-			Height = height;
-			CurrentTileX = 0;
-			CurrentTileY = 0;
-			CounterInTile = 0;
-			TileWidth = 0x80 / bpp;
-			TileHeight = 0x08;
-		}
-
-		public int X { get { return CurrentTileX + ( CounterInTile % TileWidth ); } }
-		public int Y { get { return CurrentTileY + ( CounterInTile / TileWidth ); } }
-
-		public void Next() {
-			++CounterInTile;
-
-			if (CounterInTile == TileWidth * TileHeight) {
-				CounterInTile = 0;
-				CurrentTileX += TileWidth;
-				if (CurrentTileX >= Width) {
-					CurrentTileX = 0;
-					CurrentTileY += TileHeight;
-				}
-			}
-		}
+	class GimPixelOrderFasterIterator : TiledPixelOrderIterator {
+		public GimPixelOrderFasterIterator( int width, int height, int bpp ) : base( width, height, 0x80 / bpp, 0x08 ) { }
 	}
 }
