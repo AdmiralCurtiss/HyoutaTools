@@ -79,6 +79,7 @@ namespace HyoutaTools.Other.AutoExtract {
 				Console.WriteLine( "Include \"start\" in the arguments to confirm execution!" );
 				Console.WriteLine( "Other arguments to enable specific file types:" );
 				Console.WriteLine( "  comptoe     Tales Compressor files" );
+				Console.WriteLine( "  TXMdetect   Try and autodetect Tales texture TXM/TXV pairs even if their file extensions are different" );
 				Console.WriteLine( "  DRpak       Dangan Ronpa PAK files" );
 				Console.WriteLine( "  LRNPK       Last Ranker NPK files (aggressive)" );
 				Console.WriteLine( "  LRSCMP      Last Ranker SCMP files" );
@@ -94,6 +95,7 @@ namespace HyoutaTools.Other.AutoExtract {
 			EnqueueDirectoryRecursively( queue, System.Environment.CurrentDirectory );
 
 			bool AllowComptoe = argumentsGiven.Contains( "comptoe" );
+			bool DetectTxmTxv = argumentsGiven.Contains( "TXMdetect" );
 			bool AllowDrPak = argumentsGiven.Contains( "DRpak" );
 			bool AggressiveLastRankerNPK = argumentsGiven.Contains( "LRNPK" );
 			bool AllowLastRankerSCMP = argumentsGiven.Contains( "LRSCMP" );
@@ -235,7 +237,7 @@ namespace HyoutaTools.Other.AutoExtract {
 						}
 
 						string fname = System.IO.Path.GetFileName( f );
-						if (
+						if ( DetectTxmTxv &&
 							( firstbyte == 0x00 && secondbyte == 0x02 && thirdbyte == 0x00 && fourthbyte == 0x00 &&
 							!isMaybeVesperiaStyleTexture
 							&& !( fname.EndsWith( ".TXM" ) || fname.EndsWith( ".TXV" ) ) )
