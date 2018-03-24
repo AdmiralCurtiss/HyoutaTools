@@ -46,9 +46,6 @@ namespace HyoutaTools.Other.AutoExtract {
 						case "comptoe":
 							success = output.EndsWith( "Success\r\n" );
 							break;
-						case "Graceful":
-							success = !output.Contains( "Exception" );
-							break;
 						default:
 							return true;
 							break;
@@ -114,15 +111,9 @@ namespace HyoutaTools.Other.AutoExtract {
 					bool isMaybeVesperiaStyleTexture;
 					isMaybeVesperiaStyleTexture = f.EndsWith( ".TXV" );
 					if ( isMaybeVesperiaStyleTexture ) {
-						prog = "Graceful";
-						args = "6 \"" + f + "\"";
-						Console.WriteLine();
-						Console.WriteLine( prog + " " + args );
-						if ( RunProgram( prog, args ) ) {
-							System.IO.File.Delete( f );
-							System.IO.File.Delete( f.Substring( 0, f.Length - 1 ) + "M" );
-							continue;
-						}
+						string txm = f.Substring( 0, f.Length - 1 ) + "M";
+						string txv = f;
+						Tales.Vesperia.Texture.Decode.Extract(txm, txv, f + ".ext" );
 					}
 
 					using ( FileStream fs = new FileStream( f, FileMode.Open ) ) {
@@ -248,7 +239,6 @@ namespace HyoutaTools.Other.AutoExtract {
 							( firstbyte == 0x00 && secondbyte == 0x02 && thirdbyte == 0x00 && fourthbyte == 0x00 &&
 							!isMaybeVesperiaStyleTexture
 							&& !( fname.EndsWith( ".TXM" ) || fname.EndsWith( ".TXV" ) ) )
-							|| ( firstbyte == 'M' && secondbyte == 'T' && thirdbyte == 'E' && fourthbyte == 'X' ) // Tales of Xillia texture
 							 ) {
 
 							FileStruct nextfile = queue.Peek();

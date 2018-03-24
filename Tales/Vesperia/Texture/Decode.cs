@@ -13,11 +13,15 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				return -1;
 			}
 
-			TXM txm = new TXM( args[0] );
-			TXV txv = new TXV( txm, args[1] );
-
 			String outdir = args[0] + ".ext";
+			return Extract( args[0], args[1], outdir ) ? 0 : -1;
+		}
+
+		public static bool Extract( string txmpath, string txvpath, string outdir ) {
+			TXM txm = new TXM( txmpath );
+			TXV txv = new TXV( txm, txvpath );
 			Directory.CreateDirectory( outdir );
+
 			int counter = 0;
 			foreach ( TXVSingle ts in txv.textures ) {
 				foreach ( var tex in ts.Decode() ) {
@@ -29,7 +33,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				}
 			}
 
-			return 0;
+			return true;
 		}
 	}
 }
