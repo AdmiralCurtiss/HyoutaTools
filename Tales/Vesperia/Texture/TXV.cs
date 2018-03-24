@@ -1,4 +1,7 @@
-﻿using System;
+﻿using HyoutaTools.Textures;
+using HyoutaTools.Textures.ColorFetchingIterators;
+using HyoutaTools.Textures.PixelOrderIterators;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -67,23 +70,31 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 		public List<(string name, Stream data)> Decode() {
 			List<(string name, Stream data)> list = new List<(string name, Stream data)>();
 
-			Stream stream;
-			string name;
 			switch ( TXM.Format ) {
 				case TextureFormat.DXT1a:
 				case TextureFormat.DXT1b:
 				case TextureFormat.DXT5a:
 				case TextureFormat.DXT5b:
-					Data.Position = 0;
-					stream = new MemoryStream( (int)( Data.Length + 0x80 ) );
-					stream.Write( Textures.DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1 : Textures.TextureFormat.DXT5 ) );
-					Util.CopyStream( Data, stream, Data.Length );
-					name = TXM.Name + ".dds";
+					{
+						Data.Position = 0;
+						Stream stream = new MemoryStream( (int)( Data.Length + 0x80 ) );
+						stream.Write( Textures.DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1 : Textures.TextureFormat.DXT5 ) );
+						Util.CopyStream( Data, stream, Data.Length );
+						string name = TXM.Name + ".dds";
+						list.Add( (name, stream) );
+					}
+					break;
+				case TextureFormat.ARGBb:
+					for ( uint mip = 0; mip < TXM.Mipmaps; ++mip ) {
+						var dims = TXM.GetDimensions( (int)mip );
+						Stream stream = new ColorFetcherARGB8888( Data, dims.width, dims.height ).WriteSingleImageToPngStream( new LinearPixelOrderIterator( (int)dims.width, (int)dims.height ), dims.width, dims.height );
+						string name = ( TXM.Mipmaps > 1 ? ( TXM.Name + "_Mip" + mip ) : TXM.Name ) + ".png";
+						list.Add( (name, stream) );
+					}
 					break;
 				default:
 					throw new Exception( "Unhandled texture format " + TXM.Format );
 			}
-			list.Add( (name, stream) );
 
 			return list;
 		}

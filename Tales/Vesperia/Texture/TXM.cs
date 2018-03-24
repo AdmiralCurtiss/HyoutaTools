@@ -112,6 +112,13 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			}
 			return sum / 8;
 		}
+
+		public (uint width, uint height) GetDimensions( int mipmaplevel ) {
+			uint w = Math.Max( 1u, Width >> mipmaplevel );
+			uint h = Math.Max( 1u, Height >> mipmaplevel );
+			// depth too? how do mips interact with volume textures?
+			return (w, h);
+		}
 	}
 
 	public class TXMSingleRegular : TXMSingle {
