@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyoutaTools.Textures.PixelOrderIterators;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -229,13 +230,13 @@ namespace HyoutaTools.Other.PSP.GIM {
 
 				Bitmap bmp = new Bitmap( w, h );
 
-				PixelOrderIterator pixelPosition;
+				IPixelOrderIterator pixelPosition;
 				switch ( PxOrder ) {
 					case PixelOrder.Normal:
-						pixelPosition = new PixelOrderNormalIterator( w, h );
+						pixelPosition = new LinearPixelOrderIterator( w, h );
 						break;
 					case PixelOrder.Faster:
-						pixelPosition = new PixelOrderFasterIterator( w, h, GetBitPerPixel() );
+						pixelPosition = new GimPixelOrderFasterIterator( w, h, GetBitPerPixel() );
 						break;
 					default:
 						throw new Exception( "Unexpected pixel order: " + PxOrder );
@@ -423,32 +424,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 		}
 	}
 
-	interface PixelOrderIterator {
-		int X { get; }
-		int Y { get; }
-		void Next();
-	}
-
-	class PixelOrderNormalIterator : PixelOrderIterator {
-		int Width;
-		int Height;
-		int Counter;
-
-		public PixelOrderNormalIterator( int width, int height ) {
-			Width = width;
-			Height = height;
-			Counter = 0;
-		}
-
-		public int X { get { return Counter % Width; } }
-		public int Y { get { return Counter / Width; } }
-
-		public void Next() {
-			++Counter;
-		}
-	}
-
-	class PixelOrderFasterIterator : PixelOrderIterator {
+	class GimPixelOrderFasterIterator : IPixelOrderIterator {
 		int Width;
 		int Height;
 
@@ -459,7 +435,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 		int TileWidth;
 		int TileHeight;
 
-		public PixelOrderFasterIterator( int width, int height, int bpp ) {
+		public GimPixelOrderFasterIterator( int width, int height, int bpp ) {
 			Width = width;
 			Height = height;
 			CurrentTileX = 0;

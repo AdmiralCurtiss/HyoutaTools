@@ -313,6 +313,8 @@
     <Compile Include="Tales\Vesperia\xma\FixHeader.cs" />
     <Compile Include="Tales\Xillia\TldatPack\Program.cs" />
     <Compile Include="Textures\DDS.cs" />
+    <Compile Include="Textures\PixelOrderIterators\IPixelOrderIterator.cs" />
+    <Compile Include="Textures\PixelOrderIterators\LinearPixelOrderIterator.cs" />
     <Compile Include="Trophy\TrophyConfNode.cs" />
     <Compile Include="Trophy\TrophyNode.cs" />
     <Compile Include="GraceNote\Vesperia\StringDicExport\Program.cs" />
