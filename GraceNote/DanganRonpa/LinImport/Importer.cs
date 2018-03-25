@@ -31,7 +31,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.LinImport {
 			}
 
 			Console.WriteLine( "Importing..." );
-			System.IO.File.WriteAllBytes( NewDB, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( NewDB );
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>();
 

@@ -27,7 +27,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicImport {
 				entries.Add( g );
 			}
 
-			System.IO.File.WriteAllBytes( databasename, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( databasename );
 			GraceNoteDatabaseEntry.InsertSQL( entries.ToArray(), "Data Source=" + databasename, "Data Source=" + gracesjapanese );
 
 

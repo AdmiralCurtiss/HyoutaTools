@@ -16,7 +16,7 @@ namespace HyoutaTools.GraceNote.LastRanker {
 			string OutDatabase = args[1];
 			string GracesJapanese = args[2];
 			HyoutaTools.LastRanker.bscr bscrFile = new HyoutaTools.LastRanker.bscr( System.IO.File.ReadAllBytes( InFile ) );
-			System.IO.File.WriteAllBytes( OutDatabase, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( OutDatabase );
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( bscrFile.Strings.Count );
 			foreach ( HyoutaTools.LastRanker.bscrString e in bscrFile.Strings ) {

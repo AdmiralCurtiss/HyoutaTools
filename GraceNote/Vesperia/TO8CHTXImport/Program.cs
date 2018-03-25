@@ -18,7 +18,7 @@ namespace HyoutaTools.GraceNote.Vesperia.TO8CHTXImport {
 
 			ChatFile c = new ChatFile( System.IO.File.ReadAllBytes( Filename ) );
 
-			System.IO.File.WriteAllBytes( NewDB, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( NewDB );
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( c.Lines.Length * 2 );
 			foreach ( ChatFileLine Line in c.Lines ) {

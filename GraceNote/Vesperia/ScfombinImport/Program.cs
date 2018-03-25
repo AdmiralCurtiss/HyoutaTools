@@ -36,7 +36,7 @@ namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 
 
 			ScenarioString[] AllStrings = FindAllStrings( btlpack, TextPointersAddress, PointerDifference );
-			System.IO.File.WriteAllBytes( NewDB, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( NewDB );
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( AllStrings.Length );
 			foreach ( ScenarioString str in AllStrings ) {

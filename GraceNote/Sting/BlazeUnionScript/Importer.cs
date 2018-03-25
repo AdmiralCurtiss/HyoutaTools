@@ -16,9 +16,9 @@ namespace HyoutaTools.GraceNote.Sting.BlazeUnionScript {
 		public static bool Import( String filename, String newDb, String gracesJapanese ) {
 			BlazeUnionScriptFile scriptfile = new BlazeUnionScriptFile( filename );
 			List<GraceNoteDatabaseEntry> entries = new List<GraceNoteDatabaseEntry>();
-			System.IO.File.WriteAllBytes( newDb, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( newDb );
 			if ( !System.IO.File.Exists( gracesJapanese ) ) {
-				System.IO.File.WriteAllBytes( gracesJapanese, Properties.Resources.gngj_template );
+				GraceNoteUtil.GenerateEmptyGracesJapanese( gracesJapanese );
 			}
 
 			foreach ( var section in scriptfile.Sections ) {

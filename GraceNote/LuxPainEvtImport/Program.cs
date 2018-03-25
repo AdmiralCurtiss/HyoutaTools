@@ -51,7 +51,7 @@ namespace HyoutaTools.GraceNote.LuxPainEvtImport {
 			}
 
 			Console.WriteLine( "Found " + Evt.TextEntries.Count + " entries, importing..." );
-			System.IO.File.WriteAllBytes( NewDB, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( NewDB );
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( Evt.TextEntries.Count );
 			for ( int i = 0; i < Evt.TextEntries.Count; ++i ) {

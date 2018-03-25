@@ -15,8 +15,8 @@ namespace HyoutaTools.GraceNote.Narisokonai {
 			string OutDatabase = args[1];
 			string GracesJapanese = args[2];
 			var bscrFile = new HyoutaTools.Narisokonai.scr( System.IO.File.ReadAllBytes( InFile ) );
-			System.IO.File.WriteAllBytes( OutDatabase, Properties.Resources.gndb_template );
-			if ( !System.IO.File.Exists( GracesJapanese ) ) { System.IO.File.WriteAllBytes( GracesJapanese, Properties.Resources.gngj_template ); }
+			GraceNoteUtil.GenerateEmptyDatabase( OutDatabase );
+			if ( !System.IO.File.Exists( GracesJapanese ) ) { GraceNoteUtil.GenerateEmptyGracesJapanese( GracesJapanese ); }
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>();
 			foreach ( var sec in bscrFile.Sections ) {

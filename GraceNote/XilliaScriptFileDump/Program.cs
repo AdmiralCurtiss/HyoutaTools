@@ -17,9 +17,9 @@ namespace HyoutaTools.GraceNote.XilliaScriptFileDump {
 			String GracesDB = args[2];
 
 			SDB XSF = new SDB( Filename );
-			System.IO.File.WriteAllBytes( NewDB, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( NewDB );
 			if ( !System.IO.File.Exists( GracesDB ) ) {
-				System.IO.File.WriteAllBytes( GracesDB, Properties.Resources.gngj_template );
+				GraceNoteUtil.GenerateEmptyGracesJapanese( GracesDB );
 			}
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( XSF.TextList.Count );

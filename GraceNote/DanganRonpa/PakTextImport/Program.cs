@@ -26,7 +26,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.PakTextImport {
 				return -1;
 			}
 			Console.WriteLine( "Found " + DRMF.TextList.Count + " entries, importing..." );
-			System.IO.File.WriteAllBytes( NewDB, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( NewDB );
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( DRMF.TextList.Count );
 			foreach ( PakTextEntry entry in DRMF.TextList ) {

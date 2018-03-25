@@ -61,26 +61,6 @@ namespace HyoutaTools.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] gndb_template {
-            get {
-                object obj = ResourceManager.GetObject("gndb_template", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] gngj_template {
-            get {
-                object obj = ResourceManager.GetObject("gngj_template", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to body { background-color: #68504F; color: #EFD1AE; font-size: 16; }
         ///.itemname { color: #FFEBD2; font-size: 20; }
         ///.itemdesc { }

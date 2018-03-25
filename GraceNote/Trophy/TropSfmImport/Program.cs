@@ -19,7 +19,7 @@ namespace HyoutaTools.GraceNote.Trophy.TropSfmImport {
 			String GracesDB = args[3];
 
 			TrophyConfNode TROPSFM = TrophyConfNode.ReadTropSfmWithTropConf( Filename, FilenameTropConf );
-			System.IO.File.WriteAllBytes( NewDB, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( NewDB );
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( TROPSFM.Trophies.Values.Count * 2 );
 			foreach ( TrophyNode Trophy in TROPSFM.Trophies.Values ) {

@@ -123,6 +123,7 @@
     <Compile Include="GraceNote\DumpDatabase\Program.cs" />
     <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
+    <Compile Include="GraceNote\GraceNoteUtil.cs" />
     <Compile Include="GraceNote\LastRanker\bscrExport.cs" />
     <Compile Include="GraceNote\LastRanker\bscrImport.cs" />
     <Compile Include="GraceNote\LastRanker\SscrExport.cs" />
@@ -418,8 +419,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Files\gngj_template" />
-    <None Include="Files\gndb_template" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Other\N64\" />

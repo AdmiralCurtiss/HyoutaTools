@@ -16,7 +16,7 @@ namespace HyoutaTools.GraceNote.LastRanker {
 			string OutDatabase = args[1];
 			string GracesJapanese = args[2];
 			SSCR SscrFile = new SSCR( System.IO.File.ReadAllBytes( InFile ) );
-			System.IO.File.WriteAllBytes( OutDatabase, Properties.Resources.gndb_template );
+			GraceNoteUtil.GenerateEmptyDatabase( OutDatabase );
 
 			List<GraceNoteDatabaseEntry> Entries = new List<GraceNoteDatabaseEntry>( SscrFile.Names.Count + SscrFile.SystemTerms.Count + SscrFile.Somethings.Count );
 			foreach ( var x in SscrFile.Names ) {
