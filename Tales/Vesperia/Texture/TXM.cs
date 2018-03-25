@@ -226,7 +226,51 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 		}
 
 		public override Stream GetSinglePlane( Stream inputStream, uint depthlevel ) {
-			throw new NotImplementedException();
+			if ( Mipmaps > 1 ) {
+				throw new Exception( "Don't know how to deal with volume textures with mipmaps." );
+			}
+			if ( !( Format == TextureFormat.DXT1a || Format == TextureFormat.DXT1b || Format == TextureFormat.DXT5a || Format == TextureFormat.DXT5b ) ) {
+				throw new Exception( "Volume textures only implemented for DXT formats." );
+			}
+
+			// Format reference: https://www.khronos.org/registry/OpenGL/extensions/NV/NV_texture_compression_vtc.txt
+			uint bytecount = GetByteCountSingleDepthPlane( 0 );
+			uint group = depthlevel / 4u;
+			uint texInGroupBefore = depthlevel % 4u;
+			uint texInGroupAfter = 3u - texInGroupBefore;
+
+			// special handling for last group if depth not divisible by 4
+			uint nonDivisiblePlanesAtEnd = Depth % 4;
+			uint groupCount = Util.Align( Depth, 4u ) / 4;
+			if ( nonDivisiblePlanesAtEnd != 0 && group == ( groupCount - 1u ) ) {
+				texInGroupAfter = ( nonDivisiblePlanesAtEnd - texInGroupBefore ) - 1u;
+			}
+
+			uint bytesPerTexLine;
+			switch ( Format ) {
+				case TextureFormat.DXT1a:
+				case TextureFormat.DXT1b:
+					bytesPerTexLine = 8;
+					break;
+				case TextureFormat.DXT5a:
+				case TextureFormat.DXT5b:
+					bytesPerTexLine = 16;
+					break;
+				default:
+					throw new Exception( "Unexpected format during volume texture plane fetching: " + Format + "." );
+			}
+
+			// skip to correct group
+			inputStream.DiscardBytes( group * bytecount * 4u );
+
+			// copy texture
+			MemoryStream s = new MemoryStream( (int)bytecount );
+			for ( uint i = 0; i < bytecount; i += bytesPerTexLine ) {
+				inputStream.DiscardBytes( texInGroupBefore * bytesPerTexLine );
+				Util.CopyStream( inputStream, s, bytesPerTexLine );
+				inputStream.DiscardBytes( texInGroupAfter * bytesPerTexLine );
+			}
+			return s;
 		}
 	}
 }
