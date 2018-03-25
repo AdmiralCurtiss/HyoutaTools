@@ -113,12 +113,22 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			return sum / 8;
 		}
 
+		public uint GetByteCount( int mipmaplevel ) {
+			return GetByteCountSingleDepthPlane( mipmaplevel ) * Depth;
+		}
+
+		public uint GetByteCountSingleDepthPlane( int mipmaplevel ) {
+			return ( ( GetBitPerPixel() * Width * Height ) / ( 1u << ( mipmaplevel * 2 ) ) ) / 8;
+		}
+
 		public (uint width, uint height) GetDimensions( int mipmaplevel ) {
 			uint w = Math.Max( 1u, Width >> mipmaplevel );
 			uint h = Math.Max( 1u, Height >> mipmaplevel );
 			// depth too? how do mips interact with volume textures?
 			return (w, h);
 		}
+
+		public abstract Stream GetSinglePlane( Stream inputStream, uint depthlevel );
 	}
 
 	public class TXMSingleRegular : TXMSingle {
@@ -132,6 +142,10 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			Name = stream.ReadAsciiNulltermFromLocationAndReset( NameOffset + stream.Position - 4 );
 			TxvLocation = stream.ReadUInt32().SwapEndian();
 			Unknown = stream.ReadUInt32().SwapEndian();
+		}
+
+		public override Stream GetSinglePlane( Stream inputStream, uint depthlevel ) {
+			return inputStream;
 		}
 	}
 
@@ -147,6 +161,55 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			TxvLocation = stream.ReadUInt32().SwapEndian();
 			Unknown = stream.ReadUInt32().SwapEndian();
 		}
+
+		public override Stream GetSinglePlane( Stream inputStream, uint depthlevel ) {
+			return GetSinglePlane_MipBeforeDepth( inputStream, depthlevel );
+		}
+
+		public Stream GetSinglePlane_MipBeforeDepth( Stream inputStream, uint depthlevel ) {
+			Stream s = new MemoryStream();
+			uint planesBeforeCurrent = depthlevel;
+			uint planesAfterCurrent = Depth - depthlevel - 1;
+			uint sum = 0u;
+			for ( int i = 0; i < Mipmaps; ++i ) {
+				uint bytecount = GetByteCountSingleDepthPlane( i );
+				sum += bytecount;
+			}
+			if ( Format == TextureFormat.DXT1a || Format == TextureFormat.DXT1b || Format == TextureFormat.DXT5a || Format == TextureFormat.DXT5b ) {
+				// this feels stupid??
+				sum = Util.Align( sum, 0x80u );
+			}
+			inputStream.DiscardBytes( planesBeforeCurrent * sum );
+			Util.CopyStream( inputStream, s, sum );
+			inputStream.DiscardBytes( planesAfterCurrent * sum );
+			return s;
+		}
+
+		public Stream GetSinglePlane_DepthBeforeMip( Stream inputStream, uint depthlevel ) {
+			Stream s = new MemoryStream();
+			for ( int i = 0; i < Mipmaps; ++i ) {
+				uint bytecount = GetByteCountSingleDepthPlane( i );
+				uint planesBeforeCurrent = depthlevel;
+				uint planesAfterCurrent = Depth - depthlevel - 1;
+				inputStream.DiscardBytes( planesBeforeCurrent * bytecount );
+				Util.CopyStream( inputStream, s, bytecount );
+				inputStream.DiscardBytes( planesAfterCurrent * bytecount );
+			}
+			return s;
+		}
+
+		public Stream GetSinglePlaneSingleDepth( Stream inputStream, uint depthlevel, int mipmaplevel ) {
+			uint sum = 0u;
+			for ( int i = 0; i < mipmaplevel; ++i ) {
+				sum += GetByteCountSingleDepthPlane( i ) * Depth;
+			}
+			uint countRequestedPlane = GetByteCountSingleDepthPlane( mipmaplevel );
+			sum += countRequestedPlane * depthlevel;
+
+			Stream s = new MemoryStream( (int)countRequestedPlane );
+			Util.CopyStream( inputStream, s, countRequestedPlane );
+			return s;
+		}
 	}
 
 	public class TXMSingleVolume : TXMSingle {
@@ -160,6 +223,10 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			Name = stream.ReadAsciiNulltermFromLocationAndReset( NameOffset + stream.Position - 4 );
 			TxvLocation = stream.ReadUInt32().SwapEndian();
 			Unknown = stream.ReadUInt32().SwapEndian();
+		}
+
+		public override Stream GetSinglePlane( Stream inputStream, uint depthlevel ) {
+			throw new NotImplementedException();
 		}
 	}
 }

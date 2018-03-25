@@ -70,30 +70,37 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 		public List<(string name, Stream data)> Decode() {
 			List<(string name, Stream data)> list = new List<(string name, Stream data)>();
 
-			switch ( TXM.Format ) {
-				case TextureFormat.DXT1a:
-				case TextureFormat.DXT1b:
-				case TextureFormat.DXT5a:
-				case TextureFormat.DXT5b:
-					{
-						Data.Position = 0;
-						Stream stream = new MemoryStream( (int)( Data.Length + 0x80 ) );
-						stream.Write( Textures.DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1 : Textures.TextureFormat.DXT5 ) );
-						Util.CopyStream( Data, stream, Data.Length );
-						string name = TXM.Name + ".dds";
-						list.Add( (name, stream) );
-					}
-					break;
-				case TextureFormat.ARGBb:
-					for ( uint mip = 0; mip < TXM.Mipmaps; ++mip ) {
-						var dims = TXM.GetDimensions( (int)mip );
-						Stream stream = new ColorFetcherARGB8888( Data, dims.width, dims.height ).WriteSingleImageToPngStream( new LinearPixelOrderIterator( (int)dims.width, (int)dims.height ), dims.width, dims.height );
-						string name = ( TXM.Mipmaps > 1 ? ( TXM.Name + "_Mip" + mip ) : TXM.Name ) + ".png";
-						list.Add( (name, stream) );
-					}
-					break;
-				default:
-					throw new Exception( "Unhandled texture format " + TXM.Format );
+			if ( TXM is TXMSingleCubemap) {
+				Console.WriteLine();
+			}
+
+			for ( uint depth = 0; depth < TXM.Depth; ++depth ) {
+				Data.Position = 0;
+				Stream plane = TXM.GetSinglePlane( Data, depth );
+				switch ( TXM.Format ) {
+					case TextureFormat.DXT1a:
+					case TextureFormat.DXT1b:
+					case TextureFormat.DXT5a:
+					case TextureFormat.DXT5b: {
+							plane.Position = 0;
+							Stream stream = new MemoryStream( (int)( plane.Length + 0x80 ) );
+							stream.Write( Textures.DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1 : Textures.TextureFormat.DXT5 ) );
+							Util.CopyStream( plane, stream, plane.Length );
+							string name = TXM.Name + ( TXM.Depth > 1 ? ( "_Plane" + depth ) : "" ) + ".dds";
+							list.Add( (name, stream) );
+						}
+						break;
+					case TextureFormat.ARGBb:
+						for ( uint mip = 0; mip < TXM.Mipmaps; ++mip ) {
+							var dims = TXM.GetDimensions( (int)mip );
+							Stream stream = new ColorFetcherARGB8888( plane, dims.width, dims.height ).WriteSingleImageToPngStream( new LinearPixelOrderIterator( (int)dims.width, (int)dims.height ), dims.width, dims.height );
+							string name = TXM.Name + ( TXM.Depth > 1 ? ( "_Plane" + depth ) : "" ) + ( TXM.Mipmaps > 1 ? ( "_Mip" + mip ) : "" ) + ".png";
+							list.Add( (name, stream) );
+						}
+						break;
+					default:
+						throw new Exception( "Unhandled texture format " + TXM.Format );
+				}
 			}
 
 			return list;
