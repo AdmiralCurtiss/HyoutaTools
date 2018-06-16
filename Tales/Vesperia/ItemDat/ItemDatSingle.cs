@@ -171,6 +171,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 		Always35 = 16,
 
+		SortByIdInteger = 176, // this seems to be used to sort the items in the item menu
 		UsableInBattle = 177,
 		InCollectorsBook = 178,
 

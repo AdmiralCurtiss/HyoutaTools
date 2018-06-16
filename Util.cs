@@ -539,6 +539,9 @@ namespace HyoutaTools {
 			s.Position = pos;
 			return retval;
 		}
+		public static byte ReadUInt8( this Stream s ) {
+			return Convert.ToByte( s.ReadByte() );
+		}
 		public static byte PeekByte( this Stream s ) {
 			long pos = s.Position;
 			int retval = s.ReadByte();
@@ -550,6 +553,22 @@ namespace HyoutaTools {
 		}
 		public static void WriteUInt16( this Stream s, ushort num ) {
 			s.Write( BitConverter.GetBytes( num ), 0, 2 );
+		}
+
+		public static byte[] ReadUInt8Array( this Stream s, long count ) {
+			byte[] data = new byte[count];
+			for ( long i = 0; i < count; ++i ) {
+				data[i] = s.ReadUInt8();
+			}
+			return data;
+		}
+
+		public static uint[] ReadUInt32Array( this Stream s, long count, Endianness endianness = Endianness.LittleEndian ) {
+			uint[] data = new uint[count];
+			for ( long i = 0; i < count; ++i ) {
+				data[i] = s.ReadUInt32().FromEndian( endianness );
+			}
+			return data;
 		}
 
 		public static void ReadAlign( this Stream s, long alignment ) {

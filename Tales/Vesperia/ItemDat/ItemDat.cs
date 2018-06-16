@@ -25,6 +25,10 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			}
 		}
 
+		public List<ItemDatSingle> GetSortedByInGameSorting() {
+			return new List<ItemDatSingle>( items ).OrderBy( x => x.Data[(int)ItemData.SortByIdInteger] ).ToList();
+		}
+
 
 
 		public static string GetItemDataAsText( GameVersion version, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, WRLDDAT.WRLDDAT Locations, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
