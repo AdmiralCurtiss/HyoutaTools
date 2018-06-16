@@ -25,7 +25,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			var itemData = new ItemDat.ItemDat( @"c:\Dropbox\ToV\PS3\orig\item.svo.ext\ITEM.DAT" );
 			var itemDataSorted = itemData.GetSortedByInGameSorting();
 			var titles = new FAMEDAT.FAMEDAT( @"c:\Dropbox\ToV\PS3\orig\menu.svo.ext\FAMEDATA.BIN" );
-			var enemies = new BTLBDAT.BTLBDAT( @"c:\Dropbox\ToV\PS3\orig\menu.svo.ext\BATTLEBOOKDATA.BIN" );
+			var enemies = new T8BTEMST.T8BTEMST( @"c:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000" );
 
 			using ( Stream file = new FileStream( args[0], System.IO.FileMode.Open ) ) {
 				file.DiscardBytes( 0x228 ); // short header, used for save menu on 360 version to display basic info about save
@@ -151,7 +151,12 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					// game seems to read these till null byte so this could totally be abused to buffer overflow...
 					file.ReadAscii( 0x40 );
 				}
-				file.DiscardBytes( 0x15C8 ); // ?
+
+				file.DiscardBytes( 0xA84D0 - 0xA7360 ); // ?
+				uint[] monsterBookBitfieldsScanned = file.ReadUInt32Array( 0x48 / 4, endian );
+				file.DiscardBytes( 0xA8680 - 0xA8518 ); // ?
+				uint[] monsterBookBitfieldsSeen = file.ReadUInt32Array( 0x48 / 4, endian );
+				file.DiscardBytes( 0xA8928 - 0xA86C8 ); // ?
 
 				// 9 character blocks, each 0x4010 bytes
 				for ( int character = 0; character < 9; ++character ) {
@@ -242,6 +247,18 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 						bool haveItem = ( ( itemBookBitfields[i / 32] >> (int)( i % 32 ) ) & 1 ) > 0;
 						Console.WriteLine( ( haveItem ? "Y" : "N" ) + ( collectorsBookIndex ) + ": " + inGameDic[item.NamePointer].StringEngOrJpn );
 						++collectorsBookIndex;
+					}
+				}
+
+
+				uint monsterBookIndex = 0;
+				foreach ( var enemy in enemies.EnemyList ) {
+					uint i = enemy.InGameID;
+					if ( enemy.InMonsterBook > 0 ) {
+						bool haveSeen = ( ( monsterBookBitfieldsSeen[i / 32] >> (int)( i % 32 ) ) & 1 ) > 0;
+						bool haveScanned = ( ( monsterBookBitfieldsScanned[i / 32] >> (int)( i % 32 ) ) & 1 ) > 0;
+						Console.WriteLine( ( haveSeen ? "Y" : "N" ) + ( haveScanned ? "Y" : "N" ) + ( monsterBookIndex ) + ": " + inGameDic[enemy.NameStringDicID].StringEngOrJpn );
+						++monsterBookIndex;
 					}
 				}
 			}
