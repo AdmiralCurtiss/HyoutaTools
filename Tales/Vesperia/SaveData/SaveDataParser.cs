@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
 	public class SaveDataParser {
+		private static void PrintSavePoint( byte[] flags, int index, string where ) {
+			Console.WriteLine( "Save Point 0x" + index.ToString( "X2" ) + " " + ( flags[index] > 0 ? "[ ok ]" : "[MISS]" ) + ": " + where );
+		}
+
 		public static int Parse( List<string> args ) {
 			if ( args.Count < 1 ) {
 				Console.WriteLine( "Usage: SaveDataParser SAVE" );
@@ -31,9 +35,105 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 				}
 				uint saveFileSize = file.ReadUInt32().FromEndian( endian );
 				if ( saveFileSize != 0xCCAA0 ) {
-					throw new Exception( "Unexpected filesize for ToV save: " + magic );
+					throw new Exception( "Unexpected filesize for ToV save: " + saveFileSize );
 				}
-				file.DiscardBytes( 0xA3D14 ); // no idea what all this is
+				file.DiscardBytes( 0x3AC8 - 0x234 ); // no idea what all this is
+
+				// save point flags, one byte each, 0x00 not visted 0x01 visited
+				byte[] savePointFlags = file.ReadUInt8Array( 0x59 );
+				{
+					PrintSavePoint( savePointFlags, 0x00, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x01, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x02, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x03, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x04, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x05, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x06, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x07, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x08, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x09, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x0A, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x0B, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x0C, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x0D, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x0E, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x0F, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x10, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x11, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x12, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x13, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x14, "Deidon Hold" );
+					PrintSavePoint( savePointFlags, 0x15, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x16, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x17, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x18, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x19, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x1A, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x1B, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x1C, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x1D, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x1E, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x1F, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x20, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x21, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x22, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x23, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x24, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x25, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x26, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x27, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x28, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x29, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x2A, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x2B, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x2C, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x2D, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x2E, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x2F, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x30, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x31, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x32, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x33, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x34, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x35, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x36, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x37, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x38, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x39, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x3A, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x3B, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x3C, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x3D, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x3E, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x3F, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x40, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x41, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x42, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x43, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x44, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x45, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x46, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x47, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x48, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x49, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x4A, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x4B, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x4C, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x4D, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x4E, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x4F, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x50, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x51, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x52, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x53, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x54, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x55, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x56, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x57, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x58, "Unknown" );
+				}
+
+				file.DiscardBytes( 0xA3F48 - 0x3B21 ); // no idea what all this is
 				file.ReadUInt32().FromEndian( endian ); // ?
 				file.ReadUInt32().FromEndian( endian ); // ?
 				file.ReadUInt32Array( 9, endian );
