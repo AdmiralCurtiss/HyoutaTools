@@ -42,9 +42,9 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 				// save point flags, one byte each, 0x00 not visted 0x01 visited
 				byte[] savePointFlags = file.ReadUInt8Array( 0x59 );
 				{
-					PrintSavePoint( savePointFlags, 0x00, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x01, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x02, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x00, "Fiertia Deck (Docked at Atherum)" );
+					PrintSavePoint( savePointFlags, 0x01, "Atherum" );
+					PrintSavePoint( savePointFlags, 0x02, "Fiertia Hold" ); // same flag for both opportunities?
 					PrintSavePoint( savePointFlags, 0x03, "Keiv Moc (Middle)" );
 					PrintSavePoint( savePointFlags, 0x04, "Keiv Moc (Boss)" );
 					PrintSavePoint( savePointFlags, 0x05, "Zaphias (Lower Quarter)" );
@@ -54,37 +54,37 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					PrintSavePoint( savePointFlags, 0x09, "Zaphias Castle (Hallways)" ); // before zagi fight
 					PrintSavePoint( savePointFlags, 0x0A, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x0B, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x0C, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x0D, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x0C, "Weasand of Cados (Middle)" );
+					PrintSavePoint( savePointFlags, 0x0D, "Weasand of Cados (Exit)" );
 					PrintSavePoint( savePointFlags, 0x0E, "Halure (Inn)" );
 					PrintSavePoint( savePointFlags, 0x0F, "Ghasfarost (Bottom)" );
-					PrintSavePoint( savePointFlags, 0x10, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x11, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x12, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x13, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x10, "Ghasfarost (Top)" );
+					PrintSavePoint( savePointFlags, 0x11, "Myorzo (Vacant House)" );
+					PrintSavePoint( savePointFlags, 0x12, "Mt. Temza (Middle)" );
+					PrintSavePoint( savePointFlags, 0x13, "Mt. Temza (Boss)" );
 					PrintSavePoint( savePointFlags, 0x14, "Deidon Hold" );
 					PrintSavePoint( savePointFlags, 0x15, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x16, "Aurnion (Developing)" );
 					PrintSavePoint( savePointFlags, 0x17, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x18, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x18, "Caer Bocram" );
 					PrintSavePoint( savePointFlags, 0x19, "Quoi Woods" );
 					PrintSavePoint( savePointFlags, 0x1A, "Dahngrest (Inn)" );
 					PrintSavePoint( savePointFlags, 0x1B, "Ehmead Hill" );
 					PrintSavePoint( savePointFlags, 0x1C, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x1D, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x1E, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x1E, "Heracles (Near Engine Room)" );
 					PrintSavePoint( savePointFlags, 0x1F, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x20, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x21, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x22, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x22, "Manor of the Wicked" );
 					PrintSavePoint( savePointFlags, 0x23, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x24, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x25, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x26, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x27, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x25, "Baction B1F" );
+					PrintSavePoint( savePointFlags, 0x26, "Baction B2F" ); // both save points on B2F share this flag...?
+					PrintSavePoint( savePointFlags, 0x27, "Mantaic (Inn)" );
 					PrintSavePoint( savePointFlags, 0x28, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x29, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x2A, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x2A, "Capua Nor (Outside Ragou's Mansion)" );
 					PrintSavePoint( savePointFlags, 0x2B, "Capua Nor (Inn)" );
 					PrintSavePoint( savePointFlags, 0x2C, "Capua Torim (Inn)" );
 					PrintSavePoint( savePointFlags, 0x2D, "Shaikos Ruins" );
@@ -92,15 +92,15 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					PrintSavePoint( savePointFlags, 0x2F, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x30, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x31, "Aspio (Inn)" );
-					PrintSavePoint( savePointFlags, 0x32, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x32, "Nordopolica (Inn)" );
 					PrintSavePoint( savePointFlags, 0x33, "Heliord (Inn)" );
-					PrintSavePoint( savePointFlags, 0x34, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x35, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x36, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x37, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x38, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x39, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x3A, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x34, "Yormgen (Inn)" );
+					PrintSavePoint( savePointFlags, 0x35, "Weasand of Kogorh (Oasis)" );
+					PrintSavePoint( savePointFlags, 0x36, "Weasand of Kogorh (Exit)" );
+					PrintSavePoint( savePointFlags, 0x37, "Egothor Forest" );
+					PrintSavePoint( savePointFlags, 0x38, "Dahngrest Underpass (Oath)" );
+					PrintSavePoint( savePointFlags, 0x39, "Ragou's Mansion" ); // basement dungeon midpoint
+					PrintSavePoint( savePointFlags, 0x3A, "Dahngrest Underpass (Exit)" );
 					PrintSavePoint( savePointFlags, 0x3B, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x3C, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x3D, "Unknown" );
