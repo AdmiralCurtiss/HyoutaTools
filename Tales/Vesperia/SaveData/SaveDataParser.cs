@@ -50,10 +50,10 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					PrintSavePoint( savePointFlags, 0x05, "Zaphias (Lower Quarter)" );
 					PrintSavePoint( savePointFlags, 0x06, "Zaphias (Royal Quarter)" );
 					PrintSavePoint( savePointFlags, 0x07, "Zaphias Castle (Prison)" );
-					PrintSavePoint( savePointFlags, 0x08, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x08, "Zaphias Castle (Kitchen)" ); // 2nd visit only
 					PrintSavePoint( savePointFlags, 0x09, "Zaphias Castle (Hallways)" ); // before zagi fight
-					PrintSavePoint( savePointFlags, 0x0A, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x0B, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x0A, "Zaphias Castle (Sword Stair)" );
+					PrintSavePoint( savePointFlags, 0x0B, "Zaphias Castle (Big Hall)" ); // 2nd visit only, that big room that leads to the sword stair
 					PrintSavePoint( savePointFlags, 0x0C, "Weasand of Cados (Middle)" );
 					PrintSavePoint( savePointFlags, 0x0D, "Weasand of Cados (Exit)" );
 					PrintSavePoint( savePointFlags, 0x0E, "Halure (Inn)" );
@@ -73,8 +73,8 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					PrintSavePoint( savePointFlags, 0x1C, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x1D, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x1E, "Heracles (Near Engine Room)" );
-					PrintSavePoint( savePointFlags, 0x1F, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x20, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x1F, "Heracles (Near Control Room)" ); // zagi fight
+					PrintSavePoint( savePointFlags, 0x20, "Zopheir (Boss)" );
 					PrintSavePoint( savePointFlags, 0x21, "Unknown" );
 					PrintSavePoint( savePointFlags, 0x22, "Manor of the Wicked" );
 					PrintSavePoint( savePointFlags, 0x23, "Unknown" );
@@ -88,9 +88,9 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					PrintSavePoint( savePointFlags, 0x2B, "Capua Nor (Inn)" );
 					PrintSavePoint( savePointFlags, 0x2C, "Capua Torim (Inn)" );
 					PrintSavePoint( savePointFlags, 0x2D, "Shaikos Ruins" );
-					PrintSavePoint( savePointFlags, 0x2E, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x2F, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x30, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x2E, "Zaude (Side Entrance)" );
+					PrintSavePoint( savePointFlags, 0x2F, "Zaude (Alexei)" );
+					PrintSavePoint( savePointFlags, 0x30, "Zaude (Yeager)" );
 					PrintSavePoint( savePointFlags, 0x31, "Aspio (Inn)" );
 					PrintSavePoint( savePointFlags, 0x32, "Nordopolica (Inn)" );
 					PrintSavePoint( savePointFlags, 0x33, "Heliord (Inn)" );
