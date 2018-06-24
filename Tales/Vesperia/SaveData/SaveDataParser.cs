@@ -63,27 +63,27 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					PrintSavePoint( savePointFlags, 0x12, "Mt. Temza (Middle)" );
 					PrintSavePoint( savePointFlags, 0x13, "Mt. Temza (Boss)" );
 					PrintSavePoint( savePointFlags, 0x14, "Deidon Hold" );
-					PrintSavePoint( savePointFlags, 0x15, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x15, "Northeastern Hypionia" ); // aurnion before it's built
 					PrintSavePoint( savePointFlags, 0x16, "Aurnion (Developing)" );
-					PrintSavePoint( savePointFlags, 0x17, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x17, "Aurnion (Developed)" );
 					PrintSavePoint( savePointFlags, 0x18, "Caer Bocram" );
 					PrintSavePoint( savePointFlags, 0x19, "Quoi Woods" );
 					PrintSavePoint( savePointFlags, 0x1A, "Dahngrest (Inn)" );
 					PrintSavePoint( savePointFlags, 0x1B, "Ehmead Hill" );
-					PrintSavePoint( savePointFlags, 0x1C, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x1D, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x1C, "Erealumen (Middle)" );
+					PrintSavePoint( savePointFlags, 0x1D, "Erealumen (Boss)" );
 					PrintSavePoint( savePointFlags, 0x1E, "Heracles (Near Engine Room)" );
 					PrintSavePoint( savePointFlags, 0x1F, "Heracles (Near Control Room)" ); // zagi fight
-					PrintSavePoint( savePointFlags, 0x20, "Zopheir (Boss)" );
-					PrintSavePoint( savePointFlags, 0x21, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x20, "Zopheir (Boss)" ); // 1st visit only
+					PrintSavePoint( savePointFlags, 0x21, "Zopheir (Near Aer Krene)" ); // 2nd visit only
 					PrintSavePoint( savePointFlags, 0x22, "Manor of the Wicked" );
-					PrintSavePoint( savePointFlags, 0x23, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x24, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x23, "Tarqaron (Middle)" );
+					PrintSavePoint( savePointFlags, 0x24, "Tarqaron (Top)" );
 					PrintSavePoint( savePointFlags, 0x25, "Baction B1F" );
 					PrintSavePoint( savePointFlags, 0x26, "Baction B2F" ); // both save points on B2F share this flag...?
 					PrintSavePoint( savePointFlags, 0x27, "Mantaic (Inn)" );
-					PrintSavePoint( savePointFlags, 0x28, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x29, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x28, "Relewiese (Middle)" );
+					PrintSavePoint( savePointFlags, 0x29, "Relewiese (Boss)" );
 					PrintSavePoint( savePointFlags, 0x2A, "Capua Nor (Outside Ragou's Mansion)" );
 					PrintSavePoint( savePointFlags, 0x2B, "Capua Nor (Inn)" );
 					PrintSavePoint( savePointFlags, 0x2C, "Capua Torim (Inn)" );
@@ -101,36 +101,36 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					PrintSavePoint( savePointFlags, 0x38, "Dahngrest Underpass (Oath)" );
 					PrintSavePoint( savePointFlags, 0x39, "Ragou's Mansion" ); // basement dungeon midpoint
 					PrintSavePoint( savePointFlags, 0x3A, "Dahngrest Underpass (Exit)" );
-					PrintSavePoint( savePointFlags, 0x3B, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x3C, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x3D, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x3E, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x3F, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x40, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x41, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x42, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x43, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x44, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x45, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x46, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x47, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x48, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x49, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x4A, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x4B, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x4C, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x4D, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x4E, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x4F, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x50, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x51, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x52, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x53, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x54, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x55, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x56, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x57, "Unknown" );
-					PrintSavePoint( savePointFlags, 0x58, "Unknown" );
+					PrintSavePoint( savePointFlags, 0x3B, "Abysmal Hollow (Aer Krene near Yumanju)" );
+					PrintSavePoint( savePointFlags, 0x3C, "? Abysmal Hollow (Aer Krene near Zaphias)" );
+					PrintSavePoint( savePointFlags, 0x3D, "Abysmal Hollow (Aer Krene near Heliord)" );
+					PrintSavePoint( savePointFlags, 0x3E, "Abysmal Hollow (Aer Krene near Nordopolica)" );
+					PrintSavePoint( savePointFlags, 0x3F, "? Abysmal Hollow (Center)" );
+					PrintSavePoint( savePointFlags, 0x40, "City of the Waning Moon" );
+					PrintSavePoint( savePointFlags, 0x41, "Necropolis of Nostalgia A3" );
+					PrintSavePoint( savePointFlags, 0x42, "Necropolis of Nostalgia A6" );
+					PrintSavePoint( savePointFlags, 0x43, "Necropolis of Nostalgia A9" );
+					PrintSavePoint( savePointFlags, 0x44, "Necropolis of Nostalgia A Bottom" );
+					PrintSavePoint( savePointFlags, 0x45, "Necropolis of Nostalgia B2" );
+					PrintSavePoint( savePointFlags, 0x46, "Necropolis of Nostalgia B5" );
+					PrintSavePoint( savePointFlags, 0x47, "Necropolis of Nostalgia B8" );
+					PrintSavePoint( savePointFlags, 0x48, "Necropolis of Nostalgia B Bottom" );
+					PrintSavePoint( savePointFlags, 0x49, "Necropolis of Nostalgia C3" );
+					PrintSavePoint( savePointFlags, 0x4A, "Necropolis of Nostalgia C6" );
+					PrintSavePoint( savePointFlags, 0x4B, "Necropolis of Nostalgia C9" );
+					PrintSavePoint( savePointFlags, 0x4C, "Necropolis of Nostalgia C Bottom" );
+					PrintSavePoint( savePointFlags, 0x4D, "Necropolis of Nostalgia D3" );
+					PrintSavePoint( savePointFlags, 0x4E, "Necropolis of Nostalgia D6" );
+					PrintSavePoint( savePointFlags, 0x4F, "Necropolis of Nostalgia D9" );
+					PrintSavePoint( savePointFlags, 0x50, "Necropolis of Nostalgia D Bottom" );
+					PrintSavePoint( savePointFlags, 0x51, "Necropolis of Nostalgia E3" );
+					PrintSavePoint( savePointFlags, 0x52, "? Necropolis of Nostalgia E6" );
+					PrintSavePoint( savePointFlags, 0x53, "? Necropolis of Nostalgia E9" );
+					PrintSavePoint( savePointFlags, 0x54, "? Necropolis of Nostalgia E Bottom" );
+					PrintSavePoint( savePointFlags, 0x55, "? Necropolis of Nostalgia F3" );
+					PrintSavePoint( savePointFlags, 0x56, "? Necropolis of Nostalgia F6" );
+					PrintSavePoint( savePointFlags, 0x57, "? Necropolis of Nostalgia F9" );
+					PrintSavePoint( savePointFlags, 0x58, "? Necropolis of Nostalgia F Bottom" );
 				}
 
 				file.DiscardBytes( 0xA3F48 - 0x3B21 ); // no idea what all this is
