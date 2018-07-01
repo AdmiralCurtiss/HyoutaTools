@@ -65,32 +65,58 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 				} else {
 					sb.Append( "<img src=\"item-icons/ICON60.png\" width=\"16\" height=\"16\"> " + ( FramesToMove / 60 ) + " sec<br>" );
 
-					int targetFloor;
-					string targetID;
 					switch ( RoomType ) {
-						case 1: sb.Append( "Entrance<br>" ); break;
-						case 2:
-						case 5:
-							if ( RoomType == 5 ) {
-								targetFloor = ( floor + FloorExitDiff );
-							} else {
-								targetFloor = ( floor + 1 );
-							}
-							if ( targetFloor == 11 ) {
-								targetID = (char)( ( (int)stratum[0] ) + 1 ) + "1";
-							} else {
-								targetID = stratum + targetFloor;
-							}
-
-							sb.Append( "Exit to <a href=\"" );
-							if ( phpLinks ) {
-								sb.Append( "?version=ps3&section=necropolis&map=" + targetID );
-							} else {
-								sb.Append( "#" + targetID );
-							}
-							sb.Append( "\">" + stratum + "-" + targetFloor + "</a><br>" );
-
+						case 1:
+							sb.Append( "Entrance<br>" );
 							break;
+						case 2:
+						case 5: {
+								int targetFloor;
+								string targetLinkId;
+								string targetStratum;
+								if ( RoomType == 5 ) {
+									targetFloor = ( floor + FloorExitDiff );
+								} else {
+									targetFloor = ( floor + 1 );
+								}
+								if ( targetFloor == 11 ) {
+									targetStratum = ( (char)( ( (int)stratum[0] ) + 1 ) ).ToString();
+									targetLinkId = targetStratum + "1";
+								} else {
+									targetStratum = stratum;
+									targetLinkId = targetStratum + targetFloor;
+								}
+
+								string targetHumanReadable;
+								if ( targetFloor == 11 ) {
+									targetHumanReadable = stratum + " Bottom";
+								} else {
+									targetHumanReadable = stratum + "-" + targetFloor;
+								}
+
+								string nextHumanReadable = "";
+								if ( targetFloor == 11 ) {
+									nextHumanReadable = targetStratum + "-1";
+								}
+
+								string linkStart = "<a href=\"" + ( phpLinks ? ( "?version=ps3&section=necropolis&map=" + targetLinkId ) : ( "#" + targetLinkId ) ) + "\">";
+								string linkEnd = "</a>";
+
+								string finalText;
+								if ( targetFloor == 11 ) {
+									if ( stratum == "F" ) {
+										finalText = $"Exit to {targetHumanReadable}";
+									} else {
+										finalText = $"Exit to {targetHumanReadable}<br>(Go to {linkStart}{nextHumanReadable}{linkEnd})";
+									}
+								} else {
+									finalText = $"Exit to {linkStart}{targetHumanReadable}{linkStart}";
+								}
+
+								sb.Append( finalText );
+								sb.Append( "<br>" );
+								break;
+							}
 						case 3:
 							//sb.Append( "Regular Room<br>" );
 							break;
