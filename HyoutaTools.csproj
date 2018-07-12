@@ -155,6 +155,7 @@
     <Compile Include="LastRanker\StringFile.cs" />
     <Compile Include="MyWorldMyWay\Tbl.cs" />
     <Compile Include="Narisokonai\scr.cs" />
+    <Compile Include="Other\AceAttorneyInvestigationsScriptDump\Dumper.cs" />
     <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
     <Compile Include="Other\GZip\GZipHandler.cs" />
     <Compile Include="Other\PicrossDS\ClassicPuzzle.cs" />
