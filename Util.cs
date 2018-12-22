@@ -659,6 +659,12 @@ namespace HyoutaTools {
 			}
 			throw new Exception( "Reading sized string not implemented for encoding " + encoding.ToString() );
 		}
+		public static void WriteNulltermString( this Stream s, string str, GameTextEncoding encoding ) {
+			switch ( encoding ) {
+				case GameTextEncoding.UTF8: WriteUTF8Nullterm( s, str ); return;
+			}
+			throw new Exception( "Writing nullterminated string not implemented for encoding " + encoding.ToString() );
+		}
 
 		public static string ReadAsciiNulltermFromLocationAndReset( this Stream s, long location ) {
 			long pos = s.Position;
