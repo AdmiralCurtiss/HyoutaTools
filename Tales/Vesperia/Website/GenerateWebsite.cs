@@ -73,12 +73,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 9, 16, 18, 2, 17, 19, 10, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
 			site.Records = site.GenerateRecordsStringDicList();
 			site.Settings = site.GenerateSettingsStringDicList();
-			site.LoadBattleTextTSS( dir360 + @"btl.svo.ext\BTL_PACK_UK.DAT.ext\0003.ext\" );
+			site.LoadBattleTextTSS( dir360 + @"btl.svo.ext\BTL_PACK_UK.DAT.ext\0003.ext\", Util.GameTextEncoding.UTF8 );
 
 			site.ScenarioFiles = new Dictionary<string, ScenarioFile.ScenarioFile>();
-			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", isUtf8: true );
-			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", isUtf8: true );
-			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", isUtf8: true );
+			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
+			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
+			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
 			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			// copy over Japanese stuff into UK StringDic
@@ -266,13 +266,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public Dictionary<uint, TSS.TSSEntry> InGameIdDict;
 		public uint[] IconsWithItems;
 
-		public void LoadBattleTextTSS( string dir ) {
+		public void LoadBattleTextTSS( string dir, Util.GameTextEncoding encoding ) {
 			BattleTextFiles = new Dictionary<string, SCFOMBIN.SCFOMBIN>();
 
 			var files = new System.IO.DirectoryInfo( dir ).GetFiles();
 			foreach ( var file in files ) {
 				if ( file.Name.StartsWith( "BTL_" ) ) {
-					var bin = new ScenarioFile.ScenarioFile( Path.Combine( dir, file.Name ), true );
+					var bin = new ScenarioFile.ScenarioFile( Path.Combine( dir, file.Name ), encoding );
 					var name = file.Name.Split( '.' )[0];
 
 					var btl = new SCFOMBIN.SCFOMBIN();
@@ -1317,7 +1317,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		private enum ScenarioType { Story, Sidequests, Maps };
-		private List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, string database, string scenarioDatFolder, string scenarioDatFolderMod = null, bool isUtf8 = false ) {
+		private List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, string database, string scenarioDatFolder, string scenarioDatFolderMod = null, Util.GameTextEncoding encoding = Util.GameTextEncoding.ShiftJIS ) {
 			var data = SqliteUtil.SelectArray( "Data Source=" + database, "SELECT filename, shortdesc, desc FROM descriptions ORDER BY desc" );
 
 			List<ScenarioData> scenes = new List<ScenarioData>();
@@ -1352,9 +1352,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						if ( !ScenarioFiles.ContainsKey( episodeID ) ) {
 							string num = filename.Substring( "VScenario".Length );
 							try {
-								var orig = new ScenarioFile.ScenarioFile( Path.Combine( scenarioDatFolder, num + ".d" ), isUtf8 );
+								var orig = new ScenarioFile.ScenarioFile( Path.Combine( scenarioDatFolder, num + ".d" ), encoding );
 								if ( scenarioDatFolderMod != null ) {
-									var mod = new ScenarioFile.ScenarioFile( Path.Combine( scenarioDatFolderMod, num + ".d" ), isUtf8 );
+									var mod = new ScenarioFile.ScenarioFile( Path.Combine( scenarioDatFolderMod, num + ".d" ), encoding );
 									Util.Assert( orig.EntryList.Count == mod.EntryList.Count );
 									for ( int i = 0; i < orig.EntryList.Count; ++i ) {
 										orig.EntryList[i].EnName = mod.EntryList[i].JpName;
