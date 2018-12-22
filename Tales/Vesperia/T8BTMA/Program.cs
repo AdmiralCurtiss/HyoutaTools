@@ -6,7 +6,7 @@ using System.Text;
 namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 	class Program {
 		public static int Execute( List<string> args ) {
-			TSS.TSSFile stringDic = new TSS.TSSFile( args[1] );
+			TSS.TSSFile stringDic = new TSS.TSSFile( args[1], Util.GameTextEncoding.ShiftJIS );
 			var stringIdDict = stringDic.GenerateInGameIdDictionary();
 
 			T8BTMA arteFile = new T8BTMA( args[0] );

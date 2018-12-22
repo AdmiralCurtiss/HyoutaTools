@@ -11,22 +11,21 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public TSSHeader Header;
 		public TSSEntry[] Entries;
 
-		public TSSFile( string filename, bool isUtf8 = false ) {
+		public TSSFile( string filename, Util.GameTextEncoding encoding ) {
 			using ( Stream stream = new FileStream( filename, FileMode.Open ) ) {
-				if ( !LoadFile( stream, isUtf8 ) ) {
+				if ( !LoadFile( stream, encoding ) ) {
 					throw new Exception( "Loading TSSFile failed!" );
 				}
 			}
 		}
 
-		public TSSFile( Stream stream, bool isUtf8 = false ) {
-			if ( !LoadFile( stream, isUtf8 ) ) {
+		public TSSFile( Stream stream, Util.GameTextEncoding encoding ) {
+			if ( !LoadFile( stream, encoding ) ) {
 				throw new Exception( "Loading TSSFile failed!" );
 			}
 		}
 
-		private bool LoadFile( Stream File, bool isUtf8 = false ) {
-			Util.GameTextEncoding encoding = isUtf8 ? Util.GameTextEncoding.UTF8 : Util.GameTextEncoding.ShiftJIS;
+		private bool LoadFile( Stream File, Util.GameTextEncoding encoding ) {
 			long pos = File.Position;
 
 			// set header

@@ -42,7 +42,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			site.Version = GameVersion.X360;
 			site.Items = new ItemDat.ItemDat( dir360 + @"item.svo.ext\ITEM.DAT" );
-			site.StringDic = new TSS.TSSFile( dir360 + @"string_dic_uk.so", true );
+			site.StringDic = new TSS.TSSFile( dir360 + @"string_dic_uk.so", Util.GameTextEncoding.UTF8 );
 			site.Artes = new T8BTMA.T8BTMA( dir360 + @"btl.svo.ext\BTL_PACK_UK.DAT.ext\0004.ext\ALL.0000" );
 			site.Skills = new T8BTSK.T8BTSK( dir360 + @"btl.svo.ext\BTL_PACK_UK.DAT.ext\0010.ext\ALL.0000" );
 			site.Enemies = new T8BTEMST.T8BTEMST( dir360 + @"btl.svo.ext\BTL_PACK_UK.DAT.ext\0005.ext\ALL.0000" );
@@ -82,7 +82,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			// copy over Japanese stuff into UK StringDic
-			var StringDicUs = new TSS.TSSFile( dir360 + @"string_dic_us.so", true );
+			var StringDicUs = new TSS.TSSFile( dir360 + @"string_dic_us.so", Util.GameTextEncoding.UTF8 );
 			var IdDictUs = StringDicUs.GenerateInGameIdDictionary();
 			foreach ( var kvp in IdDictUs ) {
 				site.InGameIdDict[kvp.Key].StringJpn = kvp.Value.StringJpn;
@@ -129,7 +129,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			Console.WriteLine( "Initializing PS3" );
 
 			site.Version = GameVersion.PS3;
-			var PS3StringDic = new TSS.TSSFile( dirPS3 + @"mod\string.svo.ext\STRING_DIC.SO" );
+			var PS3StringDic = new TSS.TSSFile( dirPS3 + @"mod\string.svo.ext\STRING_DIC.SO", Util.GameTextEncoding.ShiftJIS );
 			site.StringDic = PS3StringDic;
 			site.Items = new ItemDat.ItemDat( dirPS3 + @"orig\item.svo.ext\ITEM.DAT" );
 			site.Artes = new T8BTMA.T8BTMA( dirPS3 + @"orig\btl.svo.ext\BTL_PACK.DAT.ext\0004.ext\ALL.0000" );
