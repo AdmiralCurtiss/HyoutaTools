@@ -21,16 +21,16 @@ namespace HyoutaTools.Gust.ebm {
 
 			bool debug = args.Contains( "--debug" );
 			bool oneLine = args.Contains( "--oneLine" );
-			bool isUtf8 = false;
+			Util.GameTextEncoding encoding = Util.GameTextEncoding.ShiftJIS;
 
 			Dictionary<int, string> names;
 			switch ( game.ToLowerInvariant() ) {
-				case "at3": names = GenerateAt3Dict(); isUtf8 = false; break;
-				case "ans": names = GenerateAnSDict(); isUtf8 = true; break;
+				case "at3": names = GenerateAt3Dict(); encoding = Util.GameTextEncoding.ShiftJIS; break;
+				case "ans": names = GenerateAnSDict(); encoding = Util.GameTextEncoding.UTF8; break;
 				default: names = new Dictionary<int, string>(); break;
 			}
 
-			var ebm = new ebm( infile, isUtf8 );
+			var ebm = new ebm( infile, encoding );
 
 			List<string> text = new List<string>();
 			foreach ( var e in ebm.EntryList ) {
