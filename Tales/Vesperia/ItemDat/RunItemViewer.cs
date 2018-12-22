@@ -32,7 +32,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			TSSFile TSS;
 			try {
-				TSS = new TSSFile( System.IO.File.ReadAllBytes( args[2] ) );
+				TSS = new TSSFile( args[2] );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
 				return -1;

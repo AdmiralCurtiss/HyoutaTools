@@ -4,31 +4,48 @@ using System.Linq;
 using System.Text;
 using System.Data.SQLite;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.TSS {
 	public class TSSFile {
 		public TSSHeader Header;
 		public TSSEntry[] Entries;
-		public byte[] File;
 
-		public TSSFile( byte[] File, bool isUtf8 = false ) {
-			this.File = File;
+		public TSSFile( string filename, bool isUtf8 = false ) {
+			using ( Stream stream = new FileStream( filename, FileMode.Open ) ) {
+				if ( !LoadFile( stream, isUtf8 ) ) {
+					throw new Exception( "Loading TSSFile failed!" );
+				}
+			}
+		}
+
+		public TSSFile( Stream stream, bool isUtf8 = false ) {
+			if ( !LoadFile( stream, isUtf8 ) ) {
+				throw new Exception( "Loading TSSFile failed!" );
+			}
+		}
+
+		private bool LoadFile( Stream File, bool isUtf8 = false ) {
+			Util.GameTextEncoding encoding = isUtf8 ? Util.GameTextEncoding.UTF8 : Util.GameTextEncoding.ShiftJIS;
+			long pos = File.Position;
+
 			// set header
-			Header = new TSSHeader( File.Take( 0x20 ).ToArray() );
+			Header = new TSSHeader( File );
 
 			if ( Header.Magic != 0x54535300 ) {
 				Console.WriteLine( "File is not a TSS file!" );
-				return;
+				return false;
 			}
 
 			// convert all instructions into a List of uint
+			File.Position = pos + 0x20;
 			int CurrentLocation = 0x20;
 			UInt32 EntriesEnd = Header.TextStart;
 			List<uint> EntryUIntList = new List<uint>();
 
 			while ( CurrentLocation < EntriesEnd ) {
-				uint Instruction = BitConverter.ToUInt32( File, CurrentLocation );
-				EntryUIntList.Add( Util.SwapEndian( Instruction ) );
+				uint Instruction = File.ReadUInt32().SwapEndian();
+				EntryUIntList.Add( Instruction );
 				CurrentLocation += 4;
 			}
 
@@ -97,19 +114,15 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 					}
 				}
 
-				string jpn, eng;
-				if ( isUtf8 ) {
-					jpn = Util.GetTextUTF8( File, JPNPointer );
-					eng = Util.GetTextUTF8( File, ENGPointer );
-				} else {
-					jpn = Util.GetTextShiftJis( File, JPNPointer );
-					eng = Util.GetTextShiftJis( File, ENGPointer );
-				}
+				string jpn = JPNPointer == -1 ? null : File.ReadNulltermStringFromLocationAndReset( pos + JPNPointer, encoding );
+				string eng = ENGPointer == -1 ? null : File.ReadNulltermStringFromLocationAndReset( pos + ENGPointer, encoding );
 				EntryList.Add( new TSSEntry( OneEntry, jpn, eng, JPNIndex, ENGIndex, inGameStringId ) );
 				//CurrentLocation += OneEntry.Length;
 				CurrentLocation++;
 			}
 			Entries = EntryList.ToArray();
+
+			return true;
 		}
 
 		public Dictionary<uint, TSSEntry> GenerateInGameIdDictionary() {

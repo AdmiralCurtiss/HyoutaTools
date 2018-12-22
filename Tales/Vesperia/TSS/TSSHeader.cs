@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -14,15 +15,15 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public UInt32 TextLength;
 		public UInt32 SectorSize;
 
-		public TSSHeader( byte[] Header ) {
-			Magic = Util.SwapEndian( BitConverter.ToUInt32( Header, 0x00 ) );
-			CodeStart = Util.SwapEndian( BitConverter.ToUInt32( Header, 0x04 ) );
-			CodeLength = Util.SwapEndian( BitConverter.ToUInt32( Header, 0x08 ) );
-			TextStart = Util.SwapEndian( BitConverter.ToUInt32( Header, 0x0C ) );
-			EntryCodeStart = Util.SwapEndian( BitConverter.ToUInt32( Header, 0x10 ) );
-			EntryPointerEnd = Util.SwapEndian( BitConverter.ToUInt32( Header, 0x14 ) );
-			TextLength = Util.SwapEndian( BitConverter.ToUInt32( Header, 0x18 ) );
-			SectorSize = Util.SwapEndian( BitConverter.ToUInt32( Header, 0x1C ) );
+		public TSSHeader( Stream Header ) {
+			Magic = Header.ReadUInt32().SwapEndian();
+			CodeStart = Header.ReadUInt32().SwapEndian();
+			CodeLength = Header.ReadUInt32().SwapEndian();
+			TextStart = Header.ReadUInt32().SwapEndian();
+			EntryCodeStart = Header.ReadUInt32().SwapEndian();
+			EntryPointerEnd = Header.ReadUInt32().SwapEndian();
+			TextLength = Header.ReadUInt32().SwapEndian();
+			SectorSize = Header.ReadUInt32().SwapEndian();
 		}
 
 		public byte[] Serialize() {

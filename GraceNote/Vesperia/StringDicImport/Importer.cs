@@ -14,7 +14,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicImport {
 
 			TSSFile TSS;
 			try {
-				TSS = new TSSFile( System.IO.File.ReadAllBytes( string_dic ) );
+				TSS = new TSSFile( string_dic );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
 				return -1;

@@ -20,7 +20,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			}
 
 			Util.Endianness endian = Util.Endianness.BigEndian;
-			var stringDic = new TSS.TSSFile( System.IO.File.ReadAllBytes( @"c:\Dropbox\ToV\PS3\mod\string.svo.ext\STRING_DIC.SO" ) );
+			var stringDic = new TSS.TSSFile( @"c:\Dropbox\ToV\PS3\mod\string.svo.ext\STRING_DIC.SO" );
 			var inGameDic = stringDic.GenerateInGameIdDictionary();
 			var itemData = new ItemDat.ItemDat( @"c:\Dropbox\ToV\PS3\orig\item.svo.ext\ITEM.DAT" );
 			var itemDataSorted = itemData.GetSortedByInGameSorting();
