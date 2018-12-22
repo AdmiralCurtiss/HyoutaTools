@@ -495,6 +495,31 @@ namespace HyoutaTools {
 			return Convert.ToByte( s.ReadByte() );
 		}
 
+		public static long ReadInt64( this Stream s ) {
+			return (long)ReadUInt64( s );
+		}
+		public static long ReadInt56( this Stream s ) {
+			return (long)ReadUInt56( s );
+		}
+		public static long ReadInt48( this Stream s ) {
+			return (long)ReadUInt48( s );
+		}
+		public static long ReadInt40( this Stream s ) {
+			return (long)ReadUInt40( s );
+		}
+		public static int ReadInt32( this Stream s ) {
+			return (int)ReadUInt32( s );
+		}
+		public static int ReadInt24( this Stream s ) {
+			return (int)ReadUInt24( s );
+		}
+		public static short ReadInt16( this Stream s ) {
+			return (short)ReadUInt16( s );
+		}
+		public static sbyte ReadInt8( this Stream s ) {
+			return (sbyte)ReadUInt8( s );
+		}
+
 		public static ulong PeekUInt64( this Stream s ) {
 			long pos = s.Position;
 			ulong retval = s.ReadUInt64();
@@ -542,6 +567,31 @@ namespace HyoutaTools {
 			byte retval = s.ReadUInt8();
 			s.Position = pos;
 			return retval;
+		}
+
+		public static long PeekInt64( this Stream s ) {
+			return (long)PeekUInt64( s );
+		}
+		public static long PeekInt56( this Stream s ) {
+			return (long)PeekUInt56( s );
+		}
+		public static long PeekInt48( this Stream s ) {
+			return (long)PeekUInt48( s );
+		}
+		public static long PeekInt40( this Stream s ) {
+			return (long)PeekUInt40( s );
+		}
+		public static int PeekInt32( this Stream s ) {
+			return (int)PeekUInt32( s );
+		}
+		public static int PeekInt24( this Stream s ) {
+			return (int)PeekUInt24( s );
+		}
+		public static short PeekInt16( this Stream s ) {
+			return (short)PeekUInt16( s );
+		}
+		public static sbyte PeekInt8( this Stream s ) {
+			return (sbyte)PeekUInt8( s );
 		}
 
 		public static void WriteUInt64( this Stream s, ulong num ) {
