@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
+using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 	public struct ChatFileHeader {
@@ -35,41 +36,44 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public ChatFileLine[] Lines;
 
 		public ChatFile( string filename, bool isUtf8 = false ) {
-			LoadFile( System.IO.File.ReadAllBytes( filename ), isUtf8 );
+			using ( Stream stream = new FileStream( filename, FileMode.Open ) ) {
+				LoadFile( stream, isUtf8 );
+			}
 		}
 
-		public ChatFile( byte[] file, bool isUtf8 = false ) {
+		public ChatFile( Stream file, bool isUtf8 = false ) {
 			LoadFile( file, isUtf8 );
 		}
 
-		private void LoadFile( byte[] TO8CHTX, bool isUtf8 ) {
+		private void LoadFile( Stream TO8CHTX, bool isUtf8 ) {
 			Header = new ChatFileHeader();
 
-			Header.Identify = Util.SwapEndian( BitConverter.ToUInt64( TO8CHTX, 0x00 ) );
-			Header.Filesize = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x08 ) );
-			Header.Lines = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x0C ) );
-			Header.Unknown = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x10 ) );
-			Header.TextStart = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x14 ) );
-			Header.Empty = Util.SwapEndian( BitConverter.ToUInt64( TO8CHTX, 0x18 ) );
+			long pos = TO8CHTX.Position;
+			Header.Identify = TO8CHTX.ReadUInt64().SwapEndian();
+			Header.Filesize = TO8CHTX.ReadUInt32().SwapEndian();
+			Header.Lines = TO8CHTX.ReadUInt32().SwapEndian();
+			Header.Unknown = TO8CHTX.ReadUInt32().SwapEndian();
+			Header.TextStart = TO8CHTX.ReadUInt32().SwapEndian();
+			Header.Empty = TO8CHTX.ReadUInt64().SwapEndian();
 
 			Lines = new ChatFileLine[Header.Lines];
 
 			for ( int i = 0; i < Header.Lines; i++ ) {
 				Lines[i] = new ChatFileLine();
 				Lines[i].Location = 0x20 + i * 0x10;
-				Lines[i].Name = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x20 + i * 0x10 ) );
-				Lines[i].JPN = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x24 + i * 0x10 ) );
-				Lines[i].ENG = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x28 + i * 0x10 ) );
-				Lines[i].Unknown = Util.SwapEndian( BitConverter.ToUInt32( TO8CHTX, 0x2C + i * 0x10 ) );
+				Lines[i].Name = TO8CHTX.ReadUInt32().SwapEndian();
+				Lines[i].JPN = TO8CHTX.ReadUInt32().SwapEndian();
+				Lines[i].ENG = TO8CHTX.ReadUInt32().SwapEndian();
+				Lines[i].Unknown = TO8CHTX.ReadUInt32().SwapEndian();
 
 				if ( isUtf8 ) {
-					Lines[i].SName = Util.GetTextUTF8( TO8CHTX, (int)( Lines[i].Name + Header.TextStart ) );
-					Lines[i].SJPN = Util.GetTextUTF8( TO8CHTX, (int)( Lines[i].JPN + Header.TextStart ) );
-					Lines[i].SENG = Util.GetTextUTF8( TO8CHTX, (int)( Lines[i].ENG + Header.TextStart ) ).Replace( '@', ' ' );
+					Lines[i].SName = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].Name + Header.TextStart, Util.GameTextEncoding.UTF8 );
+					Lines[i].SJPN = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].JPN + Header.TextStart, Util.GameTextEncoding.UTF8 );
+					Lines[i].SENG = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].ENG + Header.TextStart, Util.GameTextEncoding.UTF8 ).Replace( '@', ' ' );
 				} else {
-					Lines[i].SName = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].Name + Header.TextStart ) );
-					Lines[i].SJPN = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].JPN + Header.TextStart ) );
-					Lines[i].SENG = Util.GetTextShiftJis( TO8CHTX, (int)( Lines[i].ENG + Header.TextStart ) ).Replace( '@', ' ' );
+					Lines[i].SName = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].Name + Header.TextStart, Util.GameTextEncoding.ShiftJIS );
+					Lines[i].SJPN = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].JPN + Header.TextStart, Util.GameTextEncoding.ShiftJIS );
+					Lines[i].SENG = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].ENG + Header.TextStart, Util.GameTextEncoding.ShiftJIS ).Replace( '@', ' ' );
 				}
 			}
 		}
