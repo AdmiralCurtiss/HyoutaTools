@@ -142,6 +142,8 @@
     <Compile Include="GraceNote\Vesperia\TO8CHTXImport\Program.cs" />
     <Compile Include="Gust\ebm\ebm.cs" />
     <Compile Include="Gust\ebm\TextDumper.cs" />
+    <Compile Include="Gust\ebm\EbmToSqlite.cs" />
+    <Compile Include="Gust\ebm\SqliteToEbm.cs" />
     <Compile Include="Gust\g1t\DDSConverter.cs" />
     <Compile Include="Gust\g1t\g1t.cs" />
     <Compile Include="HalfMinuteHeroSecond\S2AR.cs" />

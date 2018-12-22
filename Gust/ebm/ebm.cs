@@ -20,6 +20,8 @@ namespace HyoutaTools.Gust.ebm {
 
 		public string Text;
 
+		public ebmEntry() { }
+
 		public ebmEntry( Stream stream, Util.GameTextEncoding encoding ) {
 			Ident = stream.ReadUInt32();
 			Unknown2 = stream.ReadUInt32();
@@ -36,12 +38,39 @@ namespace HyoutaTools.Gust.ebm {
 			stream.Position = pos + TextLength;
 		}
 
+		public void Write( Stream stream, Util.GameTextEncoding encoding ) {
+			stream.WriteUInt32( Ident );
+			stream.WriteUInt32( Unknown2 );
+			stream.WriteUInt32( Unknown3 );
+			stream.WriteUInt32( (uint)CharacterId );
+			stream.WriteUInt32( Unknown5 );
+			stream.WriteUInt32( Unknown6 );
+			stream.WriteUInt32( Unknown7 );
+			stream.WriteUInt32( Unknown8 );
+			long posTextLength = stream.Position;
+			stream.WriteUInt32( 0 ); // text length, to be filled later
+
+			long posBefore = stream.Position;
+			stream.WriteNulltermString( Text, encoding );
+			long posAfter = stream.Position;
+
+			// fill skipped text length
+			uint textLength = (uint)( posAfter - posBefore );
+			stream.Position = posTextLength;
+			stream.WriteUInt32( textLength );
+			stream.Position = posAfter;
+		}
+
 		public override string ToString() {
 			return Text;
 		}
 	}
 
 	public class ebm {
+		public ebm() {
+			EntryList = new List<ebmEntry>();
+		}
+
 		public ebm( String filename, Util.GameTextEncoding encoding ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
 				if ( !LoadFile( stream, encoding ) ) {
@@ -68,6 +97,13 @@ namespace HyoutaTools.Gust.ebm {
 			}
 
 			return true;
+		}
+
+		public void WriteFile( Stream stream, Util.GameTextEncoding encoding ) {
+			stream.WriteUInt32( (uint)EntryList.Count );
+			foreach ( ebmEntry e in EntryList ) {
+				e.Write( stream, encoding );
+			}
 		}
 	}
 }

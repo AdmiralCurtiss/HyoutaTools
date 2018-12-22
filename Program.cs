@@ -102,6 +102,8 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.Scenario.Pack",            "-"           ),  Tales.Vesperia.Scenario.Program.ExecutePack) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.GenerateWebsite",          "-"           ),  Tales.Vesperia.Website.GenerateWebsite.Generate) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Gust.ebm.TextDump",                       "-"           ),  Gust.ebm.TextDumper.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Gust.ebm.EbmToSqlite",                    "-"           ),  Gust.ebm.EbmToSqlite.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Gust.ebm.SqliteToEbm",                    "-"           ),  Gust.ebm.SqliteToEbm.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Gust.g1t.Extract",                        "-"           ),  Gust.g1t.DDSConverter.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Sting.BlazeUnion.ScriptImport", "-"           ),  GraceNote.Sting.BlazeUnionScript.Importer.Import) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "GraceNote.Sting.BlazeUnion.ScriptExport", "-"           ),  GraceNote.Sting.BlazeUnionScript.Exporter.Export) },
