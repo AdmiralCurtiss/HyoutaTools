@@ -81,14 +81,14 @@ namespace HyoutaTools.GraceNote.Sting.BlazeUnionScript {
 		public static void RemoveString( Stream stream, long position ) {
 			stream.Position = position;
 
-			byte b = stream.PeekByte();
+			byte b = stream.PeekUInt8();
 			while ( b != 0x00 ) {
 				if ( b == 0x02 ) {
 					stream.WriteUInt32( 0 );
 				} else {
 					stream.WriteByte( 0x00 );
 				}
-				b = stream.PeekByte();
+				b = stream.PeekUInt8();
 			}
 		}
 	}

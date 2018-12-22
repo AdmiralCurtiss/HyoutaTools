@@ -440,15 +440,6 @@ namespace HyoutaTools {
 
 			return (ulong)( b8 << 56 | b7 << 48 | b6 << 40 | b5 << 32 | b4 << 24 | b3 << 16 | b2 << 8 | b1 );
 		}
-		public static ulong PeekUInt64( this Stream s ) {
-			long pos = s.Position;
-			ulong retval = s.ReadUInt64();
-			s.Position = pos;
-			return retval;
-		}
-		public static void WriteUInt64( this Stream s, ulong num ) {
-			s.Write( BitConverter.GetBytes( num ), 0, 8 );
-		}
 		public static ulong ReadUInt56( this Stream s ) {
 			ulong b1 = (ulong)s.ReadByte();
 			ulong b2 = (ulong)s.ReadByte();
@@ -460,12 +451,6 @@ namespace HyoutaTools {
 
 			return (ulong)( b7 << 48 | b6 << 40 | b5 << 32 | b4 << 24 | b3 << 16 | b2 << 8 | b1 );
 		}
-		public static ulong PeekUInt56( this Stream s ) {
-			long pos = s.Position;
-			ulong retval = s.ReadUInt56();
-			s.Position = pos;
-			return retval;
-		}
 		public static ulong ReadUInt48( this Stream s ) {
 			ulong b1 = (ulong)s.ReadByte();
 			ulong b2 = (ulong)s.ReadByte();
@@ -476,12 +461,6 @@ namespace HyoutaTools {
 
 			return (ulong)( b6 << 40 | b5 << 32 | b4 << 24 | b3 << 16 | b2 << 8 | b1 );
 		}
-		public static ulong PeekUInt48( this Stream s ) {
-			long pos = s.Position;
-			ulong retval = s.ReadUInt48();
-			s.Position = pos;
-			return retval;
-		}
 		public static ulong ReadUInt40( this Stream s ) {
 			ulong b1 = (ulong)s.ReadByte();
 			ulong b2 = (ulong)s.ReadByte();
@@ -491,12 +470,6 @@ namespace HyoutaTools {
 
 			return (ulong)( b5 << 32 | b4 << 24 | b3 << 16 | b2 << 8 | b1 );
 		}
-		public static ulong PeekUInt40( this Stream s ) {
-			long pos = s.Position;
-			ulong retval = s.ReadUInt40();
-			s.Position = pos;
-			return retval;
-		}
 		public static uint ReadUInt32( this Stream s ) {
 			int b1 = s.ReadByte();
 			int b2 = s.ReadByte();
@@ -505,15 +478,6 @@ namespace HyoutaTools {
 
 			return (uint)( b4 << 24 | b3 << 16 | b2 << 8 | b1 );
 		}
-		public static uint PeekUInt32( this Stream s ) {
-			long pos = s.Position;
-			uint retval = s.ReadUInt32();
-			s.Position = pos;
-			return retval;
-		}
-		public static void WriteUInt32( this Stream s, uint num ) {
-			s.Write( BitConverter.GetBytes( num ), 0, 4 );
-		}
 		public static uint ReadUInt24( this Stream s ) {
 			int b1 = s.ReadByte();
 			int b2 = s.ReadByte();
@@ -521,17 +485,51 @@ namespace HyoutaTools {
 
 			return (uint)( b3 << 16 | b2 << 8 | b1 );
 		}
-		public static uint PeekUInt24( this Stream s ) {
-			long pos = s.Position;
-			uint retval = s.ReadUInt24();
-			s.Position = pos;
-			return retval;
-		}
 		public static ushort ReadUInt16( this Stream s ) {
 			int b1 = s.ReadByte();
 			int b2 = s.ReadByte();
 
 			return (ushort)( b2 << 8 | b1 );
+		}
+		public static byte ReadUInt8( this Stream s ) {
+			return Convert.ToByte( s.ReadByte() );
+		}
+
+		public static ulong PeekUInt64( this Stream s ) {
+			long pos = s.Position;
+			ulong retval = s.ReadUInt64();
+			s.Position = pos;
+			return retval;
+		}
+		public static ulong PeekUInt56( this Stream s ) {
+			long pos = s.Position;
+			ulong retval = s.ReadUInt56();
+			s.Position = pos;
+			return retval;
+		}
+		public static ulong PeekUInt48( this Stream s ) {
+			long pos = s.Position;
+			ulong retval = s.ReadUInt48();
+			s.Position = pos;
+			return retval;
+		}
+		public static ulong PeekUInt40( this Stream s ) {
+			long pos = s.Position;
+			ulong retval = s.ReadUInt40();
+			s.Position = pos;
+			return retval;
+		}
+		public static uint PeekUInt32( this Stream s ) {
+			long pos = s.Position;
+			uint retval = s.ReadUInt32();
+			s.Position = pos;
+			return retval;
+		}
+		public static uint PeekUInt24( this Stream s ) {
+			long pos = s.Position;
+			uint retval = s.ReadUInt24();
+			s.Position = pos;
+			return retval;
 		}
 		public static ushort PeekUInt16( this Stream s ) {
 			long pos = s.Position;
@@ -539,20 +537,25 @@ namespace HyoutaTools {
 			s.Position = pos;
 			return retval;
 		}
-		public static byte ReadUInt8( this Stream s ) {
-			return Convert.ToByte( s.ReadByte() );
-		}
-		public static byte PeekByte( this Stream s ) {
+		public static byte PeekUInt8( this Stream s ) {
 			long pos = s.Position;
-			int retval = s.ReadByte();
+			byte retval = s.ReadUInt8();
 			s.Position = pos;
-			return Convert.ToByte( retval );
+			return retval;
 		}
-		public static void DiscardBytes( this Stream s, uint count ) {
-			s.Position = s.Position + count;
+
+		public static void WriteUInt64( this Stream s, ulong num ) {
+			s.Write( BitConverter.GetBytes( num ), 0, 8 );
+		}
+		public static void WriteUInt32( this Stream s, uint num ) {
+			s.Write( BitConverter.GetBytes( num ), 0, 4 );
 		}
 		public static void WriteUInt16( this Stream s, ushort num ) {
 			s.Write( BitConverter.GetBytes( num ), 0, 2 );
+		}
+
+		public static void DiscardBytes( this Stream s, uint count ) {
+			s.Position = s.Position + count;
 		}
 
 		public static byte[] ReadUInt8Array( this Stream s, long count ) {
