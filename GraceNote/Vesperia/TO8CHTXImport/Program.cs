@@ -16,7 +16,7 @@ namespace HyoutaTools.GraceNote.Vesperia.TO8CHTXImport {
 			String NewDB = args[1];
 			String GracesDB = args[2];
 
-			ChatFile c = new ChatFile( Filename );
+			ChatFile c = new ChatFile( Filename, Util.GameTextEncoding.ShiftJIS );
 
 			GraceNoteUtil.GenerateEmptyDatabase( NewDB );
 

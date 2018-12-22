@@ -62,7 +62,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				string name = site.Skits.SkitInfoList[i].RefString;
 				try {
 					bool isUtf8 = name != "VC084";
-					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( dir360 + @"chat.svo.ext\" + name + @"UK.DAT.dec.ext\0003", isUtf8 );
+					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( dir360 + @"chat.svo.ext\" + name + @"UK.DAT.dec.ext\0003", isUtf8 ? Util.GameTextEncoding.UTF8 : Util.GameTextEncoding.ShiftJIS );
 					site.SkitText.Add( name, chatFile );
 				} catch ( DirectoryNotFoundException ) {
 					Console.WriteLine( "Couldn't find 360 chat file " + name + "!" );
@@ -151,8 +151,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				string name = site.Skits.SkitInfoList[i].RefString;
 				string filenameOrig = dirPS3 + @"orig\chat.svo.ext\" + name + @"J.DAT.dec.ext\0003";
 				string filenameMod = dirPS3 + @"mod\chat.svo.ext\" + name + @"J.DAT.dec.ext\0003";
-				var chatFile = new TO8CHTX.ChatFile( filenameOrig );
-				var chatFileMod = new TO8CHTX.ChatFile( filenameMod );
+				var chatFile = new TO8CHTX.ChatFile( filenameOrig, Util.GameTextEncoding.ShiftJIS );
+				var chatFileMod = new TO8CHTX.ChatFile( filenameMod, Util.GameTextEncoding.ShiftJIS );
 				Util.Assert( chatFile.Lines.Length == chatFileMod.Lines.Length );
 				for ( int j = 0; j < chatFile.Lines.Length; ++j ) {
 					chatFile.Lines[j].SENG = chatFileMod.Lines[j].SJPN;

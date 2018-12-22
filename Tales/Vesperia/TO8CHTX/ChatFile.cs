@@ -35,17 +35,17 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public ChatFileHeader Header;
 		public ChatFileLine[] Lines;
 
-		public ChatFile( string filename, bool isUtf8 = false ) {
+		public ChatFile( string filename, Util.GameTextEncoding encoding ) {
 			using ( Stream stream = new FileStream( filename, FileMode.Open ) ) {
-				LoadFile( stream, isUtf8 );
+				LoadFile( stream, encoding );
 			}
 		}
 
-		public ChatFile( Stream file, bool isUtf8 = false ) {
-			LoadFile( file, isUtf8 );
+		public ChatFile( Stream file, Util.GameTextEncoding encoding ) {
+			LoadFile( file, encoding );
 		}
 
-		private void LoadFile( Stream TO8CHTX, bool isUtf8 ) {
+		private void LoadFile( Stream TO8CHTX, Util.GameTextEncoding encoding ) {
 			Header = new ChatFileHeader();
 
 			long pos = TO8CHTX.Position;
@@ -66,15 +66,9 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 				Lines[i].ENG = TO8CHTX.ReadUInt32().SwapEndian();
 				Lines[i].Unknown = TO8CHTX.ReadUInt32().SwapEndian();
 
-				if ( isUtf8 ) {
-					Lines[i].SName = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].Name + Header.TextStart, Util.GameTextEncoding.UTF8 );
-					Lines[i].SJPN = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].JPN + Header.TextStart, Util.GameTextEncoding.UTF8 );
-					Lines[i].SENG = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].ENG + Header.TextStart, Util.GameTextEncoding.UTF8 ).Replace( '@', ' ' );
-				} else {
-					Lines[i].SName = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].Name + Header.TextStart, Util.GameTextEncoding.ShiftJIS );
-					Lines[i].SJPN = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].JPN + Header.TextStart, Util.GameTextEncoding.ShiftJIS );
-					Lines[i].SENG = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].ENG + Header.TextStart, Util.GameTextEncoding.ShiftJIS ).Replace( '@', ' ' );
-				}
+				Lines[i].SName = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].Name + Header.TextStart, encoding );
+				Lines[i].SJPN = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].JPN + Header.TextStart, encoding );
+				Lines[i].SENG = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].ENG + Header.TextStart, encoding ).Replace( '@', ' ' );
 			}
 		}
 
