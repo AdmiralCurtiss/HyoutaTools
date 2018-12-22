@@ -124,13 +124,13 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					PrintSavePoint( savePointFlags, 0x4F, "Necropolis of Nostalgia D9" );
 					PrintSavePoint( savePointFlags, 0x50, "Necropolis of Nostalgia D Bottom" );
 					PrintSavePoint( savePointFlags, 0x51, "Necropolis of Nostalgia E3" );
-					PrintSavePoint( savePointFlags, 0x52, "? Necropolis of Nostalgia E6" );
-					PrintSavePoint( savePointFlags, 0x53, "? Necropolis of Nostalgia E9" );
-					PrintSavePoint( savePointFlags, 0x54, "? Necropolis of Nostalgia E Bottom" );
-					PrintSavePoint( savePointFlags, 0x55, "? Necropolis of Nostalgia F3" );
-					PrintSavePoint( savePointFlags, 0x56, "? Necropolis of Nostalgia F6" );
-					PrintSavePoint( savePointFlags, 0x57, "? Necropolis of Nostalgia F9" );
-					PrintSavePoint( savePointFlags, 0x58, "? Necropolis of Nostalgia F Bottom" );
+					PrintSavePoint( savePointFlags, 0x52, "Necropolis of Nostalgia E6" );
+					PrintSavePoint( savePointFlags, 0x53, "Necropolis of Nostalgia E9" );
+					PrintSavePoint( savePointFlags, 0x54, "Necropolis of Nostalgia E Bottom" );
+					PrintSavePoint( savePointFlags, 0x55, "Necropolis of Nostalgia F3" );
+					PrintSavePoint( savePointFlags, 0x56, "Necropolis of Nostalgia F6" );
+					PrintSavePoint( savePointFlags, 0x57, "Necropolis of Nostalgia F9" );
+					PrintSavePoint( savePointFlags, 0x58, "Necropolis of Nostalgia F Bottom" );
 				}
 
 				file.DiscardBytes( 0xA3F48 - 0x3B21 ); // no idea what all this is
