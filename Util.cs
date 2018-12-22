@@ -214,6 +214,8 @@ namespace HyoutaTools {
 		#endregion
 
 		#region TextUtils
+		public enum GameTextEncoding { ASCII, ShiftJIS, UTF8, UTF16 }
+
 		private static Encoding _ShiftJISEncoding = null;
 		public static Encoding ShiftJISEncoding { get { if ( _ShiftJISEncoding == null ) { _ShiftJISEncoding = Encoding.GetEncoding( 932 ); } return _ShiftJISEncoding; } }
 		public static String GetTextShiftJis( byte[] File, int Pointer ) {
@@ -633,6 +635,29 @@ namespace HyoutaTools {
 			while ( s.Position % alignment != 0 ) {
 				s.WriteByte( paddingByte );
 			}
+		}
+
+		public static string ReadNulltermStringFromLocationAndReset( this Stream s, long location, GameTextEncoding encoding ) {
+			long pos = s.Position;
+			s.Position = location;
+			string str = s.ReadNulltermString( encoding );
+			s.Position = pos;
+			return str;
+		}
+		public static string ReadNulltermString( this Stream s, GameTextEncoding encoding ) {
+			switch ( encoding ) {
+				case GameTextEncoding.ASCII: return ReadAsciiNullterm( s );
+				case GameTextEncoding.ShiftJIS: return ReadShiftJisNullterm( s );
+				case GameTextEncoding.UTF8: return ReadUTF8Nullterm( s );
+				case GameTextEncoding.UTF16: return ReadUTF16Nullterm( s );
+			}
+			throw new Exception( "Reading nullterminated string not implemented for encoding " + encoding.ToString() );
+		}
+		public static string ReadSizedString( this Stream s, int count, GameTextEncoding encoding ) {
+			switch ( encoding ) {
+				case GameTextEncoding.ASCII: return ReadAscii( s, count );
+			}
+			throw new Exception( "Reading sized string not implemented for encoding " + encoding.ToString() );
 		}
 
 		public static string ReadAsciiNulltermFromLocationAndReset( this Stream s, long location ) {
