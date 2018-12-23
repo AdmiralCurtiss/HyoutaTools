@@ -68,7 +68,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 			return RefString;
 		}
 
-		public string GetDataAsHtml( T8BTEMST.T8BTEMST enemies, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( T8BTEMST.T8BTEMST enemies, Dictionary<uint, TSS.TSSEntry> inGameIdDict, GameVersion version ) {
 			var sb = new StringBuilder();
 
 			sb.Append( "<tr id=\"egroup" + InGameID + "\">" );
@@ -76,7 +76,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 			sb.Append( "<td>" );
 			sb.Append( RefString );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[StringDicID].StringEngOrJpnHtml( GameVersion.PS3 ) );
+			sb.Append( inGameIdDict[StringDicID].StringEngOrJpnHtml( version ) );
 			sb.Append( "<br>" );
 			sb.Append( "ID: " );
 			sb.Append( ID );
@@ -91,7 +91,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 			for ( int i = 0; i < EnemyIDs.Length; ++i ) {
 				sb.Append( "<td>" );
 				if ( EnemyIDs[i] >= 0 ) {
-					sb.Append( inGameIdDict[enemies.EnemyIdDict[(uint)EnemyIDs[i]].NameStringDicID].StringEngOrJpnHtml( GameVersion.PS3 ) );
+					sb.Append( inGameIdDict[enemies.EnemyIdDict[(uint)EnemyIDs[i]].NameStringDicID].StringEngOrJpnHtml( version ) );
 					sb.Append( "<br>" );
 					sb.Append( "~1: " );
 					sb.Append( UnknownFloats[i] );

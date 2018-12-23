@@ -13,6 +13,13 @@ namespace HyoutaTools.Tales.Vesperia {
 	}
 
 	public static class VesperiaUtil {
+		public static bool HasPS3Content( this GameVersion version ) {
+			return version != GameVersion.X360;
+		}
+		public static bool SwapsConfirmAndCancelDependingOnRegion( this GameVersion version ) {
+			return version == GameVersion.PS3;
+		}
+
 		public static String RemoveTags( String s, bool useJapaneseNames = false, bool outputAsHtml = false, bool removeKanjiWithFurigana = false ) {
 			s = s.Replace( "''", "'" );
 			if ( useJapaneseNames ) {
@@ -193,8 +200,8 @@ namespace HyoutaTools.Tales.Vesperia {
 						case ControllerButton.RightStick: return "Right Stick";
 						case ControllerButton.DPad: return "D-Pad";
 						case ControllerButton.System: return "Guide";
+						default: throw new Exception( "Unknown button " + button );
 					}
-					break;
 				case GameVersion.PS3:
 					switch ( button ) {
 						case ControllerButton.Start: return "Start";
@@ -213,11 +220,11 @@ namespace HyoutaTools.Tales.Vesperia {
 						case ControllerButton.RightStick: return "Right Stick";
 						case ControllerButton.DPad: return "D-Pad";
 						case ControllerButton.System: return "PS";
+						default: throw new Exception( "Unknown button " + button );
 					}
-					break;
+				default:
+					throw new Exception( "Unknown game version " + version );
 			}
-
-			return "None";
 		}
 	}
 }

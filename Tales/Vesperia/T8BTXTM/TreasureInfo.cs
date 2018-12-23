@@ -57,13 +57,13 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 			return RefString;
 		}
 
-		public string GetDataAsHtml( ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict, GameVersion version ) {
 			StringBuilder sb = new StringBuilder();
 
 			for ( int i = 0; i < Items.Length; ++i ) {
 				if ( Items[i] > 0 ) {
 					var item = items.itemIdDict[this.Items[i]];
-					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( GameVersion.PS3 ) );
+					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version ) );
 					sb.Append( " / " );
 					sb.Append( Chances[i] );
 				}

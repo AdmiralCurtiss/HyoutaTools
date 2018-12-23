@@ -51,7 +51,7 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 
 			sb.Append( "<table class=\"synopsis\">" );
 			sb.Append( "<tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + textJpn.Length + "\">" );
-			if ( version == GameVersion.PS3 ) {
+			if ( version.HasPS3Content() ) {
 				sb.Append( "<img src=\"synopsis/U_" + RefString1 + ".png\"><br><br>" );
 			}
 			sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version ) + "</td></tr><tr>" );

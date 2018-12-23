@@ -56,7 +56,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var group in EnemyGroups.EnemyGroupList ) {
-				sb.AppendLine( group.GetDataAsHtml( Enemies, InGameIdDict ) );
+				sb.AppendLine( group.GetDataAsHtml( Enemies, InGameIdDict, Version ) );
 				sb.AppendLine( "<tr><td colspan=\"9\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -72,7 +72,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var group in EncounterGroups.EncounterGroupList ) {
-				sb.AppendLine( group.GetDataAsHtml( EnemyGroups, Enemies, InGameIdDict ) );
+				sb.AppendLine( group.GetDataAsHtml( EnemyGroups, Enemies, InGameIdDict, Version ) );
 				sb.AppendLine( "<tr><td colspan=\"9\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -575,7 +575,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return sb.ToString();
 		}
 
-		public string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, ScenarioType type, bool phpLinks = false ) {
+		public string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, ScenarioType type, GameVersion version, bool phpLinks = false ) {
 			var sb = new StringBuilder();
 
 			AddHeader( sb, Version, "Scenario Index (" + type.ToString() + ")" );
@@ -605,7 +605,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 					sb.Append( "<li>" );
 					sb.Append( "<a href=\"" );
-					sb.Append( WebsiteGenerator.GetUrl( WebsiteSection.Scenario, GameVersion.PS3, phpLinks, extra: scene.EpisodeId ) );
+					sb.Append( WebsiteGenerator.GetUrl( WebsiteSection.Scenario, version, phpLinks, extra: scene.EpisodeId ) );
 					sb.Append( "\">" );
 					sb.Append( scene.HumanReadableNameWithoutPrefix( commonBegin ) );
 					sb.Append( "</a>" );
@@ -614,11 +614,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						sb.Append( "<ul>" );
 						sb.Append( "<li>" );
 						sb.Append( "<a href=\"" );
-						sb.Append( WebsiteGenerator.GetUrl( WebsiteSection.Skit, GameVersion.PS3, phpLinks, extra: skit.RefString ) );
+						sb.Append( WebsiteGenerator.GetUrl( WebsiteSection.Skit, version, phpLinks, extra: skit.RefString ) );
 						sb.Append( "\">" );
-						sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 0, GameVersion.PS3 ) );
+						sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 0, version ) );
 						sb.Append( " (" );
-						sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 1, GameVersion.PS3 ) );
+						sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 1, version ) );
 						sb.Append( ")" );
 						sb.Append( "</a>" );
 						sb.Append( "</li>" );

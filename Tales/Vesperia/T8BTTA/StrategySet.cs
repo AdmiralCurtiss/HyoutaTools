@@ -97,7 +97,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 				sb.Append( "</span>" );
 				sb.Append( "</td>" );
 				for ( uint y = 0; y < StrategyDefaults.GetLength( 1 ); ++y ) {
-					if ( version == GameVersion.X360 && y == 8 ) { continue; }
+					if ( y == 8 && !version.HasPS3Content() ) { continue; } // skip patty strategy if we don't have her
 					sb.Append( "<td>" );
 					var option = strategy.StrategyOptionDict[StrategyDefaults[x, y]];
 					sb.Append( inGameIdDict[option.NameStringDicID].StringEngOrJpnHtml( version ) );

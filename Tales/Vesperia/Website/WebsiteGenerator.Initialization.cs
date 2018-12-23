@@ -52,6 +52,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static List<uint> GenerateRecordsStringDicList( GameVersion version ) {
+			if ( version != GameVersion.X360 && version != GameVersion.PS3 ) {
+				throw new Exception( "Unknown game version for records menu: " + version );
+			}
+
 			List<uint> records = new List<uint>();
 
 			for ( uint i = 33912371; i < 33912385; ++i ) {
@@ -74,14 +78,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				for ( uint i = 33912733; i < 33912751; ++i ) {
 					records.Add( i );
 				}
-			} else {
+			} else if ( version == GameVersion.X360 ) {
 				records.Add( 33912621u ); // 30 man melee generic
 			}
 
 			for ( uint i = 33912392; i < 33912399; ++i ) {
 				records.Add( i );
 			}
-			if ( version == GameVersion.PS3 ) {
+			if ( version.HasPS3Content() ) {
 				// usage flynn, patty
 				records.Add( 33912399u );
 				records.Add( 33912400u );
@@ -91,6 +95,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static List<ConfigMenuSetting> GenerateSettingsStringDicList( GameVersion version ) {
+			if ( version != GameVersion.X360 && version != GameVersion.PS3 ) {
+				throw new Exception( "Unknown game version for settings menu: " + version );
+			}
+
 			List<ConfigMenuSetting> settings = new List<ConfigMenuSetting>();
 
 			settings.Add( new ConfigMenuSetting( 33912401u, 33912401u + 46u, 33912427u, 33912426u, 33912425u, 33912424u ) ); // msg speed

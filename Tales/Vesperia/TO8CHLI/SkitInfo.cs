@@ -144,7 +144,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 				for ( int i = 0; i < fw.SkitConditionCount; ++i ) {
 					var c = skits.SkitConditionList[(int)( fw.SkitConditionReference + i )];
 					sb.AppendLine( "<br>" );
-					c.GetDataAsHtml( sb );
+					c.GetDataAsHtml( sb, version );
 				}
 				sb.AppendLine( "~SkitConditionRelated: " + SkitConditionRelated );
 			}

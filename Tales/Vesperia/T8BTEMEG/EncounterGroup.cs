@@ -38,13 +38,13 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMEG {
 			return RefString;
 		}
 
-		public string GetDataAsHtml( T8BTEMGP.T8BTEMGP enemyGroups, T8BTEMST.T8BTEMST enemies, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( T8BTEMGP.T8BTEMGP enemyGroups, T8BTEMST.T8BTEMST enemies, Dictionary<uint, TSS.TSSEntry> inGameIdDict, GameVersion version ) {
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append( "<tr><td>" );
 			sb.Append( RefString );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[StringDicID].StringEngOrJpnHtml( GameVersion.PS3 ) );
+			sb.Append( inGameIdDict[StringDicID].StringEngOrJpnHtml( version ) );
 			for ( int i = 0; i < EnemyGroupIDs.Length; ++i ) {
 				if ( EnemyGroupIDs[i] == 0xFFFFFFFFu ) { continue; }
 
@@ -52,7 +52,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMEG {
 				foreach ( int enemyId in group.EnemyIDs ) {
 					if ( enemyId < 0 ) { continue; }
 					var enemy = enemies.EnemyIdDict[(uint)enemyId];
-					sb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( GameVersion.PS3 ) );
+					sb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version ) );
 					sb.Append( "<br>" );
 				}
 			}

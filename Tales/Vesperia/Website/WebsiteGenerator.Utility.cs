@@ -80,7 +80,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Replace( "\x06(RBR)", "<img src=\"text-icons/" + Version.ToString() + "/button-cancel.png\" height=\"16\" title=\"" + VesperiaUtil.GetButtonName( Version, ControllerButton.RightButton ) + "\">" );
 			sb.Replace( "\x06(RBD)", "<img src=\"text-icons/" + Version.ToString() + "/button-confirm.png\" height=\"16\" title=\"" + VesperiaUtil.GetButtonName( Version, ControllerButton.LowerButton ) + "\">" );
 
-			if ( japaneseStyle && Version == GameVersion.PS3 ) {
+			if ( japaneseStyle && Version.SwapsConfirmAndCancelDependingOnRegion() ) {
 				// in JP PS3 version, swap circle/cross for confirm/cancel
 				sb.Replace( "\x06(CCL)", "<img src=\"text-icons/" + Version.ToString() + "/button-confirm.png\" height=\"16\" title=\"Cancel\">" );
 				sb.Replace( "\x06(ETR)", "<img src=\"text-icons/" + Version.ToString() + "/button-cancel.png\" height=\"16\" title=\"Confirm\">" );
@@ -143,8 +143,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			//sb.AppendLine( "<img src=\"menu-icons/sub-05.png\" title=\"Load\">" );
 			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Settings, Version, false ) + "\"><img src=\"menu-icons/sub-07.png\" title=\"Settings\"></a>" );
 			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.GradeShop, Version, false ) + "\"><img src=\"item-categories/cat-01.png\" title=\"Grade Shop\"></a>" );
-			if ( Version == GameVersion.PS3 ) {
+			if ( Version.HasPS3Content() ) {
 				sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.NecropolisMap, Version, false ) + "\"><img src=\"menu-icons/weather-4-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
+			}
+			if ( Version == GameVersion.PS3 ) {
 				sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Trophy, Version, false ) + "\"><img src=\"trophies/gold.png\" title=\"Trophies\"></a>" );
 			}
 			sb.AppendLine( "<br>" );
@@ -188,7 +190,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			if ( ( equip & 32 ) == 32 ) { sb.Append( "<img src=\"chara-icons/JUD.png\" height=\"32\" width=\"24\" title=\"Judith\">" ); }
 			if ( ( equip & 64 ) == 64 ) { sb.Append( "<img src=\"chara-icons/RAP.png\" height=\"32\" width=\"24\" title=\"Repede\">" ); }
 			if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/FRE.png\" height=\"32\" width=\"24\" title=\"Flynn\">" ); }
-			if ( version == GameVersion.PS3 && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/PAT.png\" height=\"32\" width=\"24\" title=\"Patty\">" ); }
+			if ( version.HasPS3Content() && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/PAT.png\" height=\"32\" width=\"24\" title=\"Patty\">" ); }
 		}
 		public static void AppendPhysicalAilmentBitfieldAsImageString( StringBuilder sb, uint physAil ) {
 			if ( ( physAil & 1 ) == 1 ) { sb.Append( "<img src=\"text-icons/icon-status-13.png\" height=\"16\" width=\"16\" title=\"Death\">" ); }
@@ -324,7 +326,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static string GetPhpUrlGameVersion( GameVersion version ) {
-			return ( version == GameVersion.PS3 ? "ps3" : "360" );
+			switch ( version ) {
+				case GameVersion.X360: return "360";
+				case GameVersion.PS3: return "ps3";
+				default: throw new Exception( "Unknown version " + version );
+			}
 		}
 		public static string GetUrl( WebsiteSection section, GameVersion version, bool phpLink, int? id = null, int? category = null, int? icon = null, string extra = null ) {
 			if ( phpLink ) {

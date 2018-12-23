@@ -41,9 +41,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				ExportRecords();
 				ExportSettings();
 				ExportGradeShop();
-				if ( Site.Version != GameVersion.X360 ) {
+				if ( Site.Version.HasPS3Content() ) {
 					ExportSearchPoints();
 					ExportNecropolis();
+				}
+				if ( Site.Version == GameVersion.PS3 ) {
 					ExportTrophies();
 				}
 				ExportScenarioDat();
@@ -338,8 +340,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					CleanScenarioMetadata( Site.ScenarioGroupsSidequests, false );
 				}
 
-				ExportScenarioMetadata( transaction, Site.ScenarioGroupsStory, 1 );
-				ExportScenarioMetadata( transaction, Site.ScenarioGroupsSidequests, 2 );
+				ExportScenarioMetadata( transaction, Site.ScenarioGroupsStory, 1, Site.Version );
+				ExportScenarioMetadata( transaction, Site.ScenarioGroupsSidequests, 2, Site.Version );
 				transaction.Commit();
 			}
 		}
@@ -738,7 +740,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			files.Add( newName, clone );
 		}
 
-		private void ExportScenarioMetadata( IDbTransaction transaction, List<List<ScenarioData>> groups, int groupType ) {
+		private void ExportScenarioMetadata( IDbTransaction transaction, List<List<ScenarioData>> groups, int groupType, GameVersion version ) {
 			using ( var command = DB.CreateCommand() ) {
 				command.CommandText = "INSERT INTO ScenarioMeta ( type, sceneGroup, parent, episodeId, description, changeStatus ) VALUES ( @type, @sceneGroup, @parent, @episodeId, @description, @changeStatus )";
 				command.AddParameter( "type" );
@@ -775,7 +777,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						long sceneId = GetLastInsertedId();
 						foreach ( var skit in scene.Skits ) {
 							var name = Site.InGameIdDict[skit.StringDicIdName];
-							string d = name.GetStringHtml( 0, GameVersion.PS3 ) + " (" + name.GetStringHtml( 1, GameVersion.PS3 ) + ")";
+							string d = name.GetStringHtml( 0, version ) + " (" + name.GetStringHtml( 1, version ) + ")";
 							command.GetParameter( "type" ).Value = groupType;
 							command.GetParameter( "sceneGroup" ).Value = groupNumber;
 							command.GetParameter( "parent" ).Value = sceneId;

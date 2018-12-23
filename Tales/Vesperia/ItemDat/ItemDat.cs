@@ -77,7 +77,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				if ( ( equip & 32 ) == 32 ) { sb.Append( "[JUD]" ); }
 				if ( ( equip & 64 ) == 64 ) { sb.Append( "[RAP]" ); }
 				if ( ( equip & 128 ) == 128 ) { sb.Append( "[FRE]" ); }
-				if ( version == GameVersion.PS3 && ( equip & 256 ) == 256 ) { sb.Append( "[PAT]" ); }
+				if ( version.HasPS3Content() && ( equip & 256 ) == 256 ) { sb.Append( "[PAT]" ); }
 				sb.AppendLine();
 			}
 
