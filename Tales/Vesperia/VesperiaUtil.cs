@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace HyoutaTools.Tales.Vesperia {
 	public enum GameVersion {
-		None, X360, PS3
+		X360, PS3
 	}
 	public enum ControllerButton {
 		Start, Select, RightButton, LowerButton, LeftButton, UpperButton, L1, L2, L3, R1, R2, R3, LeftStick, RightStick, DPad, System

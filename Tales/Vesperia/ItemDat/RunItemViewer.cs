@@ -13,7 +13,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				return -1;
 			}
 
-			GameVersion version = GameVersion.None;
+			GameVersion? version = null;
 			switch ( args[0].ToUpperInvariant() ) {
 				case "360":
 					version = GameVersion.X360;
@@ -23,7 +23,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					break;
 			}
 
-			if ( version == GameVersion.None ) {
+			if ( version == null ) {
 				Console.WriteLine( "First parameter must indicate game version!" );
 				return -1;
 			}
@@ -46,7 +46,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			Console.WriteLine( "Initializing GUI..." );
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
-			ItemForm itemForm = new ItemForm( version, items, TSS, skills, enemies, cookdat, locations );
+			ItemForm itemForm = new ItemForm( version.Value, items, TSS, skills, enemies, cookdat, locations );
 			Application.Run( itemForm );
 			return 0;
 		}
