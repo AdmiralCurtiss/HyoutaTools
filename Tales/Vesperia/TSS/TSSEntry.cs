@@ -19,11 +19,11 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		}
 		public string StringJpnHtml( GameVersion version ) {
 			string jp = StringJpn != null ? StringJpn : "";
-			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( jp ), version, true ).ToString(), true, true ).Replace( "\n", "<br />" );
+			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( jp ), version, true ).ToString(), true, true ).Replace( "\n", "<br />" );
 		}
 		public string StringEngHtml( GameVersion version ) {
 			string en = StringEng != null ? StringEng : "";
-			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( en ), version, false ).ToString(), false, true ).Replace( "\n", "<br />" );
+			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( en ), version, false ).ToString(), false, true ).Replace( "\n", "<br />" );
 		}
 		public string StringEngOrJpnHtml( GameVersion version ) {
 			return String.IsNullOrEmpty( StringEng ) ? StringJpnHtml( version ) : StringEngHtml( version );

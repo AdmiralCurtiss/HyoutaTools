@@ -114,7 +114,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		}
 
 		private void buttonGenerateHtml_Click( object sender, EventArgs e ) {
-			var site = new GenerateWebsite();
+			var site = new WebsiteGenerator();
 			site.Version = Version;
 			site.Items = itemDat;
 			site.StringDic = TSS;

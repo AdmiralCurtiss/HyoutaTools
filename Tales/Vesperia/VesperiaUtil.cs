@@ -167,10 +167,10 @@ namespace HyoutaTools.Tales.Vesperia {
 		}
 
 		public static string ToHtmlJpn( this string str, GameVersion version ) {
-			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version, true ).ToString(), true, true ).Replace( "\n", "<br />" );
+			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( str ), version, true ).ToString(), true, true ).Replace( "\n", "<br />" );
 		}
 		public static string ToHtmlEng( this string str, GameVersion version ) {
-			return VesperiaUtil.RemoveTags( Website.GenerateWebsite.ReplaceIconsWithHtml( new StringBuilder( str ), version, false ).ToString(), false, true ).Replace( "\n", "<br />" );
+			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( str ), version, false ).ToString(), false, true ).Replace( "\n", "<br />" );
 		}
 
 		public static String GetButtonName( GameVersion version, ControllerButton button ) {

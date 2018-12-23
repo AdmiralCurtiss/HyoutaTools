@@ -82,7 +82,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 			sb.Append( "</td>" );
 			for ( int i = 0; i < StrategyDefaults.GetLength( 1 ); ++i ) {
 				sb.Append( "<td class=\"strategychar\">" );
-				Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, 1u << i );
+				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, 1u << i );
 				sb.Append( "</td>" );
 			}
 			sb.Append( "</tr>" );

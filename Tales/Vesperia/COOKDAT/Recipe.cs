@@ -133,7 +133,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 				if ( Ingredients[i] != 0 ) {
 					var item = items.itemIdDict[Ingredients[i]];
 					sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
-					sb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Item, version, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
+					sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
 					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version ) + "</a> x" + IngredientCount[i] + "<br>" );
 				}
 			}
@@ -176,7 +176,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 				for ( int i = 0; i < RecipeCreationCharacter.Length; ++i ) {
 					if ( RecipeCreationCharacter[i] != 0 ) {
 						var otherRecipe = recipes.RecipeList[(int)RecipeCreationRecipe[i]];
-						Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ) );
+						Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ) );
 						sb.Append( " <a href=\"#recipe" + otherRecipe.ID + "\">" );
 						sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpnHtml( version ) );
 						sb.Append( "</a>" );
@@ -193,10 +193,10 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 
 			sb.Append( "<tr>" );
 			sb.Append( "<td>" );
-			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersLike );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, CharactersLike );
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
-			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersDislike );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, CharactersDislike );
 			sb.Append( "</td>" );
 			sb.Append( "</tr>" );
 			sb.Append( "<tr>" );
@@ -205,10 +205,10 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			sb.Append( "</tr>" );
 			sb.Append( "<tr>" );
 			sb.Append( "<td>" );
-			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersGoodAtMaking );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, CharactersGoodAtMaking );
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
-			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharactersBadAtMaking );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, CharactersBadAtMaking );
 			sb.Append( "</td>" );
 			sb.Append( "</tr>" );
 

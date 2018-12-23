@@ -121,7 +121,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 					return;
 				case SkitConditionType.CookingCharacterBitmask:
 					sb.Append( "Characters " );
-					Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, GameVersion.PS3, (uint)Value1 );
+					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, GameVersion.PS3, (uint)Value1 );
 					sb.AppendFormat( " have cooked {0} {1} times", MathOpString, Value2 );
 					Util.Assert( Value3 == 0 );
 					return;

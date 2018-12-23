@@ -313,6 +313,13 @@
     <Compile Include="Tales\Vesperia\Website\GenerateDatabase.cs" />
     <Compile Include="Tales\Vesperia\Website\GenerateWebsite.cs" />
     <Compile Include="Tales\Vesperia\Website\ScenarioData.cs" />
+    <Compile Include="Tales\Vesperia\Website\ConfigMenuSetting.cs" />
+    <Compile Include="Tales\Vesperia\Website\ScenarioType.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteGenerator.Data.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteGenerator.HtmlGenerate.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteGenerator.Initialization.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteGenerator.Utility.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteSection.cs" />
     <Compile Include="Tales\Vesperia\WRLDDAT\Location.cs" />
     <Compile Include="Tales\Vesperia\WRLDDAT\WRLDDAT.cs" />
     <Compile Include="Tales\Vesperia\xma\FixHeader.cs" />

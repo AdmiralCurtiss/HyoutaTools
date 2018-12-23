@@ -82,7 +82,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 		public string GetIndexDataAsHtml( GameVersion version, TO8CHLI skits, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 
-			string url = HyoutaTools.Tales.Vesperia.Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Skit, version, phpLinks, extra: RefString );
+			string url = HyoutaTools.Tales.Vesperia.Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Skit, version, phpLinks, extra: RefString );
 
 			sb.Append( "<tr>" );
 
@@ -100,7 +100,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			sb.Append( "</a>" );
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
-			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharacterBitmask );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, CharacterBitmask );
 			sb.Append( "</td>" );
 
 			sb.Append( "</tr>" );
@@ -150,7 +150,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			}
 
 			sb.Append( "<br>" );
-			Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, CharacterBitmask );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, CharacterBitmask );
 												  
 			sb.AppendLine( "<br>" );
 			sb.AppendLine( "~4: 0x" + Data[4].ToString("X8") );

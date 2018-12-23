@@ -80,7 +80,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				if ( Category == 1 ) {
 					// references to shops
 					var shop = shops.ShopDictionary[ShopsOrEnemyGroups[i]];
-					shopEnemySb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Shop, version, phpLinks, id: (int)shop.InGameID ) + "\">" );
+					shopEnemySb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Shop, version, phpLinks, id: (int)shop.InGameID ) + "\">" );
 					shopEnemySb.Append( inGameIdDict[shop.StringDicID].StringEngOrJpnHtml( version ) );
 					shopEnemySb.Append( "</a>" );
 				} else {
@@ -93,7 +93,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 
 							var enemy = enemies.EnemyIdDict[id];
 							shopEnemySb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" height=\"22\" width=\"22\"> " );
-							shopEnemySb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Enemy, version, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
+							shopEnemySb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
 							shopEnemySb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version ) + "</a>" );
 							shopEnemySb.Append( "<br>" );
 

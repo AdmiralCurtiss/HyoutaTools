@@ -85,7 +85,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 			sb.Append( "<td class=\"skilldata\">" );
 			if ( LearnableByBitmask > 0 ) {
 				sb.Append( "<span class=\"equip\">" );
-				Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, LearnableByBitmask );
+				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, LearnableByBitmask );
 				sb.Append( "</span>" );
 			}
 			sb.Append( EquipCost + "&nbsp;SP<br>" );

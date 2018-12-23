@@ -152,11 +152,11 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			sb.Append( "<td style=\"text-align: right;\">" );
 			//sb.Append( RefString + "<br>" );
 			if ( Character > 0 && Character <= 9 ) {
-				Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, 1u << (int)( Character - 1 ) );
+				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, 1u << (int)( Character - 1 ) );
 			}
 			if ( Character > 9 ) {
 				var enemy = enemies.EnemyIdDict[Character];
-				sb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Enemy, version, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
+				sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
 				sb.Append( "<img src=\"monster-icons/48px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" width=\"32\" height=\"32\" title=\"" + inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version ) + "\">" );
 				sb.Append( "</a>" );
 			}
@@ -252,7 +252,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 						case 3: // skill
 							var skill = skills.SkillIdDict[AlteredArteRequirementId[i]];
 							sb.Append( "<img src=\"skill-icons/category-" + skill.Category + ".png\" width=\"16\" height=\"16\">" );
-							sb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Skill, version, phpLinks, id: (int)skill.InGameID ) + "\">" + inGameIdDict[skill.NameStringDicID].StringEngOrJpnHtml( version ) + "</a>" );
+							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Skill, version, phpLinks, id: (int)skill.InGameID ) + "\">" + inGameIdDict[skill.NameStringDicID].StringEngOrJpnHtml( version ) + "</a>" );
 							break;
 						default:
 							sb.Append( "##Unknown Altered Type: " + AlteredArteRequirementType[i] + "<br>" );

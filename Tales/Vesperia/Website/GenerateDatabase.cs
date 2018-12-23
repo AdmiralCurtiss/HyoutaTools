@@ -8,11 +8,11 @@ using System.Text.RegularExpressions;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateDatabase {
-		private GenerateWebsite Site;
-		private GenerateWebsite SiteCompare;
+		private WebsiteGenerator Site;
+		private WebsiteGenerator SiteCompare;
 		private IDbConnection DB;
 
-		public GenerateDatabase( GenerateWebsite website, IDbConnection databaseConnection, GenerateWebsite websiteForComparison = null ) {
+		public GenerateDatabase( WebsiteGenerator website, IDbConnection databaseConnection, WebsiteGenerator websiteForComparison = null ) {
 			this.Site = website;
 			this.DB = databaseConnection;
 			this.SiteCompare = websiteForComparison;
@@ -847,7 +847,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "enCond" ).Value = Site.InGameIdDict[skit.StringDicIdCondition].StringEngHtml( Site.Version );
 						command.GetParameter( "changeStatus" ).Value = changeStatus[skitidx++];
 						StringBuilder sb = new StringBuilder();
-						Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, Site.Version, skit.CharacterBitmask );
+						Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, Site.Version, skit.CharacterBitmask );
 						command.GetParameter( "charHtml" ).Value = sb.ToString();
 						command.ExecuteNonQuery();
 					}
@@ -2008,7 +2008,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					foreach ( uint r in Site.Records ) {
 						command.GetParameter( "strDicId" ).Value = r;
 						StringBuilder html = new StringBuilder();
-						Site.AppendRecord( html, r );
+						WebsiteGenerator.AppendRecord( html, Site.Version, Site.InGameIdDict, r );
 						command.GetParameter( "html" ).Value = html.ToString();
 						command.ExecuteNonQuery();
 					}
@@ -2041,7 +2041,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "strDicName" ).Value = s.NameStringDicId;
 						command.GetParameter( "strDicDesc" ).Value = s.DescStringDicId;
 						StringBuilder html = new StringBuilder();
-						Site.AppendSetting( html, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0],
+						WebsiteGenerator.AppendSetting( html, Site.Version, Site.InGameIdDict, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0],
 							s.OptionsStringDicIds[1], s.OptionsStringDicIds[2], s.OptionsStringDicIds[3] );
 						command.GetParameter( "html" ).Value = html.ToString();
 						command.ExecuteNonQuery();
@@ -2139,7 +2139,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 						command.GetParameter( "id" ).Value = kvp.Key;
 						command.GetParameter( "gameId" ).Value = jp.ID;
-						command.GetParameter( "html" ).Value = GenerateWebsite.TrophyNodeToHtml( Site.Version, jp, en );
+						command.GetParameter( "html" ).Value = WebsiteGenerator.TrophyNodeToHtml( Site.Version, jp, en );
 						command.ExecuteNonQuery();
 					}
 				}

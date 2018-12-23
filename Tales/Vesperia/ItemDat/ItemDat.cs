@@ -245,7 +245,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			uint equip = item.Data[(int)ItemData.EquippableByBitfield];
 			if ( equip > 0 ) {
 				sb.Append( "<span class=\"equip\">" );
-				Website.GenerateWebsite.AppendCharacterBitfieldAsImageString( sb, version, equip );
+				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, equip );
 				sb.Append( "</span>" );
 			}
 
@@ -296,7 +296,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					var otherItemNameEntry = dict[otherItem.NamePointer];
 					string otherItemName = otherItemNameEntry.StringEngOrJpnHtml( version );
 					sb.Append( "<img src=\"item-icons/ICON" + otherItem.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
-					sb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Item, version, phpLinks, id: (int)otherItem.Data[(int)ItemData.ID], icon: (int)otherItem.Data[(int)ItemData.Icon] ) + "\">" );
+					sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, phpLinks, id: (int)otherItem.Data[(int)ItemData.ID], icon: (int)otherItem.Data[(int)ItemData.Icon] ) + "\">" );
 					sb.Append( otherItemName + "</a> x" + item.Data[(int)ItemData.Synth1Item1Count + i * 2 + j * 16] );
 				}
 				if ( synthCount > 1 && j == 0 ) { sb.Append( "</td><td>" ); }
@@ -347,7 +347,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 						if ( recipeId != 0 ) {
 							var recipe = Recipes.RecipeList[recipeId];
 							var recipeNameEntry = dict[recipe.NameStringDicID];
-							sb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Recipe, version, phpLinks, id: (int)recipe.ID ) + "\">" + recipeNameEntry.StringEngOrJpnHtml( version ) + "</a><br>" );
+							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Recipe, version, phpLinks, id: (int)recipe.ID ) + "\">" + recipeNameEntry.StringEngOrJpnHtml( version ) + "</a><br>" );
 						}
 					}
 
@@ -446,7 +446,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							string skillName = skillNameEntry.StringEngOrJpnHtml( version );
 							string skillCat = "<img src=\"skill-icons/category-" + skill.Category.ToString() + ".png\" height=\"16\" width=\"16\">";
 							sb.Append( skillCat );
-							sb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Skill, version, phpLinks, id: (int)skill.InGameID ) + "\">" );
+							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Skill, version, phpLinks, id: (int)skill.InGameID ) + "\">" );
 							sb.Append( skillName );
 							sb.Append( "</a>, " + item.Data[(int)ItemData.Skill1Metadata + i * 2] + "<br>" );
 						}
@@ -467,7 +467,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				for ( int i = 0; i < 3; ++i ) {
 					if ( item.Data[(int)ItemData.BuyableIn1 + i] > 0 ) {
 						var loc = Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1 + i]];
-						sb.Append( "<br><a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Location, version, phpLinks, id: (int)loc.LocationID ) + "\">" );
+						sb.Append( "<br><a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Location, version, phpLinks, id: (int)loc.LocationID ) + "\">" );
 						sb.Append( loc.GetLastValidName( dict ).StringEngOrJpnHtml( version ) + "</a>" );
 					}
 				}
@@ -512,7 +512,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							var enemyNameEntry = dict[enemy.NameStringDicID];
 							string enemyName = enemyNameEntry.StringEngOrJpnHtml( version );
 							sb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\"><br>" );
-							sb.Append( "<a href=\"" + Website.GenerateWebsite.GetUrl( Website.WebsiteSection.Enemy, version, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
+							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
 							sb.Append( enemyName + "</a><br>" + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
 							sb.Append( "</td>" );
 							if ( cellCount % 4 == 3 ) {
