@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaTools", "HyoutaTools.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaToolsCLI", "HyoutaToolsCLI\HyoutaToolsCLI.csproj", "{2F153A08-5369-4852-8763-C209C8B524EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaToolsGUI", "HyoutaToolsGUI\HyoutaToolsGUI.csproj", "{17CD1A18-64CD-4771-9D16-657D575F2D1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,18 @@ Global
 		{2F153A08-5369-4852-8763-C209C8B524EE}.Release|x64.Build.0 = Release|Any CPU
 		{2F153A08-5369-4852-8763-C209C8B524EE}.Release|x86.ActiveCfg = Release|Any CPU
 		{2F153A08-5369-4852-8763-C209C8B524EE}.Release|x86.Build.0 = Release|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Debug|x64.Build.0 = Debug|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Debug|x86.Build.0 = Debug|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Release|x64.ActiveCfg = Release|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Release|x64.Build.0 = Release|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Release|x86.ActiveCfg = Release|Any CPU
+		{17CD1A18-64CD-4771-9D16-657D575F2D1F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
