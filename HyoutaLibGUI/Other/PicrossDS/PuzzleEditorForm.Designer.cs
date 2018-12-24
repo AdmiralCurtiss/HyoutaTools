@@ -1,4 +1,4 @@
-﻿namespace HyoutaTools.Other.PicrossDS {
+﻿namespace HyoutaLibGUI.Other.PicrossDS {
 	partial class PuzzleEditorForm {
 		/// <summary>
 		/// Required designer variable.

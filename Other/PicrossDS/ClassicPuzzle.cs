@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Other.PicrossDS {
-	class ClassicPuzzle {
+	public class ClassicPuzzle {
 
 		// should be a total of 0xC0 bytes, starts at 0x30DA4
 		public byte Type; // 0x02 = Classic, 0x03 = Original. SET THIS CORRECTLY OR THE GAME GETS CONFUSED

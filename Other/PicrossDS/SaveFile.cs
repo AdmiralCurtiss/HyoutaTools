@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Other.PicrossDS {
-	class SaveFile {
+	public class SaveFile {
 		public SaveFile( String filename ) {
 			if ( !LoadFile( System.IO.File.ReadAllBytes( filename ) ) ) {
 				throw new Exception( "PicrossDS.SaveFile: Load Failed!" );

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyoutaTools.Other.PicrossDS;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace HyoutaTools.Other.PicrossDS {
+namespace HyoutaLibGUI.Other.PicrossDS {
 	public partial class PuzzleEditorForm : Form {
 		private SaveFile Save;
 		private String OriginalFilename;

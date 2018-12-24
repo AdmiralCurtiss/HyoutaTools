@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace HyoutaTools.Other.PicrossDS {
+namespace HyoutaLibGUI.Other.PicrossDS {
 	class SaveEditor {
 		public static int Execute( List<string> args ) {
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault( false );
 			var form = new PuzzleEditorForm();
 			if ( !form.IsDisposed ) {
-				Application.Run( form );
+				form.Show();
+				return 0;
 			}
-			return 0;
+			return -1;
 		}
 	}
 }

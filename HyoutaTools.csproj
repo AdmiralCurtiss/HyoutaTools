@@ -162,13 +162,6 @@
     <Compile Include="Other\GZip\GZipHandler.cs" />
     <Compile Include="Other\PicrossDS\ClassicPuzzle.cs" />
     <Compile Include="Other\PicrossDS\OriginalPuzzle.cs" />
-    <Compile Include="Other\PicrossDS\PuzzleEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Other\PicrossDS\PuzzleEditorForm.Designer.cs">
-      <DependentUpon>PuzzleEditorForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Other\PicrossDS\SaveEditor.cs" />
     <Compile Include="Other\PicrossDS\SaveFile.cs" />
     <Compile Include="Other\PSP\GIM\EndOfFileSection.cs" />
     <Compile Include="Other\PSP\GIM\EndOfImageSection.cs" />
@@ -398,9 +391,6 @@
   <ItemGroup>
     <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
       <DependentUpon>NonstopForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Other\PicrossDS\PuzzleEditorForm.resx">
-      <DependentUpon>PuzzleEditorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
