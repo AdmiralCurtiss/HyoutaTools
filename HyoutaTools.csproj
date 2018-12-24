@@ -81,13 +81,6 @@
     <Compile Include="Checksum\ccitt.cs" />
     <Compile Include="DanganRonpa\DanganUtil.cs" />
     <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
-    <Compile Include="DanganRonpa\Font\Viewer\FontViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DanganRonpa\Font\Viewer\FontViewer.designer.cs">
-      <DependentUpon>FontViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DanganRonpa\Font\Viewer\Program.cs" />
     <Compile Include="DanganRonpa\Lin\LIN.cs" />
     <Compile Include="DanganRonpa\Nonstop\NonstopForm.cs">
       <SubType>Form</SubType>
@@ -403,9 +396,6 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DanganRonpa\Font\Viewer\FontViewer.resx">
-      <DependentUpon>FontViewer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
       <DependentUpon>NonstopForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -20,6 +20,7 @@ namespace HyoutaToolsGUI {
 			InitializeComponent();
 
 			HyoutaTools.Initialization.Initialize();
+			HyoutaLibGUI.Initialization.RegisterGuiOnlyTools();
 			foreach ( var tool in HyoutaTools.Initialization.GetRegisteredTools().OrderBy( x => x.Key ) ) {
 				listBoxTools.Items.Add( new ToolInList() { Name = tool.Key, Exec = tool.Value } );
 			}
