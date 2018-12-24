@@ -7,32 +7,21 @@ using System.Threading.Tasks;
 namespace HyoutaToolsCLI {
 	public class Program {
 		static int Main( string[] args ) {
-			if ( args.Length > 0 ) {
-				string ProgramName = args[0];
-				if ( ProgramName == "-" ) { PrintUsage(); return -1; }
-				List<string> ProgramArguments = new List<string>( args.Length - 1 );
-				for ( int i = 1; i < args.Length; ++i ) {
-					ProgramArguments.Add( args[i] );
-				}
+			HyoutaTools.Initialization.Initialize();
 
-				var kvp = HyoutaTools.ProgramNames.ProgramList.Find( x => x.Key.Equals( ProgramName ) );
-				if ( kvp.Value != null ) {
-					return kvp.Value( ProgramArguments );
-				} else {
-					PrintUsage( args[0] );
-				}
-
+			var tool = HyoutaTools.Initialization.ParseToolFromCommandLineArgs( args );
+			if ( tool != null ) {
+				return tool.Execute( tool.Arguments );
 			} else {
-				PrintUsage();
+				PrintUsage( HyoutaTools.Initialization.GetRegisteredTools(), args.Length > 0 ? args[0] : null );
+				return -1;
 			}
-			return -1;
 		}
 
-		private static void PrintUsage( string part = null ) {
+		private static void PrintUsage( IEnumerable<KeyValuePair<HyoutaTools.ProgramName, HyoutaTools.ProgramNames.ExecuteProgramDelegate>> tools, string part = null ) {
 			bool programFound = false;
 			if ( part != null ) { part = part.ToLowerInvariant(); }
-			HyoutaTools.ProgramNames.ProgramList.Sort( ( x, y ) => x.Key.CompareTo( y.Key ) );
-			foreach ( var p in HyoutaTools.ProgramNames.ProgramList ) {
+			foreach ( var p in tools.OrderBy( x => x.Key ) ) {
 				if ( part == null || p.Key.Name.ToLowerInvariant().Contains( part ) || p.Key.Shortcut.ToLowerInvariant().Contains( part ) ) {
 					Console.WriteLine( String.Format( " {1,-12} {0}", p.Key.Name, p.Key.Shortcut ) );
 					programFound = true;
