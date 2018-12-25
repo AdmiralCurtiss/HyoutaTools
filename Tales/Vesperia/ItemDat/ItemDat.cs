@@ -8,15 +8,15 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		public List<ItemDatSingle> items;
 		public Dictionary<uint, ItemDatSingle> itemIdDict;
 
-		public ItemDat( string Filename ) {
-			Initialize( System.IO.File.ReadAllBytes( Filename ) );
+		public ItemDat( string Filename, Util.Endianness endian ) {
+			Initialize( System.IO.File.ReadAllBytes( Filename ), endian );
 		}
 
-		private void Initialize( byte[] file ) {
+		private void Initialize( byte[] file, Util.Endianness endian ) {
 			items = new List<ItemDatSingle>( file.Length / 0x2E4 );
 
 			for ( int i = 0; i < file.Length; i += 0x2E4 ) {
-				items.Add( new ItemDatSingle( i, file ) );
+				items.Add( new ItemDatSingle( i, file, endian ) );
 			}
 
 			itemIdDict = new Dictionary<uint, ItemDatSingle>();

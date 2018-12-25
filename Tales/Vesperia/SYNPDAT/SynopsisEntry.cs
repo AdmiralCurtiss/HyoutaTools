@@ -14,12 +14,12 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 		public string RefString1;
 		public string RefString2;
 
-		public SynopsisEntry( System.IO.Stream stream ) {
-			ID = stream.ReadUInt32().SwapEndian();
-			StoryIdMin = stream.ReadUInt32().SwapEndian();
-			StoryIdMax = stream.ReadUInt32().SwapEndian();
-			NameStringDicId = stream.ReadUInt32().SwapEndian();
-			TextStringDicId = stream.ReadUInt32().SwapEndian();
+		public SynopsisEntry( System.IO.Stream stream, Util.Endianness endian ) {
+			ID = stream.ReadUInt32().FromEndian( endian );
+			StoryIdMin = stream.ReadUInt32().FromEndian( endian );
+			StoryIdMax = stream.ReadUInt32().FromEndian( endian );
+			NameStringDicId = stream.ReadUInt32().FromEndian( endian );
+			TextStringDicId = stream.ReadUInt32().FromEndian( endian );
 			stream.DiscardBytes( 0xC );
 
 			long pos = stream.Position;

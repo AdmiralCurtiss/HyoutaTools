@@ -35,36 +35,36 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public ChatFileHeader Header;
 		public ChatFileLine[] Lines;
 
-		public ChatFile( string filename, Util.GameTextEncoding encoding ) {
+		public ChatFile( string filename, Util.Endianness endian, Util.GameTextEncoding encoding ) {
 			using ( Stream stream = new FileStream( filename, FileMode.Open ) ) {
-				LoadFile( stream, encoding );
+				LoadFile( stream, endian, encoding );
 			}
 		}
 
-		public ChatFile( Stream file, Util.GameTextEncoding encoding ) {
-			LoadFile( file, encoding );
+		public ChatFile( Stream file, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+			LoadFile( file, endian, encoding );
 		}
 
-		private void LoadFile( Stream TO8CHTX, Util.GameTextEncoding encoding ) {
+		private void LoadFile( Stream TO8CHTX, Util.Endianness endian, Util.GameTextEncoding encoding ) {
 			Header = new ChatFileHeader();
 
 			long pos = TO8CHTX.Position;
-			Header.Identify = TO8CHTX.ReadUInt64().SwapEndian();
-			Header.Filesize = TO8CHTX.ReadUInt32().SwapEndian();
-			Header.Lines = TO8CHTX.ReadUInt32().SwapEndian();
-			Header.Unknown = TO8CHTX.ReadUInt32().SwapEndian();
-			Header.TextStart = TO8CHTX.ReadUInt32().SwapEndian();
-			Header.Empty = TO8CHTX.ReadUInt64().SwapEndian();
+			Header.Identify = TO8CHTX.ReadUInt64().FromEndian( endian );
+			Header.Filesize = TO8CHTX.ReadUInt32().FromEndian( endian );
+			Header.Lines = TO8CHTX.ReadUInt32().FromEndian( endian );
+			Header.Unknown = TO8CHTX.ReadUInt32().FromEndian( endian );
+			Header.TextStart = TO8CHTX.ReadUInt32().FromEndian( endian );
+			Header.Empty = TO8CHTX.ReadUInt64().FromEndian( endian );
 
 			Lines = new ChatFileLine[Header.Lines];
 
 			for ( int i = 0; i < Header.Lines; i++ ) {
 				Lines[i] = new ChatFileLine();
 				Lines[i].Location = 0x20 + i * 0x10;
-				Lines[i].Name = TO8CHTX.ReadUInt32().SwapEndian();
-				Lines[i].JPN = TO8CHTX.ReadUInt32().SwapEndian();
-				Lines[i].ENG = TO8CHTX.ReadUInt32().SwapEndian();
-				Lines[i].Unknown = TO8CHTX.ReadUInt32().SwapEndian();
+				Lines[i].Name = TO8CHTX.ReadUInt32().FromEndian( endian );
+				Lines[i].JPN = TO8CHTX.ReadUInt32().FromEndian( endian );
+				Lines[i].ENG = TO8CHTX.ReadUInt32().FromEndian( endian );
+				Lines[i].Unknown = TO8CHTX.ReadUInt32().FromEndian( endian );
 
 				Lines[i].SName = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].Name + Header.TextStart, encoding );
 				Lines[i].SJPN = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].JPN + Header.TextStart, encoding );

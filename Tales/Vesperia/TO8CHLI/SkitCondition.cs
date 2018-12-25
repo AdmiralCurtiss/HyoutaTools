@@ -51,12 +51,12 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			}
 		}
 
-		public SkitCondition( System.IO.Stream stream ) {
-			Type = (SkitConditionType)stream.ReadUInt16().SwapEndian();
-			MathOp = stream.ReadUInt16().SwapEndian();
-			Value1 = (int)stream.ReadUInt32().SwapEndian();
-			Value2 = (int)stream.ReadUInt32().SwapEndian();
-			Value3 = (int)stream.ReadUInt32().SwapEndian();
+		public SkitCondition( System.IO.Stream stream, Util.Endianness endian ) {
+			Type = (SkitConditionType)stream.ReadUInt16().FromEndian( endian );
+			MathOp = stream.ReadUInt16().FromEndian( endian );
+			Value1 = (int)stream.ReadUInt32().FromEndian( endian );
+			Value2 = (int)stream.ReadUInt32().FromEndian( endian );
+			Value3 = (int)stream.ReadUInt32().FromEndian( endian );
 		}
 
 		public void GetDataAsHtml( StringBuilder sb, GameVersion version ) {

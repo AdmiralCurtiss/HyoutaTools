@@ -47,11 +47,11 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			}
 		}
 
-		public Recipe( System.IO.Stream stream ) {
+		public Recipe( System.IO.Stream stream, Util.Endianness endian ) {
 			Data = new uint[0xCC / 4]; // + 0x20
 
 			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().SwapEndian();
+				Data[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 			long pos = stream.Position;
 			RefString = stream.ReadAsciiNullterm();

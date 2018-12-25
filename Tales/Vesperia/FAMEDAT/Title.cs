@@ -13,15 +13,15 @@ namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 
 		public string CostumeString;
 
-		public Title( System.IO.Stream stream ) {
-			ID = stream.ReadUInt32().SwapEndian();
-			NameStringDicID = stream.ReadUInt32().SwapEndian();
-			DescStringDicID = stream.ReadUInt32().SwapEndian();
-			Character = stream.ReadUInt32().SwapEndian();
+		public Title( System.IO.Stream stream, Util.Endianness endian ) {
+			ID = stream.ReadUInt32().FromEndian( endian );
+			NameStringDicID = stream.ReadUInt32().FromEndian( endian );
+			DescStringDicID = stream.ReadUInt32().FromEndian( endian );
+			Character = stream.ReadUInt32().FromEndian( endian );
 
 			CostumeString = stream.ReadAscii( 0x10 ).TrimNull();
 
-			BunnyGuildPointsMaybe = stream.ReadUInt32().SwapEndian();
+			BunnyGuildPointsMaybe = stream.ReadUInt32().FromEndian( endian );
 			stream.DiscardBytes( 0xC );
 		}
 

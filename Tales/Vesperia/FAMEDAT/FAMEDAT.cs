@@ -6,30 +6,30 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 	public class FAMEDAT {
-		public FAMEDAT( String filename ) {
+		public FAMEDAT( String filename, Util.Endianness endian ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
-				if ( !LoadFile( stream ) ) {
+				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading FAMEDAT failed!" );
 				}
 			}
 		}
 
-		public FAMEDAT( Stream stream ) {
-			if ( !LoadFile( stream ) ) {
+		public FAMEDAT( Stream stream, Util.Endianness endian ) {
+			if ( !LoadFile( stream, endian ) ) {
 				throw new Exception( "Loading FAMEDAT failed!" );
 			}
 		}
 
 		public List<Title> TitleList;
 
-		private bool LoadFile( Stream stream ) {
+		private bool LoadFile( Stream stream, Util.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
-			uint unknown = stream.ReadUInt32().SwapEndian();
-			uint titleCount = stream.ReadUInt32().SwapEndian();
+			uint unknown = stream.ReadUInt32().FromEndian( endian );
+			uint titleCount = stream.ReadUInt32().FromEndian( endian );
 
 			TitleList = new List<Title>( (int)titleCount );
 			for ( uint i = 0; i < titleCount; ++i ) {
-				Title t = new Title( stream );
+				Title t = new Title( stream, endian );
 				TitleList.Add( t );
 			}
 

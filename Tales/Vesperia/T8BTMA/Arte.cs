@@ -54,10 +54,10 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 		public uint TPUsage;
 		public uint UsableInMenu;
 
-		public Arte( byte[] Bytes, uint Location, uint Size, uint refStringStart ) {
+		public Arte( byte[] Bytes, uint Location, uint Size, uint refStringStart, Util.Endianness endian ) {
 			Data = new uint[Size / 4];
 			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = BitConverter.ToUInt32( Bytes, (int)( Location + i * 4 ) ).SwapEndian();
+				Data[i] = BitConverter.ToUInt32( Bytes, (int)( Location + i * 4 ) ).FromEndian( endian );
 			}
 
 			ID = Data[1];

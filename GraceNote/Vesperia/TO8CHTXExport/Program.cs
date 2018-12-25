@@ -20,7 +20,7 @@ namespace HyoutaTools.GraceNote.Vesperia.TO8CHTXExport {
 				NewFilename = args[2];
 			}
 
-			ChatFile c = new ChatFile( Filename, Util.GameTextEncoding.ShiftJIS );
+			ChatFile c = new ChatFile( Filename, Util.Endianness.BigEndian, Util.GameTextEncoding.ShiftJIS );
 
 			c.GetSQL( "Data Source=" + Database );
 

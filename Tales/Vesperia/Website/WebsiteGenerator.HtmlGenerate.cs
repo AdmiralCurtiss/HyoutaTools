@@ -524,14 +524,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
-		public string GenerateHtmlNpc( string dirPS3 ) {
+		public string GenerateHtmlNpc( string dirPS3, Util.Endianness endian ) {
 			Console.WriteLine( "Generating Website: NPCs" );
-			var npcListPS3 = new TOVNPC.TOVNPCL( dirPS3 + @"orig\npc.svo.ext\NPC.DAT.dec.ext\0000.dec" );
+			var npcListPS3 = new TOVNPC.TOVNPCL( dirPS3 + @"orig\npc.svo.ext\NPC.DAT.dec.ext\0000.dec", endian );
 			Dictionary<string, TOVNPC.TOVNPCT> npcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
 			foreach ( var f in npcListPS3.NpcFileList ) {
 				string filename = dirPS3 + @"orig\npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
 				if ( File.Exists( filename ) ) {
-					var d = new TOVNPC.TOVNPCT( filename );
+					var d = new TOVNPC.TOVNPCT( filename, endian );
 					npcDefs.Add( f.Map, d );
 				}
 			}

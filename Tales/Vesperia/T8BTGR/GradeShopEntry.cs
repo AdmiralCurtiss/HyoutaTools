@@ -13,15 +13,15 @@ namespace HyoutaTools.Tales.Vesperia.T8BTGR {
 		public uint GradeCost;
 		
 		public string RefString;
-		public GradeShopEntry( System.IO.Stream stream, uint refStringStart ) {
-			uint entrySize = stream.ReadUInt32().SwapEndian();
-			ID = stream.ReadUInt32().SwapEndian();
-			InGameID = stream.ReadUInt32().SwapEndian();
-			uint refStringLocation = stream.ReadUInt32().SwapEndian();
+		public GradeShopEntry( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			uint entrySize = stream.ReadUInt32().FromEndian( endian );
+			ID = stream.ReadUInt32().FromEndian( endian );
+			InGameID = stream.ReadUInt32().FromEndian( endian );
+			uint refStringLocation = stream.ReadUInt32().FromEndian( endian );
 
-			NameStringDicID = stream.ReadUInt32().SwapEndian();
-			DescStringDicID = stream.ReadUInt32().SwapEndian();
-			GradeCost = stream.ReadUInt32().SwapEndian();
+			NameStringDicID = stream.ReadUInt32().FromEndian( endian );
+			DescStringDicID = stream.ReadUInt32().FromEndian( endian );
+			GradeCost = stream.ReadUInt32().FromEndian( endian );
 
 			long pos = stream.Position;
 			stream.Position = refStringStart + refStringLocation;

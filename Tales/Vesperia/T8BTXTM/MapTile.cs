@@ -19,19 +19,19 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 		public uint MoveLeftAllowed;
 		public uint MoveRightAllowed;
 
-		public MapTile( System.IO.Stream stream ) {
-			RoomType = stream.ReadUInt32().SwapEndian();
-			FloorExitDiff = (int)stream.ReadUInt32().SwapEndian();
-			EnemyGroup = stream.ReadUInt32().SwapEndian();
-			FramesToMove = stream.ReadUInt32().SwapEndian();
+		public MapTile( System.IO.Stream stream, Util.Endianness endian ) {
+			RoomType = stream.ReadUInt32().FromEndian( endian );
+			FloorExitDiff = (int)stream.ReadUInt32().FromEndian( endian );
+			EnemyGroup = stream.ReadUInt32().FromEndian( endian );
+			FramesToMove = stream.ReadUInt32().FromEndian( endian );
 
-			RegularTreasure = stream.ReadUInt32().SwapEndian();
-			SpecialTreasure = stream.ReadUInt32().SwapEndian();
-			MoveUpAllowed = stream.ReadUInt32().SwapEndian();
-			MoveDownAllowed = stream.ReadUInt32().SwapEndian();
+			RegularTreasure = stream.ReadUInt32().FromEndian( endian );
+			SpecialTreasure = stream.ReadUInt32().FromEndian( endian );
+			MoveUpAllowed = stream.ReadUInt32().FromEndian( endian );
+			MoveDownAllowed = stream.ReadUInt32().FromEndian( endian );
 
-			MoveLeftAllowed = stream.ReadUInt32().SwapEndian();
-			MoveRightAllowed = stream.ReadUInt32().SwapEndian();
+			MoveLeftAllowed = stream.ReadUInt32().FromEndian( endian );
+			MoveRightAllowed = stream.ReadUInt32().FromEndian( endian );
 		}
 
 		public string GetDataAsHtml( string stratum, int floor, T8BTEMST.T8BTEMST Enemies, T8BTEMGP.T8BTEMGP EnemyGroups, T8BTEMEG.T8BTEMEG EncounterGroups, GameVersion version, T8BTXTMT treasures, ItemDat.ItemDat items, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {

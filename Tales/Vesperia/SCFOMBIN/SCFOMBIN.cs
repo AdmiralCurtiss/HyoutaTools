@@ -9,34 +9,34 @@ namespace HyoutaTools.Tales.Vesperia.SCFOMBIN {
 	public class SCFOMBIN {
 		public SCFOMBIN() { }
 
-		public SCFOMBIN( String filename, uint textPointerLocationDiff = 0x1888 ) {
+		public SCFOMBIN( String filename, Util.Endianness endian, uint textPointerLocationDiff = 0x1888 ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
-				if ( !LoadFile( stream, textPointerLocationDiff ) ) {
+				if ( !LoadFile( stream, endian, textPointerLocationDiff ) ) {
 					throw new Exception( "Loading SCFOMBIN failed!" );
 				}
 			}
 		}
 
-		public SCFOMBIN( Stream stream, uint textPointerLocationDiff = 0x1888 ) {
-			if ( !LoadFile( stream, textPointerLocationDiff ) ) {
+		public SCFOMBIN( Stream stream, Util.Endianness endian, uint textPointerLocationDiff = 0x1888 ) {
+			if ( !LoadFile( stream, endian, textPointerLocationDiff ) ) {
 				throw new Exception( "Loading SCFOMBIN failed!" );
 			}
 		}
 
 		public List<ScenarioFileEntry> EntryList;
 
-		private bool LoadFile( Stream stream, uint textPointerLocationDiff ) {
+		private bool LoadFile( Stream stream, Util.Endianness endian, uint textPointerLocationDiff ) {
 			string magic = stream.ReadAscii( 8 );
-			uint alwaysSame = stream.ReadUInt32().SwapEndian();
-			uint filesize = stream.ReadUInt32().SwapEndian();
+			uint alwaysSame = stream.ReadUInt32().FromEndian( endian );
+			uint filesize = stream.ReadUInt32().FromEndian( endian );
 
-			uint lengthSection1 = stream.ReadUInt32().SwapEndian();
+			uint lengthSection1 = stream.ReadUInt32().FromEndian( endian );
 
 			stream.Position = 0x50;
-			int textPointerDiffDiff = (int)stream.ReadUInt32().SwapEndian();
+			int textPointerDiffDiff = (int)stream.ReadUInt32().FromEndian( endian );
 			stream.Position = 0x20;
-			uint textStart = stream.ReadUInt32().SwapEndian();
-			int textPointerDiff = (int)stream.ReadUInt32().SwapEndian() - textPointerDiffDiff;
+			uint textStart = stream.ReadUInt32().FromEndian( endian );
+			int textPointerDiff = (int)stream.ReadUInt32().FromEndian( endian ) - textPointerDiffDiff;
 
 			EntryList = new List<ScenarioFileEntry>();
 
@@ -51,10 +51,10 @@ namespace HyoutaTools.Tales.Vesperia.SCFOMBIN {
 					long loc = stream.Position;
 					stream.DiscardBytes( 8 );
 					uint[] ptrs = new uint[4];
-					ptrs[0] = stream.ReadUInt32().SwapEndian();
-					ptrs[1] = stream.ReadUInt32().SwapEndian();
-					ptrs[2] = stream.ReadUInt32().SwapEndian();
-					ptrs[3] = stream.ReadUInt32().SwapEndian();
+					ptrs[0] = stream.ReadUInt32().FromEndian( endian );
+					ptrs[1] = stream.ReadUInt32().FromEndian( endian );
+					ptrs[2] = stream.ReadUInt32().FromEndian( endian );
+					ptrs[3] = stream.ReadUInt32().FromEndian( endian );
 
 					if ( stream.Position > textStart ) { break; }
 					if ( ptrs.Any( x => x == 0 ) ) { break; }

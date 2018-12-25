@@ -11,12 +11,12 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 		public string RefString1;
 		public string RefString2;
 
-		public FloorInfo( System.IO.Stream stream, uint refStringStart ) {
-			EntrySize = stream.ReadUInt32().SwapEndian();
+		public FloorInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			EntrySize = stream.ReadUInt32().FromEndian( endian );
 			RestData = new uint[( EntrySize - 4 ) / 4];
 
 			for ( int i = 0; i < RestData.Length; ++i ) {
-				RestData[i] = stream.ReadUInt32().SwapEndian();
+				RestData[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 			long pos = stream.Position;

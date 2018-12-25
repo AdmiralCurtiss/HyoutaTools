@@ -30,7 +30,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 				return -1;
 			}
 
-			HyoutaTools.Tales.Vesperia.ItemDat.ItemDat items = new HyoutaTools.Tales.Vesperia.ItemDat.ItemDat( args[1] );
+			HyoutaTools.Tales.Vesperia.ItemDat.ItemDat items = new HyoutaTools.Tales.Vesperia.ItemDat.ItemDat( args[1], Util.Endianness.BigEndian );
 
 			TSSFile TSS;
 			try {
@@ -40,10 +40,10 @@ namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 				return -1;
 			}
 
-			HyoutaTools.Tales.Vesperia.T8BTSK.T8BTSK skills = new HyoutaTools.Tales.Vesperia.T8BTSK.T8BTSK( args[3] );
-			HyoutaTools.Tales.Vesperia.T8BTEMST.T8BTEMST enemies = new HyoutaTools.Tales.Vesperia.T8BTEMST.T8BTEMST( args[4] );
-			HyoutaTools.Tales.Vesperia.COOKDAT.COOKDAT cookdat = new HyoutaTools.Tales.Vesperia.COOKDAT.COOKDAT( args[5] );
-			HyoutaTools.Tales.Vesperia.WRLDDAT.WRLDDAT locations = new HyoutaTools.Tales.Vesperia.WRLDDAT.WRLDDAT( args[6] );
+			HyoutaTools.Tales.Vesperia.T8BTSK.T8BTSK skills = new HyoutaTools.Tales.Vesperia.T8BTSK.T8BTSK( args[3], Util.Endianness.BigEndian );
+			HyoutaTools.Tales.Vesperia.T8BTEMST.T8BTEMST enemies = new HyoutaTools.Tales.Vesperia.T8BTEMST.T8BTEMST( args[4], Util.Endianness.BigEndian );
+			HyoutaTools.Tales.Vesperia.COOKDAT.COOKDAT cookdat = new HyoutaTools.Tales.Vesperia.COOKDAT.COOKDAT( args[5], Util.Endianness.BigEndian );
+			HyoutaTools.Tales.Vesperia.WRLDDAT.WRLDDAT locations = new HyoutaTools.Tales.Vesperia.WRLDDAT.WRLDDAT( args[6], Util.Endianness.BigEndian );
 
 			Console.WriteLine( "Initializing GUI..." );
 			ItemForm itemForm = new ItemForm( version.Value, items, TSS, skills, enemies, cookdat, locations );

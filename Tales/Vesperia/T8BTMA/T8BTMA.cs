@@ -5,14 +5,14 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 	public class T8BTMA {
-		public T8BTMA( String filename ) {
-			if ( !LoadFile( System.IO.File.ReadAllBytes( filename ) ) ) {
+		public T8BTMA( String filename, Util.Endianness endian ) {
+			if ( !LoadFile( System.IO.File.ReadAllBytes( filename ), endian ) ) {
 				throw new Exception( "Loading T8BTMA failed!" );
 			}
 		}
 
-		public T8BTMA( byte[] Bytes ) {
-			if ( !LoadFile( Bytes ) ) {
+		public T8BTMA( byte[] Bytes, Util.Endianness endian ) {
+			if ( !LoadFile( Bytes, endian ) ) {
 				throw new Exception( "Loading T8BTMA failed!" );
 			}
 		}
@@ -20,15 +20,15 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 		public List<Arte> ArteList;
 		public Dictionary<uint, Arte> ArteIdDict;
 
-		private bool LoadFile( byte[] Bytes ) {
-			uint arteCount = BitConverter.ToUInt32( Bytes, 0x8 ).SwapEndian();
-			uint stringStart = BitConverter.ToUInt32( Bytes, 0xC ).SwapEndian();
+		private bool LoadFile( byte[] Bytes, Util.Endianness endian ) {
+			uint arteCount = BitConverter.ToUInt32( Bytes, 0x8 ).FromEndian( endian );
+			uint stringStart = BitConverter.ToUInt32( Bytes, 0xC ).FromEndian( endian );
 
 			uint location = 0x10;
 			ArteList = new List<Arte>( (int)arteCount );
 			for ( uint i = 0; i < arteCount; ++i ) {
-				uint entrySize = BitConverter.ToUInt32( Bytes, (int)location ).SwapEndian();
-				Arte a = new Arte( Bytes, location, entrySize, stringStart );
+				uint entrySize = BitConverter.ToUInt32( Bytes, (int)location ).FromEndian( endian );
+				Arte a = new Arte( Bytes, location, entrySize, stringStart, endian );
 				ArteList.Add( a );
 				location += entrySize;
 			}

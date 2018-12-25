@@ -22,29 +22,29 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 
 		public string RefString;
 
-		public TreasureInfo( System.IO.Stream stream, uint refStringStart ) {
-			EntrySize = stream.ReadUInt32().SwapEndian();
-			ID = stream.ReadUInt32().SwapEndian();
-			IDAgain = stream.ReadUInt32().SwapEndian();
-			RefStringLocation = stream.ReadUInt32().SwapEndian();
+		public TreasureInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			EntrySize = stream.ReadUInt32().FromEndian( endian );
+			ID = stream.ReadUInt32().FromEndian( endian );
+			IDAgain = stream.ReadUInt32().FromEndian( endian );
+			RefStringLocation = stream.ReadUInt32().FromEndian( endian );
 
 			ChestTypes = new uint[4];
 			for ( int i = 0; i < ChestTypes.Length; ++i ) {
-				ChestTypes[i] = stream.ReadUInt32().SwapEndian();
+				ChestTypes[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 			ChestPositions = new float[8];
 			for ( int i = 0; i < ChestPositions.Length; ++i ) {
-				ChestPositions[i] = stream.ReadUInt32().SwapEndian().UIntToFloat();
+				ChestPositions[i] = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
 			}
 
 			Items = new uint[12];
 			for ( int i = 0; i < Items.Length; ++i ) {
-				Items[i] = stream.ReadUInt32().SwapEndian();
+				Items[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 			Chances = new uint[12];
 			for ( int i = 0; i < Chances.Length; ++i ) {
-				Chances[i] = stream.ReadUInt32().SwapEndian();
+				Chances[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 			long pos = stream.Position;

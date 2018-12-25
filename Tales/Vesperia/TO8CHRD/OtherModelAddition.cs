@@ -9,8 +9,8 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 		byte Unknown1;
 		byte Unknown2;
 
-		public OtherModelAddition( System.IO.Stream stream, uint refStringStart ) {
-			Str = stream.ReadAsciiNulltermFromLocationAndReset( stream.ReadUInt32().SwapEndian() + refStringStart );
+		public OtherModelAddition( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			Str = stream.ReadAsciiNulltermFromLocationAndReset( stream.ReadUInt32().FromEndian( endian ) + refStringStart );
 			Unknown1 = (byte)stream.ReadByte();
 			Unknown2 = (byte)stream.ReadByte();
 			stream.DiscardBytes( 0x1A );

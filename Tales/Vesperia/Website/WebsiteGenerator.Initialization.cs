@@ -24,7 +24,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return BattleTextFiles;
 		}
 
-		public static Dictionary<string, SCFOMBIN.SCFOMBIN> LoadBattleTextScfombin( string dir, string modDir = null ) {
+		public static Dictionary<string, SCFOMBIN.SCFOMBIN> LoadBattleTextScfombin( string dir, Util.Endianness endian, string modDir = null ) {
 			var BattleTextFiles = new Dictionary<string, SCFOMBIN.SCFOMBIN>();
 
 			var files = new System.IO.DirectoryInfo( dir ).GetFiles();
@@ -33,11 +33,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					uint ptrDiff = 0x1888;
 					if ( file.Name.StartsWith( "BTL_XTM" ) ) { ptrDiff = 0x1B4C; }
 
-					var bin = new SCFOMBIN.SCFOMBIN( System.IO.Path.Combine( dir, file.Name ), ptrDiff );
+					var bin = new SCFOMBIN.SCFOMBIN( System.IO.Path.Combine( dir, file.Name ), endian, ptrDiff );
 					var name = file.Name.Split( '.' )[0];
 
 					if ( modDir != null ) {
-						var modBin = new SCFOMBIN.SCFOMBIN( System.IO.Path.Combine( modDir, file.Name ), ptrDiff );
+						var modBin = new SCFOMBIN.SCFOMBIN( System.IO.Path.Combine( modDir, file.Name ), endian, ptrDiff );
 						for ( int i = 0; i < bin.EntryList.Count; ++i ) {
 							bin.EntryList[i].EnName = modBin.EntryList[i].JpName;
 							bin.EntryList[i].EnText = modBin.EntryList[i].JpText;

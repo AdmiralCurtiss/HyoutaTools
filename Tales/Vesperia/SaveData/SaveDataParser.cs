@@ -22,10 +22,10 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			Util.Endianness endian = Util.Endianness.BigEndian;
 			var stringDic = new TSS.TSSFile( @"c:\Dropbox\ToV\PS3\mod\string.svo.ext\STRING_DIC.SO", Util.GameTextEncoding.ShiftJIS );
 			var inGameDic = stringDic.GenerateInGameIdDictionary();
-			var itemData = new ItemDat.ItemDat( @"c:\Dropbox\ToV\PS3\orig\item.svo.ext\ITEM.DAT" );
+			var itemData = new ItemDat.ItemDat( @"c:\Dropbox\ToV\PS3\orig\item.svo.ext\ITEM.DAT", endian );
 			var itemDataSorted = itemData.GetSortedByInGameSorting();
-			var titles = new FAMEDAT.FAMEDAT( @"c:\Dropbox\ToV\PS3\orig\menu.svo.ext\FAMEDATA.BIN" );
-			var enemies = new T8BTEMST.T8BTEMST( @"c:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000" );
+			var titles = new FAMEDAT.FAMEDAT( @"c:\Dropbox\ToV\PS3\orig\menu.svo.ext\FAMEDATA.BIN", endian );
+			var enemies = new T8BTEMST.T8BTEMST( @"c:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000", endian );
 
 			using ( Stream file = new FileStream( args[0], System.IO.FileMode.Open ) ) {
 				file.DiscardBytes( 0x228 ); // short header, used for save menu on 360 version to display basic info about save

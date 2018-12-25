@@ -6,16 +6,16 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 	public class T8BTSK {
-		public T8BTSK( String filename ) {
+		public T8BTSK( String filename, Util.Endianness endian ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
-				if ( !LoadFile( stream ) ) {
+				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading T8BTSK failed!" );
 				}
 			}
 		}
 
-		public T8BTSK( Stream stream ) {
-			if ( !LoadFile( stream ) ) {
+		public T8BTSK( Stream stream, Util.Endianness endian ) {
+			if ( !LoadFile( stream, endian ) ) {
 				throw new Exception( "Loading T8BTSK failed!" );
 			}
 		}
@@ -23,14 +23,14 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 		public List<Skill> SkillList;
 		public Dictionary<uint, Skill> SkillIdDict;
 
-		private bool LoadFile( Stream stream ) {
+		private bool LoadFile( Stream stream, Util.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
-			uint skillCount = stream.ReadUInt32().SwapEndian();
-			uint refStringStart = stream.ReadUInt32().SwapEndian();
+			uint skillCount = stream.ReadUInt32().FromEndian( endian );
+			uint refStringStart = stream.ReadUInt32().FromEndian( endian );
 
 			SkillList = new List<Skill>( (int)skillCount );
 			for ( uint i = 0; i < skillCount; ++i ) {
-				Skill s = new Skill( stream, refStringStart );
+				Skill s = new Skill( stream, refStringStart, endian );
 				SkillList.Add( s );
 			}
 

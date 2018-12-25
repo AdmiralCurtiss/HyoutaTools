@@ -7,16 +7,16 @@ using System.IO;
 namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 	public class T8BTXTMM {
 		// map definitions
-		public T8BTXTMM( String filename ) {
+		public T8BTXTMM( String filename, Util.Endianness endian ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
-				if ( !LoadFile( stream ) ) {
+				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading T8BTXTMM failed!" );
 				}
 			}
 		}
 
-		public T8BTXTMM( Stream stream ) {
-			if ( !LoadFile( stream ) ) {
+		public T8BTXTMM( Stream stream, Util.Endianness endian ) {
+			if ( !LoadFile( stream, endian ) ) {
 				throw new Exception( "Loading T8BTXTMM failed!" );
 			}
 		}
@@ -25,19 +25,19 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 		public uint HorizontalTiles;
 		public uint VerticalTiles;
 
-		private bool LoadFile( Stream stream ) {
+		private bool LoadFile( Stream stream, Util.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
-			uint unknown1 = stream.ReadUInt32().SwapEndian();
-			uint bytesToEnd = stream.ReadUInt32().SwapEndian();
-			uint unknown2 = stream.ReadUInt32().SwapEndian();
-			uint unknown3 = stream.ReadUInt32().SwapEndian();
-			HorizontalTiles = stream.ReadUInt32().SwapEndian();
-			VerticalTiles = stream.ReadUInt32().SwapEndian();
-			uint tileCount = stream.ReadUInt32().SwapEndian();
+			uint unknown1 = stream.ReadUInt32().FromEndian( endian );
+			uint bytesToEnd = stream.ReadUInt32().FromEndian( endian );
+			uint unknown2 = stream.ReadUInt32().FromEndian( endian );
+			uint unknown3 = stream.ReadUInt32().FromEndian( endian );
+			HorizontalTiles = stream.ReadUInt32().FromEndian( endian );
+			VerticalTiles = stream.ReadUInt32().FromEndian( endian );
+			uint tileCount = stream.ReadUInt32().FromEndian( endian );
 
 			TileList = new List<MapTile>( (int)tileCount );
 			for ( uint i = 0; i < tileCount; ++i ) {
-				MapTile mt = new MapTile( stream );
+				MapTile mt = new MapTile( stream, endian );
 				TileList.Add( mt );
 			}
 

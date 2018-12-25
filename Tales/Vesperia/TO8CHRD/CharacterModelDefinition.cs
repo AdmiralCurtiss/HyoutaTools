@@ -27,26 +27,26 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 		public Unknown0x20byteAreaB[] Unknown0x20Area;
 		public Unknown0x80byteArea[] Unknown0x80Area;
 
-		public CharacterModelDefinition( System.IO.Stream stream, uint refStringStart ) {
+		public CharacterModelDefinition( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
 			Strings = new string[100];
 
 			for ( uint i = 0; i < 100; ++i ) {
-				Strings[i] = stream.ReadAsciiNulltermFromLocationAndReset( stream.ReadUInt32().SwapEndian() + refStringStart );
+				Strings[i] = stream.ReadAsciiNulltermFromLocationAndReset( stream.ReadUInt32().FromEndian( endian ) + refStringStart );
 			}
 
-			CustomIndex = stream.ReadUInt32().SwapEndian();
+			CustomIndex = stream.ReadUInt32().FromEndian( endian );
 			CustomCount = (byte)stream.ReadByte();
 			OtherCount = (byte)stream.ReadByte();
 			Unknown0x20AreaCount = (byte)stream.ReadByte();
 			Unknown1d = (byte)stream.ReadByte();
-			OtherIndex = stream.ReadUInt32().SwapEndian();
-			Unknown0x20AreaIndex = stream.ReadUInt32().SwapEndian();
+			OtherIndex = stream.ReadUInt32().FromEndian( endian );
+			Unknown0x20AreaIndex = stream.ReadUInt32().FromEndian( endian );
 			Unknown4a = (byte)stream.ReadByte();
 			Unknown4b = (byte)stream.ReadByte();
 			Unknown4c = (byte)stream.ReadByte();
 			Unknown4d = (byte)stream.ReadByte();
 			stream.DiscardBytes( 4 );
-			Unknown0x80AreaIndex = stream.ReadUInt32().SwapEndian();
+			Unknown0x80AreaIndex = stream.ReadUInt32().FromEndian( endian );
 			Unknown0x80AreaCount = (byte)stream.ReadByte();
 			Unknown7b = (byte)stream.ReadByte();
 			stream.DiscardBytes( 2 );

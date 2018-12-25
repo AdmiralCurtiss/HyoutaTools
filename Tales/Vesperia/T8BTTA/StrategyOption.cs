@@ -15,12 +15,12 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 		public uint ID;
 
 		public string RefString;
-		public StrategyOption( System.IO.Stream stream, uint refStringStart ) {
-			uint entrySize = stream.PeekUInt32().SwapEndian();
+		public StrategyOption( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			uint entrySize = stream.PeekUInt32().FromEndian( endian );
 
 			Data = new uint[entrySize / 4];
 			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().SwapEndian();
+				Data[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 			Category = Data[1];

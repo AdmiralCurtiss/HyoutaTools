@@ -14,10 +14,10 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 
 		public ShopItem[] ShopItems;
 
-		public ShopDefinition( System.IO.Stream stream ) {
+		public ShopDefinition( System.IO.Stream stream, Util.Endianness endian ) {
 			Data = new uint[8];
 			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().SwapEndian();
+				Data[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 			InGameID = Data[0];

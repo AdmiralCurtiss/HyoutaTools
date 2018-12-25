@@ -11,10 +11,10 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 		public uint ShopID;
 		public uint ItemID;
 
-		public ShopItem( System.IO.Stream stream ) {
+		public ShopItem( System.IO.Stream stream, Util.Endianness endian ) {
 			Data = new uint[56 / 4];
 			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().SwapEndian();
+				Data[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 			ShopID = Data[1];

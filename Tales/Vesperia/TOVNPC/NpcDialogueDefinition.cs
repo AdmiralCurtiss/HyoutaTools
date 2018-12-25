@@ -34,32 +34,32 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 		public string RefString1;
 		public string RefString2;
 
-		public NpcDialogueDefinition( System.IO.Stream stream, uint refStringStart ) {
-			Unknown1 = stream.ReadUInt32().SwapEndian();
-			Unknown2 = stream.ReadUInt32().SwapEndian();
-			StringDicId = stream.ReadUInt32().SwapEndian();
-			Unknown4 = stream.ReadUInt32().SwapEndian();
+		public NpcDialogueDefinition( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			Unknown1 = stream.ReadUInt32().FromEndian( endian );
+			Unknown2 = stream.ReadUInt32().FromEndian( endian );
+			StringDicId = stream.ReadUInt32().FromEndian( endian );
+			Unknown4 = stream.ReadUInt32().FromEndian( endian );
 
 			Unknown5a1 = (byte)stream.ReadByte();
 			Unknown5a2 = (byte)stream.ReadByte();
 			Unknown5b1 = (byte)stream.ReadByte();
 			Unknown5b2 = (byte)stream.ReadByte();
-			Unknown6a = (short)stream.ReadUInt16().SwapEndian();
-			Unknown6b = (short)stream.ReadUInt16().SwapEndian();
+			Unknown6a = (short)stream.ReadUInt16().FromEndian( endian );
+			Unknown6b = (short)stream.ReadUInt16().FromEndian( endian );
 			Unknown7a1 = (byte)stream.ReadByte();
 			Unknown7a2 = (byte)stream.ReadByte();
-			Unknown7b = stream.ReadUInt16().SwapEndian();
-			Unknown8 = stream.ReadUInt32().SwapEndian();
+			Unknown7b = stream.ReadUInt16().FromEndian( endian );
+			Unknown8 = stream.ReadUInt32().FromEndian( endian );
 
-			RefStringLocation1 = stream.ReadUInt32().SwapEndian();
-			RefStringLocation2 = stream.ReadUInt32().SwapEndian();
-			Unknown11 = stream.ReadUInt32().SwapEndian();
-			Unknown12 = stream.ReadUInt32().SwapEndian();
+			RefStringLocation1 = stream.ReadUInt32().FromEndian( endian );
+			RefStringLocation2 = stream.ReadUInt32().FromEndian( endian );
+			Unknown11 = stream.ReadUInt32().FromEndian( endian );
+			Unknown12 = stream.ReadUInt32().FromEndian( endian );
 
-			Unknown13 = stream.ReadUInt32().SwapEndian();
-			Unknown14 = stream.ReadUInt32().SwapEndian();
-			Unknown15 = stream.ReadUInt32().SwapEndian();
-			Unknown16 = stream.ReadUInt32().SwapEndian();
+			Unknown13 = stream.ReadUInt32().FromEndian( endian );
+			Unknown14 = stream.ReadUInt32().FromEndian( endian );
+			Unknown15 = stream.ReadUInt32().FromEndian( endian );
+			Unknown16 = stream.ReadUInt32().FromEndian( endian );
 
 			long pos = stream.Position;
 			stream.Position = refStringStart + RefStringLocation1;

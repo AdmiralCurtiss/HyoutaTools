@@ -9,10 +9,10 @@ namespace HyoutaTools.Tales.Vesperia.BTLBDAT {
 		public uint NameStringDicId;
 		public uint TextStringDicId;
 
-		public BattleBookEntry( System.IO.Stream stream ) {
-			UnlockReferenceMaybe = stream.ReadUInt32().SwapEndian();
-			NameStringDicId = stream.ReadUInt32().SwapEndian();
-			TextStringDicId = stream.ReadUInt32().SwapEndian();
+		public BattleBookEntry( System.IO.Stream stream, Util.Endianness endian ) {
+			UnlockReferenceMaybe = stream.ReadUInt32().FromEndian( endian );
+			NameStringDicId = stream.ReadUInt32().FromEndian( endian );
+			TextStringDicId = stream.ReadUInt32().FromEndian( endian );
 			stream.DiscardBytes( 0x4 );
 		}
 

@@ -11,14 +11,14 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 		float UnknownFloat1;
 		float UnknownFloat2;
 
-		public Unknown0x80byteArea( System.IO.Stream stream, uint refStringStart ) {
-			UnknownUInt = stream.ReadUInt32().SwapEndian();
+		public Unknown0x80byteArea( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			UnknownUInt = stream.ReadUInt32().FromEndian( endian );
 			stream.DiscardBytes( 4 );
 			UnknownByte1 = (byte)stream.ReadByte();
 			UnknownByte2 = (byte)stream.ReadByte();
 			stream.DiscardBytes( 2 );
-			UnknownFloat1 = stream.ReadUInt32().SwapEndian().UIntToFloat();
-			UnknownFloat2 = stream.ReadUInt32().SwapEndian().UIntToFloat();
+			UnknownFloat1 = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
+			UnknownFloat2 = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
 
 			stream.DiscardBytes( 0x6C );
 		}

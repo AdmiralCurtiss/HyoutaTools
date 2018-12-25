@@ -15,11 +15,11 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 		public uint[] ShopsOrEnemyGroups;
 		public uint Unused2;
 
-		public Location( System.IO.Stream stream ) {
+		public Location( System.IO.Stream stream, Util.Endianness endian ) {
 			uint[] Data = new uint[0x74 / 4]; // + 0x20*4 strings, + 4*4 StringDicIDs
 
 			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().SwapEndian();
+				Data[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 			LocationID = Data[0];
@@ -53,7 +53,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 			stream.Position = pos + 0x20 * 4;
 			NameStringDicIDs = new uint[4];
 			for ( int i = 0; i < 4; ++i ) {
-				NameStringDicIDs[i] = stream.ReadUInt32().SwapEndian();
+				NameStringDicIDs[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 		}
 

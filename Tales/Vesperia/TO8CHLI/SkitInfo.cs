@@ -43,16 +43,16 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			}
 		}
 
-		public SkitInfo( System.IO.Stream stream, uint refStringStart ) {
+		public SkitInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
 			// first 16 bytes are always null in the existing files
 			stream.DiscardBytes( 0x10 );
 
-			SkitFlagUnique = stream.ReadUInt16().SwapEndian();
-			Unknown2 = stream.ReadUInt16().SwapEndian();
+			SkitFlagUnique = stream.ReadUInt16().FromEndian( endian );
+			Unknown2 = stream.ReadUInt16().FromEndian( endian );
 
 			Data = new uint[11];
 			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().SwapEndian();
+				Data[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 

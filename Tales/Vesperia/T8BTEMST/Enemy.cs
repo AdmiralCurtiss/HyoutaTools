@@ -78,14 +78,14 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		// 16 is zero except on the new giganto monsters and spiral draco
 		// 76 is on PS3 only, StringDicID for the dummy description
 
-		public Enemy( System.IO.Stream stream, uint refStringStart ) {
-			uint entryLength = stream.ReadUInt32().SwapEndian();
+		public Enemy( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			uint entryLength = stream.ReadUInt32().FromEndian( endian );
 			Data = new uint[entryLength / 4];
 			DataFloat = new float[entryLength / 4];
 			Data[0] = entryLength;
 
 			for ( int i = 1; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().SwapEndian();
+				Data[i] = stream.ReadUInt32().FromEndian( endian );
 				DataFloat[i] = Data[i].UIntToFloat();
 			}
 

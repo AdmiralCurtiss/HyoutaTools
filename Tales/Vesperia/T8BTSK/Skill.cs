@@ -25,27 +25,27 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 
 		public string RefString;
 
-		public Skill( System.IO.Stream stream, uint refStringStart ) {
-			uint entrySize = stream.ReadUInt32().SwapEndian();
-			ID = stream.ReadUInt32().SwapEndian();
-			InGameID = stream.ReadUInt32().SwapEndian();
-			uint refStringLocation = stream.ReadUInt32().SwapEndian();
+		public Skill( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			uint entrySize = stream.ReadUInt32().FromEndian( endian );
+			ID = stream.ReadUInt32().FromEndian( endian );
+			InGameID = stream.ReadUInt32().FromEndian( endian );
+			uint refStringLocation = stream.ReadUInt32().FromEndian( endian );
 
-			NameStringDicID = stream.ReadUInt32().SwapEndian();
-			DescStringDicID = stream.ReadUInt32().SwapEndian();
-			Unknown7 = stream.ReadUInt32().SwapEndian();
-			LearnableByBitmask = stream.ReadUInt32().SwapEndian();
+			NameStringDicID = stream.ReadUInt32().FromEndian( endian );
+			DescStringDicID = stream.ReadUInt32().FromEndian( endian );
+			Unknown7 = stream.ReadUInt32().FromEndian( endian );
+			LearnableByBitmask = stream.ReadUInt32().FromEndian( endian );
 
-			EquipCost = stream.ReadUInt32().SwapEndian();
-			LearnCost = stream.ReadUInt32().SwapEndian();
-			Category = stream.ReadUInt32().SwapEndian();
+			EquipCost = stream.ReadUInt32().FromEndian( endian );
+			LearnCost = stream.ReadUInt32().FromEndian( endian );
+			Category = stream.ReadUInt32().FromEndian( endian );
 			// Game sums up this value per category, then figures out the OVL-symbol from the totals
-			SymbolValue = stream.ReadUInt32().SwapEndian();
+			SymbolValue = stream.ReadUInt32().FromEndian( endian );
 
-			Unknown13 = stream.ReadUInt32().SwapEndian().UIntToFloat();
-			Unknown14 = stream.ReadUInt32().SwapEndian().UIntToFloat();
-			Unknown15 = stream.ReadUInt32().SwapEndian().UIntToFloat();
-			Inactive = stream.ReadUInt32().SwapEndian();
+			Unknown13 = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
+			Unknown14 = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
+			Unknown15 = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
+			Inactive = stream.ReadUInt32().FromEndian( endian );
 
 			long pos = stream.Position;
 			stream.Position = refStringStart + refStringLocation;

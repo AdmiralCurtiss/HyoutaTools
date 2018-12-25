@@ -19,11 +19,11 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 		public uint SomeFlag;
 		public uint[] UnknownInts;
 
-		public EnemyGroup( System.IO.Stream stream, uint refStringStart ) {
-			uint entryLength = stream.PeekUInt32().SwapEndian();
+		public EnemyGroup( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			uint entryLength = stream.PeekUInt32().FromEndian( endian );
 			Data = new uint[entryLength / 4];
 			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().SwapEndian();
+				Data[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 			ID = Data[1];

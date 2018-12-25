@@ -11,13 +11,13 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 		public ushort Unknown2b;
 		public uint Unknown3;
 		public uint Unknown4;
-		public UnknownSkitData4( System.IO.Stream stream ) {
-			Unknown1a = stream.ReadUInt16().SwapEndian();
-			Unknown1b = stream.ReadUInt16().SwapEndian();
-			Unknown2a = stream.ReadUInt16().SwapEndian();
-			Unknown2b = stream.ReadUInt16().SwapEndian();
-			Unknown3 = stream.ReadUInt32().SwapEndian();
-			Unknown4 = stream.ReadUInt32().SwapEndian();
+		public UnknownSkitData4( System.IO.Stream stream, Util.Endianness endian ) {
+			Unknown1a = stream.ReadUInt16().FromEndian( endian );
+			Unknown1b = stream.ReadUInt16().FromEndian( endian );
+			Unknown2a = stream.ReadUInt16().FromEndian( endian );
+			Unknown2b = stream.ReadUInt16().FromEndian( endian );
+			Unknown3 = stream.ReadUInt32().FromEndian( endian );
+			Unknown4 = stream.ReadUInt32().FromEndian( endian );
 		}
 
 		public override string ToString() {
