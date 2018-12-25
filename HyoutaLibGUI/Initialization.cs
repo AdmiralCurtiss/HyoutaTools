@@ -13,6 +13,7 @@ namespace HyoutaLibGUI {
 			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PicrossDS.SaveEditor",              "-"           ), Other.PicrossDS.SaveEditor.Execute ) );
 			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Nonstop.Viewer",              "DrNonstop"   ), DanganRonpa.Nonstop.RunNonstopForm.Execute ) );
 			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.Credits.Viewer",           "ToVcredits"  ), Tales.Vesperia.Credits.RunCreditsViewer.Execute ) );
+			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.Font.Viewer",              "ToVfont"     ), Tales.Vesperia.Font.Viewer.Program.Execute ) );
 		}
 	}
 }

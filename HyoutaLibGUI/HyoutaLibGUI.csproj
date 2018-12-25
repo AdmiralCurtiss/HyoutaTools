@@ -74,6 +74,13 @@
       <DependentUpon>CreditsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Tales\Vesperia\Credits\RunCreditsViewer.cs" />
+    <Compile Include="Tales\Vesperia\Font\Viewer\FontViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tales\Vesperia\Font\Viewer\FontViewer.designer.cs">
+      <DependentUpon>FontViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tales\Vesperia\Font\Viewer\Program.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DanganRonpa\Font\Viewer\FontViewer.resx">
@@ -87,6 +94,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\Credits\CreditsForm.resx">
       <DependentUpon>CreditsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tales\Vesperia\Font\Viewer\FontViewer.resx">
+      <DependentUpon>FontViewer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

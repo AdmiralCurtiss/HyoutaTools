@@ -205,13 +205,6 @@
     <Compile Include="Tales\Vesperia\FAMEDAT\FAMEDAT.cs" />
     <Compile Include="Tales\Vesperia\FAMEDAT\Title.cs" />
     <Compile Include="Tales\Vesperia\Font\FontInfo.cs" />
-    <Compile Include="Tales\Vesperia\Font\Viewer\FontViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Tales\Vesperia\Font\Viewer\FontViewer.designer.cs">
-      <DependentUpon>FontViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Tales\Vesperia\Font\Viewer\Program.cs" />
     <Compile Include="Tales\Vesperia\FPS4\FPS4.cs" />
     <Compile Include="Tales\Vesperia\FPS4\Program.cs" />
     <Compile Include="Tales\Vesperia\ItemDat\ItemDat.cs" />
@@ -378,9 +371,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Tales\Vesperia\Font\Viewer\FontViewer.resx">
-      <DependentUpon>FontViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\ItemDat\ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
