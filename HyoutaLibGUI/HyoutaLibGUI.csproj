@@ -95,6 +95,22 @@
     <Compile Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.designer.cs">
       <DependentUpon>TownMapDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="Trophy\Viewer\CustomDrawListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Trophy\Viewer\GameSelectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Trophy\Viewer\GameSelectForm.designer.cs">
+      <DependentUpon>GameSelectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Trophy\Viewer\Program.cs" />
+    <Compile Include="Trophy\Viewer\TrophyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Trophy\Viewer\TrophyForm.designer.cs">
+      <DependentUpon>TrophyForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DanganRonpa\Font\Viewer\FontViewer.resx">
@@ -117,6 +133,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.resx">
       <DependentUpon>TownMapDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Trophy\Viewer\GameSelectForm.resx">
+      <DependentUpon>GameSelectForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Trophy\Viewer\TrophyForm.resx">
+      <DependentUpon>TrophyForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

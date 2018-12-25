@@ -332,23 +332,7 @@
     <Compile Include="Tales\Xillia\TldatExtract\Program.cs" />
     <Compile Include="Tales\Xillia\TldatExtract\TOFHDBheader.cs" />
     <Compile Include="Tales\Xillia\SDB\SDB.cs" />
-    <Compile Include="Trophy\Viewer\CustomDrawListBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Trophy\Viewer\GameFolder.cs" />
-    <Compile Include="Trophy\Viewer\GameSelectForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Trophy\Viewer\GameSelectForm.designer.cs">
-      <DependentUpon>GameSelectForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Trophy\Viewer\Program.cs" />
-    <Compile Include="Trophy\Viewer\TrophyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Trophy\Viewer\TrophyForm.designer.cs">
-      <DependentUpon>TrophyForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Trophy\Viewer\TropUsr.cs" />
     <Compile Include="Trophy\Viewer\TropUsrSingleTrophy.cs" />
     <Compile Include="Util.cs" />
@@ -357,12 +341,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Trophy\Viewer\GameSelectForm.resx">
-      <DependentUpon>GameSelectForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Trophy\Viewer\TrophyForm.resx">
-      <DependentUpon>TrophyForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
