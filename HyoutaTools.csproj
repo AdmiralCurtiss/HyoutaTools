@@ -202,13 +202,6 @@
     <Compile Include="Tales\Vesperia\COOKDAT\Recipe.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfo.cs" />
     <Compile Include="Tales\Vesperia\Credits\CreditsInfoSingle.cs" />
-    <Compile Include="Tales\Vesperia\Credits\CreditsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Tales\Vesperia\Credits\CreditsForm.designer.cs">
-      <DependentUpon>CreditsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Tales\Vesperia\Credits\RunCreditsViewer.cs" />
     <Compile Include="Tales\Vesperia\FAMEDAT\FAMEDAT.cs" />
     <Compile Include="Tales\Vesperia\FAMEDAT\Title.cs" />
     <Compile Include="Tales\Vesperia\Font\FontInfo.cs" />
@@ -385,9 +378,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Tales\Vesperia\Credits\CreditsForm.resx">
-      <DependentUpon>CreditsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\Font\Viewer\FontViewer.resx">
       <DependentUpon>FontViewer.cs</DependentUpon>

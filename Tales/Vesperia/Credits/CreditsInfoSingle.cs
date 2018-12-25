@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyoutaTools.Tales.Vesperia.TSS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 		public CreditsInfo Credits;
 		public int Offset = 0;
 		public UInt32[] Data;
-		public CreditsForm Form = null;		
+		public TSSFile TSS = null; // access for GetEntry()/ToString()
 
 		public CreditsInfoSingle( CreditsInfo Credits, int offset, byte[] file ) {
 			this.Credits = Credits;
@@ -37,8 +38,18 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 					+ ( Data[0] == 2 ? " --- Image: " + Credits.GetInFileString( (int)Data[2] + 0xD60 ) + " --- " : "" )
 					+ ( Data[0] == 3 ? " --- Free Space: " + Util.UIntToFloat( Data[4] ).ToString() + " --- " : "" )
 					+ ( Data[0] == 5 ? " --- Text Size?: " + Util.UIntToFloat( Data[4] ).ToString() + " --- " : "" )
-					+ ( Form != null ? Form.GetEntry( Data[(int)CreditsData.EntryNumber] ).StringJpn : "" )
+					+ ( TSS != null ? this.GetEntry( Data[(int)CreditsData.EntryNumber] ).StringJpn : "" )
 			;
+		}
+
+		public TSSEntry GetEntry( uint ptr ) {
+			try {
+				int ItemStartInTss = 17763; // PS3
+				//ItemStartInTss = 17763 + 216; // 360 with PS3 string_dic
+				return TSS.Entries[ptr - 340000 + ItemStartInTss];
+			} catch ( Exception ) {
+				return new TSSEntry( new uint[0], "", "", 0, 0, -1 );
+			}
 		}
 	}
 }
