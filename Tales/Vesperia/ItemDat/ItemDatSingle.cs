@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.ItemDat {
-	enum ItemData {
+	public enum ItemData {
 		ID = 0,
 		NamePointer = 1,
 		ShopPrice = 2,
