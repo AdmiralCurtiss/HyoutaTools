@@ -15,6 +15,7 @@ namespace HyoutaLibGUI {
 			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.Credits.Viewer",           "ToVcredits"  ), Tales.Vesperia.Credits.RunCreditsViewer.Execute ) );
 			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.Font.Viewer",              "ToVfont"     ), Tales.Vesperia.Font.Viewer.Program.Execute ) );
 			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.ItemDat.Viewer",           "ToVitemdat"  ), Tales.Vesperia.ItemDat.RunItemViewer.Execute ) );
+			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.TownMap.Viewer",           "ToVtownmap"  ), Tales.Vesperia.TownMap.Viewer.Program.Execute ) );
 		}
 	}
 }

@@ -267,13 +267,6 @@
     <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />
     <Compile Include="Tales\Vesperia\TownMap\TownMapTile.cs" />
-    <Compile Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.designer.cs">
-      <DependentUpon>TownMapDisplay.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Tales\Vesperia\TownMap\Viewer\Program.cs" />
     <Compile Include="Tales\Vesperia\VesperiaUtil.cs" />
     <Compile Include="Tales\Vesperia\Website\GenerateDatabase.cs" />
     <Compile Include="Tales\Vesperia\Website\GenerateWebsite.cs" />
@@ -364,9 +357,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.resx">
-      <DependentUpon>TownMapDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Trophy\Viewer\GameSelectForm.resx">
       <DependentUpon>GameSelectForm.cs</DependentUpon>

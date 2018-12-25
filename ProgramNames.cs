@@ -49,7 +49,6 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.NitroidDataBinEx",                  "-"           ),  Other.NitroidDataBinEx.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.MapList",                  "ToVmaplist"  ),  Tales.Vesperia.MapList.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.SpkdUnpack",               "ToVspkd"     ),  Tales.Vesperia.SpkdUnpack.Program.Execute) },
-			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.TownMap.Viewer",           "ToVtownmap"  ),  Tales.Vesperia.TownMap.Viewer.Program.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.FPS4.Extract",             "ToVfps4e"    ),  Tales.Vesperia.FPS4.Program.Extract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.FPS4.Pack",                "ToVfps4p"    ),  Tales.Vesperia.FPS4.Program.Pack) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Abyss.FPS2.Extract",                "TotAfps2e"   ),  Tales.Abyss.FPS2.Program.Execute) },

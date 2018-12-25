@@ -88,6 +88,13 @@
       <DependentUpon>ItemForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Tales\Vesperia\ItemDat\RunItemViewer.cs" />
+    <Compile Include="Tales\Vesperia\TownMap\Viewer\Program.cs" />
+    <Compile Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.designer.cs">
+      <DependentUpon>TownMapDisplay.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DanganRonpa\Font\Viewer\FontViewer.resx">
@@ -107,6 +114,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tales\Vesperia\ItemDat\ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tales\Vesperia\TownMap\Viewer\TownMapDisplay.resx">
+      <DependentUpon>TownMapDisplay.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
