@@ -51,6 +51,13 @@
       <DependentUpon>FontViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="DanganRonpa\Font\Viewer\Program.cs" />
+    <Compile Include="DanganRonpa\Nonstop\NonstopForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DanganRonpa\Nonstop\NonstopForm.designer.cs">
+      <DependentUpon>NonstopForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DanganRonpa\Nonstop\RunNonstopForm.cs" />
     <Compile Include="Initialization.cs" />
     <Compile Include="Other\PicrossDS\PuzzleEditorForm.cs">
       <SubType>Form</SubType>
@@ -64,6 +71,9 @@
   <ItemGroup>
     <EmbeddedResource Include="DanganRonpa\Font\Viewer\FontViewer.resx">
       <DependentUpon>FontViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
+      <DependentUpon>NonstopForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Other\PicrossDS\PuzzleEditorForm.resx">
       <DependentUpon>PuzzleEditorForm.cs</DependentUpon>

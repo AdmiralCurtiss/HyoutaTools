@@ -49,7 +49,7 @@ namespace HyoutaTools.GraceNote.DanganRonpa.NonstopExistingDatabaseImport {
 				//continue;
 
 				LIN lin = new LIN( scriptFile );
-				Nonstop nonstop = new Nonstop( nonstopFile );
+				NonstopFile nonstop = new NonstopFile( nonstopFile );
 
 				int lastScriptEntry = 0;
 				foreach ( var item in nonstop.items ) {

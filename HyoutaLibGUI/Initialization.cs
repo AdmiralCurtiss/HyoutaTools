@@ -11,6 +11,7 @@ namespace HyoutaLibGUI {
 		public static void RegisterGuiOnlyTools() {
 			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Font.Viewer",                 "DrFont"      ), DanganRonpa.Font.Viewer.Program.Execute ) );
 			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.PicrossDS.SaveEditor",              "-"           ), Other.PicrossDS.SaveEditor.Execute ) );
+			HyoutaTools.Initialization.RegisterTool( new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Nonstop.Viewer",              "DrNonstop"   ), DanganRonpa.Nonstop.RunNonstopForm.Execute ) );
 		}
 	}
 }

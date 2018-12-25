@@ -16,7 +16,6 @@ namespace HyoutaTools {
 		public delegate int ExecuteProgramDelegate( List<string> args );
 
 		internal static List<KeyValuePair<ProgramName, ExecuteProgramDelegate>> BuiltInTools = new List<KeyValuePair<ProgramName, ExecuteProgramDelegate>>() {
-			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Nonstop.Viewer",              "DrNonstop"   ),  DanganRonpa.Nonstop.RunNonstopForm.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Pak.Extract",                 "DrPakE"      ),  DanganRonpa.Pak.Program.ExecuteExtract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.Pak.Pack",                    "DrPakP"      ),  DanganRonpa.Pak.Program.ExecutePack) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "DanganRonpa.umdimagedat",                 "DrUmdImg"    ),  DanganRonpa.umdimagedat.umdimagedat.Execute) },

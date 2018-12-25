@@ -82,15 +82,8 @@
     <Compile Include="DanganRonpa\DanganUtil.cs" />
     <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
     <Compile Include="DanganRonpa\Lin\LIN.cs" />
-    <Compile Include="DanganRonpa\Nonstop\NonstopForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DanganRonpa\Nonstop\NonstopForm.designer.cs">
-      <DependentUpon>NonstopForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DanganRonpa\Nonstop\Nonstop.cs" />
+    <Compile Include="DanganRonpa\Nonstop\NonstopFile.cs" />
     <Compile Include="DanganRonpa\Nonstop\NonstopSingle.cs" />
-    <Compile Include="DanganRonpa\Nonstop\RunNonstopForm.cs" />
     <Compile Include="DanganRonpa\PakText\PakText.cs" />
     <Compile Include="DanganRonpa\Pak\Program.cs" />
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
@@ -389,9 +382,6 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DanganRonpa\Nonstop\NonstopForm.resx">
-      <DependentUpon>NonstopForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
