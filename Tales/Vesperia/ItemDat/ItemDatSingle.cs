@@ -191,15 +191,19 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 		public UInt32[] Data;
 
-		public ItemDatSingle( int offset, byte[] file, Util.Endianness endian ) {
-			NamePointer = BitConverter.ToUInt32( file, offset + 0x04 ).FromEndian( endian );
-			ItemString = Encoding.ASCII.GetString( file, offset + 0x20, 0x20 );
-			DescriptionPointer = BitConverter.ToUInt32( file, offset + 0x44 ).FromEndian( endian );
+		public ItemDatSingle( System.IO.Stream stream, Util.Endianness endian ) { // 0x2E4
+			long pos = stream.Position;
+			stream.Position = pos + 0x04;
+			NamePointer = stream.ReadUInt32().FromEndian( endian );
+			stream.Position = pos + 0x20;
+			ItemString = stream.ReadAscii( 0x20 );
+			stream.Position = pos + 0x44;
+			DescriptionPointer = stream.ReadUInt32().FromEndian( endian );
 
-			int startRest = 0x0;
+			stream.Position = pos;
 			Data = new UInt32[0x2E4 / 4];
 			for ( int i = 0; i < 0x2E4 / 4; ++i ) {
-				Data[i] = BitConverter.ToUInt32( file, offset + startRest + i * 0x04 ).FromEndian( endian );
+				Data[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 			return;

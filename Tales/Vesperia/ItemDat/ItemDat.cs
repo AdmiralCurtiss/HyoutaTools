@@ -8,21 +8,39 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		public List<ItemDatSingle> items;
 		public Dictionary<uint, ItemDatSingle> itemIdDict;
 
-		public ItemDat( string Filename, Util.Endianness endian ) {
-			Initialize( System.IO.File.ReadAllBytes( Filename ), endian );
+		public ItemDat( string filename, Util.Endianness endian ) {
+			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open ) ) {
+				if ( !LoadFile( stream, endian ) ) {
+					throw new Exception( "Loading ItemDat failed!" );
+				}
+			}
 		}
 
-		private void Initialize( byte[] file, Util.Endianness endian ) {
-			items = new List<ItemDatSingle>( file.Length / 0x2E4 );
+		public ItemDat( System.IO.Stream stream, Util.Endianness endian ) {
+			if ( !LoadFile( stream, endian ) ) {
+				throw new Exception( "Loading ItemDat failed!" );
+			}
+		}
 
-			for ( int i = 0; i < file.Length; i += 0x2E4 ) {
-				items.Add( new ItemDatSingle( i, file, endian ) );
+		private bool LoadFile( System.IO.Stream stream, Util.Endianness endian ) {
+			if ( ( stream.Length % 0x2E4 ) != 0 ) {
+				Console.WriteLine( "ItemDat: Not a valid size, must be divisible by 0x2E4." );
+				return false;
+			}
+
+			int itemCount = (int)( stream.Length / 0x2E4 );
+			items = new List<ItemDatSingle>( itemCount );
+
+			for ( int i = 0; i < itemCount; ++i ) {
+				items.Add( new ItemDatSingle( stream, endian ) );
 			}
 
 			itemIdDict = new Dictionary<uint, ItemDatSingle>();
 			foreach ( var item in items ) {
 				itemIdDict.Add( item.Data[(int)ItemData.ID], item );
 			}
+
+			return true;
 		}
 
 		public List<ItemDatSingle> GetSortedByInGameSorting() {
