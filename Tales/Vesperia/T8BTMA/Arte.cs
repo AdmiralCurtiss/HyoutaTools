@@ -54,17 +54,22 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 		public uint TPUsage;
 		public uint UsableInMenu;
 
-		public Arte( byte[] Bytes, uint Location, uint Size, uint refStringStart, Util.Endianness endian ) {
+		public Arte( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+			uint Size = stream.PeekUInt32().FromEndian( endian );
+			if ( ( Size % 4 ) != 0 ) {
+				throw new Exception( "Arte data size not divisble by 4." );
+			}
+
 			Data = new uint[Size / 4];
 			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = BitConverter.ToUInt32( Bytes, (int)( Location + i * 4 ) ).FromEndian( endian );
+				Data[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
 			ID = Data[1];
 			InGameID = Data[2];
 
 			uint refStringLocaton = Data[3]; // seems to be identical with Data[4]
-			RefString = Util.GetTextAscii( Bytes, (int)( refStringStart + refStringLocaton ) );
+			RefString = stream.ReadAsciiNulltermFromLocationAndReset( refStringStart + refStringLocaton );
 
 			NameStringDicId = Data[5];
 			DescStringDicId = Data[6];
