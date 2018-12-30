@@ -7,7 +7,7 @@ using System.IO;
 namespace HyoutaTools.Tales.Vesperia.BTLBDAT {
 	public class BTLBDAT {
 		public BTLBDAT( String filename, Util.Endianness endian ) {
-			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
+			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading BTLBDAT failed!" );
 				}

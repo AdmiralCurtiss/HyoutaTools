@@ -12,7 +12,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public TSSEntry[] Entries;
 
 		public TSSFile( string filename, Util.GameTextEncoding encoding ) {
-			using ( Stream stream = new FileStream( filename, FileMode.Open ) ) {
+			using ( Stream stream = new FileStream( filename, FileMode.Open, FileAccess.Read ) ) {
 				if ( !LoadFile( stream, encoding ) ) {
 					throw new Exception( "Loading TSSFile failed!" );
 				}

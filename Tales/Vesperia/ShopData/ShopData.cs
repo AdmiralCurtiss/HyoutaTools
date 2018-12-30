@@ -7,7 +7,7 @@ using System.IO;
 namespace HyoutaTools.Tales.Vesperia.ShopData {
 	public class ShopData {
 		public ShopData( String filename, uint shopStart, uint shopCount, uint itemStart, uint itemCount, Util.Endianness endian ) {
-			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
+			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, shopStart, shopCount, itemStart, itemCount, endian ) ) {
 					throw new Exception( "Loading ShopData failed!" );
 				}

@@ -6,7 +6,7 @@ using System.Text;
 namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 	public class T8BTMA {
 		public T8BTMA( string filename, Util.Endianness endian ) {
-			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open ) ) {
+			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading T8BTMA failed!" );
 				}

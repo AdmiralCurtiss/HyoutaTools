@@ -36,7 +36,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public ChatFileLine[] Lines;
 
 		public ChatFile( string filename, Util.Endianness endian, Util.GameTextEncoding encoding ) {
-			using ( Stream stream = new FileStream( filename, FileMode.Open ) ) {
+			using ( Stream stream = new FileStream( filename, FileMode.Open, FileAccess.Read ) ) {
 				LoadFile( stream, endian, encoding );
 			}
 		}

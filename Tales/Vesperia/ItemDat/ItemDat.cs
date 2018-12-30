@@ -9,7 +9,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		public Dictionary<uint, ItemDatSingle> itemIdDict;
 
 		public ItemDat( string filename, Util.Endianness endian ) {
-			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open ) ) {
+			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading ItemDat failed!" );
 				}

@@ -7,7 +7,7 @@ using System.IO;
 namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 	public class T8BTEMST {
 		public T8BTEMST( String filename, Util.Endianness endian ) {
-			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
+			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading T8BTEMST failed!" );
 				}

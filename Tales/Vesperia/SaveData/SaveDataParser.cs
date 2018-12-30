@@ -27,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			var titles = new FAMEDAT.FAMEDAT( @"c:\Dropbox\ToV\PS3\orig\menu.svo.ext\FAMEDATA.BIN", endian );
 			var enemies = new T8BTEMST.T8BTEMST( @"c:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000", endian );
 
-			using ( Stream file = new FileStream( args[0], System.IO.FileMode.Open ) ) {
+			using ( Stream file = new FileStream( args[0], FileMode.Open, FileAccess.Read ) ) {
 				file.DiscardBytes( 0x228 ); // short header, used for save menu on 360 version to display basic info about save
 				string magic = file.ReadAscii( 8 );
 				if ( magic != "TO8SAVE\0" ) {

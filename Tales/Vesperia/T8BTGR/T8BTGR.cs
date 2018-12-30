@@ -7,7 +7,7 @@ using System.IO;
 namespace HyoutaTools.Tales.Vesperia.T8BTGR {
 	public class T8BTGR {
 		public T8BTGR( String filename, Util.Endianness endian ) {
-			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
+			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading T8BTGR failed!" );
 				}

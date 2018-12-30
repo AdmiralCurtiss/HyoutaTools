@@ -8,7 +8,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 	public class T8BTXTMM {
 		// map definitions
 		public T8BTXTMM( String filename, Util.Endianness endian ) {
-			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
+			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading T8BTXTMM failed!" );
 				}

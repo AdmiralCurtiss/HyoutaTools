@@ -9,7 +9,7 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 		public ScenarioFile() { }
 
 		public ScenarioFile( String filename, Util.GameTextEncoding encoding ) {
-			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
+			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, FileAccess.Read, FileShare.Read ) ) {
 				if ( !LoadFile( stream, encoding ) ) {
 					throw new Exception( "Loading ScenarioFile failed!" );
 				}

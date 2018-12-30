@@ -6,7 +6,7 @@ using System.Text;
 namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 	public class T8BTVA {
 		public T8BTVA( String filename, Util.Endianness endian ) {
-			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
+			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading T8BTVA failed!" );
 				}

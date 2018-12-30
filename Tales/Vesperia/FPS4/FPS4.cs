@@ -371,7 +371,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		private void WriteFilesToFileStream( string[] files, FileStream f ) {
 			for ( int i = 0; i < files.Length; ++i ) {
-				using ( var fs = new System.IO.FileStream( files[i], FileMode.Open ) ) {
+				using ( var fs = new System.IO.FileStream( files[i], FileMode.Open, FileAccess.Read ) ) {
 					Console.WriteLine( "Packing #" + i.ToString( "D4" ) + ": " + files[i] );
 					Util.CopyStream( fs, f, (int)fs.Length );
 					while ( f.Length % Alignment != 0 ) { f.WriteByte( 0 ); }

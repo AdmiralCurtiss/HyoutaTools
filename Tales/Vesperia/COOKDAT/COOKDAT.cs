@@ -7,7 +7,7 @@ using System.IO;
 namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 	public class COOKDAT {
 		public COOKDAT( String filename, Util.Endianness endian ) {
-			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
+			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading COOKDAT failed!" );
 				}
