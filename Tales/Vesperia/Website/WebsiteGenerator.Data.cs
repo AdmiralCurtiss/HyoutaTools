@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public partial class WebsiteGenerator {
 		public GameVersion Version;
+		public GameLocale Locale;
+
 		public ItemDat.ItemDat Items;
 		public TSS.TSSFile StringDic;
 		public T8BTMA.T8BTMA Artes;
@@ -40,7 +42,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		public T8BTXTM.T8BTXTMA NecropolisFloors;
 		public T8BTXTM.T8BTXTMT NecropolisTreasures;
-		public Dictionary<string, T8BTXTM.T8BTXTMM> NecropolisMaps;
+		public IDictionary<string, T8BTXTM.T8BTXTMM> NecropolisMaps;
 
 		public Dictionary<uint, TSS.TSSEntry> InGameIdDict;
 		public uint[] IconsWithItems;

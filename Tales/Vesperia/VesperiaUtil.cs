@@ -8,6 +8,9 @@ namespace HyoutaTools.Tales.Vesperia {
 	public enum GameVersion {
 		X360, PS3
 	}
+	public enum GameLocale {
+		J, US, UK, DE, FR
+	}
 	public enum ControllerButton {
 		Start, Select, RightButton, LowerButton, LeftButton, UpperButton, L1, L2, L3, R1, R2, R3, LeftStick, RightStick, DPad, System
 	}
