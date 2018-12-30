@@ -19,8 +19,8 @@ namespace HyoutaTools.Generic.BlockCopy {
 
 			string srcFilename = args[0];
 			string dstFilename = args[2];
-			using ( var src = new System.IO.FileStream( srcFilename, System.IO.FileMode.Open, FileAccess.Read, FileShare.ReadWrite ) )
-			using ( var dst = new System.IO.FileStream( dstFilename, System.IO.FileMode.Open, FileAccess.Write, FileShare.ReadWrite ) ) {
+			using ( var src = new System.IO.FileStream( srcFilename, System.IO.FileMode.Open, FileAccess.Read, FileShare.Read ) )
+			using ( var dst = new System.IO.FileStream( dstFilename, System.IO.FileMode.Open, FileAccess.Write ) ) {
 				int SourceStart = Int32.Parse( args[1], NumberStyles.AllowHexSpecifier );
 				int DestinationStart = Int32.Parse( args[3], NumberStyles.AllowHexSpecifier );
 
