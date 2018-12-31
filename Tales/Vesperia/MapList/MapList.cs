@@ -5,26 +5,42 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.MapList {
 	class MapList {
-		public uint Liststart;
-		public uint Textstart;
-
 		public List<MapName> MapNames;
 
-		public MapList( byte[] Bytes ) {
-			Liststart = Util.SwapEndian( BitConverter.ToUInt32( Bytes, 0x0C ) );
-			Textstart = Util.SwapEndian( BitConverter.ToUInt32( Bytes, 0x14 ) );
+		public MapList( string filename, Util.Endianness endian ) {
+			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open, System.IO.FileAccess.Read ) ) {
+				if ( !LoadFile( stream, endian ) ) {
+					throw new Exception( "Loading MapList failed!" );
+				}
+			}
+		}
+
+		public MapList( System.IO.Stream stream, Util.Endianness endian ) {
+			if ( !LoadFile( stream, endian ) ) {
+				throw new Exception( "Loading MapList failed!" );
+			}
+		}
+
+		private bool LoadFile( System.IO.Stream stream, Util.Endianness endian ) {
+			string magic = stream.ReadAscii( 8 );
+			if ( magic != "TO8MAPL\0" ) {
+				return false;
+			}
+
+			uint filesize = stream.ReadUInt32().FromEndian( endian );
+			uint liststart = stream.ReadUInt32().FromEndian( endian );
+			uint mapcount = stream.ReadUInt32().FromEndian( endian );
+			uint textstart = stream.ReadUInt32().FromEndian( endian );
+			uint littleEndianFilesize = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian ); // ???
 
 			MapNames = new List<MapName>();
 
-			for ( uint i = Liststart; i < Textstart; i += 0x20 ) {
-				MapName m = new MapName( Bytes, i, Textstart );
-
-				m.Name1 = Util.GetTextShiftJis( Bytes, (int)m.Pointer1 );
-				m.Name2 = Util.GetTextShiftJis( Bytes, (int)m.Pointer2 );
-				m.Name3 = Util.GetTextShiftJis( Bytes, (int)m.Pointer3 );
-
-				MapNames.Add( m );
+			stream.Position = liststart;
+			for ( uint i = 0; i < mapcount; ++i ) {
+				MapNames.Add( new MapName( stream, textstart, endian ) );
 			}
+
+			return true;
 		}
 	}
 }

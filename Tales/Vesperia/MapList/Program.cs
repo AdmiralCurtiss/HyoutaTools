@@ -22,7 +22,7 @@ namespace HyoutaTools.Tales.Vesperia.MapList {
 				using ( var ta = conn.BeginTransaction() ) {
 					SqliteUtil.Update( ta, "CREATE TABLE descriptions( filename TEXT PRIMARY KEY, shortdesc TEXT, desc TEXT )" );
 					int i = 0;
-					foreach ( MapName m in new MapList( System.IO.File.ReadAllBytes( maplistFilename ) ).MapNames ) {
+					foreach ( MapName m in new MapList( maplistFilename, Util.Endianness.BigEndian ).MapNames ) {
 						Console.WriteLine( i + " = " + m.ToString() );
 						List<string> p = new List<string>();
 						p.Add( "VScenario" + i );

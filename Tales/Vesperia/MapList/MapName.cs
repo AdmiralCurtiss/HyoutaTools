@@ -5,41 +5,48 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.MapList {
 	class MapName {
-		public uint Pointer1;
-		public uint Pointer2;
-		public uint Pointer3;
+		public string Name1;
+		public string Name2;
+		public string Name3;
+		public short Unknown6a;
 
-		public String Name1 = null;
-		public String Name2 = null;
-		public String Name3 = null;
+		public MapName( System.IO.Stream stream, uint textstart, Util.Endianness endian ) {
+			uint p1 = stream.ReadUInt32().FromEndian( endian );
+			uint p2 = stream.ReadUInt32().FromEndian( endian );
+			uint p3 = stream.ReadUInt32().FromEndian( endian );
+			uint unknown4 = stream.ReadUInt32().FromEndian( endian );
+			Util.Assert( unknown4 == 0 );
 
-		public MapName( byte[] Bytes, uint Offset, uint Textstart ) {
-			Pointer1 = Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)Offset ) );
-			Pointer1 += Textstart;
-			Pointer2 = Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)( Offset + 4 ) ) );
-			Pointer2 += Textstart;
-			Pointer3 = Util.SwapEndian( BitConverter.ToUInt32( Bytes, (int)( Offset + 8 ) ) );
-			Pointer3 += Textstart;
+			uint unknown5 = stream.ReadUInt32().FromEndian( endian );
+			Util.Assert( unknown5 == 0 );
+			Unknown6a = stream.ReadUInt16().FromEndian( endian ).AsSigned();
+			uint unknown6b = stream.ReadUInt16().FromEndian( endian );
+			Util.Assert( unknown6b == 0 );
+			uint unknown7 = stream.ReadUInt32().FromEndian( endian );
+			Util.Assert( unknown7 == 0 );
+			uint unknown8 = stream.ReadUInt32().FromEndian( endian );
+			Util.Assert( unknown8 == 0 );
+
+			Name1 = stream.ReadAsciiNulltermFromLocationAndReset( textstart + p1 );
+			Name2 = stream.ReadAsciiNulltermFromLocationAndReset( textstart + p2 );
+			Name3 = stream.ReadAsciiNulltermFromLocationAndReset( textstart + p3 );
 		}
 
 		public override string ToString() {
 			StringBuilder sb = new StringBuilder();
 
-			bool first = true;
-
+			sb.Append( Unknown6a );
 			if ( !String.IsNullOrEmpty( Name1 ) ) {
+				sb.Append( " | " );
 				sb.Append( Name1 );
-				first = false;
 			}
 			if ( !String.IsNullOrEmpty( Name2 ) ) {
-				if ( !first ) sb.Append( " | " );
+				sb.Append( " | " );
 				sb.Append( Name2 );
-				first = false;
 			}
 			if ( !String.IsNullOrEmpty( Name3 ) ) {
-				if ( !first ) sb.Append( " | " );
+				sb.Append( " | " );
 				sb.Append( Name3 );
-				first = false;
 			}
 
 			return sb.ToString();
