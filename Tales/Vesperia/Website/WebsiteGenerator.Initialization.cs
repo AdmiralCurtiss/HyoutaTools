@@ -157,9 +157,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 
 				string episodeID = names.Name3 == "dummy" ? names.Name1 : names.Name3;
-				if ( Version == GameVersion.X360 ) {
-					episodeID = names.Name1 == "dummy" ? names.Name3 : names.Name1;
-				}
 
 				// the game has this file twice in scenario.dat, so ignore the first instance we encounter, as presumably the game would overwrite the first instance with the second?
 				if ( !haveSeenEP_030_010 && episodeID == "EP_030_010" ) {
