@@ -118,48 +118,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			Console.WriteLine( "Initializing 360" );
 
-			var site = new WebsiteGenerator();
 			Util.Endianness endian = Util.Endianness.BigEndian;
+			WebsiteGenerator site = LoadWebsiteGenerator( dir360, GameVersion.X360, GameLocale.UK, endian, Util.GameTextEncoding.UTF8 );
 
-			site.Version = GameVersion.X360;
-			site.Locale = GameLocale.UK;
-
-			site.Items = new ItemDat.ItemDat( TryGetItemDat( dir360, site.Locale, site.Version ), endian );
-			site.StringDic = new TSS.TSSFile( TryGetStringDic( dir360, site.Locale, site.Version ), Util.GameTextEncoding.UTF8 );
-			site.Artes = new T8BTMA.T8BTMA( TryGetArtes( dir360, site.Locale, site.Version ), endian );
-			site.Skills = new T8BTSK.T8BTSK( TryGetSkills( dir360, site.Locale, site.Version ), endian );
-			site.Enemies = new T8BTEMST.T8BTEMST( TryGetEnemies( dir360, site.Locale, site.Version ), endian );
-			site.EnemyGroups = new T8BTEMGP.T8BTEMGP( TryGetEnemyGroups( dir360, site.Locale, site.Version ), endian );
-			site.EncounterGroups = new T8BTEMEG.T8BTEMEG( TryGetEncounterGroups( dir360, site.Locale, site.Version ), endian );
-			site.Recipes = new COOKDAT.COOKDAT( TryGetRecipes( dir360, site.Locale, site.Version ), endian );
-			site.Locations = new WRLDDAT.WRLDDAT( TryGetLocations( dir360, site.Locale, site.Version ), endian );
-			site.Synopsis = new SYNPDAT.SYNPDAT( TryGetSynopsis( dir360, site.Locale, site.Version ), endian );
-			site.Titles = new FAMEDAT.FAMEDAT( TryGetTitles( dir360, site.Locale, site.Version ), endian );
-			site.GradeShop = new T8BTGR.T8BTGR( TryGetGradeShop( dir360, site.Locale, site.Version ), endian );
-			site.BattleBook = new BTLBDAT.BTLBDAT( TryGetBattleBook( dir360, site.Locale, site.Version ), endian );
-			site.Strategy = new T8BTTA.T8BTTA( TryGetStrategy( dir360, site.Locale, site.Version ), endian );
-			site.BattleVoicesEnd = new T8BTVA.T8BTVA( TryGetBattleVoicesEnd( dir360, site.Locale, site.Version ), endian );
-			site.Skits = new TO8CHLI.TO8CHLI( TryGetSkitMetadata( dir360, site.Locale, site.Version ), endian );
-			site.SkitText = new Dictionary<string, TO8CHTX.ChatFile>();
-			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
-				string name = site.Skits.SkitInfoList[i].RefString;
-				Stream stream = TryGetSkitText( dir360, name, site.Locale, site.Version );
-				if ( stream != null ) {
-					bool isUtf8 = name != "VC084";
-					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( stream, endian, isUtf8 ? Util.GameTextEncoding.UTF8 : Util.GameTextEncoding.ShiftJIS );
-					site.SkitText.Add( name, chatFile );
-				} else {
-					Console.WriteLine( "Couldn't find 360 chat file " + name + "!" );
-				}
-			}
-			site.Shops = new ShopData.ShopData( TryGetScenarioFile( dir360, 0, site.Locale, site.Version ), 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56, endian );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
-			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 9, 16, 18, 2, 17, 19, 10, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
-			site.Records = WebsiteGenerator.GenerateRecordsStringDicList( site.Version );
-			site.Settings = WebsiteGenerator.GenerateSettingsStringDicList( site.Version );
-			site.BattleTextFiles = WebsiteGenerator.LoadBattleTextTSS( dir360 + @"btl.svo.ext\BTL_PACK_UK.DAT.ext\0003.ext\", Util.GameTextEncoding.UTF8 );
-
-			site.ScenarioFiles = new Dictionary<string, ScenarioFile.ScenarioFile>();
 			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
 			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
 			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
@@ -179,76 +141,109 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			Console.WriteLine( "Initializing PS3" );
 
-			site.Version = GameVersion.PS3;
-			site.Locale = GameLocale.J;
+			site = LoadWebsiteGenerator( dirPS3orig, GameVersion.PS3, GameLocale.J, endian, Util.GameTextEncoding.ShiftJIS );
+			site.BattleTextFiles = WebsiteGenerator.LoadBattleTextScfombin( dirPS3 + @"orig\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\", endian, dirPS3 + @"mod\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\" );
+			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
+			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
+			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
+			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
-			var PS3StringDic = new TSS.TSSFile( TryGetStringDic( dirPS3mod, site.Locale, site.Version ), Util.GameTextEncoding.ShiftJIS );
-			site.StringDic = PS3StringDic;
-			site.Items = new ItemDat.ItemDat( TryGetItemDat( dirPS3orig, site.Locale, site.Version ), endian );
-			site.Artes = new T8BTMA.T8BTMA( TryGetArtes( dirPS3orig, site.Locale, site.Version ), endian );
-			site.Skills = new T8BTSK.T8BTSK( TryGetSkills( dirPS3orig, site.Locale, site.Version ), endian );
-			site.Enemies = new T8BTEMST.T8BTEMST( TryGetEnemies( dirPS3orig, site.Locale, site.Version ), endian );
-			site.EnemyGroups = new T8BTEMGP.T8BTEMGP( TryGetEnemyGroups( dirPS3orig, site.Locale, site.Version ), endian );
-			site.EncounterGroups = new T8BTEMEG.T8BTEMEG( TryGetEncounterGroups( dirPS3orig, site.Locale, site.Version ), endian );
-			site.Recipes = new COOKDAT.COOKDAT( TryGetRecipes( dirPS3orig, site.Locale, site.Version ), endian );
-			site.Locations = new WRLDDAT.WRLDDAT( TryGetLocations( dirPS3orig, site.Locale, site.Version ), endian );
-			site.Synopsis = new SYNPDAT.SYNPDAT( TryGetSynopsis( dirPS3orig, site.Locale, site.Version ), endian );
-			site.Titles = new FAMEDAT.FAMEDAT( TryGetTitles( dirPS3orig, site.Locale, site.Version ), endian );
-			site.GradeShop = new T8BTGR.T8BTGR( TryGetGradeShop( dirPS3orig, site.Locale, site.Version ), endian );
-			site.BattleBook = new BTLBDAT.BTLBDAT( TryGetBattleBook( dirPS3orig, site.Locale, site.Version ), endian );
-			site.Strategy = new T8BTTA.T8BTTA( TryGetStrategy( dirPS3orig, site.Locale, site.Version ), endian );
-			site.Skits = new TO8CHLI.TO8CHLI( TryGetSkitMetadata( dirPS3orig, site.Locale, site.Version ), endian );
-			site.SearchPoints = new TOVSEAF.TOVSEAF( TryGetSearchPoints( dirPS3orig, site.Locale, site.Version ), endian );
-			site.SkitText = new Dictionary<string, TO8CHTX.ChatFile>();
-			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
-				string name = site.Skits.SkitInfoList[i].RefString;
-				Stream streamOrig = TryGetSkitText( dirPS3orig, name, site.Locale, site.Version );
-				Stream streamMod = TryGetSkitText( dirPS3mod, name, site.Locale, site.Version );
-				var chatFile = new TO8CHTX.ChatFile( streamOrig, endian, Util.GameTextEncoding.ShiftJIS );
+			// patch original PS3 data with fantranslation
+			foreach ( var kvp in site.SkitText ) {
+				var chatFile = kvp.Value;
+				Stream streamMod = TryGetSkitText( dirPS3mod, kvp.Key, site.Locale, site.Version );
 				var chatFileMod = new TO8CHTX.ChatFile( streamMod, endian, Util.GameTextEncoding.ShiftJIS );
 				Util.Assert( chatFile.Lines.Length == chatFileMod.Lines.Length );
 				for ( int j = 0; j < chatFile.Lines.Length; ++j ) {
 					chatFile.Lines[j].SENG = chatFileMod.Lines[j].SJPN;
 					chatFile.Lines[j].SNameEnglishNotUsedByGame = chatFileMod.Lines[j].SName;
 				}
-				site.SkitText.Add( name, chatFile );
 			}
-			site.Shops = new ShopData.ShopData( TryGetScenarioFile( dirPS3mod, 0, site.Locale, site.Version ), 0x1C9BC, 0x460 / 32, 0x980, 0x14CB8 / 56, endian );
-			site.NecropolisFloors = new T8BTXTM.T8BTXTMA( TryGetNecropolisFloors( dirPS3orig, site.Locale, site.Version ), endian );
-			site.NecropolisTreasures = new T8BTXTM.T8BTXTMT( TryGetNecropolisTreasures( dirPS3orig, site.Locale, site.Version ), endian );
-			site.NecropolisMaps = new SortedDictionary<string, T8BTXTM.T8BTXTMM>();
-			foreach ( T8BTXTM.FloorInfo floor in site.NecropolisFloors.FloorList ) {
-				if ( !site.NecropolisMaps.ContainsKey( floor.RefString2 ) ) {
-					site.NecropolisMaps.Add( floor.RefString2, new T8BTXTM.T8BTXTMM( TryGetNecropolisMap( dirPS3orig, floor.RefString2, site.Locale, site.Version ), endian ) );
-				}
-			}
-			site.TrophyJp = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( dirPS3 + @"orig\TROPHY.TRP.ext\TROP.SFM", dirPS3 + @"orig\TROPHY.TRP.ext\TROPCONF.SFM" );
 			site.TrophyEn = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( dirPS3 + @"mod\TROPHY.TRP.ext\TROP.SFM", dirPS3 + @"mod\TROPHY.TRP.ext\TROPCONF.SFM" );
-			site.ScenarioFiles = new Dictionary<string, ScenarioFile.ScenarioFile>();
+			site.StringDic = new TSS.TSSFile( TryGetStringDic( dirPS3mod, site.Locale, site.Version ), Util.GameTextEncoding.ShiftJIS );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
-			site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
-			site.Records = WebsiteGenerator.GenerateRecordsStringDicList( site.Version );
-			site.Settings = WebsiteGenerator.GenerateSettingsStringDicList( site.Version );
-			site.BattleTextFiles = WebsiteGenerator.LoadBattleTextScfombin( dirPS3 + @"orig\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\", endian, dirPS3 + @"mod\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\" );
-
-			site.NpcList = new TOVNPC.TOVNPCL( dirPS3 + @"orig\npc.svo.ext\NPC.DAT.dec.ext\0000.dec", endian );
-			site.NpcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
-			foreach ( var f in site.NpcList.NpcFileList ) {
-				string filename = dirPS3 + @"orig\npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
-				if ( File.Exists( filename ) ) {
-					var d = new TOVNPC.TOVNPCT( filename, endian );
-					site.NpcDefs.Add( f.Map, d );
-				}
-			}
-
-			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			ExportToWebsite( site, dir, site360 );
 
 			return 0;
+		}
+
+		public static WebsiteGenerator LoadWebsiteGenerator( string gameDataPath, GameVersion version, GameLocale locale, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+			WebsiteGenerator site = new WebsiteGenerator();
+			site.Locale = locale;
+			site.Version = version;
+
+			site.Items = new ItemDat.ItemDat( TryGetItemDat( gameDataPath, site.Locale, site.Version ), endian );
+			site.StringDic = new TSS.TSSFile( TryGetStringDic( gameDataPath, site.Locale, site.Version ), encoding );
+			site.Artes = new T8BTMA.T8BTMA( TryGetArtes( gameDataPath, site.Locale, site.Version ), endian );
+			site.Skills = new T8BTSK.T8BTSK( TryGetSkills( gameDataPath, site.Locale, site.Version ), endian );
+			site.Enemies = new T8BTEMST.T8BTEMST( TryGetEnemies( gameDataPath, site.Locale, site.Version ), endian );
+			site.EnemyGroups = new T8BTEMGP.T8BTEMGP( TryGetEnemyGroups( gameDataPath, site.Locale, site.Version ), endian );
+			site.EncounterGroups = new T8BTEMEG.T8BTEMEG( TryGetEncounterGroups( gameDataPath, site.Locale, site.Version ), endian );
+			site.Recipes = new COOKDAT.COOKDAT( TryGetRecipes( gameDataPath, site.Locale, site.Version ), endian );
+			site.Locations = new WRLDDAT.WRLDDAT( TryGetLocations( gameDataPath, site.Locale, site.Version ), endian );
+			site.Synopsis = new SYNPDAT.SYNPDAT( TryGetSynopsis( gameDataPath, site.Locale, site.Version ), endian );
+			site.Titles = new FAMEDAT.FAMEDAT( TryGetTitles( gameDataPath, site.Locale, site.Version ), endian );
+			site.GradeShop = new T8BTGR.T8BTGR( TryGetGradeShop( gameDataPath, site.Locale, site.Version ), endian );
+			site.BattleBook = new BTLBDAT.BTLBDAT( TryGetBattleBook( gameDataPath, site.Locale, site.Version ), endian );
+			site.Strategy = new T8BTTA.T8BTTA( TryGetStrategy( gameDataPath, site.Locale, site.Version ), endian );
+			if ( site.Version == GameVersion.X360 ) {
+				site.BattleVoicesEnd = new T8BTVA.T8BTVA( TryGetBattleVoicesEnd( gameDataPath, site.Locale, site.Version ), endian );
+			}
+			if ( site.Version == GameVersion.PS3 ) {
+				site.SearchPoints = new TOVSEAF.TOVSEAF( TryGetSearchPoints( gameDataPath, site.Locale, site.Version ), endian );
+			}
+			site.Skits = new TO8CHLI.TO8CHLI( TryGetSkitMetadata( gameDataPath, site.Locale, site.Version ), endian );
+			site.SkitText = new Dictionary<string, TO8CHTX.ChatFile>();
+			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
+				string name = site.Skits.SkitInfoList[i].RefString;
+				Stream stream = TryGetSkitText( gameDataPath, name, site.Locale, site.Version );
+				if ( stream != null ) {
+					bool forceShiftJis = name == "VC084" && version == GameVersion.X360 && ( locale == GameLocale.UK || locale == GameLocale.US );
+					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( stream, endian, forceShiftJis ? Util.GameTextEncoding.ShiftJIS : encoding );
+					site.SkitText.Add( name, chatFile );
+				} else {
+					Console.WriteLine( "Couldn't find chat file " + name + "! (" + version + ", " + locale + ")" );
+				}
+			}
+
+			site.Records = WebsiteGenerator.GenerateRecordsStringDicList( site.Version );
+			site.Settings = WebsiteGenerator.GenerateSettingsStringDicList( site.Version );
+
+			site.ScenarioFiles = new Dictionary<string, ScenarioFile.ScenarioFile>();
+
+			if ( version == GameVersion.X360 ) {
+				site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56, endian );
+				site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51,     9, 16, 18, 2, 17, 19, 10,     20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
+				site.BattleTextFiles = WebsiteGenerator.LoadBattleTextTSS( gameDataPath + @"btl.svo.ext\BTL_PACK_UK.DAT.ext\0003.ext\", Util.GameTextEncoding.UTF8 );
+			} else {
+				site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1C9BC, 0x460 / 32, 0x980, 0x14CB8 / 56, endian );
+				site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
+			}
+
+			if ( version == GameVersion.PS3 ) {
+				site.NecropolisFloors = new T8BTXTM.T8BTXTMA( TryGetNecropolisFloors( gameDataPath, site.Locale, site.Version ), endian );
+				site.NecropolisTreasures = new T8BTXTM.T8BTXTMT( TryGetNecropolisTreasures( gameDataPath, site.Locale, site.Version ), endian );
+				site.NecropolisMaps = new SortedDictionary<string, T8BTXTM.T8BTXTMM>();
+				foreach ( T8BTXTM.FloorInfo floor in site.NecropolisFloors.FloorList ) {
+					if ( !site.NecropolisMaps.ContainsKey( floor.RefString2 ) ) {
+						site.NecropolisMaps.Add( floor.RefString2, new T8BTXTM.T8BTXTMM( TryGetNecropolisMap( gameDataPath, floor.RefString2, site.Locale, site.Version ), endian ) );
+					}
+				}
+				site.TrophyJp = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( gameDataPath + @"TROPHY.TRP.ext\TROP.SFM", gameDataPath + @"TROPHY.TRP.ext\TROPCONF.SFM" );
+
+				site.NpcList = new TOVNPC.TOVNPCL( gameDataPath + @"npc.svo.ext\NPC.DAT.dec.ext\0000.dec", endian );
+				site.NpcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
+				foreach ( var f in site.NpcList.NpcFileList ) {
+					string filename = gameDataPath + @"npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
+					if ( File.Exists( filename ) ) {
+						var d = new TOVNPC.TOVNPCT( filename, endian );
+						site.NpcDefs.Add( f.Map, d );
+					}
+				}
+			}
+
+			return site;
 		}
 
 		public static void ExportToWebsite( WebsiteGenerator site, string dir, WebsiteGenerator siteComparison = null ) {
