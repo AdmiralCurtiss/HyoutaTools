@@ -115,7 +115,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			string dirPS3 = @"c:\Dropbox\ToV\PS3\";
 			string dirPS3orig = @"c:\Dropbox\ToV\PS3\orig\";
 			string dirPS3mod = @"c:\Dropbox\ToV\PS3\mod\";
-			string databasePath;
 
 			Console.WriteLine( "Initializing 360" );
 
@@ -173,9 +172,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				site.InGameIdDict[kvp.Key].StringJpn = kvp.Value.StringJpn;
 			}
 
-			databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
-			System.IO.File.Delete( databasePath );
-			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath ) ).ExportAll();
+			string databasePath360 = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
+			System.IO.File.Delete( databasePath360 );
+			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath360 ) ).ExportAll();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false ) ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
@@ -266,6 +265,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Settings = WebsiteGenerator.GenerateSettingsStringDicList( site.Version );
 			site.BattleTextFiles = WebsiteGenerator.LoadBattleTextScfombin( dirPS3 + @"orig\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\", endian, dirPS3 + @"mod\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\" );
 
+			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
+			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
+			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
+			site.ScenarioAddSkits( site.ScenarioGroupsStory );
+
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false ) ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false, icon: (int)i ) ), site.GenerateHtmlItems( icon: i ), Encoding.UTF8 );
@@ -300,14 +304,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.NecropolisEnemy, site.Version, false ) ), site.GenerateHtmlNecropolis( dir, true ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.StringDic, site.Version, false ) ), site.GenerateHtmlNpc( dirPS3, endian ), Encoding.UTF8 );
 
-			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioAddSkits( site.ScenarioGroupsStory );
-
-			databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
-			System.IO.File.Delete( databasePath );
-			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath ), site360 ).ExportAll();
+			string databasePathPS3 = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
+			System.IO.File.Delete( databasePathPS3 );
+			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePathPS3 ), site360 ).ExportAll();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.ScenarioStoryIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsStory, ScenarioType.Story, site.Version ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.ScenarioSidequestIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsSidequests, ScenarioType.Sidequests, site.Version ), Encoding.UTF8 );

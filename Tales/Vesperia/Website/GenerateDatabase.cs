@@ -806,13 +806,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.ExecuteNonQuery();
 				}
 
-				List<long> changeStatus = new List<long>();
-				foreach ( var skit in Site.Skits.SkitInfoList ) {
+				Dictionary<string, long> changeStatus = new Dictionary<string, long>();
+				List<TO8CHLI.SkitInfo> skits = new List<TO8CHLI.SkitInfo>( Site.Skits.SkitInfoList );
+				skits.Sort();
+				foreach ( var skit in skits ) {
 					object o = SqliteUtil.SelectScalar( transaction, "SELECT MAX(changeStatus) FROM SkitText WHERE skitId = ?", new object[1] { skit.RefString } );
 					if ( o == null || o == System.DBNull.Value ) { o = -1L; }
-					changeStatus.Add( (long)o );
+					changeStatus.Add( skit.RefString, (long)o );
 				}
-				int skitidx = 0;
 
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "INSERT INTO SkitMeta ( skitId, flagTrigger, flagCancel, category, categoryStr, skitFlag, skitFlagUnique, characterBitmask, jpName,"
@@ -834,7 +835,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "changeStatus" );
 					command.AddParameter( "charHtml" );
 
-					foreach ( var skit in Site.Skits.SkitInfoList ) {
+					foreach ( var skit in skits ) {
 						command.GetParameter( "skitId" ).Value = skit.RefString;
 						command.GetParameter( "flagTrigger" ).Value = skit.FlagTrigger;
 						command.GetParameter( "flagCancel" ).Value = skit.FlagCancel;
@@ -847,7 +848,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "jpCond" ).Value = Site.InGameIdDict[skit.StringDicIdCondition].StringJpnHtml( Site.Version );
 						command.GetParameter( "enName" ).Value = Site.InGameIdDict[skit.StringDicIdName].StringEngHtml( Site.Version );
 						command.GetParameter( "enCond" ).Value = Site.InGameIdDict[skit.StringDicIdCondition].StringEngHtml( Site.Version );
-						command.GetParameter( "changeStatus" ).Value = changeStatus[skitidx++];
+						command.GetParameter( "changeStatus" ).Value = changeStatus[skit.RefString];
 						StringBuilder sb = new StringBuilder();
 						Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, Site.Version, skit.CharacterBitmask );
 						command.GetParameter( "charHtml" ).Value = sb.ToString();

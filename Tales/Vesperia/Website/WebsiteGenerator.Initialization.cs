@@ -200,13 +200,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public void ScenarioAddSkits( List<List<ScenarioData>> groups ) {
-			Skits.SkitInfoList.Sort();
 			List<TO8CHLI.SkitInfo> skitsToProcess = new List<TO8CHLI.SkitInfo>();
 			foreach ( var skit in Skits.SkitInfoList ) {
 				if ( skit.Category == 0 ) {
 					skitsToProcess.Add( skit );
 				}
 			}
+			skitsToProcess.Sort();
 
 			for ( int i = 0; i < groups.Count; ++i ) {
 				var group = groups[i];
