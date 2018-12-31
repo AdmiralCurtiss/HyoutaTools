@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.MapList {
-	class MapName {
+	public class MapName {
 		public string Name1;
 		public string Name2;
 		public string Name3;

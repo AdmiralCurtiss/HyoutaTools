@@ -5,16 +5,16 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class ScenarioData : IComparable<ScenarioData> {
+		public int ScenarioDatIndex;
 		public string EpisodeId;
 		public string HumanReadableName;
-		public string DatabaseName;
 		public List<TO8CHLI.SkitInfo> Skits = new List<TO8CHLI.SkitInfo>();
 
 		public int CompareTo( ScenarioData other ) {
 			return this.EpisodeId.CompareTo( other.EpisodeId );
 		}
 		public override string ToString() {
-			return EpisodeId + ": " + HumanReadableName;
+			return "[" + ScenarioDatIndex + "] " + EpisodeId + ": " + HumanReadableName;
 		}
 
 		public string HumanReadableNameWithoutPrefix( string prefix ) {

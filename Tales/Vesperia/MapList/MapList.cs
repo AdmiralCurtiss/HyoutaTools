@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.MapList {
-	class MapList {
+	public class MapList {
 		public List<MapName> MapNames;
 
 		public MapList( string filename, Util.Endianness endian ) {

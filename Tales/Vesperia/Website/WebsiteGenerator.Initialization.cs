@@ -143,59 +143,50 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return settings;
 		}
 
-		public List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, string database, string scenarioDatFolder, string scenarioDatFolderMod = null, Util.GameTextEncoding encoding = Util.GameTextEncoding.ShiftJIS ) {
-			var data = SqliteUtil.SelectArray( "Data Source=" + database, "SELECT filename, shortdesc, desc FROM descriptions ORDER BY desc" );
+		public List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, MapList.MapList maplist, string scenarioDatFolder, string scenarioDatFolderMod = null, Util.GameTextEncoding encoding = Util.GameTextEncoding.ShiftJIS ) {
+			SortedDictionary<int, ScenarioWebsiteName> websiteNames = ScenarioWebsiteName.GenerateWebsiteNames( this.Version );
+			Util.Assert( maplist.MapNames.Count == websiteNames.Count );
 
 			List<ScenarioData> scenes = new List<ScenarioData>();
-			foreach ( var d in data ) {
-				string filename = (string)d[0];
-				string humanReadableName = (string)d[1];
-				string episodeID = (string)d[2];
-
-				int idx = humanReadableName.LastIndexOfAny( new char[] { ']', '}' } );
-				if ( idx > -1 ) {
-					humanReadableName = humanReadableName.Substring( idx + 1 );
+			List<ScenarioFile.ScenarioFile> scenarioFiles = new List<ScenarioFile.ScenarioFile>();
+			bool haveSeenEP_030_010 = false;
+			foreach ( var d in websiteNames ) {
+				var names = maplist.MapNames[d.Key];
+				if ( d.Value.Type != type ) {
+					continue;
 				}
-				humanReadableName = humanReadableName.Trim();
 
-				if ( filename.StartsWith( "VScenario" ) ) {
-					string group;
-					int dummy;
-					bool isStory;
-					bool isScenario = episodeID.StartsWith( "EP_" );
+				string episodeID = names.Name3 == "dummy" ? names.Name1 : names.Name3;
+				if ( Version == GameVersion.X360 ) {
+					episodeID = names.Name1 == "dummy" ? names.Name3 : names.Name1;
+				}
 
-					if ( isScenario ) {
-						group = episodeID.Split( '_' )[1];
-						isStory = group.Length == 3 && Int32.TryParse( group, out dummy );
-					} else {
-						group = "";
-						isStory = false;
-					}
+				// the game has this file twice in scenario.dat, so ignore the first instance we encounter, as presumably the game would overwrite the first instance with the second?
+				if ( !haveSeenEP_030_010 && episodeID == "EP_030_010" ) {
+					haveSeenEP_030_010 = true;
+					continue;
+				}
 
-					bool exportAsScenario = isScenario && ( ( type == ScenarioType.Story && isStory ) || ( type == ScenarioType.Sidequests && !isStory ) );
-					bool exportAsMap = !isScenario && type == ScenarioType.Maps;
-					if ( exportAsScenario || exportAsMap ) {
-						if ( !ScenarioFiles.ContainsKey( episodeID ) ) {
-							string num = filename.Substring( "VScenario".Length );
-							try {
-								var orig = new ScenarioFile.ScenarioFile( System.IO.Path.Combine( scenarioDatFolder, num + ".d" ), encoding );
-								if ( scenarioDatFolderMod != null ) {
-									var mod = new ScenarioFile.ScenarioFile( System.IO.Path.Combine( scenarioDatFolderMod, num + ".d" ), encoding );
-									Util.Assert( orig.EntryList.Count == mod.EntryList.Count );
-									for ( int i = 0; i < orig.EntryList.Count; ++i ) {
-										orig.EntryList[i].EnName = mod.EntryList[i].JpName;
-										orig.EntryList[i].EnText = mod.EntryList[i].JpText;
-									}
-								}
-								orig.EpisodeID = episodeID;
-								this.ScenarioFiles.Add( episodeID, orig );
-								scenes.Add( new ScenarioData() { EpisodeId = episodeID, HumanReadableName = humanReadableName, DatabaseName = filename } );
-							} catch ( System.IO.FileNotFoundException ) { }
+				int num = d.Key;
+				try {
+					var orig = new ScenarioFile.ScenarioFile( System.IO.Path.Combine( scenarioDatFolder, num + ".d" ), encoding );
+					if ( scenarioDatFolderMod != null ) {
+						var mod = new ScenarioFile.ScenarioFile( System.IO.Path.Combine( scenarioDatFolderMod, num + ".d" ), encoding );
+						Util.Assert( orig.EntryList.Count == mod.EntryList.Count );
+						for ( int i = 0; i < orig.EntryList.Count; ++i ) {
+							orig.EntryList[i].EnName = mod.EntryList[i].JpName;
+							orig.EntryList[i].EnText = mod.EntryList[i].JpText;
 						}
 					}
-				}
+					orig.EpisodeID = episodeID;
+					scenarioFiles.Add( orig );
+					scenes.Add( new ScenarioData() { ScenarioDatIndex = num, EpisodeId = episodeID, HumanReadableName = d.Value.Description != null ? d.Value.Description : episodeID } );
+				} catch ( System.IO.FileNotFoundException ) { }
 			}
 
+			foreach ( var s in scenarioFiles.OrderBy( x => x.EpisodeID ) ) {
+				this.ScenarioFiles.Add( s.EpisodeID, s );
+			}
 			return ScenarioData.ProcessScenesToGroups( scenes );
 		}
 

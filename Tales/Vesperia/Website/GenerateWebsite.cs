@@ -108,6 +108,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "scenario.dat.ext", fileIndex.ToString( "D1" ) + ".d" ) );
 			}
 		}
+		public static Stream TryGetMaplist( string basepath, GameLocale locale, GameVersion version ) {
+			return TryCreateStreamFromPath( Path.Combine( basepath, "map.svo.ext", "MAPLIST.DAT" ) );
+		}
 
 		public static int Generate( List<string> args ) {
 			string dir = @"c:\Dropbox\ToV\website\"; // output directory for generated files
@@ -122,9 +125,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			WebsiteGenerator site = LoadWebsiteGenerator( dir360, GameVersion.X360, GameLocale.UK, endian, Util.GameTextEncoding.UTF8 );
 
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
-			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
-			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
-			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, dir360 + @"scenarioDB", dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
+			var maplist = new MapList.MapList( TryGetMaplist( dir360, site.Locale, site.Version ), endian );
+			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, maplist, dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
+			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, maplist, dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
+			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, maplist, dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
 			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			// copy over Japanese stuff into UK StringDic
@@ -143,9 +147,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			site = LoadWebsiteGenerator( dirPS3orig, GameVersion.PS3, GameLocale.J, endian, Util.GameTextEncoding.ShiftJIS );
 			site.BattleTextFiles = WebsiteGenerator.LoadBattleTextScfombin( dirPS3 + @"orig\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\", endian, dirPS3 + @"mod\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\" );
-			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
+
+			maplist = new MapList.MapList( TryGetMaplist( dirPS3orig, site.Locale, site.Version ), endian );
+			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, maplist, dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
+			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, maplist, dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
+			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, maplist, dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
 			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			// patch original PS3 data with fantranslation
