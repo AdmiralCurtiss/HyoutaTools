@@ -44,6 +44,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public T8BTXTM.T8BTXTMT NecropolisTreasures;
 		public IDictionary<string, T8BTXTM.T8BTXTMM> NecropolisMaps;
 
+		public TOVNPC.TOVNPCL NpcList;
+		public Dictionary<string, TOVNPC.TOVNPCT> NpcDefs;
+
 		public Dictionary<uint, TSS.TSSEntry> InGameIdDict;
 		public uint[] IconsWithItems;
 	}

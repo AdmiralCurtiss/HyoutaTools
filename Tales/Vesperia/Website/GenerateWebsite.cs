@@ -172,41 +172,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				site.InGameIdDict[kvp.Key].StringJpn = kvp.Value.StringJpn;
 			}
 
-			string databasePath360 = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
-			System.IO.File.Delete( databasePath360 );
-			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath360 ) ).ExportAll();
-
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false ) ), site.GenerateHtmlItems(), Encoding.UTF8 );
-			foreach ( uint i in site.IconsWithItems ) {
-				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false, icon: (int)i ) ), site.GenerateHtmlItems( icon: i ), Encoding.UTF8 );
-			}
-			for ( uint i = 2; i < 12; ++i ) {
-				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false, category: (int)i ) ), site.GenerateHtmlItems( category: i ), Encoding.UTF8 );
-			}
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Enemy, site.Version, false ) ), site.GenerateHtmlEnemies(), Encoding.UTF8 );
-			for ( int i = 0; i < 9; ++i ) {
-				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Enemy, site.Version, false, category: (int)i ) ), site.GenerateHtmlEnemies( category: i ), Encoding.UTF8 );
-			}
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.EnemyGroup, site.Version, false ) ), site.GenerateHtmlEnemyGroups(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.EncounterGroup, site.Version, false ) ), site.GenerateHtmlEncounterGroups(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Skill, site.Version, false ) ), site.GenerateHtmlSkills(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Arte, site.Version, false ) ), site.GenerateHtmlArtes(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Synopsis, site.Version, false ) ), site.GenerateHtmlSynopsis(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Recipe, site.Version, false ) ), site.GenerateHtmlRecipes(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Location, site.Version, false ) ), site.GenerateHtmlLocations(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Strategy, site.Version, false ) ), site.GenerateHtmlStrategy(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Shop, site.Version, false ) ), site.GenerateHtmlShops(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Title, site.Version, false ) ), site.GenerateHtmlTitles(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.BattleBook, site.Version, false ) ), site.GenerateHtmlBattleBook(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Record, site.Version, false ) ), site.GenerateHtmlRecords(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Settings, site.Version, false ) ), site.GenerateHtmlSettings(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.GradeShop, site.Version, false ) ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.PostBattleVoices, site.Version, false ) ), site.GenerateHtmlBattleVoicesEnd(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.SkitInfo, site.Version, false ) ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.SkitIndex, site.Version, false ) ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.ScenarioStoryIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsStory, ScenarioType.Story, site.Version ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.ScenarioSidequestIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsSidequests, ScenarioType.Sidequests, site.Version ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.ScenarioMapIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsMaps, ScenarioType.Maps, site.Version ), Encoding.UTF8 );
+			ExportToWebsite( site, dir );
 
 			WebsiteGenerator site360 = site;
 			site = new WebsiteGenerator();
@@ -265,11 +231,27 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Settings = WebsiteGenerator.GenerateSettingsStringDicList( site.Version );
 			site.BattleTextFiles = WebsiteGenerator.LoadBattleTextScfombin( dirPS3 + @"orig\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\", endian, dirPS3 + @"mod\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\" );
 
+			site.NpcList = new TOVNPC.TOVNPCL( dirPS3 + @"orig\npc.svo.ext\NPC.DAT.dec.ext\0000.dec", endian );
+			site.NpcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
+			foreach ( var f in site.NpcList.NpcFileList ) {
+				string filename = dirPS3 + @"orig\npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
+				if ( File.Exists( filename ) ) {
+					var d = new TOVNPC.TOVNPCT( filename, endian );
+					site.NpcDefs.Add( f.Map, d );
+				}
+			}
+
 			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
 			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
 			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, dirPS3 + @"scenarioDB", dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
 			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
+			ExportToWebsite( site, dir, site360 );
+
+			return 0;
+		}
+
+		public static void ExportToWebsite( WebsiteGenerator site, string dir, WebsiteGenerator siteComparison = null ) {
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false ) ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false, icon: (int)i ) ), site.GenerateHtmlItems( icon: i ), Encoding.UTF8 );
@@ -295,24 +277,33 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Record, site.Version, false ) ), site.GenerateHtmlRecords(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Settings, site.Version, false ) ), site.GenerateHtmlSettings(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.GradeShop, site.Version, false ) ), site.GenerateHtmlGradeShop(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Trophy, site.Version, false ) ), site.GenerateHtmlTrophies(), Encoding.UTF8 );
+			if ( site.BattleVoicesEnd != null ) {
+				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.PostBattleVoices, site.Version, false ) ), site.GenerateHtmlBattleVoicesEnd(), Encoding.UTF8 );
+			}
+			if ( site.TrophyEn != null && site.TrophyJp != null ) {
+				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Trophy, site.Version, false ) ), site.GenerateHtmlTrophies(), Encoding.UTF8 );
+			}
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.SkitInfo, site.Version, false ) ), site.GenerateHtmlSkitInfo(), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.SkitIndex, site.Version, false ) ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.SearchPoint, site.Version, false ) ), site.GenerateHtmlSearchPoints(), Encoding.UTF8 );
-			site.SearchPoints.GenerateMap( new System.Drawing.Bitmap( dir + @"map\U_WORLDNAVI00_5120x4096_point.png" ) ).Save( dir + @"PS3-SearchPoint.png" );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.NecropolisMap, site.Version, false ) ), site.GenerateHtmlNecropolis( dir, false ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.NecropolisEnemy, site.Version, false ) ), site.GenerateHtmlNecropolis( dir, true ), Encoding.UTF8 );
-			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.StringDic, site.Version, false ) ), site.GenerateHtmlNpc( dirPS3, endian ), Encoding.UTF8 );
+			if ( site.SearchPoints != null ) {
+				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.SearchPoint, site.Version, false ) ), site.GenerateHtmlSearchPoints(), Encoding.UTF8 );
+				site.SearchPoints.GenerateMap( new System.Drawing.Bitmap( dir + @"map\U_WORLDNAVI00_5120x4096_point.png" ) ).Save( dir + site.Version + @"-SearchPoint.png" );
+			}
+			if ( site.NecropolisFloors != null && site.NecropolisTreasures != null && site.NecropolisMaps != null ) {
+				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.NecropolisMap, site.Version, false ) ), site.GenerateHtmlNecropolis( dir, false ), Encoding.UTF8 );
+				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.NecropolisEnemy, site.Version, false ) ), site.GenerateHtmlNecropolis( dir, true ), Encoding.UTF8 );
+			}
+			if ( site.NpcDefs != null ) {
+				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.StringDic, site.Version, false ) ), site.GenerateHtmlNpc(), Encoding.UTF8 );
+			}
 
-			string databasePathPS3 = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
-			System.IO.File.Delete( databasePathPS3 );
-			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePathPS3 ), site360 ).ExportAll();
+			string databasePath = Path.Combine( dir, "_db-" + site.Version + ".sqlite" );
+			System.IO.File.Delete( databasePath );
+			new GenerateDatabase( site, new System.Data.SQLite.SQLiteConnection( "Data Source=" + databasePath ), siteComparison ).ExportAll();
 
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.ScenarioStoryIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsStory, ScenarioType.Story, site.Version ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.ScenarioSidequestIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsSidequests, ScenarioType.Sidequests, site.Version ), Encoding.UTF8 );
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.ScenarioMapIndex, site.Version, false ) ), site.ScenarioProcessGroupsToHtml( site.ScenarioGroupsMaps, ScenarioType.Maps, site.Version ), Encoding.UTF8 );
-
-			return 0;
 		}
 	}
 }

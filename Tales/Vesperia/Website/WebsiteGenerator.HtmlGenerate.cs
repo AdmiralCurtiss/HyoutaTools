@@ -524,24 +524,15 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "</body></html>" );
 			return sb.ToString();
 		}
-		public string GenerateHtmlNpc( string dirPS3, Util.Endianness endian ) {
+		public string GenerateHtmlNpc() {
 			Console.WriteLine( "Generating Website: NPCs" );
-			var npcListPS3 = new TOVNPC.TOVNPCL( dirPS3 + @"orig\npc.svo.ext\NPC.DAT.dec.ext\0000.dec", endian );
-			Dictionary<string, TOVNPC.TOVNPCT> npcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
-			foreach ( var f in npcListPS3.NpcFileList ) {
-				string filename = dirPS3 + @"orig\npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
-				if ( File.Exists( filename ) ) {
-					var d = new TOVNPC.TOVNPCT( filename, endian );
-					npcDefs.Add( f.Map, d );
-				}
-			}
 
 			StringBuilder sb = new StringBuilder();
 			AddHeader( sb, Version, "NPC Dialogue" );
 			sb.AppendLine( "<body>" );
 			//AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
 			sb.Append( "<table class=\"npcdiff\">" );
-			foreach ( var kvp in npcDefs ) {
+			foreach ( var kvp in NpcDefs ) {
 				for ( int i = 0; i < kvp.Value.NpcDefList.Count; ++i ) {
 					var d = kvp.Value.NpcDefList[i];
 					sb.Append( "<tr>" );
