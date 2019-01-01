@@ -22,7 +22,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 		public static Stream TryGetStringDic( string basepath, GameLocale locale, GameVersion version ) {
 			if ( version == GameVersion.X360 ) {
-				return TryCreateStreamFromPath( Path.Combine( basepath, "string_dic_" + locale.ToString().ToLowerInvariant() + ".so" ) );
+				return TryCreateStreamFromPath( Path.Combine( basepath, "language", "string_dic_" + locale.ToString().ToLowerInvariant() + ".so" ) );
 			} else {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "string.svo.ext", "STRING_DIC.SO" ) );
 			}
@@ -117,7 +117,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 		public static Stream TryGetScenarioFile( string basepath, int fileIndex, GameLocale locale, GameVersion version ) {
 			if ( version == GameVersion.X360 ) {
-				return TryCreateStreamFromPath( Path.Combine( basepath, "scenario_" + locale.ToString().ToLowerInvariant() + ".dat.ext", fileIndex.ToString( "D1" ) + ".d" ) );
+				return TryCreateStreamFromPath( Path.Combine( basepath, "language", "scenario_" + locale.ToString().ToLowerInvariant() + ".dat.ext", fileIndex.ToString( "D1" ) + ".d" ) );
 			} else {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "scenario.dat.ext", fileIndex.ToString( "D1" ) + ".d" ) );
 			}
