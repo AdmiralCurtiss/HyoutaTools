@@ -157,6 +157,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site = LoadWebsiteGenerator( dirPS3orig, GameVersion.PS3, GameLocale.J, endian, Util.GameTextEncoding.ShiftJIS );
 
 			// patch original PS3 data with fantranslation
+			var stringDicTranslated = new TSS.TSSFile( TryGetStringDic( dirPS3mod, site.Locale, site.Version ), Util.GameTextEncoding.ShiftJIS );
+			Util.Assert( site.StringDic.Entries.Length == stringDicTranslated.Entries.Length );
+			for ( int i = 0; i < site.StringDic.Entries.Length; ++i ) {
+				Util.Assert( site.StringDic.Entries[i].inGameStringId == stringDicTranslated.Entries[i].inGameStringId );
+				site.StringDic.Entries[i].StringEng = stringDicTranslated.Entries[i].StringJpn;
+			}
 			foreach ( var kvp in site.ScenarioFiles ) {
 				if ( kvp.Value.EntryList.Count > 0 && kvp.Value.Metadata.ScenarioDatIndex >= 0 ) {
 					Stream streamMod = TryGetScenarioFile( dirPS3mod, kvp.Value.Metadata.ScenarioDatIndex, GameLocale.J, GameVersion.PS3 );
@@ -194,7 +200,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 			}
 			site.TrophyEn = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( dirPS3 + @"mod\TROPHY.TRP.ext\TROP.SFM", dirPS3 + @"mod\TROPHY.TRP.ext\TROPCONF.SFM" );
-			site.StringDic = new TSS.TSSFile( TryGetStringDic( dirPS3mod, site.Locale, site.Version ), Util.GameTextEncoding.ShiftJIS );
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
 			ExportToWebsite( site, dir, site360 );
