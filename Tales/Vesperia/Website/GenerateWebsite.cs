@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using HyoutaTools.Tales.Vesperia.ItemDat;
 using System.IO;
+using System.Drawing;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateWebsite {
@@ -227,6 +228,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				site.BattleVoicesEnd = new T8BTVA.T8BTVA( TryGetBattleVoicesEnd( gameDataPath, site.Locale, site.Version ), endian );
 			}
 			if ( site.Version == GameVersion.PS3 ) {
+				//var txm = new Texture.TXM( gameDataPath + "UI.svo.ext/WORLDNAVI.TXM" );
+				//var txv = new Texture.TXV( txm, gameDataPath + "UI.svo.ext/WORLDNAVI.TXV" );
+				//var tex = txv.textures.Where( x => x.TXM.Name == "U_WORLDNAVI00" ).First();
+				//site.WorldMapImage = tex.GetBitmaps().First();
+				site.WorldMapImage = IntegerScaled( new Bitmap( gameDataPath + "UI.svo.ext/WORLDNAVI.TXM.ext/U_WORLDNAVI00.png" ), 5, 4 );
 				site.SearchPoints = new TOVSEAF.TOVSEAF( TryGetSearchPoints( gameDataPath, site.Locale, site.Version ), endian );
 			}
 			site.Skits = new TO8CHLI.TO8CHLI( TryGetSkitMetadata( gameDataPath, site.Locale, site.Version ), endian );
@@ -288,6 +294,23 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return site;
 		}
 
+		private static Bitmap IntegerScaled( Bitmap bmp, int factorX, int factorY ) {
+			int newWidth = bmp.Width * factorX;
+			int newHeight = bmp.Height * factorY;
+			Bitmap n = new Bitmap( newWidth, newHeight );
+			for ( int y = 0; y < bmp.Height; ++y ) {
+				for ( int x = 0; x < bmp.Width; ++x ) {
+					Color c = bmp.GetPixel( x, y );
+					for ( int ny = 0; ny < factorY; ++ny ) {
+						for ( int nx = 0; nx < factorX; ++nx ) {
+							n.SetPixel( x * factorX + nx, y * factorY + ny, c );
+						}
+					}
+				}
+			}
+			return n;
+		}
+
 		public static void ExportToWebsite( WebsiteGenerator site, string dir, WebsiteGenerator siteComparison = null ) {
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false ) ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
@@ -324,7 +347,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.SkitIndex, site.Version, false ) ), site.GenerateHtmlSkitIndex(), Encoding.UTF8 );
 			if ( site.SearchPoints != null ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.SearchPoint, site.Version, false ) ), site.GenerateHtmlSearchPoints(), Encoding.UTF8 );
-				site.SearchPoints.GenerateMap( new System.Drawing.Bitmap( dir + @"map\U_WORLDNAVI00_5120x4096_point.png" ) ).Save( dir + site.Version + @"-SearchPoint.png" );
+				site.SearchPoints.GenerateMap( site.WorldMapImage ).Save( dir + site.Version + @"-SearchPoint.png" );
 			}
 			if ( site.NecropolisFloors != null && site.NecropolisTreasures != null && site.NecropolisMaps != null ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.NecropolisMap, site.Version, false ) ), site.GenerateHtmlNecropolis( dir, false ), Encoding.UTF8 );
