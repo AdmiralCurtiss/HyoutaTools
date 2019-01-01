@@ -7,6 +7,20 @@ using System.IO;
 using System.Drawing;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
+	public class GenerateWebsiteInputOutputData {
+		public string GameDataPath;
+		public string GamePatchPath = null;
+		public GameVersion Version;
+		public GameLocale Locale;
+		public GameLocale? ImportJpInGameDictLocale = null;
+		public Util.Endianness Endian;
+		public Util.GameTextEncoding Encoding;
+		public string WebsiteOutputPath;
+
+		public WebsiteGenerator Generator = null;
+		public GenerateWebsiteInputOutputData CompareSite = null;
+	}
+
 	public class GenerateWebsite {
 		public static Stream TryCreateStreamFromPath( string path ) {
 			try {
@@ -126,83 +140,102 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public static Stream TryGetMaplist( string basepath, GameLocale locale, GameVersion version ) {
 			return TryCreateStreamFromPath( Path.Combine( basepath, "map.svo.ext", "MAPLIST.DAT" ) );
 		}
-
 		public static int Generate( List<string> args ) {
-			string dir = @"c:\Dropbox\ToV\website\"; // output directory for generated files
-			string dir360 = @"c:\Dropbox\ToV\360\";
-			string dirPS3 = @"c:\Dropbox\ToV\PS3\";
-			string dirPS3orig = @"c:\Dropbox\ToV\PS3\orig\";
-			string dirPS3mod = @"c:\Dropbox\ToV\PS3\mod\";
+			List<GenerateWebsiteInputOutputData> gens = new List<GenerateWebsiteInputOutputData>();
+			gens.Add( new GenerateWebsiteInputOutputData() {
+				GameDataPath = @"c:\Dropbox\ToV\360_EU\",
+				Version = GameVersion.X360,
+				Locale = GameLocale.UK,
+				ImportJpInGameDictLocale = GameLocale.US,
+				Endian = Util.Endianness.BigEndian,
+				Encoding = Util.GameTextEncoding.UTF8,
+				WebsiteOutputPath = @"c:\Dropbox\ToV\website_out_360_EU_UK\",
+			} );
+			gens.Add( new GenerateWebsiteInputOutputData() {
+				GameDataPath = @"c:\Dropbox\ToV\PS3\orig\",
+				GamePatchPath = @"c:\Dropbox\ToV\PS3\mod\",
+				Version = GameVersion.PS3,
+				Locale = GameLocale.J,
+				Endian = Util.Endianness.BigEndian,
+				Encoding = Util.GameTextEncoding.ShiftJIS,
+				WebsiteOutputPath = @"c:\Dropbox\ToV\website_out_PS3_with_patch\",
+				CompareSite = gens.Where( x => x.Version == GameVersion.X360 && x.Locale == GameLocale.UK ).First(),
+			} );
 
-			Console.WriteLine( "Initializing 360" );
-
-			Util.Endianness endian = Util.Endianness.BigEndian;
-			WebsiteGenerator site = LoadWebsiteGenerator( dir360, GameVersion.X360, GameLocale.UK, endian, Util.GameTextEncoding.UTF8 );
-
-			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
-
-			// copy over Japanese stuff into UK StringDic
-			var StringDicUs = new TSS.TSSFile( TryGetStringDic( dir360, GameLocale.US, GameVersion.X360 ), Util.GameTextEncoding.UTF8 );
-			var IdDictUs = StringDicUs.GenerateInGameIdDictionary();
-			foreach ( var kvp in IdDictUs ) {
-				site.InGameIdDict[kvp.Key].StringJpn = kvp.Value.StringJpn;
-			}
-
-			ExportToWebsite( site, dir );
-
-			WebsiteGenerator site360 = site;
-			site = new WebsiteGenerator();
-
-			Console.WriteLine( "Initializing PS3" );
-
-			site = LoadWebsiteGenerator( dirPS3orig, GameVersion.PS3, GameLocale.J, endian, Util.GameTextEncoding.ShiftJIS );
-
-			// patch original PS3 data with fantranslation
-			var stringDicTranslated = new TSS.TSSFile( TryGetStringDic( dirPS3mod, site.Locale, site.Version ), Util.GameTextEncoding.ShiftJIS );
-			Util.Assert( site.StringDic.Entries.Length == stringDicTranslated.Entries.Length );
-			for ( int i = 0; i < site.StringDic.Entries.Length; ++i ) {
-				Util.Assert( site.StringDic.Entries[i].inGameStringId == stringDicTranslated.Entries[i].inGameStringId );
-				site.StringDic.Entries[i].StringEng = stringDicTranslated.Entries[i].StringJpn;
-			}
-			foreach ( var kvp in site.ScenarioFiles ) {
-				if ( kvp.Value.EntryList.Count > 0 && kvp.Value.Metadata.ScenarioDatIndex >= 0 ) {
-					Stream streamMod = TryGetScenarioFile( dirPS3mod, kvp.Value.Metadata.ScenarioDatIndex, GameLocale.J, GameVersion.PS3 );
-					if ( streamMod != null ) {
-						var scenarioMod = new ScenarioFile.ScenarioFile( streamMod, Util.GameTextEncoding.ShiftJIS );
-						Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
-						for ( int i = 0; i < kvp.Value.EntryList.Count; ++i ) {
-							kvp.Value.EntryList[i].EnName = scenarioMod.EntryList[i].JpName;
-							kvp.Value.EntryList[i].EnText = scenarioMod.EntryList[i].JpText;
-						}
-					}
-				}
-			}
-			foreach ( var kvp in site.BattleTextFiles ) {
-				if ( kvp.Value.EntryList.Count > 0 ) {
-					var scenarioMod = WebsiteGenerator.LoadBattleTextFile( dirPS3mod, kvp.Key, GameLocale.J, GameVersion.PS3, Util.Endianness.BigEndian, Util.GameTextEncoding.ShiftJIS );
-					Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
-					for ( int i = 0; i < kvp.Value.EntryList.Count; ++i ) {
-						kvp.Value.EntryList[i].EnName = scenarioMod.EntryList[i].JpName;
-						kvp.Value.EntryList[i].EnText = scenarioMod.EntryList[i].JpText;
-					}
-				}
-			}
-			foreach ( var kvp in site.SkitText ) {
-				var chatFile = kvp.Value;
-				Stream streamMod = TryGetSkitText( dirPS3mod, kvp.Key, site.Locale, site.Version );
-				var chatFileMod = new TO8CHTX.ChatFile( streamMod, endian, Util.GameTextEncoding.ShiftJIS );
-				Util.Assert( chatFile.Lines.Length == chatFileMod.Lines.Length );
-				for ( int j = 0; j < chatFile.Lines.Length; ++j ) {
-					chatFile.Lines[j].SENG = chatFileMod.Lines[j].SJPN;
-					chatFile.Lines[j].SNameEnglishNotUsedByGame = chatFileMod.Lines[j].SName;
-				}
-			}
-			site.TrophyEn = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( dirPS3 + @"mod\TROPHY.TRP.ext\TROP.SFM", dirPS3 + @"mod\TROPHY.TRP.ext\TROPCONF.SFM" );
-			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
-
-			ExportToWebsite( site, dir, site360 );
+			Generate( gens );
 
 			return 0;
+		}
+
+		public static void Generate( List<GenerateWebsiteInputOutputData> gens ) {
+			foreach ( var g in gens ) {
+				WebsiteGenerator site = LoadWebsiteGenerator( g.GameDataPath, g.Version, g.Locale, g.Endian, g.Encoding );
+
+				if ( g.GamePatchPath != null ) {
+					// patch original PS3 data with fantranslation
+					{
+						// STRING_DIC
+						var stringDicTranslated = new TSS.TSSFile( TryGetStringDic( g.GamePatchPath, g.Locale, g.Version ), g.Encoding );
+						Util.Assert( site.StringDic.Entries.Length == stringDicTranslated.Entries.Length );
+						for ( int i = 0; i < site.StringDic.Entries.Length; ++i ) {
+							Util.Assert( site.StringDic.Entries[i].inGameStringId == stringDicTranslated.Entries[i].inGameStringId );
+							site.StringDic.Entries[i].StringEng = stringDicTranslated.Entries[i].StringJpn;
+						}
+					}
+					foreach ( var kvp in site.ScenarioFiles ) {
+						// scenario.dat
+						if ( kvp.Value.EntryList.Count > 0 && kvp.Value.Metadata.ScenarioDatIndex >= 0 ) {
+							Stream streamMod = TryGetScenarioFile( g.GamePatchPath, kvp.Value.Metadata.ScenarioDatIndex, g.Locale, g.Version );
+							if ( streamMod != null ) {
+								var scenarioMod = new ScenarioFile.ScenarioFile( streamMod, g.Encoding );
+								Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
+								for ( int i = 0; i < kvp.Value.EntryList.Count; ++i ) {
+									kvp.Value.EntryList[i].EnName = scenarioMod.EntryList[i].JpName;
+									kvp.Value.EntryList[i].EnText = scenarioMod.EntryList[i].JpText;
+								}
+							}
+						}
+					}
+					foreach ( var kvp in site.BattleTextFiles ) {
+						// btl.svo/BATTLE_PACK
+						if ( kvp.Value.EntryList.Count > 0 ) {
+							var scenarioMod = WebsiteGenerator.LoadBattleTextFile( g.GamePatchPath, kvp.Key, g.Locale, g.Version, g.Endian, g.Encoding );
+							Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
+							for ( int i = 0; i < kvp.Value.EntryList.Count; ++i ) {
+								kvp.Value.EntryList[i].EnName = scenarioMod.EntryList[i].JpName;
+								kvp.Value.EntryList[i].EnText = scenarioMod.EntryList[i].JpText;
+							}
+						}
+					}
+					foreach ( var kvp in site.SkitText ) {
+						// chat.svo
+						var chatFile = kvp.Value;
+						Stream streamMod = TryGetSkitText( g.GamePatchPath, kvp.Key, g.Locale, g.Version );
+						var chatFileMod = new TO8CHTX.ChatFile( streamMod, g.Endian, g.Encoding );
+						Util.Assert( chatFile.Lines.Length == chatFileMod.Lines.Length );
+						for ( int j = 0; j < chatFile.Lines.Length; ++j ) {
+							chatFile.Lines[j].SENG = chatFileMod.Lines[j].SJPN;
+							chatFile.Lines[j].SNameEnglishNotUsedByGame = chatFileMod.Lines[j].SName;
+						}
+					}
+					site.TrophyEn = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( g.GamePatchPath + @"TROPHY.TRP.ext\TROP.SFM", g.GamePatchPath + @"TROPHY.TRP.ext\TROPCONF.SFM" );
+				}
+
+				site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
+
+				if ( g.ImportJpInGameDictLocale != null ) {
+					// copy over Japanese stuff into StringDic from other locale
+					var StringDicUs = new TSS.TSSFile( TryGetStringDic( g.GameDataPath, g.ImportJpInGameDictLocale.Value, g.Version ), g.Encoding );
+					var IdDictUs = StringDicUs.GenerateInGameIdDictionary();
+					foreach ( var kvp in IdDictUs ) {
+						site.InGameIdDict[kvp.Key].StringJpn = kvp.Value.StringJpn;
+					}
+				}
+
+				ExportToWebsite( site, g.WebsiteOutputPath, g.CompareSite?.Generator );
+
+				g.Generator = site;
+			}
 		}
 
 		public static WebsiteGenerator LoadWebsiteGenerator( string gameDataPath, GameVersion version, GameLocale locale, Util.Endianness endian, Util.GameTextEncoding encoding ) {
@@ -312,6 +345,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static void ExportToWebsite( WebsiteGenerator site, string dir, WebsiteGenerator siteComparison = null ) {
+			Directory.CreateDirectory( dir );
 			System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false ) ), site.GenerateHtmlItems(), Encoding.UTF8 );
 			foreach ( uint i in site.IconsWithItems ) {
 				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( WebsiteSection.Item, site.Version, false, icon: (int)i ) ), site.GenerateHtmlItems( icon: i ), Encoding.UTF8 );
