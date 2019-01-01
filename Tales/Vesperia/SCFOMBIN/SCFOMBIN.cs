@@ -24,10 +24,8 @@ namespace HyoutaTools.Tales.Vesperia.SCFOMBIN {
 		}
 
 		public List<ScenarioFileEntry> EntryList;
-		public uint TextPointerLocationDiff; // there is definitely some logic to this so we don't have to guess/hardcode this, remove this if figured out...
 
 		private bool LoadFile( Stream stream, Util.Endianness endian, Util.GameTextEncoding encoding, uint textPointerLocationDiff ) {
-			TextPointerLocationDiff = textPointerLocationDiff;
 			string magic = stream.ReadAscii( 8 );
 			uint alwaysSame = stream.ReadUInt32().FromEndian( endian );
 			uint filesize = stream.ReadUInt32().FromEndian( endian );
