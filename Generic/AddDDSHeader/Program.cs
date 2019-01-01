@@ -14,7 +14,7 @@ namespace HyoutaTools.Generic.AddDDSHeader {
 
 			string path = filename + ".dds";
 			using ( var fs = new System.IO.FileStream( path, System.IO.FileMode.Create ) ) {
-				fs.Write( Textures.DDSHeader.Generate( width, height, 1, format: Textures.TextureFormat.DXT5 ) );
+				fs.Write( Textures.DDSHeader.Generate( width, height, 1, format: Textures.TextureFormat.DXT5 ).ToBytes() );
 				fs.Write( data );
 				fs.Close();
 			}

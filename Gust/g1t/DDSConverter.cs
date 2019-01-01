@@ -24,7 +24,7 @@ namespace HyoutaTools.Gust.g1t {
 				if ( Textures.DDSHeader.IsDDSTextureFormat( tex.Format ) ) {
 					string path = System.IO.Path.Combine( outdir, filename + "_" + i.ToString( "D4" ) + ".dds" );
 					using ( var fs = new System.IO.FileStream( path, System.IO.FileMode.Create ) ) {
-						fs.Write( Textures.DDSHeader.Generate( tex.Width, tex.Height, tex.Mipmaps, tex.Format ) );
+						fs.Write( Textures.DDSHeader.Generate( tex.Width, tex.Height, tex.Mipmaps, tex.Format ).ToBytes() );
 						fs.Write( tex.Data );
 						fs.Close();
 					}

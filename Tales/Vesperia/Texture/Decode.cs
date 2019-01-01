@@ -24,7 +24,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 
 			int counter = 0;
 			foreach ( TXVSingle ts in txv.textures ) {
-				foreach ( var tex in ts.Decode() ) {
+				foreach ( var tex in ts.GetDiskWritableStreams() ) {
 					using ( var fs = new FileStream( Path.Combine( outdir, counter.ToString( "D4" ) + "_" + tex.name ), FileMode.Create ) ) {
 						tex.data.Position = 0;
 						Util.CopyStream( tex.data, fs, tex.data.Length );

@@ -67,12 +67,40 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			return s;
 		}
 
-		public List<(string name, Stream data)> Decode() {
-			List<(string name, Stream data)> list = new List<(string name, Stream data)>();
+		// TODO: Duplicated code between GetBitmaps() and GetDiskWritableStreams()..
+		public List<Bitmap> GetBitmaps() {
+			List<Bitmap> list = new List<Bitmap>();
 
-			if ( TXM is TXMSingleCubemap) {
-				Console.WriteLine();
+			for ( uint depth = 0; depth < TXM.Depth; ++depth ) {
+				Data.Position = 0;
+				Stream plane = TXM.GetSinglePlane( Data, depth );
+				switch ( TXM.Format ) {
+					case TextureFormat.DXT1a:
+					case TextureFormat.DXT1b:
+					case TextureFormat.DXT5a:
+					case TextureFormat.DXT5b: {
+							plane.Position = 0;
+							DDSHeader header = DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1 : Textures.TextureFormat.DXT5 );
+							list.Add( new DDS( header, plane ).ConvertToBitmap() );
+						}
+						break;
+					case TextureFormat.ARGBb:
+						for ( uint mip = 0; mip < TXM.Mipmaps; ++mip ) {
+							var dims = TXM.GetDimensions( (int)mip );
+							var bmp = new ColorFetcherARGB8888( plane, dims.width, dims.height ).ConvertToBitmap( new LinearPixelOrderIterator( (int)dims.width, (int)dims.height ), dims.width, dims.height );
+							list.Add( bmp );
+						}
+						break;
+					default:
+						throw new Exception( "Unhandled texture format " + TXM.Format );
+				}
 			}
+
+			return list;
+		}
+
+		public List<(string name, Stream data)> GetDiskWritableStreams() {
+			List<(string name, Stream data)> list = new List<(string name, Stream data)>();
 
 			for ( uint depth = 0; depth < TXM.Depth; ++depth ) {
 				Data.Position = 0;
@@ -84,7 +112,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 					case TextureFormat.DXT5b: {
 							plane.Position = 0;
 							Stream stream = new MemoryStream( (int)( plane.Length + 0x80 ) );
-							stream.Write( Textures.DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1 : Textures.TextureFormat.DXT5 ) );
+							stream.Write( Textures.DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1 : Textures.TextureFormat.DXT5 ).ToBytes() );
 							Util.CopyStream( plane, stream, plane.Length );
 							string name = TXM.Name + ( TXM.Depth > 1 ? ( "_Plane" + depth ) : "" ) + ".dds";
 							list.Add( (name, stream) );

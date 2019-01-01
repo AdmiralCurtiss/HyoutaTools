@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -27,10 +29,12 @@ namespace HyoutaTools.Textures {
 		public uint Caps4;
 		public uint Reserved2;
 
-		public static byte[] Generate( uint width, uint height, uint mipmaps, TextureFormat format ) {
-			if ( !IsDDSTextureFormat( format ) ) { throw new Exception( "Texture format must be compatible with the DDS file format!" ); }
+		public static DDSHeader FromStream( Stream stream ) {
+			throw new NotImplementedException(); // TODO
+		}
 
-			byte[] data = new byte[0x80];
+		public static DDSHeader Generate( uint width, uint height, uint mipmaps, TextureFormat format ) {
+			if ( !IsDDSTextureFormat( format ) ) { throw new Exception( "Texture format must be compatible with the DDS file format!" ); }
 
 			DDSHeader header = new DDSHeader();
 			header.Flags = DDSFlags.DDSD_CAPS | DDSFlags.DDSD_HEIGHT | DDSFlags.DDSD_WIDTH | DDSFlags.DDSD_PIXELFORMAT;
@@ -43,6 +47,13 @@ namespace HyoutaTools.Textures {
 			header.PixelFormat.Flags = DDSFlags.DDPF_FOURCC;
 			header.PixelFormat.FourCC = format;
 
+			return header;
+		}
+
+		public byte[] ToBytes() {
+			byte[] data = new byte[0x80];
+
+			DDSHeader header = this;
 			BitConverter.GetBytes( header.Magic ).CopyTo( data, 0x00 );
 			BitConverter.GetBytes( header.Size ).CopyTo( data, 0x04 );
 			BitConverter.GetBytes( header.Flags ).CopyTo( data, 0x08 );
@@ -110,5 +121,26 @@ namespace HyoutaTools.Textures {
 	}
 
 	public class DDS {
+		private DDSHeader Header;
+		private Stream Data;
+
+		public DDS( DDSHeader header, Stream imageData ) {
+			Header = header;
+			Data = new MemoryStream( (int)imageData.Length );
+			Util.CopyStream( imageData, Data, imageData.Length );
+		}
+
+		public DDS( Stream ddsFile ) {
+			if ( ddsFile.Length < 0x80 ) {
+				throw new Exception( "Invalid size for DDS file." );
+			}
+			Header = DDSHeader.FromStream( ddsFile );
+			Data = new MemoryStream( (int)ddsFile.Length - 0x80 );
+			Util.CopyStream( ddsFile, Data, ddsFile.Length - 0x80 );
+		}
+
+		public Bitmap ConvertToBitmap() {
+			throw new NotImplementedException(); // TODO
+		}
 	}
 }
