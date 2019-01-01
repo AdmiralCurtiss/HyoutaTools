@@ -73,6 +73,20 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			Util.Assert( files.Length == 1 );
 			return TryCreateStreamFromPath( files[0] );
 		}
+		public static List<string> GetBattleScenarioFileNames( string basepath, GameLocale locale, GameVersion version ) {
+			string folder = Path.Combine( ConstructBtlPackPath( basepath, locale, version ), 3.ToString( "D4" ) + ".ext" );
+			List<string> names = new List<string>();
+			foreach ( string f in System.IO.Directory.GetFiles( folder, "BTL_*", SearchOption.TopDirectoryOnly ) ) {
+				names.Add( Path.GetFileName( f ).Split( '.' )[0] );
+			}
+			return names;
+		}
+		public static Stream TryGetBattleScenarioFile( string basepath, string epname, GameLocale locale, GameVersion version ) {
+			string folder = Path.Combine( ConstructBtlPackPath( basepath, locale, version ), 3.ToString( "D4" ) + ".ext" );
+			var files = System.IO.Directory.GetFiles( folder, epname + ".*", SearchOption.TopDirectoryOnly );
+			Util.Assert( files.Length == 1 );
+			return TryCreateStreamFromPath( files[0] );
+		}
 		public static Stream TryGetRecipes( string basepath, GameLocale locale, GameVersion version ) {
 			if ( version == GameVersion.X360 ) {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "cook.svo.ext", "COOKDATA.BIN" ) );
@@ -141,7 +155,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			Console.WriteLine( "Initializing PS3" );
 
 			site = LoadWebsiteGenerator( dirPS3orig, GameVersion.PS3, GameLocale.J, endian, Util.GameTextEncoding.ShiftJIS );
-			site.BattleTextFiles = WebsiteGenerator.LoadBattleTextScfombin( dirPS3 + @"orig\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\", endian, dirPS3 + @"mod\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\" );
 
 			// patch original PS3 data with fantranslation
 			foreach ( var kvp in site.ScenarioFiles ) {
@@ -149,6 +162,19 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					Stream streamMod = TryGetScenarioFile( dirPS3mod, kvp.Value.Metadata.ScenarioDatIndex, GameLocale.J, GameVersion.PS3 );
 					if ( streamMod != null ) {
 						var scenarioMod = new ScenarioFile.ScenarioFile( streamMod, Util.GameTextEncoding.ShiftJIS );
+						Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
+						for ( int i = 0; i < kvp.Value.EntryList.Count; ++i ) {
+							kvp.Value.EntryList[i].EnName = scenarioMod.EntryList[i].JpName;
+							kvp.Value.EntryList[i].EnText = scenarioMod.EntryList[i].JpText;
+						}
+					}
+				}
+			}
+			foreach ( var kvp in site.BattleTextFiles ) {
+				if ( kvp.Value.EntryList.Count > 0 ) {
+					Stream streamMod = TryGetBattleScenarioFile( dirPS3mod, kvp.Key, GameLocale.J, GameVersion.PS3 );
+					if ( streamMod != null ) {
+						var scenarioMod = new SCFOMBIN.SCFOMBIN( streamMod, Util.Endianness.BigEndian, Util.GameTextEncoding.ShiftJIS, kvp.Value.TextPointerLocationDiff );
 						Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
 						for ( int i = 0; i < kvp.Value.EntryList.Count; ++i ) {
 							kvp.Value.EntryList[i].EnName = scenarioMod.EntryList[i].JpName;
@@ -223,10 +249,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			if ( version == GameVersion.X360 ) {
 				site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56, endian );
 				site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51,     9, 16, 18, 2, 17, 19, 10,     20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
-				site.BattleTextFiles = WebsiteGenerator.LoadBattleTextTSS( gameDataPath + @"btl.svo.ext\BTL_PACK_UK.DAT.ext\0003.ext\", Util.GameTextEncoding.UTF8 );
+				site.BattleTextFiles = WebsiteGenerator.LoadBattleTextTSS( gameDataPath, site.Locale, site.Version, endian, encoding );
 			} else {
 				site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1C9BC, 0x460 / 32, 0x980, 0x14CB8 / 56, endian );
 				site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
+				site.BattleTextFiles = WebsiteGenerator.LoadBattleTextScfombin( gameDataPath, site.Locale, site.Version, endian, encoding );
 			}
 
 			if ( version == GameVersion.PS3 ) {

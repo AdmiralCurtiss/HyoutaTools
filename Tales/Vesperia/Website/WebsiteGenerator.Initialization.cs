@@ -6,45 +6,30 @@ using System.Threading.Tasks;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public partial class WebsiteGenerator {
-		public static Dictionary<string, SCFOMBIN.SCFOMBIN> LoadBattleTextTSS( string dir, Util.GameTextEncoding encoding ) {
+		public static Dictionary<string, SCFOMBIN.SCFOMBIN> LoadBattleTextTSS( string gameDataPath, GameLocale locale, GameVersion version, Util.Endianness endian, Util.GameTextEncoding encoding ) {
 			var BattleTextFiles = new Dictionary<string, SCFOMBIN.SCFOMBIN>();
 
-			var files = new System.IO.DirectoryInfo( dir ).GetFiles();
-			foreach ( var file in files ) {
-				if ( file.Name.StartsWith( "BTL_" ) ) {
-					var bin = new ScenarioFile.ScenarioFile( System.IO.Path.Combine( dir, file.Name ), encoding );
-					var name = file.Name.Split( '.' )[0];
-
+			foreach ( var filename in GenerateWebsite.GetBattleScenarioFileNames( gameDataPath, locale, version ) ) {
+				if ( filename.StartsWith( "BTL_" ) ) {
+					var bin = new ScenarioFile.ScenarioFile( GenerateWebsite.TryGetBattleScenarioFile( gameDataPath, filename, locale, version ), encoding );
 					var btl = new SCFOMBIN.SCFOMBIN();
 					btl.EntryList = bin.EntryList;
-					BattleTextFiles.Add( name, btl );
+					BattleTextFiles.Add( filename, btl );
 				}
 			}
 
 			return BattleTextFiles;
 		}
 
-		public static Dictionary<string, SCFOMBIN.SCFOMBIN> LoadBattleTextScfombin( string dir, Util.Endianness endian, string modDir = null ) {
+		public static Dictionary<string, SCFOMBIN.SCFOMBIN> LoadBattleTextScfombin( string gameDataPath, GameLocale locale, GameVersion version, Util.Endianness endian, Util.GameTextEncoding encoding ) {
 			var BattleTextFiles = new Dictionary<string, SCFOMBIN.SCFOMBIN>();
 
-			var files = new System.IO.DirectoryInfo( dir ).GetFiles();
-			foreach ( var file in files ) {
-				if ( file.Name.StartsWith( "BTL_" ) ) {
+			foreach ( var filename in GenerateWebsite.GetBattleScenarioFileNames( gameDataPath, locale, version ) ) {
+				if ( filename.StartsWith( "BTL_" ) ) {
 					uint ptrDiff = 0x1888;
-					if ( file.Name.StartsWith( "BTL_XTM" ) ) { ptrDiff = 0x1B4C; }
-
-					var bin = new SCFOMBIN.SCFOMBIN( System.IO.Path.Combine( dir, file.Name ), endian, ptrDiff );
-					var name = file.Name.Split( '.' )[0];
-
-					if ( modDir != null ) {
-						var modBin = new SCFOMBIN.SCFOMBIN( System.IO.Path.Combine( modDir, file.Name ), endian, ptrDiff );
-						for ( int i = 0; i < bin.EntryList.Count; ++i ) {
-							bin.EntryList[i].EnName = modBin.EntryList[i].JpName;
-							bin.EntryList[i].EnText = modBin.EntryList[i].JpText;
-						}
-					}
-
-					BattleTextFiles.Add( name, bin );
+					if ( filename.StartsWith( "BTL_XTM" ) ) { ptrDiff = 0x1B4C; }
+					var bin = new SCFOMBIN.SCFOMBIN( GenerateWebsite.TryGetBattleScenarioFile( gameDataPath, filename, locale, version ), endian, encoding, ptrDiff );
+					BattleTextFiles.Add( filename, bin );
 				}
 			}
 

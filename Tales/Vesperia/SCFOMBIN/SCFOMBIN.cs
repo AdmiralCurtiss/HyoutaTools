@@ -9,23 +9,25 @@ namespace HyoutaTools.Tales.Vesperia.SCFOMBIN {
 	public class SCFOMBIN {
 		public SCFOMBIN() { }
 
-		public SCFOMBIN( String filename, Util.Endianness endian, uint textPointerLocationDiff = 0x1888 ) {
+		public SCFOMBIN( String filename, Util.Endianness endian, Util.GameTextEncoding encoding, uint textPointerLocationDiff = 0x1888 ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
-				if ( !LoadFile( stream, endian, textPointerLocationDiff ) ) {
+				if ( !LoadFile( stream, endian, encoding, textPointerLocationDiff ) ) {
 					throw new Exception( "Loading SCFOMBIN failed!" );
 				}
 			}
 		}
 
-		public SCFOMBIN( Stream stream, Util.Endianness endian, uint textPointerLocationDiff = 0x1888 ) {
-			if ( !LoadFile( stream, endian, textPointerLocationDiff ) ) {
+		public SCFOMBIN( Stream stream, Util.Endianness endian, Util.GameTextEncoding encoding, uint textPointerLocationDiff = 0x1888 ) {
+			if ( !LoadFile( stream, endian, encoding, textPointerLocationDiff ) ) {
 				throw new Exception( "Loading SCFOMBIN failed!" );
 			}
 		}
 
 		public List<ScenarioFileEntry> EntryList;
+		public uint TextPointerLocationDiff; // there is definitely some logic to this so we don't have to guess/hardcode this, remove this if figured out...
 
-		private bool LoadFile( Stream stream, Util.Endianness endian, uint textPointerLocationDiff ) {
+		private bool LoadFile( Stream stream, Util.Endianness endian, Util.GameTextEncoding encoding, uint textPointerLocationDiff ) {
+			TextPointerLocationDiff = textPointerLocationDiff;
 			string magic = stream.ReadAscii( 8 );
 			uint alwaysSame = stream.ReadUInt32().FromEndian( endian );
 			uint filesize = stream.ReadUInt32().FromEndian( endian );
@@ -63,14 +65,10 @@ namespace HyoutaTools.Tales.Vesperia.SCFOMBIN {
 
 					var s = new ScenarioFileEntry();
 					s.Pointer = (uint)loc;
-					stream.Position = ptrs[0] + textPointerDiff;
-					s.JpName = stream.ReadShiftJisNullterm();
-					stream.Position = ptrs[1] + textPointerDiff;
-					s.JpText = stream.ReadShiftJisNullterm();
-					stream.Position = ptrs[2] + textPointerDiff;
-					s.EnName = stream.ReadShiftJisNullterm();
-					stream.Position = ptrs[3] + textPointerDiff;
-					s.EnText = stream.ReadShiftJisNullterm();
+					s.JpName = stream.ReadNulltermStringFromLocationAndReset( ptrs[0] + textPointerDiff, encoding );
+					s.JpText = stream.ReadNulltermStringFromLocationAndReset( ptrs[1] + textPointerDiff, encoding );
+					s.EnName = stream.ReadNulltermStringFromLocationAndReset( ptrs[2] + textPointerDiff, encoding );
+					s.EnText = stream.ReadNulltermStringFromLocationAndReset( ptrs[3] + textPointerDiff, encoding );
 					EntryList.Add( s );
 
 					stream.Position = loc + 0x18;
