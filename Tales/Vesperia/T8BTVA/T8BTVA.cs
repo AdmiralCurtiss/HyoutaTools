@@ -62,9 +62,10 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 
 			Identifier = stream.ReadAsciiNulltermFromLocationAndReset( IdentifierLocation + refStringStart );
 
+			uint bytesPerEntry = ( Size - ( 14 * 4 ) ) / EntryCount;
 			Entries = new List<T8BTVAEntry>( (int)EntryCount );
 			for ( uint i = 0; i < EntryCount; ++i ) {
-				Entries.Add( new T8BTVAEntry( stream, refStringStart, endian ) );
+				Entries.Add( new T8BTVAEntry( stream, refStringStart, endian, bytesPerEntry ) );
 			}
 		}
 
@@ -89,9 +90,13 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 		public uint CharacterBitmask;
 		public uint KillCharacterBitmask;
 
-		public T8BTVAEntry( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
-			Data = new uint[33];
-			for ( int i = 0; i < 33; ++i ) {
+		public T8BTVAEntry( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, uint byteCount ) {
+			if ( ( byteCount % 4 ) != 0 ) {
+				throw new Exception( "T8BTVAEntry byte count must be divisible by 4" );
+			}
+
+			Data = new uint[byteCount / 4];
+			for ( int i = 0; i < Data.Length; ++i ) {
 				Data[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
