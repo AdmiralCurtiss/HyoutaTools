@@ -23,7 +23,7 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 		}
 
 		public List<ScenarioFileEntry> EntryList;
-		public string EpisodeID;
+		public Website.ScenarioData Metadata;
 
 		private bool LoadFile( Stream stream, Util.GameTextEncoding encoding ) {
 			uint magic = stream.ReadUInt32().SwapEndian();
@@ -78,13 +78,13 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 			
 			clone.EntryList = new List<ScenarioFileEntry>( this.EntryList.Count );
 			clone.EntryList.AddRange( this.EntryList );
-			clone.EpisodeID = EpisodeID;
+			clone.Metadata = Metadata;
 
 			return clone;
 		}
 
 		public override string ToString() {
-			return EpisodeID + ": " + EntryList.Count + " entries";
+			return Metadata.EpisodeId + ": " + EntryList.Count + " entries";
 		}
 	}
 }

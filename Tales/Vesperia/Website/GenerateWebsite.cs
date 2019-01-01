@@ -125,11 +125,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			WebsiteGenerator site = LoadWebsiteGenerator( dir360, GameVersion.X360, GameLocale.UK, endian, Util.GameTextEncoding.UTF8 );
 
 			site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
-			var maplist = new MapList.MapList( TryGetMaplist( dir360, site.Locale, site.Version ), endian );
-			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, maplist, dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
-			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, maplist, dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
-			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, maplist, dir360 + @"scenario_uk.dat.ext\", encoding: Util.GameTextEncoding.UTF8 );
-			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			// copy over Japanese stuff into UK StringDic
 			var StringDicUs = new TSS.TSSFile( TryGetStringDic( dir360, GameLocale.US, GameVersion.X360 ), Util.GameTextEncoding.UTF8 );
@@ -148,13 +143,20 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site = LoadWebsiteGenerator( dirPS3orig, GameVersion.PS3, GameLocale.J, endian, Util.GameTextEncoding.ShiftJIS );
 			site.BattleTextFiles = WebsiteGenerator.LoadBattleTextScfombin( dirPS3 + @"orig\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\", endian, dirPS3 + @"mod\btl.svo.ext\BTL_PACK.DAT.ext\0003.ext\" );
 
-			maplist = new MapList.MapList( TryGetMaplist( dirPS3orig, site.Locale, site.Version ), endian );
-			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, maplist, dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, maplist, dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, maplist, dirPS3 + @"orig\scenario.dat.ext\", dirPS3 + @"mod\scenario.dat.ext\" );
-			site.ScenarioAddSkits( site.ScenarioGroupsStory );
-
 			// patch original PS3 data with fantranslation
+			foreach ( var kvp in site.ScenarioFiles ) {
+				if ( kvp.Value.EntryList.Count > 0 && kvp.Value.Metadata.ScenarioDatIndex >= 0 ) {
+					Stream streamMod = TryGetScenarioFile( dirPS3mod, kvp.Value.Metadata.ScenarioDatIndex, GameLocale.J, GameVersion.PS3 );
+					if ( streamMod != null ) {
+						var scenarioMod = new ScenarioFile.ScenarioFile( streamMod, Util.GameTextEncoding.ShiftJIS );
+						Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
+						for ( int i = 0; i < kvp.Value.EntryList.Count; ++i ) {
+							kvp.Value.EntryList[i].EnName = scenarioMod.EntryList[i].JpName;
+							kvp.Value.EntryList[i].EnText = scenarioMod.EntryList[i].JpText;
+						}
+					}
+				}
+			}
 			foreach ( var kvp in site.SkitText ) {
 				var chatFile = kvp.Value;
 				Stream streamMod = TryGetSkitText( dirPS3mod, kvp.Key, site.Locale, site.Version );
@@ -248,6 +250,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					}
 				}
 			}
+
+			var maplist = new MapList.MapList( TryGetMaplist( gameDataPath, site.Locale, site.Version ), endian );
+			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, maplist, gameDataPath, encoding );
+			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, maplist, gameDataPath, encoding );
+			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, maplist, gameDataPath, encoding );
+			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			return site;
 		}

@@ -95,8 +95,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 						Tales.Vesperia.ScenarioFile.ScenarioFile sceCmp = null;
 						if ( SiteCompare != null ) {
-							if ( SiteCompare.ScenarioFiles.ContainsKey( kvp.Value.EpisodeID ) ) {
-								sceCmp = SiteCompare.ScenarioFiles[kvp.Value.EpisodeID];
+							if ( SiteCompare.ScenarioFiles.ContainsKey( kvp.Value.Metadata.EpisodeId ) ) {
+								sceCmp = SiteCompare.ScenarioFiles[kvp.Value.Metadata.EpisodeId];
 							}
 						}
 
@@ -230,7 +230,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			foreach ( var kvp in Site.BattleTextFiles ) {
 				var fakeScenario = new ScenarioFile.ScenarioFile();
 				fakeScenario.EntryList = kvp.Value.EntryList;
-				fakeScenario.EpisodeID = kvp.Key;
+				fakeScenario.Metadata = new ScenarioData() { EpisodeId = kvp.Key, HumanReadableName = kvp.Key };
 				Site.ScenarioFiles.Add( kvp.Key, fakeScenario );
 			}
 		}
@@ -718,7 +718,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[33892179], stringDicInGame[240167] ) { Type = TextboxType.Information } ); // failure
 				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[240170], stringDicInGame[240171] ) { Type = TextboxType.Information } ); // ask rita?
 				undineMinigame.EntryList.Add( new ScenarioFileEntry( stringDicInGame[33892179], stringDicInGame[240172] ) { Type = TextboxType.Information } ); // asked rita
-				undineMinigame.EpisodeID = "EP_550_030";
+				undineMinigame.Metadata = new ScenarioData() { EpisodeId = "EP_550_030", HumanReadableName = "Minigame" };
 				files.Add( "EP_550_030b", undineMinigame );
 			}
 		}

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class ScenarioData : IComparable<ScenarioData> {
-		public int ScenarioDatIndex;
+		public int ScenarioDatIndex = -1;
 		public string EpisodeId;
 		public string HumanReadableName;
 		public List<TO8CHLI.SkitInfo> Skits = new List<TO8CHLI.SkitInfo>();

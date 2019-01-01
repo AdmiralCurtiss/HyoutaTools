@@ -143,7 +143,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return settings;
 		}
 
-		public List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, MapList.MapList maplist, string scenarioDatFolder, string scenarioDatFolderMod = null, Util.GameTextEncoding encoding = Util.GameTextEncoding.ShiftJIS ) {
+		public List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, MapList.MapList maplist, string gameDataPath, Util.GameTextEncoding encoding ) {
 			SortedDictionary<int, ScenarioWebsiteName> websiteNames = ScenarioWebsiteName.GenerateWebsiteNames( this.Version );
 			Util.Assert( maplist.MapNames.Count == websiteNames.Count );
 
@@ -165,24 +165,18 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 
 				int num = d.Key;
-				try {
-					var orig = new ScenarioFile.ScenarioFile( System.IO.Path.Combine( scenarioDatFolder, num + ".d" ), encoding );
-					if ( scenarioDatFolderMod != null ) {
-						var mod = new ScenarioFile.ScenarioFile( System.IO.Path.Combine( scenarioDatFolderMod, num + ".d" ), encoding );
-						Util.Assert( orig.EntryList.Count == mod.EntryList.Count );
-						for ( int i = 0; i < orig.EntryList.Count; ++i ) {
-							orig.EntryList[i].EnName = mod.EntryList[i].JpName;
-							orig.EntryList[i].EnText = mod.EntryList[i].JpText;
-						}
-					}
-					orig.EpisodeID = episodeID;
+				var metadata = new ScenarioData() { ScenarioDatIndex = num, EpisodeId = episodeID, HumanReadableName = d.Value.Description != null ? d.Value.Description : episodeID };
+				System.IO.Stream stream = GenerateWebsite.TryGetScenarioFile( gameDataPath, num, Locale, Version );
+				if ( stream != null ) {
+					var orig = new ScenarioFile.ScenarioFile( stream, encoding );
+					orig.Metadata = metadata;
 					scenarioFiles.Add( orig );
-					scenes.Add( new ScenarioData() { ScenarioDatIndex = num, EpisodeId = episodeID, HumanReadableName = d.Value.Description != null ? d.Value.Description : episodeID } );
-				} catch ( System.IO.FileNotFoundException ) { }
+					scenes.Add( metadata );
+				}
 			}
 
-			foreach ( var s in scenarioFiles.OrderBy( x => x.EpisodeID ) ) {
-				this.ScenarioFiles.Add( s.EpisodeID, s );
+			foreach ( var s in scenarioFiles.OrderBy( x => x.Metadata.EpisodeId ) ) {
+				this.ScenarioFiles.Add( s.Metadata.EpisodeId, s );
 			}
 			return ScenarioData.ProcessScenesToGroups( scenes );
 		}
