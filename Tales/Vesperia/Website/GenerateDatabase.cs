@@ -904,7 +904,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE Artes ( "
 						+ "id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, refString TEXT, strDicName INT, strDicDesc INT, type INT, character INT, tpUsage INT, "
-						+ "fatalStrikeType INT, usableInMenu INT, fire INT, earth INT, wind INT, water INT, light INT, dark INT, html TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
+						+ "fatalStrikeType INT, usableInMenu INT, fire INT, earth INT, wind INT, water INT, light INT, dark INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -924,9 +924,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				using ( var commandLearnReq = DB.CreateCommand() )
 				using ( var commandAlteredReq = DB.CreateCommand() ) {
 					commandArte.CommandText = "INSERT INTO Artes ( id, gameId, refString, strDicName, strDicDesc, type, character, tpUsage, fatalStrikeType, "
-						+ "usableInMenu, fire, earth, wind, water, light, dark, html, jpSearchKanji, jpSearchFuri, enSearch ) "
+						+ "usableInMenu, fire, earth, wind, water, light, dark, htmlJ, htmlE, htmlCJ, htmlCE, jpSearchKanji, jpSearchFuri, enSearch ) "
 						+ "VALUES ( @id, @gameId, @refString, @strDicName, @strDicDesc, @type, @character, @tpUsage, @fatalStrikeType, "
-						+ "@usableInMenu, @fire, @earth, @wind, @water, @light, @dark, @html, @jpSearchKanji, @jpSearchFuri, @enSearch )";
+						+ "@usableInMenu, @fire, @earth, @wind, @water, @light, @dark, @htmlJ, @htmlE, @htmlCJ, @htmlCE, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					commandArte.AddParameter( "id" );
 					commandArte.AddParameter( "gameId" );
 					commandArte.AddParameter( "refString" );
@@ -943,7 +943,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					commandArte.AddParameter( "water" );
 					commandArte.AddParameter( "light" );
 					commandArte.AddParameter( "dark" );
-					commandArte.AddParameter( "html" );
+					commandArte.AddParameter( "htmlJ" );
+					commandArte.AddParameter( "htmlE" );
+					commandArte.AddParameter( "htmlCJ" );
+					commandArte.AddParameter( "htmlCE" );
 					commandArte.AddParameter( "jpSearchKanji" );
 					commandArte.AddParameter( "jpSearchFuri" );
 					commandArte.AddParameter( "enSearch" );
@@ -978,7 +981,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						commandArte.GetParameter( "water" ).Value = arte.ElementWater;
 						commandArte.GetParameter( "light" ).Value = arte.ElementLight;
 						commandArte.GetParameter( "dark" ).Value = arte.ElementDarkness;
-						commandArte.GetParameter( "html" ).Value = arte.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Artes.ArteIdDict, Site.Enemies, Site.Skills, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						commandArte.GetParameter( "htmlJ" ).Value = arte.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp, Site.Artes.ArteIdDict, Site.Enemies, Site.Skills, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						commandArte.GetParameter( "htmlE" ).Value = arte.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En, Site.Artes.ArteIdDict, Site.Enemies, Site.Skills, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						commandArte.GetParameter( "htmlCJ" ).Value = arte.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.Artes.ArteIdDict, Site.Enemies, Site.Skills, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						commandArte.GetParameter( "htmlCE" ).Value = arte.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.Artes.ArteIdDict, Site.Enemies, Site.Skills, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						commandArte.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[arte.NameStringDicId].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[arte.DescStringDicId].StringJpn, true, false );
 						commandArte.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[arte.NameStringDicId].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[arte.DescStringDicId].StringJpn, true, true );
 						commandArte.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[arte.NameStringDicId].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[arte.DescStringDicId].StringEng, false, false );
@@ -1010,13 +1016,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE Skills ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, refString TEXT, strDicName INT, strDicDesc INT, "
-						+ "learnableBy INT, equipCost INT, learnCost INT, category INT, symbolValue INT, inactive INT, html TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
+						+ "learnableBy INT, equipCost INT, learnCost INT, category INT, symbolValue INT, inactive INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "INSERT INTO Skills ( id, gameId, refString, strDicName, strDicDesc, learnableBy, equipCost, learnCost, category, "
-						+ "symbolValue, inactive, html, jpSearchKanji, jpSearchFuri, enSearch ) VALUES ( @id, @gameId, @refString, @strDicName, @strDicDesc, @learnableBy, @equipCost, @learnCost, "
-						+ "@category, @symbolValue, @inactive, @html, @jpSearchKanji, @jpSearchFuri, @enSearch )";
+						+ "symbolValue, inactive, htmlJ, htmlE, htmlCJ, htmlCE, jpSearchKanji, jpSearchFuri, enSearch ) VALUES ( @id, @gameId, @refString, @strDicName, @strDicDesc, @learnableBy, @equipCost, @learnCost, "
+						+ "@category, @symbolValue, @inactive, @htmlJ, @htmlE, @htmlCJ, @htmlCE, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					command.AddParameter( "id" );
 					command.AddParameter( "gameId" );
 					command.AddParameter( "refString" );
@@ -1028,7 +1034,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "category" );
 					command.AddParameter( "symbolValue" );
 					command.AddParameter( "inactive" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 					command.AddParameter( "jpSearchKanji" );
 					command.AddParameter( "jpSearchFuri" );
 					command.AddParameter( "enSearch" );
@@ -1045,7 +1054,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "category" ).Value = s.Category;
 						command.GetParameter( "symbolValue" ).Value = s.SymbolValue;
 						command.GetParameter( "inactive" ).Value = s.Inactive;
-						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlJ"  ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             ,  Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlE"  ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCJ" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCE" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.StringDic, Site.InGameIdDict );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicID].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.DescStringDicID].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicID].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.DescStringDicID].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicID].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.DescStringDicID].StringEng, false, false );
@@ -1060,11 +1072,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE StrategyOptions ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, refString TEXT, strDicName INT, strDicDesc INT, "
-						+ "category INT, characters INT, html TEXT )";
+						+ "category INT, characters INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE StrategySet ( id INTEGER PRIMARY KEY AUTOINCREMENT, refString TEXT, strDicName INT, strDicDesc INT, html TEXT )";
+					command.CommandText = "CREATE TABLE StrategySet ( id INTEGER PRIMARY KEY AUTOINCREMENT, refString TEXT, strDicName INT, strDicDesc INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -1072,8 +1084,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO StrategyOptions ( id, gameId, refString, strDicName, strDicDesc, category, characters, html ) "
-						+ "VALUES ( @id, @gameId, @refString, @strDicName, @strDicDesc, @category, @characters, @html )";
+					command.CommandText = "INSERT INTO StrategyOptions ( id, gameId, refString, strDicName, strDicDesc, category, characters, htmlJ, htmlE, htmlCJ, htmlCE ) "
+						+ "VALUES ( @id, @gameId, @refString, @strDicName, @strDicDesc, @category, @characters, @htmlJ, @htmlE, @htmlCJ, @htmlCE )";
 					command.AddParameter( "id" );
 					command.AddParameter( "gameId" );
 					command.AddParameter( "refString" );
@@ -1081,7 +1093,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "strDicDesc" );
 					command.AddParameter( "category" );
 					command.AddParameter( "characters" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 
 					foreach ( var so in Site.Strategy.StrategyOptionList ) {
 						command.GetParameter( "id" ).Value = so.ID;
@@ -1091,19 +1106,25 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "strDicDesc" ).Value = so.DescStringDicID;
 						command.GetParameter( "category" ).Value = so.Category;
 						command.GetParameter( "characters" ).Value = so.Characters;
-						command.GetParameter( "html" ).Value = so.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlJ"  ).Value = so.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlE"  ).Value = so.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCJ" ).Value = so.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCE" ).Value = so.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.StringDic, Site.InGameIdDict );
 						command.ExecuteNonQuery();
 					}
 				}
 				using ( var commandSet = DB.CreateCommand() )
 				using ( var commandDefault = DB.CreateCommand() ) {
-					commandSet.CommandText = "INSERT INTO StrategySet ( id, refString, strDicName, strDicDesc, html ) "
-						+ "VALUES ( @id, @refString, @strDicName, @strDicDesc, @html )";
+					commandSet.CommandText = "INSERT INTO StrategySet ( id, refString, strDicName, strDicDesc, htmlJ, htmlE, htmlCJ, htmlCE ) "
+						+ "VALUES ( @id, @refString, @strDicName, @strDicDesc, @htmlJ, @htmlE, @htmlCJ, @htmlCE )";
 					commandSet.AddParameter( "id" );
 					commandSet.AddParameter( "refString" );
 					commandSet.AddParameter( "strDicName" );
 					commandSet.AddParameter( "strDicDesc" );
-					commandSet.AddParameter( "html" );
+					commandSet.AddParameter( "htmlJ" );
+					commandSet.AddParameter( "htmlE" );
+					commandSet.AddParameter( "htmlCJ" );
+					commandSet.AddParameter( "htmlCE" );
 
 					commandDefault.CommandText = "INSERT INTO StrategySetDefaults ( strategySetId, character, category, optionId ) "
 						+ "VALUES ( @strategySetId, @character, @category, @optionId )";
@@ -1117,7 +1138,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						commandSet.GetParameter( "refString" ).Value = ss.RefString;
 						commandSet.GetParameter( "strDicName" ).Value = ss.NameStringDicID;
 						commandSet.GetParameter( "strDicDesc" ).Value = ss.DescStringDicID;
-						commandSet.GetParameter( "html" ).Value = ss.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Strategy, Site.StringDic, Site.InGameIdDict );
+						commandSet.GetParameter( "htmlJ"  ).Value = ss.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.Strategy, Site.StringDic, Site.InGameIdDict );
+						commandSet.GetParameter( "htmlE"  ).Value = ss.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.Strategy, Site.StringDic, Site.InGameIdDict );
+						commandSet.GetParameter( "htmlCJ" ).Value = ss.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.Strategy, Site.StringDic, Site.InGameIdDict );
+						commandSet.GetParameter( "htmlCE" ).Value = ss.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.Strategy, Site.StringDic, Site.InGameIdDict );
 						commandSet.ExecuteNonQuery();
 
 						for ( uint cat = 0; cat < ss.StrategyDefaults.GetLength( 0 ); ++cat ) {
@@ -1139,7 +1163,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE Recipes ( id INTEGER PRIMARY KEY AUTOINCREMENT, refString TEXT, strDicName INT, strDicDesc INT, strDicEffect INT, "
-						+ "charLike INT, charHate INT, charGood INT, charBad INT, hp INT, tp INT, death INT, ailment INT, statType INT, statValue INT, statTime INT, html TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
+						+ "charLike INT, charHate INT, charGood INT, charBad INT, hp INT, tp INT, death INT, ailment INT, statType INT, statValue INT, statTime INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -1154,8 +1178,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				using ( var commandIngredients = DB.CreateCommand() )
 				using ( var commandRecipeCreation = DB.CreateCommand() ) {
 					command.CommandText = "INSERT INTO Recipes ( id, refString, strDicName, strDicDesc, strDicEffect, charLike, charHate, charGood, charBad, hp, tp, "
-						+ "death, ailment, statType, statValue, statTime, html, jpSearchKanji, jpSearchFuri, enSearch ) VALUES ( @id, @refString, @strDicName, @strDicDesc, @strDicEffect, @charLike, @charHate, "
-						+ "@charGood, @charBad, @hp, @tp, @death, @ailment, @statType, @statValue, @statTime, @html, @jpSearchKanji, @jpSearchFuri, @enSearch )";
+						+ "death, ailment, statType, statValue, statTime, htmlJ, htmlE, htmlCJ, htmlCE, jpSearchKanji, jpSearchFuri, enSearch ) VALUES ( @id, @refString, @strDicName, @strDicDesc, @strDicEffect, @charLike, @charHate, "
+						+ "@charGood, @charBad, @hp, @tp, @death, @ailment, @statType, @statValue, @statTime, @htmlJ, @htmlE, @htmlCJ, @htmlCE, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					command.AddParameter( "id" );
 					command.AddParameter( "refString" );
 					command.AddParameter( "strDicName" );
@@ -1172,7 +1196,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "statType" );
 					command.AddParameter( "statValue" );
 					command.AddParameter( "statTime" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 					command.AddParameter( "jpSearchKanji" );
 					command.AddParameter( "jpSearchFuri" );
 					command.AddParameter( "enSearch" );
@@ -1205,7 +1232,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "statType" ).Value = r.StatType;
 						command.GetParameter( "statValue" ).Value = r.StatValue;
 						command.GetParameter( "statTime" ).Value = r.StatTime;
-						command.GetParameter( "html" ).Value = r.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Recipes, Site.Items, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlJ"  ).Value = r.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.Recipes, Site.Items, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlE"  ).Value = r.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.Recipes, Site.Items, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlCJ" ).Value = r.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.Recipes, Site.Items, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlCE" ).Value = r.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.Recipes, Site.Items, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[r.NameStringDicID].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.DescriptionStringDicID].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.EffectStringDicID].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[r.NameStringDicID].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.DescriptionStringDicID].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.EffectStringDicID].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[r.NameStringDicID].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.DescriptionStringDicID].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.EffectStringDicID].StringEng, false, false );
@@ -1243,7 +1273,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportShops() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE Shops ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, strDicName INT, changesToShop INT, onTrigger INT, html TEXT )";
+					command.CommandText = "CREATE TABLE Shops ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, strDicName INT, changesToShop INT, onTrigger INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -1251,19 +1281,25 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Shops ( gameId, strDicName, changesToShop, onTrigger, html ) VALUES ( @gameId, @strDicName, @changesToShop, @onTrigger, @html )";
+					command.CommandText = "INSERT INTO Shops ( gameId, strDicName, changesToShop, onTrigger, htmlJ, htmlE, htmlCJ, htmlCE ) VALUES ( @gameId, @strDicName, @changesToShop, @onTrigger, @htmlJ, @htmlE, @htmlCJ, @htmlCE )";
 					command.AddParameter( "gameId" );
 					command.AddParameter( "strDicName" );
 					command.AddParameter( "changesToShop" );
 					command.AddParameter( "onTrigger" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 
 					foreach ( var s in Site.Shops.ShopDefinitions ) {
 						command.GetParameter( "gameId" ).Value = s.InGameID;
 						command.GetParameter( "strDicName" ).Value = s.StringDicID;
 						command.GetParameter( "changesToShop" ).Value = s.ChangeToShop;
 						command.GetParameter( "onTrigger" ).Value = s.OnTrigger;
-						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Items, Site.Shops, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlJ"  ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.Items, Site.Shops, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlE"  ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.Items, Site.Shops, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlCJ" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.Items, Site.Shops, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlCE" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.Items, Site.Shops, Site.InGameIdDict, phpLinks: true );
 						command.ExecuteNonQuery();
 					}
 				}
@@ -1286,19 +1322,22 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE Titles ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, strDicName INT, strDicDesc INT, character INT, "
-						+ "points INT, model TEXT, html TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
+						+ "points INT, model TEXT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Titles ( gameId, strDicName, strDicDesc, character, points, model, html, jpSearchKanji, jpSearchFuri, enSearch ) "
-						+ "VALUES ( @gameId, @strDicName, @strDicDesc, @character, @points, @model, @html, @jpSearchKanji, @jpSearchFuri, @enSearch )";
+					command.CommandText = "INSERT INTO Titles ( gameId, strDicName, strDicDesc, character, points, model, htmlJ, htmlE, htmlCJ, htmlCE, jpSearchKanji, jpSearchFuri, enSearch ) "
+						+ "VALUES ( @gameId, @strDicName, @strDicDesc, @character, @points, @model, @htmlJ, @htmlE, @htmlCJ, @htmlCE, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					command.AddParameter( "gameId" );
 					command.AddParameter( "strDicName" );
 					command.AddParameter( "strDicDesc" );
 					command.AddParameter( "character" );
 					command.AddParameter( "points" );
 					command.AddParameter( "model" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 					command.AddParameter( "jpSearchKanji" );
 					command.AddParameter( "jpSearchFuri" );
 					command.AddParameter( "enSearch" );
@@ -1310,7 +1349,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "character" ).Value = t.Character;
 						command.GetParameter( "points" ).Value = t.BunnyGuildPointsMaybe;
 						command.GetParameter( "model" ).Value = t.CostumeString;
-						command.GetParameter( "html" ).Value = t.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlJ"  ).Value = t.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlE"  ).Value = t.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCJ" ).Value = t.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCE" ).Value = t.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.StringDic, Site.InGameIdDict );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[t.NameStringDicID].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[t.DescStringDicID].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[t.NameStringDicID].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[t.DescStringDicID].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[t.NameStringDicID].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[t.DescStringDicID].StringEng, false, false );
@@ -1325,12 +1367,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE Synopsis ( id INTEGER PRIMARY KEY AUTOINCREMENT, strDicName INT, strDicDesc INT, storyMin INT, storyMax INT, image TEXT, "
-						+ "refString TEXT, html TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
+						+ "refString TEXT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Synopsis ( id, strDicName, strDicDesc, storyMin, storyMax, image, refString, html, jpSearchKanji, jpSearchFuri, enSearch ) "
-						+ "VALUES ( @id, @strDicName, @strDicDesc, @storyMin, @storyMax, @image, @refString, @html, @jpSearchKanji, @jpSearchFuri, @enSearch )";
+					command.CommandText = "INSERT INTO Synopsis ( id, strDicName, strDicDesc, storyMin, storyMax, image, refString, htmlJ, htmlE, htmlCJ, htmlCE, jpSearchKanji, jpSearchFuri, enSearch ) "
+						+ "VALUES ( @id, @strDicName, @strDicDesc, @storyMin, @storyMax, @image, @refString, @htmlJ, @htmlE, @htmlCJ, @htmlCE, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					command.AddParameter( "id" );
 					command.AddParameter( "strDicName" );
 					command.AddParameter( "strDicDesc" );
@@ -1338,7 +1380,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "storyMax" );
 					command.AddParameter( "image" );
 					command.AddParameter( "refString" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 					command.AddParameter( "jpSearchKanji" );
 					command.AddParameter( "jpSearchFuri" );
 					command.AddParameter( "enSearch" );
@@ -1351,7 +1396,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "storyMax" ).Value = s.StoryIdMax;
 						command.GetParameter( "image" ).Value = s.RefString1;
 						command.GetParameter( "refString" ).Value = s.RefString2;
-						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlJ"  ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlE"  ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCJ" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCE" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.StringDic, Site.InGameIdDict );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicId].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.TextStringDicId].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicId].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.TextStringDicId].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicId].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.TextStringDicId].StringEng, false, false );
@@ -1365,16 +1413,19 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportBattleBook() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE BattleBook ( id INTEGER PRIMARY KEY AUTOINCREMENT, strDicName INT, strDicDesc INT, unlock INT, html TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
+					command.CommandText = "CREATE TABLE BattleBook ( id INTEGER PRIMARY KEY AUTOINCREMENT, strDicName INT, strDicDesc INT, unlock INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO BattleBook ( strDicName, strDicDesc, unlock, html, jpSearchKanji, jpSearchFuri, enSearch ) "
-						+ "VALUES ( @strDicName, @strDicDesc, @unlock, @html, @jpSearchKanji, @jpSearchFuri, @enSearch )";
+					command.CommandText = "INSERT INTO BattleBook ( strDicName, strDicDesc, unlock, htmlJ, htmlE, htmlCJ, htmlCE, jpSearchKanji, jpSearchFuri, enSearch ) "
+						+ "VALUES ( @strDicName, @strDicDesc, @unlock, @htmlJ, @htmlE, @htmlCJ, @htmlCE, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					command.AddParameter( "strDicName" );
 					command.AddParameter( "strDicDesc" );
 					command.AddParameter( "unlock" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 					command.AddParameter( "jpSearchKanji" );
 					command.AddParameter( "jpSearchFuri" );
 					command.AddParameter( "enSearch" );
@@ -1385,7 +1436,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "strDicName" ).Value = b.NameStringDicId;
 						command.GetParameter( "strDicDesc" ).Value = b.TextStringDicId;
 						command.GetParameter( "unlock" ).Value = b.UnlockReferenceMaybe;
-						command.GetParameter( "html" ).Value = b.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlJ"  ).Value = b.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlE"  ).Value = b.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCJ" ).Value = b.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCE" ).Value = b.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.StringDic, Site.InGameIdDict );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[b.NameStringDicId].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[b.TextStringDicId].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[b.NameStringDicId].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[b.TextStringDicId].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[b.NameStringDicId].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[b.TextStringDicId].StringEng, false, false );
@@ -1403,7 +1457,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						+ "level INT, hp INT, tp INT, pAtk INT, pDef INT, mAtk INT, mDef INT, agl INT, attrFire INT, attrEarth INT, attrWind INT, attrWater INT, attrLight INT, "
 						+ "attrDark INT, attrPhys INT, exp INT, lp INT, gald INT, fatalBlueResist FLOAT, fatalRedResist FLOAT, fatalGreenResist FLOAT, inMonsterBook INT, "
 						+ "location INT, locationWeather INT, stealItem INT, stealChance INT, killableWithFatal INT, secretMissionDrop INT, secretMissionDropChance INT, "
-						+ "fatalExpType INT, fatalExpModifier INT, fatalLpType INT, fatalLpModifier INT, fatalDropType INT, html TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
+						+ "fatalExpType INT, fatalExpModifier INT, fatalLpType INT, fatalLpModifier INT, fatalDropType INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -1420,10 +1474,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.CommandText = "INSERT INTO Enemies ( id, gameId, strDicName, refString, icon, category, level, hp, tp, pAtk, pDef, mAtk, mDef, agl, attrFire, "
 						+ "attrEarth, attrWind, attrWater, attrLight, attrDark, attrPhys, exp, lp, gald, fatalBlueResist, fatalRedResist, fatalGreenResist, inMonsterBook, "
 						+ "location, locationWeather, stealItem, stealChance, killableWithFatal, secretMissionDrop, secretMissionDropChance, fatalExpType, fatalExpModifier, "
-						+ "fatalLpType, fatalLpModifier, fatalDropType, html, jpSearchKanji, jpSearchFuri, enSearch ) VALUES ( @id, @gameId, @strDicName, @refString, @icon, @category, @level, @hp, @tp, @pAtk, "
+						+ "fatalLpType, fatalLpModifier, fatalDropType, htmlJ, htmlE, htmlCJ, htmlCE, jpSearchKanji, jpSearchFuri, enSearch ) VALUES ( @id, @gameId, @strDicName, @refString, @icon, @category, @level, @hp, @tp, @pAtk, "
 						+ "@pDef, @mAtk, @mDef, @agl, @attrFire, @attrEarth, @attrWind, @attrWater, @attrLight, @attrDark, @attrPhys, @exp, @lp, @gald, @fatalBlueResist, "
 						+ "@fatalRedResist, @fatalGreenResist, @inMonsterBook, @location, @locationWeather, @stealItem, @stealChance, @killableWithFatal, @secretMissionDrop, "
-						+ "@secretMissionDropChance, @fatalExpType, @fatalExpModifier, @fatalLpType, @fatalLpModifier, @fatalDropType, @html, @jpSearchKanji, @jpSearchFuri, @enSearch )";
+						+ "@secretMissionDropChance, @fatalExpType, @fatalExpModifier, @fatalLpType, @fatalLpModifier, @fatalDropType, @htmlJ, @htmlE, @htmlCJ, @htmlCE, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					command.AddParameter( "id" );
 					command.AddParameter( "gameId" );
 					command.AddParameter( "strDicName" );
@@ -1464,7 +1518,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "fatalLpType" );
 					command.AddParameter( "fatalLpModifier" );
 					command.AddParameter( "fatalDropType" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 					command.AddParameter( "jpSearchKanji" );
 					command.AddParameter( "jpSearchFuri" );
 					command.AddParameter( "enSearch" );
@@ -1516,7 +1573,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "fatalLpType" ).Value = e.FatalTypeLP;
 						command.GetParameter( "fatalLpModifier" ).Value = e.LPModifier;
 						command.GetParameter( "fatalDropType" ).Value = e.FatalTypeDrop;
-						command.GetParameter( "html" ).Value = e.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Items, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlJ"  ).Value = e.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.Items, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlE"  ).Value = e.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.Items, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlCJ" ).Value = e.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.Items, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlCE" ).Value = e.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.Items, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[e.NameStringDicID].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[e.NameStringDicID].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[e.NameStringDicID].StringEng, false, false );
@@ -1642,7 +1702,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.CommandText = "CREATE TABLE Items ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, image TEXT, equipBy INT, strDicName INT, strDicDesc INT, "
 						+ "icon INT, usableInBattle INT, inCollectorsBook INT, category INT, hpHeal INT, tpHeal INT, ailmentPhys INT, ailmentMag INT, permaPAtk INT, permaPDef INT, "
 						+ "permaMAtk INT, permaMDef INT, permaAgl INT, permaHp INT, permaTp INT, equipPAtk INT, equipMAtk INT, equipPDef INT, equipMDef INT, equipAgl INT, "
-						+ "equipLuck INT, attrFire INT, attrWater INT, attrWind INT, attrEarth INT, attrLight INT, attrDark INT, price INT, html TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
+						+ "equipLuck INT, attrFire INT, attrWater INT, attrWind INT, attrEarth INT, attrLight INT, attrDark INT, price INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT, jpSearchKanji TEXT, jpSearchFuri TEXT, enSearch TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -1692,10 +1752,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				using ( var commandSteal = DB.CreateCommand() ) {
 					command.CommandText = "INSERT INTO Items ( gameId, image, equipBy, strDicName, strDicDesc, icon, usableInBattle, inCollectorsBook, category, hpHeal, "
 						+ "tpHeal, ailmentPhys, ailmentMag, permaPAtk, permaPDef, permaMAtk, permaMDef, permaAgl, permaHp, permaTp, equipPAtk, equipMAtk, equipPDef, "
-						+ "equipMDef, equipAgl, equipLuck, attrFire, attrWater, attrWind, attrEarth, attrLight, attrDark, price, html, jpSearchKanji, jpSearchFuri, enSearch ) VALUES ( @gameId, @image, @equipBy, "
+						+ "equipMDef, equipAgl, equipLuck, attrFire, attrWater, attrWind, attrEarth, attrLight, attrDark, price, htmlJ, htmlE, htmlCJ, htmlCE, jpSearchKanji, jpSearchFuri, enSearch ) VALUES ( @gameId, @image, @equipBy, "
 						+ "@strDicName, @strDicDesc, @icon, @usableInBattle, @inCollectorsBook, @category, @hpHeal, @tpHeal, @ailmentPhys, @ailmentMag, @permaPAtk, "
 						+ "@permaPDef, @permaMAtk, @permaMDef, @permaAgl, @permaHp, @permaTp, @equipPAtk, @equipMAtk, @equipPDef, @equipMDef, @equipAgl, @equipLuck, "
-						+ "@attrFire, @attrWater, @attrWind, @attrEarth, @attrLight, @attrDark, @price, @html, @jpSearchKanji, @jpSearchFuri, @enSearch )";
+						+ "@attrFire, @attrWater, @attrWind, @attrEarth, @attrLight, @attrDark, @price, @htmlJ, @htmlE, @htmlCJ, @htmlCE, @jpSearchKanji, @jpSearchFuri, @enSearch )";
 					command.AddParameter( "gameId" );
 					command.AddParameter( "image" );
 					command.AddParameter( "equipBy" );
@@ -1729,7 +1789,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.AddParameter( "attrLight" );
 					command.AddParameter( "attrDark" );
 					command.AddParameter( "price" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 					command.AddParameter( "jpSearchKanji" );
 					command.AddParameter( "jpSearchFuri" );
 					command.AddParameter( "enSearch" );
@@ -1777,7 +1840,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "usableInBattle" ).Value = item.Data[(int)ItemDat.ItemData.UsableInBattle];
 						command.GetParameter( "inCollectorsBook" ).Value = item.Data[(int)ItemDat.ItemData.InCollectorsBook];
 						command.GetParameter( "price" ).Value = item.Data[(int)ItemDat.ItemData.ShopPrice];
-						command.GetParameter( "html" ).Value = ItemDat.ItemDat.GetItemDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Items, item, Site.Skills, Site.Enemies, Site.Recipes, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlJ"  ).Value = ItemDat.ItemDat.GetItemDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.Items, item, Site.Skills, Site.Enemies, Site.Recipes, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlE"  ).Value = ItemDat.ItemDat.GetItemDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.Items, item, Site.Skills, Site.Enemies, Site.Recipes, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlCJ" ).Value = ItemDat.ItemDat.GetItemDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.Items, item, Site.Skills, Site.Enemies, Site.Recipes, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "htmlCE" ).Value = ItemDat.ItemDat.GetItemDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.Items, item, Site.Skills, Site.Enemies, Site.Recipes, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.NamePointer]].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.DescriptionPointer]].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.NamePointer]].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.DescriptionPointer]].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.NamePointer]].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.DescriptionPointer]].StringEng, false, false );
@@ -1919,7 +1985,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					// TODO: Make searchable by splitting into individual panels sensibly...?
-					command.CommandText = "CREATE TABLE Locations ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, strDicName INT, category INT, html TEXT )";
+					command.CommandText = "CREATE TABLE Locations ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, strDicName INT, category INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -1938,11 +2004,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				using ( var commandState = DB.CreateCommand() )
 				using ( var commandShop = DB.CreateCommand() )
 				using ( var commandEncounter = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Locations ( gameId, strDicName, category, html ) VALUES ( @gameId, @strDicName, @category, @html )";
+					command.CommandText = "INSERT INTO Locations ( gameId, strDicName, category, htmlJ, htmlE, htmlCJ, htmlCE ) VALUES ( @gameId, @strDicName, @category, @htmlJ, @htmlE, @htmlCJ, @htmlCE )";
 					command.AddParameter( "gameId" );
 					command.AddParameter( "strDicName" );
 					command.AddParameter( "category" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 
 					commandState.CommandText = "INSERT INTO Locations_State ( locationId, strDicName, strDicDesc, refString, trigger ) "
 						+ "VALUES ( @locationId, @strDicName, @strDicDesc, @refString, @trigger )";
@@ -1964,7 +2033,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "gameId" ).Value = s.LocationID;
 						command.GetParameter( "strDicName" ).Value = s.DefaultStringDicID;
 						command.GetParameter( "category" ).Value = s.Category;
-						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict, Site.EncounterGroups, Site.EnemyGroups, Site.Enemies, Site.Shops, phpLinks: true );
+						command.GetParameter( "htmlJ"  ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.StringDic, Site.InGameIdDict, Site.EncounterGroups, Site.EnemyGroups, Site.Enemies, Site.Shops, phpLinks: true );
+						command.GetParameter( "htmlE"  ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.StringDic, Site.InGameIdDict, Site.EncounterGroups, Site.EnemyGroups, Site.Enemies, Site.Shops, phpLinks: true );
+						command.GetParameter( "htmlCJ" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.StringDic, Site.InGameIdDict, Site.EncounterGroups, Site.EnemyGroups, Site.Enemies, Site.Shops, phpLinks: true );
+						command.GetParameter( "htmlCE" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.StringDic, Site.InGameIdDict, Site.EncounterGroups, Site.EnemyGroups, Site.Enemies, Site.Shops, phpLinks: true );
 						command.ExecuteNonQuery();
 
 						long insertedId = GetLastInsertedId();
@@ -1999,20 +2071,34 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportRecords() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE Records ( id INTEGER PRIMARY KEY AUTOINCREMENT, strDicId INT, html TEXT )";
+					command.CommandText = "CREATE TABLE Records ( id INTEGER PRIMARY KEY AUTOINCREMENT, strDicId INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Records ( strDicId, html ) "
-						+ "VALUES ( @strDicId, @html )";
+					command.CommandText = "INSERT INTO Records ( strDicId, htmlJ, htmlE, htmlCJ, htmlCE ) "
+						+ "VALUES ( @strDicId, @htmlJ, @htmlE, @htmlCJ, @htmlCE )";
 					command.AddParameter( "strDicId" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 
 					foreach ( uint r in Site.Records ) {
 						command.GetParameter( "strDicId" ).Value = r;
-						StringBuilder html = new StringBuilder();
-						WebsiteGenerator.AppendRecord( html, Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.InGameIdDict, r );
-						command.GetParameter( "html" ).Value = html.ToString();
+
+						StringBuilder htmlJ = new StringBuilder();
+						StringBuilder htmlE = new StringBuilder();
+						StringBuilder htmlCJ = new StringBuilder();
+						StringBuilder htmlCE = new StringBuilder();
+						WebsiteGenerator.AppendRecord( htmlJ,  Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp, Site.InGameIdDict, r );
+						WebsiteGenerator.AppendRecord( htmlE,  Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En, Site.InGameIdDict, r );
+						WebsiteGenerator.AppendRecord( htmlCJ, Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.InGameIdDict, r );
+						WebsiteGenerator.AppendRecord( htmlCE, Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.InGameIdDict, r );
+
+						command.GetParameter( "htmlJ" ).Value = htmlJ.ToString();
+						command.GetParameter( "htmlE" ).Value = htmlE.ToString();
+						command.GetParameter( "htmlCJ" ).Value = htmlCJ.ToString();
+						command.GetParameter( "htmlCE" ).Value = htmlCE.ToString();
 						command.ExecuteNonQuery();
 					}
 				}
@@ -2023,7 +2109,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportSettings() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE Settings ( id INTEGER PRIMARY KEY AUTOINCREMENT, strDicName INT, strDicDesc INT, html TEXT )";
+					command.CommandText = "CREATE TABLE Settings ( id INTEGER PRIMARY KEY AUTOINCREMENT, strDicName INT, strDicDesc INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -2032,10 +2118,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 				using ( var command = DB.CreateCommand() )
 				using ( var commandOpt = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Settings ( strDicName, strDicDesc, html ) VALUES ( @strDicName, @strDicDesc, @html )";
+					command.CommandText = "INSERT INTO Settings ( strDicName, strDicDesc, htmlJ, htmlE, htmlCJ, htmlCE ) VALUES ( @strDicName, @strDicDesc, @htmlJ, @htmlE, @htmlCJ, @htmlCE )";
 					command.AddParameter( "strDicName" );
 					command.AddParameter( "strDicDesc" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 					commandOpt.CommandText = "INSERT INTO Settings_Options ( settingId, strDicId ) VALUES ( @settingId, @strDicId )";
 					commandOpt.AddParameter( "settingId" );
 					commandOpt.AddParameter( "strDicId" );
@@ -2043,10 +2132,21 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					foreach ( var s in Site.Settings ) {
 						command.GetParameter( "strDicName" ).Value = s.NameStringDicId;
 						command.GetParameter( "strDicDesc" ).Value = s.DescStringDicId;
-						StringBuilder html = new StringBuilder();
-						WebsiteGenerator.AppendSetting( html, Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.InGameIdDict, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0],
-							s.OptionsStringDicIds[1], s.OptionsStringDicIds[2], s.OptionsStringDicIds[3] );
-						command.GetParameter( "html" ).Value = html.ToString();
+
+						StringBuilder htmlJ = new StringBuilder();
+						StringBuilder htmlE = new StringBuilder();
+						StringBuilder htmlCJ = new StringBuilder();
+						StringBuilder htmlCE = new StringBuilder();
+
+						WebsiteGenerator.AppendSetting( htmlJ, Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp, Site.InGameIdDict, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0], s.OptionsStringDicIds[1], s.OptionsStringDicIds[2], s.OptionsStringDicIds[3] );
+						WebsiteGenerator.AppendSetting( htmlE, Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En, Site.InGameIdDict, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0], s.OptionsStringDicIds[1], s.OptionsStringDicIds[2], s.OptionsStringDicIds[3] );
+						WebsiteGenerator.AppendSetting( htmlCJ, Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.InGameIdDict, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0], s.OptionsStringDicIds[1], s.OptionsStringDicIds[2], s.OptionsStringDicIds[3] );
+						WebsiteGenerator.AppendSetting( htmlCE, Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.InGameIdDict, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0], s.OptionsStringDicIds[1], s.OptionsStringDicIds[2], s.OptionsStringDicIds[3] );
+
+						command.GetParameter( "htmlJ" ).Value = htmlJ.ToString();
+						command.GetParameter( "htmlE" ).Value = htmlE.ToString();
+						command.GetParameter( "htmlCJ" ).Value = htmlCJ.ToString();
+						command.GetParameter( "htmlCE" ).Value = htmlCE.ToString();
 						command.ExecuteNonQuery();
 
 						long lastId = GetLastInsertedId();
@@ -2066,19 +2166,22 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
 					command.CommandText = "CREATE TABLE GradeShop ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, strDicName INT, strDicDesc INT, cost INT, "
-						+ "refString TEXT, html TEXT )";
+						+ "refString TEXT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO GradeShop ( id, gameId, strDicName, strDicDesc, cost, refString, html ) "
-						+ "VALUES ( @id, @gameId, @strDicName, @strDicDesc, @cost, @refString, @html )";
+					command.CommandText = "INSERT INTO GradeShop ( id, gameId, strDicName, strDicDesc, cost, refString, htmlJ, htmlE, htmlCJ, htmlCE ) "
+						+ "VALUES ( @id, @gameId, @strDicName, @strDicDesc, @cost, @refString, @htmlJ, @htmlE, @htmlCJ, @htmlCE )";
 					command.AddParameter( "id" );
 					command.AddParameter( "gameId" );
 					command.AddParameter( "strDicName" );
 					command.AddParameter( "strDicDesc" );
 					command.AddParameter( "cost" );
 					command.AddParameter( "refString" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 
 					foreach ( var g in Site.GradeShop.GradeShopEntryList ) {
 						command.GetParameter( "id" ).Value = g.ID;
@@ -2087,7 +2190,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "strDicDesc" ).Value = g.DescStringDicID;
 						command.GetParameter( "cost" ).Value = g.GradeCost;
 						command.GetParameter( "refString" ).Value = g.RefString;
-						command.GetParameter( "html" ).Value = g.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlJ"  ).Value = g.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlE"  ).Value = g.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCJ" ).Value = g.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "htmlCE" ).Value = g.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.StringDic, Site.InGameIdDict );
 						command.ExecuteNonQuery();
 
 					}
@@ -2099,20 +2205,26 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportSearchPoints() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE SearchPoints ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, displayId INT, html TEXT )";
+					command.CommandText = "CREATE TABLE SearchPoints ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId INT UNIQUE, displayId INT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO SearchPoints ( gameId, displayId, html ) VALUES ( @gameId, @displayId, @html )";
+					command.CommandText = "INSERT INTO SearchPoints ( gameId, displayId, htmlJ, htmlE, htmlCJ, htmlCE ) VALUES ( @gameId, @displayId, @htmlJ, @htmlE, @htmlCJ, @htmlCE )";
 					command.AddParameter( "gameId" );
 					command.AddParameter( "displayId" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 
 					int idx = 1;
 					foreach ( var sp in Site.SearchPoints.SearchPointDefinitions ) {
 						command.GetParameter( "gameId" ).Value = sp.Index;
 						command.GetParameter( "displayId" ).Value = sp.Unknown11 == 1 ? idx : -1;
-						command.GetParameter( "html" ).Value = sp.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Items, Site.StringDic, Site.InGameIdDict, Site.SearchPoints.SearchPointContents, Site.SearchPoints.SearchPointItems, sp.Unknown11 == 1 ? idx : -1, phpLinks: true );
+						command.GetParameter( "htmlJ"  ).Value = sp.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , Site.Items, Site.StringDic, Site.InGameIdDict, Site.SearchPoints.SearchPointContents, Site.SearchPoints.SearchPointItems, sp.Unknown11 == 1 ? idx : -1, phpLinks: true );
+						command.GetParameter( "htmlE"  ).Value = sp.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , Site.Items, Site.StringDic, Site.InGameIdDict, Site.SearchPoints.SearchPointContents, Site.SearchPoints.SearchPointItems, sp.Unknown11 == 1 ? idx : -1, phpLinks: true );
+						command.GetParameter( "htmlCJ" ).Value = sp.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.Items, Site.StringDic, Site.InGameIdDict, Site.SearchPoints.SearchPointContents, Site.SearchPoints.SearchPointItems, sp.Unknown11 == 1 ? idx : -1, phpLinks: true );
+						command.GetParameter( "htmlCE" ).Value = sp.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.Items, Site.StringDic, Site.InGameIdDict, Site.SearchPoints.SearchPointContents, Site.SearchPoints.SearchPointItems, sp.Unknown11 == 1 ? idx : -1, phpLinks: true );
 						command.ExecuteNonQuery();
 						if ( sp.Unknown11 == 1 ) {
 							++idx;
@@ -2126,15 +2238,18 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportTrophies() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE Trophies ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId TEXT, html TEXT )";
+					command.CommandText = "CREATE TABLE Trophies ( id INTEGER PRIMARY KEY AUTOINCREMENT, gameId TEXT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO Trophies ( id, gameId, html ) "
-						+ "VALUES ( @id, @gameId, @html )";
+					command.CommandText = "INSERT INTO Trophies ( id, gameId, htmlJ, htmlE, htmlCJ, htmlCE ) "
+						+ "VALUES ( @id, @gameId, @htmlJ, @htmlE, @htmlCJ, @htmlCE )";
 					command.AddParameter( "id" );
 					command.AddParameter( "gameID" );
-					command.AddParameter( "html" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
 
 					foreach ( var kvp in Site.TrophyJp.Trophies ) {
 						var jp = Site.TrophyJp.Trophies[kvp.Key];
@@ -2142,7 +2257,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 						command.GetParameter( "id" ).Value = kvp.Key;
 						command.GetParameter( "gameId" ).Value = jp.ID;
-						command.GetParameter( "html" ).Value = WebsiteGenerator.TrophyNodeToHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, jp, en );
+						command.GetParameter( "htmlJ"  ).Value = WebsiteGenerator.TrophyNodeToHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp             , jp, en );
+						command.GetParameter( "htmlE"  ).Value = WebsiteGenerator.TrophyNodeToHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En             , jp, en );
+						command.GetParameter( "htmlCJ" ).Value = WebsiteGenerator.TrophyNodeToHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, jp, en );
+						command.GetParameter( "htmlCE" ).Value = WebsiteGenerator.TrophyNodeToHtml( Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, jp, en );
 						command.ExecuteNonQuery();
 					}
 				}
@@ -2153,30 +2271,38 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public void ExportNecropolis() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE NecropolisFloors ( id INTEGER PRIMARY KEY AUTOINCREMENT, floorName VARCHAR(16) UNIQUE, map TEXT, html TEXT, htmlEnemies TEXT )";
+					command.CommandText = "CREATE TABLE NecropolisFloors ( id INTEGER PRIMARY KEY AUTOINCREMENT, floorName VARCHAR(16) UNIQUE, map TEXT, htmlJ TEXT, htmlE TEXT, htmlCJ TEXT, htmlCE TEXT, htmlEnemyJ TEXT, htmlEnemyE TEXT, htmlEnemyCJ TEXT, htmlEnemyCE TEXT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "INSERT INTO NecropolisFloors ( floorName, map, html, htmlEnemies ) VALUES ( @floorName, @map, @html, @htmlEnemies )";
+					command.CommandText = "INSERT INTO NecropolisFloors ( floorName, map, htmlJ, htmlE, htmlCJ, htmlCE, htmlEnemyJ, htmlEnemyE, htmlEnemyCJ, htmlEnemyCE ) VALUES ( @floorName, @map, @htmlJ, @htmlE, @htmlCJ, @htmlCE, @htmlEnemyJ, @htmlEnemyE, @htmlEnemyCJ, @htmlEnemyCE )";
 					command.AddParameter( "floorName" );
 					command.AddParameter( "map" );
-					command.AddParameter( "html" );
-					command.AddParameter( "htmlEnemies" );
+					command.AddParameter( "htmlJ" );
+					command.AddParameter( "htmlE" );
+					command.AddParameter( "htmlCJ" );
+					command.AddParameter( "htmlCE" );
+					command.AddParameter( "htmlEnemyJ" );
+					command.AddParameter( "htmlEnemyE" );
+					command.AddParameter( "htmlEnemyCJ" );
+					command.AddParameter( "htmlEnemyCE" );
 
 					foreach ( var floor in Site.NecropolisFloors.FloorList ) {
 						int floorNumberLong = Int32.Parse( floor.RefString1.Split( '_' ).Last() );
 						int floorNumber = ( floorNumberLong - 1 ) % 10 + 1;
 						int floorStratumAsNumber = ( floorNumberLong - 1 ) / 10 + 1;
 						string floorStratum = ( (char)( floorStratumAsNumber + 64 ) ).ToString();
-						string html = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, null, null, null,
-							Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
-						string htmlEnemies = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Site.Enemies, Site.EnemyGroups,
-							Site.EncounterGroups, Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
 
 						command.GetParameter( "floorName" ).Value = floor.RefString1;
 						command.GetParameter( "map" ).Value = floor.RefString2;
-						command.GetParameter( "html" ).Value = html;
-						command.GetParameter( "htmlEnemies" ).Value = htmlEnemies;
+						command.GetParameter( "htmlJ"  ).Value      = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, null,         null,             null,                 Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp,              Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
+						command.GetParameter( "htmlE"  ).Value      = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, null,         null,             null,                 Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En,              Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
+						command.GetParameter( "htmlCJ" ).Value      = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, null,         null,             null,                 Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
+						command.GetParameter( "htmlCE" ).Value      = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, null,         null,             null,                 Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
+						command.GetParameter( "htmlEnemyJ"  ).Value = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Site.Enemies, Site.EnemyGroups, Site.EncounterGroups, Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.Jp,              Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
+						command.GetParameter( "htmlEnemyE"  ).Value = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Site.Enemies, Site.EnemyGroups, Site.EncounterGroups, Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.En,              Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
+						command.GetParameter( "htmlEnemyCJ" ).Value = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Site.Enemies, Site.EnemyGroups, Site.EncounterGroups, Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithJpLinks, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
+						command.GetParameter( "htmlEnemyCE" ).Value = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Site.Enemies, Site.EnemyGroups, Site.EncounterGroups, Site.Version, Site.VersionPostfix, Site.Locale, WebsiteLanguage.BothWithEnLinks, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
 						command.ExecuteNonQuery();
 
 					}
