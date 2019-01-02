@@ -312,13 +312,15 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Append( jp.Detail.ToHtmlJpn( version ) );
 			sb.Append( "</td>" );
 
-			sb.Append( "<td>" );
-			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( en.Name );
-			sb.Append( "</span>" );
-			sb.Append( "<br/>" );
-			sb.Append( en.Detail.ToHtmlEng( version ) );
-			sb.Append( "</td>" );
+			if ( en != null ) {
+				sb.Append( "<td>" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( en.Name );
+				sb.Append( "</span>" );
+				sb.Append( "<br/>" );
+				sb.Append( en.Detail.ToHtmlEng( version ) );
+				sb.Append( "</td>" );
+			}
 
 			sb.Append( "</tr>" );
 

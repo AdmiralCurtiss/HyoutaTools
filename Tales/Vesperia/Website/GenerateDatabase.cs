@@ -2138,7 +2138,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 					foreach ( var kvp in Site.TrophyJp.Trophies ) {
 						var jp = Site.TrophyJp.Trophies[kvp.Key];
-						var en = Site.TrophyEn.Trophies[kvp.Key];
+						var en = Site.TrophyEn?.Trophies[kvp.Key];
 
 						command.GetParameter( "id" ).Value = kvp.Key;
 						command.GetParameter( "gameId" ).Value = jp.ID;
