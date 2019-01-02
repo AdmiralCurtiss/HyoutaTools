@@ -57,24 +57,30 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 			return RefString;
 		}
 
-		public string GetDataAsHtml( GameVersion version, T8BTTA strategy, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, T8BTTA strategy, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 			//sb.Append( RefString );
 			sb.Append( "<tr>" );
-			sb.Append( "<td colspan=\"5\">" );
-			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version ) );
-			sb.Append( "</span>" );
-			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version ) );
-			sb.Append( "</td>" );
-			sb.Append( "<td colspan=\"5\">" );
-			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
-			sb.Append( "</span>" );
-			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
-			sb.Append( "</td>" );
+
+			int colspan = websiteLanguage.WantsBoth() ? 5 : 10;
+			if ( websiteLanguage.WantsJp() ) {
+				sb.Append( "<td colspan=\"" + colspan + "\">" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version ) );
+				sb.Append( "</span>" );
+				sb.Append( "<br>" );
+				sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version ) );
+				sb.Append( "</td>" );
+			}
+			if ( websiteLanguage.WantsEn() ) {
+				sb.Append( "<td colspan=\"" + colspan + "\">" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
+				sb.Append( "</span>" );
+				sb.Append( "<br>" );
+				sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
+				sb.Append( "</td>" );
+			}
 			sb.Append( "</tr>" );
 
 			sb.Append( "<tr>" );
@@ -93,14 +99,14 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 				sb.Append( "<tr>" );
 				sb.Append( "<td>" );
 				sb.Append( "<span class=\"strategycat\">" );
-				sb.Append( GetCategoryName( x, version, inGameIdDict ) );
+				sb.Append( GetCategoryName( x, version, websiteLanguage, inGameIdDict ) );
 				sb.Append( "</span>" );
 				sb.Append( "</td>" );
 				for ( uint y = 0; y < StrategyDefaults.GetLength( 1 ); ++y ) {
 					if ( y == 8 && !version.HasPS3Content() ) { continue; } // skip patty strategy if we don't have her
 					sb.Append( "<td>" );
 					var option = strategy.StrategyOptionDict[StrategyDefaults[x, y]];
-					sb.Append( inGameIdDict[option.NameStringDicID].StringEngOrJpnHtml( version ) );
+					sb.Append( inGameIdDict[option.NameStringDicID].StringEngOrJpnHtml( version, websiteLanguage ) );
 					sb.Append( "</td>" );
 				}
 				sb.Append( "</tr>" );
@@ -119,12 +125,12 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 			return sb.ToString();
 		}
 
-		public static string GetCategoryName( uint cat, GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public static string GetCategoryName( uint cat, GameVersion version, WebsiteLanguage websiteLanguage, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			switch ( cat ) {
-				case 6: return inGameIdDict[33912145u].StringEngOrJpnHtml( version );
-				case 7: return inGameIdDict[33912144u].StringEngOrJpnHtml( version );
-				case 8: return inGameIdDict[33912162u].StringEngOrJpnHtml( version );
-				default: return inGameIdDict[33912138u + cat].StringEngOrJpnHtml( version );
+				case 6: return inGameIdDict[33912145u].StringEngOrJpnHtml( version, websiteLanguage );
+				case 7: return inGameIdDict[33912144u].StringEngOrJpnHtml( version, websiteLanguage );
+				case 8: return inGameIdDict[33912162u].StringEngOrJpnHtml( version, websiteLanguage );
+				default: return inGameIdDict[33912138u + cat].StringEngOrJpnHtml( version, websiteLanguage );
 			}
 		}
 	}

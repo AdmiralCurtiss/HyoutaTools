@@ -14,6 +14,9 @@ namespace HyoutaTools.Tales.Vesperia {
 	public enum ControllerButton {
 		Start, Select, RightButton, LowerButton, LeftButton, UpperButton, L1, L2, L3, R1, R2, R3, LeftStick, RightStick, DPad, System
 	}
+	public enum WebsiteLanguage { // which of the two ToV strings to display in generated website data
+		Jp, En, BothWithJpLinks, BothWithEnLinks
+	}
 
 	public static class VesperiaUtil {
 		public static bool Is360( this GameVersion version ) {
@@ -24,6 +27,16 @@ namespace HyoutaTools.Tales.Vesperia {
 		}
 		public static bool SwapsConfirmAndCancelDependingOnRegion( this GameVersion version ) {
 			return version == GameVersion.PS3;
+		}
+
+		public static bool WantsJp( this WebsiteLanguage lang ) {
+			return lang != WebsiteLanguage.En;
+		}
+		public static bool WantsEn( this WebsiteLanguage lang ) {
+			return lang != WebsiteLanguage.Jp;
+		}
+		public static bool WantsBoth( this WebsiteLanguage lang ) {
+			return lang.WantsJp() && lang.WantsEn();
 		}
 
 		public static String RemoveTags( String s, bool useJapaneseNames = false, bool outputAsHtml = false, bool removeKanjiWithFurigana = false ) {

@@ -978,7 +978,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						commandArte.GetParameter( "water" ).Value = arte.ElementWater;
 						commandArte.GetParameter( "light" ).Value = arte.ElementLight;
 						commandArte.GetParameter( "dark" ).Value = arte.ElementDarkness;
-						commandArte.GetParameter( "html" ).Value = arte.GetDataAsHtml( Site.Version, Site.Artes.ArteIdDict, Site.Enemies, Site.Skills, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						commandArte.GetParameter( "html" ).Value = arte.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Artes.ArteIdDict, Site.Enemies, Site.Skills, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						commandArte.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[arte.NameStringDicId].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[arte.DescStringDicId].StringJpn, true, false );
 						commandArte.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[arte.NameStringDicId].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[arte.DescStringDicId].StringJpn, true, true );
 						commandArte.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[arte.NameStringDicId].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[arte.DescStringDicId].StringEng, false, false );
@@ -1045,7 +1045,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "category" ).Value = s.Category;
 						command.GetParameter( "symbolValue" ).Value = s.SymbolValue;
 						command.GetParameter( "inactive" ).Value = s.Inactive;
-						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicID].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.DescStringDicID].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicID].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.DescStringDicID].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicID].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.DescStringDicID].StringEng, false, false );
@@ -1091,7 +1091,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "strDicDesc" ).Value = so.DescStringDicID;
 						command.GetParameter( "category" ).Value = so.Category;
 						command.GetParameter( "characters" ).Value = so.Characters;
-						command.GetParameter( "html" ).Value = so.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "html" ).Value = so.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
 						command.ExecuteNonQuery();
 					}
 				}
@@ -1117,7 +1117,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						commandSet.GetParameter( "refString" ).Value = ss.RefString;
 						commandSet.GetParameter( "strDicName" ).Value = ss.NameStringDicID;
 						commandSet.GetParameter( "strDicDesc" ).Value = ss.DescStringDicID;
-						commandSet.GetParameter( "html" ).Value = ss.GetDataAsHtml( Site.Version, Site.Strategy, Site.StringDic, Site.InGameIdDict );
+						commandSet.GetParameter( "html" ).Value = ss.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Strategy, Site.StringDic, Site.InGameIdDict );
 						commandSet.ExecuteNonQuery();
 
 						for ( uint cat = 0; cat < ss.StrategyDefaults.GetLength( 0 ); ++cat ) {
@@ -1205,7 +1205,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "statType" ).Value = r.StatType;
 						command.GetParameter( "statValue" ).Value = r.StatValue;
 						command.GetParameter( "statTime" ).Value = r.StatTime;
-						command.GetParameter( "html" ).Value = r.GetDataAsHtml( Site.Version, Site.Recipes, Site.Items, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "html" ).Value = r.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Recipes, Site.Items, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[r.NameStringDicID].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.DescriptionStringDicID].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.EffectStringDicID].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[r.NameStringDicID].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.DescriptionStringDicID].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.EffectStringDicID].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[r.NameStringDicID].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.DescriptionStringDicID].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[r.EffectStringDicID].StringEng, false, false );
@@ -1263,7 +1263,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "strDicName" ).Value = s.StringDicID;
 						command.GetParameter( "changesToShop" ).Value = s.ChangeToShop;
 						command.GetParameter( "onTrigger" ).Value = s.OnTrigger;
-						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.Items, Site.Shops, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Items, Site.Shops, Site.InGameIdDict, phpLinks: true );
 						command.ExecuteNonQuery();
 					}
 				}
@@ -1310,7 +1310,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "character" ).Value = t.Character;
 						command.GetParameter( "points" ).Value = t.BunnyGuildPointsMaybe;
 						command.GetParameter( "model" ).Value = t.CostumeString;
-						command.GetParameter( "html" ).Value = t.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "html" ).Value = t.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[t.NameStringDicID].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[t.DescStringDicID].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[t.NameStringDicID].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[t.DescStringDicID].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[t.NameStringDicID].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[t.DescStringDicID].StringEng, false, false );
@@ -1351,7 +1351,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "storyMax" ).Value = s.StoryIdMax;
 						command.GetParameter( "image" ).Value = s.RefString1;
 						command.GetParameter( "refString" ).Value = s.RefString2;
-						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicId].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.TextStringDicId].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicId].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.TextStringDicId].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[s.NameStringDicId].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[s.TextStringDicId].StringEng, false, false );
@@ -1385,7 +1385,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "strDicName" ).Value = b.NameStringDicId;
 						command.GetParameter( "strDicDesc" ).Value = b.TextStringDicId;
 						command.GetParameter( "unlock" ).Value = b.UnlockReferenceMaybe;
-						command.GetParameter( "html" ).Value = b.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "html" ).Value = b.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[b.NameStringDicId].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[b.TextStringDicId].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[b.NameStringDicId].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[b.TextStringDicId].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[b.NameStringDicId].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[b.TextStringDicId].StringEng, false, false );
@@ -1516,7 +1516,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "fatalLpType" ).Value = e.FatalTypeLP;
 						command.GetParameter( "fatalLpModifier" ).Value = e.LPModifier;
 						command.GetParameter( "fatalDropType" ).Value = e.FatalTypeDrop;
-						command.GetParameter( "html" ).Value = e.GetDataAsHtml( Site.Version, Site.Items, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "html" ).Value = e.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Items, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[e.NameStringDicID].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[e.NameStringDicID].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[e.NameStringDicID].StringEng, false, false );
@@ -1777,7 +1777,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "usableInBattle" ).Value = item.Data[(int)ItemDat.ItemData.UsableInBattle];
 						command.GetParameter( "inCollectorsBook" ).Value = item.Data[(int)ItemDat.ItemData.InCollectorsBook];
 						command.GetParameter( "price" ).Value = item.Data[(int)ItemDat.ItemData.ShopPrice];
-						command.GetParameter( "html" ).Value = ItemDat.ItemDat.GetItemDataAsHtml( Site.Version, Site.Items, item, Site.Skills, Site.Enemies, Site.Recipes, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
+						command.GetParameter( "html" ).Value = ItemDat.ItemDat.GetItemDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Items, item, Site.Skills, Site.Enemies, Site.Recipes, Site.Locations, Site.StringDic, Site.InGameIdDict, phpLinks: true );
 						command.GetParameter( "jpSearchKanji" ).Value = CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.NamePointer]].StringJpn, true, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.DescriptionPointer]].StringJpn, true, false );
 						command.GetParameter( "jpSearchFuri" ).Value = CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.NamePointer]].StringJpn, true, true ) + "\n" + CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.DescriptionPointer]].StringJpn, true, true );
 						command.GetParameter( "enSearch" ).Value = CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.NamePointer]].StringEng, false, false ) + "\n" + CleanStringForSearch( Site.InGameIdDict[item.Data[(int)ItemDat.ItemData.DescriptionPointer]].StringEng, false, false );
@@ -1964,7 +1964,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "gameId" ).Value = s.LocationID;
 						command.GetParameter( "strDicName" ).Value = s.DefaultStringDicID;
 						command.GetParameter( "category" ).Value = s.Category;
-						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict, Site.EncounterGroups, Site.EnemyGroups, Site.Enemies, Site.Shops, phpLinks: true );
+						command.GetParameter( "html" ).Value = s.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict, Site.EncounterGroups, Site.EnemyGroups, Site.Enemies, Site.Shops, phpLinks: true );
 						command.ExecuteNonQuery();
 
 						long insertedId = GetLastInsertedId();
@@ -2011,7 +2011,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					foreach ( uint r in Site.Records ) {
 						command.GetParameter( "strDicId" ).Value = r;
 						StringBuilder html = new StringBuilder();
-						WebsiteGenerator.AppendRecord( html, Site.Version, Site.InGameIdDict, r );
+						WebsiteGenerator.AppendRecord( html, Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.InGameIdDict, r );
 						command.GetParameter( "html" ).Value = html.ToString();
 						command.ExecuteNonQuery();
 					}
@@ -2044,7 +2044,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "strDicName" ).Value = s.NameStringDicId;
 						command.GetParameter( "strDicDesc" ).Value = s.DescStringDicId;
 						StringBuilder html = new StringBuilder();
-						WebsiteGenerator.AppendSetting( html, Site.Version, Site.InGameIdDict, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0],
+						WebsiteGenerator.AppendSetting( html, Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.InGameIdDict, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0],
 							s.OptionsStringDicIds[1], s.OptionsStringDicIds[2], s.OptionsStringDicIds[3] );
 						command.GetParameter( "html" ).Value = html.ToString();
 						command.ExecuteNonQuery();
@@ -2087,7 +2087,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "strDicDesc" ).Value = g.DescStringDicID;
 						command.GetParameter( "cost" ).Value = g.GradeCost;
 						command.GetParameter( "refString" ).Value = g.RefString;
-						command.GetParameter( "html" ).Value = g.GetDataAsHtml( Site.Version, Site.StringDic, Site.InGameIdDict );
+						command.GetParameter( "html" ).Value = g.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.StringDic, Site.InGameIdDict );
 						command.ExecuteNonQuery();
 
 					}
@@ -2112,7 +2112,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					foreach ( var sp in Site.SearchPoints.SearchPointDefinitions ) {
 						command.GetParameter( "gameId" ).Value = sp.Index;
 						command.GetParameter( "displayId" ).Value = sp.Unknown11 == 1 ? idx : -1;
-						command.GetParameter( "html" ).Value = sp.GetDataAsHtml( Site.Version, Site.Items, Site.StringDic, Site.InGameIdDict, Site.SearchPoints.SearchPointContents, Site.SearchPoints.SearchPointItems, sp.Unknown11 == 1 ? idx : -1, phpLinks: true );
+						command.GetParameter( "html" ).Value = sp.GetDataAsHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.Items, Site.StringDic, Site.InGameIdDict, Site.SearchPoints.SearchPointContents, Site.SearchPoints.SearchPointItems, sp.Unknown11 == 1 ? idx : -1, phpLinks: true );
 						command.ExecuteNonQuery();
 						if ( sp.Unknown11 == 1 ) {
 							++idx;
@@ -2142,7 +2142,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 						command.GetParameter( "id" ).Value = kvp.Key;
 						command.GetParameter( "gameId" ).Value = jp.ID;
-						command.GetParameter( "html" ).Value = WebsiteGenerator.TrophyNodeToHtml( Site.Version, jp, en );
+						command.GetParameter( "html" ).Value = WebsiteGenerator.TrophyNodeToHtml( Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, jp, en );
 						command.ExecuteNonQuery();
 					}
 				}
@@ -2169,9 +2169,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						int floorStratumAsNumber = ( floorNumberLong - 1 ) / 10 + 1;
 						string floorStratum = ( (char)( floorStratumAsNumber + 64 ) ).ToString();
 						string html = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, null, null, null,
-							Site.Version, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
+							Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
 						string htmlEnemies = Site.NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, Site.Enemies, Site.EnemyGroups,
-							Site.EncounterGroups, Site.Version, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
+							Site.EncounterGroups, Site.Version, Site.VersionPostfix, Site.Locale, Site.Language, Site.NecropolisTreasures, Site.Items, Site.InGameIdDict, surroundingTable: false, phpLinks: true );
 
 						command.GetParameter( "floorName" ).Value = floor.RefString1;
 						command.GetParameter( "map" ).Value = floor.RefString2;

@@ -79,26 +79,30 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			return RefString;
 		}
 
-		public string GetIndexDataAsHtml( GameVersion version, TO8CHLI skits, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {
+		public string GetIndexDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, TO8CHLI skits, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 
-			string url = HyoutaTools.Tales.Vesperia.Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Skit, version, phpLinks, extra: RefString );
+			string url = HyoutaTools.Tales.Vesperia.Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Skit, version, versionPostfix, locale, websiteLanguage, phpLinks, extra: RefString );
 
 			sb.Append( "<tr>" );
 
 			sb.Append( "<td>" );
 			sb.Append( CategoryString );
 			sb.Append( "</td>" );
-			sb.Append( "<td>" );
-			sb.Append( "<a href=\"" + url + "\">" );
-			sb.Append( inGameIdDict[StringDicIdName].StringJpnHtml( version ) );
-			sb.Append( "</a>" );
-			sb.Append( "</td>" );
-			sb.Append( "<td>" );
-			sb.Append( "<a href=\"" + url + "\">" );
-			sb.Append( inGameIdDict[StringDicIdName].StringEngHtml( version ) );
-			sb.Append( "</a>" );
-			sb.Append( "</td>" );
+			if ( websiteLanguage.WantsJp() ) {
+				sb.Append( "<td>" );
+				sb.Append( "<a href=\"" + url + "\">" );
+				sb.Append( inGameIdDict[StringDicIdName].StringJpnHtml( version ) );
+				sb.Append( "</a>" );
+				sb.Append( "</td>" );
+			}
+			if ( websiteLanguage.WantsEn() ) {
+				sb.Append( "<td>" );
+				sb.Append( "<a href=\"" + url + "\">" );
+				sb.Append( inGameIdDict[StringDicIdName].StringEngHtml( version ) );
+				sb.Append( "</a>" );
+				sb.Append( "</td>" );
+			}
 			sb.Append( "<td>" );
 			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, CharacterBitmask );
 			sb.Append( "</td>" );
@@ -107,18 +111,22 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 
 			return sb.ToString();
 		}
-		public string GetDataAsHtml( GameVersion version, TO8CHLI skits, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, TO8CHLI skits, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append( RefString );
-			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[StringDicIdName].StringJpnHtml( version ) );
-			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[StringDicIdCondition].StringJpnHtml( version ) );
-			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[StringDicIdName].StringEngHtml( version ) );
-			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[StringDicIdCondition].StringEngHtml( version ) );
+			if ( websiteLanguage.WantsJp() ) {
+				sb.Append( "<br>" );
+				sb.Append( inGameIdDict[StringDicIdName].StringJpnHtml( version ) );
+				sb.Append( "<br>" );
+				sb.Append( inGameIdDict[StringDicIdCondition].StringJpnHtml( version ) );
+			}
+			if ( websiteLanguage.WantsEn() ) {
+				sb.Append( "<br>" );
+				sb.Append( inGameIdDict[StringDicIdName].StringEngHtml( version ) );
+				sb.Append( "<br>" );
+				sb.Append( inGameIdDict[StringDicIdCondition].StringEngHtml( version ) );
+			}
 			sb.Append( "<br>Category: " );
 			sb.Append( CategoryString );
 			sb.Append( "<br>Available after event: " );

@@ -70,7 +70,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 			return inGameIdDict[DefaultStringDicID];
 		}
 
-		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict, T8BTEMEG.T8BTEMEG encounterGroups, T8BTEMGP.T8BTEMGP enemyGroups, T8BTEMST.T8BTEMST enemies, ShopData.ShopData shops, bool phpLinks = false ) {
+		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict, T8BTEMEG.T8BTEMEG encounterGroups, T8BTEMGP.T8BTEMGP enemyGroups, T8BTEMST.T8BTEMST enemies, ShopData.ShopData shops, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 
 			StringBuilder shopEnemySb = new StringBuilder();
@@ -80,8 +80,8 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				if ( Category == 1 ) {
 					// references to shops
 					var shop = shops.ShopDictionary[ShopsOrEnemyGroups[i]];
-					shopEnemySb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Shop, version, phpLinks, id: (int)shop.InGameID ) + "\">" );
-					shopEnemySb.Append( inGameIdDict[shop.StringDicID].StringEngOrJpnHtml( version ) );
+					shopEnemySb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Shop, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)shop.InGameID ) + "\">" );
+					shopEnemySb.Append( inGameIdDict[shop.StringDicID].StringEngOrJpnHtml( version, websiteLanguage ) );
 					shopEnemySb.Append( "</a>" );
 				} else {
 					// references to encounter groups
@@ -93,8 +93,8 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 
 							var enemy = enemies.EnemyIdDict[id];
 							shopEnemySb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" height=\"22\" width=\"22\"> " );
-							shopEnemySb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
-							shopEnemySb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version ) + "</a>" );
+							shopEnemySb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, versionPostfix, locale, websiteLanguage, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
+							shopEnemySb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version, websiteLanguage ) + "</a>" );
 							shopEnemySb.Append( "<br>" );
 
 							alreadyPrinted.Add( id );
@@ -144,15 +144,24 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				}
 				sb.Append( "</td>" );
 				sb.Append( "<td>" );
-				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( name.StringJpnHtml( version ) + "<br>" );
-				sb.Append( "</span>" );
-				sb.Append( desc.StringJpnHtml( version ) + "<br>" );
-				sb.Append( "<br>" );
-				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( name.StringEngHtml( version ) + "<br>" );
-				sb.Append( "</span>" );
-				sb.Append( desc.StringEngHtml( version ) + "<br>" );
+				if ( websiteLanguage.WantsJp() ) {
+					sb.Append( "<span class=\"itemname\">" );
+					sb.Append( name.StringJpnHtml( version ) );
+					sb.Append( "</span>" );
+					sb.Append( "<br>" );
+					sb.Append( desc.StringJpnHtml( version ) );
+				}
+				if ( websiteLanguage.WantsBoth() ) {
+					sb.Append( "<br>" );
+					sb.Append( "<br>" );
+				}
+				if ( websiteLanguage.WantsEn() ) {
+					sb.Append( "<span class=\"itemname\">" );
+					sb.Append( name.StringEngHtml( version ) );
+					sb.Append( "</span>" );
+					sb.Append( "<br>" );
+					sb.Append( desc.StringEngHtml( version ) );
+				}
 				if ( RefStrings[i] == "" ) {
 					sb.Append( "<br>" );
 				}

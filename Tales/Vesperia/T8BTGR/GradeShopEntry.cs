@@ -33,7 +33,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTGR {
 			return RefString;
 		}
 
-		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 			sb.Append( "<tr>" );
 			/*
@@ -41,20 +41,28 @@ namespace HyoutaTools.Tales.Vesperia.T8BTGR {
 			sb.Append( RefString );
 			sb.Append( "</td>" );
 			//*/
-			sb.Append( "<td>" );
-			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version ) );
-			sb.Append( "</span>" );
-			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version ) );
-			sb.Append( "</td>" );
-			sb.Append( "<td>" );
-			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
-			sb.Append( "</span>" );
-			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
-			sb.Append( "</td>" );
+
+			int colspan = websiteLanguage.WantsBoth() ? 1 : 2;
+			if ( websiteLanguage.WantsJp() ) {
+				sb.Append( "<td colspan=\"" + colspan + "\">" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version ) );
+				sb.Append( "</span>" );
+				sb.Append( "<br>" );
+				sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version ) );
+				sb.Append( "</td>" );
+			}
+
+			if ( websiteLanguage.WantsEn() ) {
+				sb.Append( "<td colspan=\"" + colspan + "\">" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
+				sb.Append( "</span>" );
+				sb.Append( "<br>" );
+				sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
+				sb.Append( "</td>" );
+			}
+
 			sb.Append( "<td>" );
 			sb.Append( GradeCost + " Grade" );
 			sb.Append( "</td>" );

@@ -188,7 +188,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			SearchPointContentCount = stream.ReadUInt32().FromEndian( endian );
 		}
 
-		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, TSSFile stringDic, Dictionary<uint, TSSEntry> inGameIdDict, List<SearchPointContent> searchPointContents, List<SearchPointItem> searchPointItems, int index, bool phpLinks = false ) {
+		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, ItemDat.ItemDat items, TSSFile stringDic, Dictionary<uint, TSSEntry> inGameIdDict, List<SearchPointContent> searchPointContents, List<SearchPointItem> searchPointItems, int index, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append( "<tr id=\"searchpoint").Append( Index ).Append( "\">" );
@@ -222,7 +222,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			sb.Append( "<tr>" );
 			for ( uint i = 0; i < SearchPointContentCount; ++i ) {
 				sb.Append( "<td>" );
-				sb.Append( searchPointContents[(int)( SearchPointContentIndex + i )].GetDataAsHtml( version, items, stringDic, inGameIdDict, searchPointItems, phpLinks: phpLinks ) );
+				sb.Append( searchPointContents[(int)( SearchPointContentIndex + i )].GetDataAsHtml( version, versionPostfix, locale, websiteLanguage, items, stringDic, inGameIdDict, searchPointItems, phpLinks: phpLinks ) );
 				sb.Append( "</td>" );
 			}
 			for ( uint i = SearchPointContentCount; i < 5; ++i ) {
@@ -258,12 +258,12 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			Padding = stream.ReadUInt32().FromEndian( endian );
 		}
 
-		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, TSSFile stringDic, Dictionary<uint, TSSEntry> inGameIdDict, List<SearchPointItem> searchPointItems, bool phpLinks = false ) {
+		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, ItemDat.ItemDat items, TSSFile stringDic, Dictionary<uint, TSSEntry> inGameIdDict, List<SearchPointItem> searchPointItems, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 			//sb.Append( "Percentage: " ).Append( Percentage ).Append( "%" ).Append( "<br>" );
 			for ( uint i = 0; i < SearchPointItemCount; ++i ) {
 				//sb.Append( "Item #" ).Append( i ).Append( ":" );
-				sb.Append( searchPointItems[(int)( SearchPointItemIndex + i )].GetDataAsHtml( version, items, stringDic, inGameIdDict, phpLinks: phpLinks ) );
+				sb.Append( searchPointItems[(int)( SearchPointItemIndex + i )].GetDataAsHtml( version, versionPostfix, locale, websiteLanguage, items, stringDic, inGameIdDict, phpLinks: phpLinks ) );
 				sb.Append( "<br>" );
 			}
 			return sb.ToString();
@@ -279,12 +279,12 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			Count = stream.ReadUInt32().FromEndian( endian );
 		}
 
-		public string GetDataAsHtml( GameVersion version, ItemDat.ItemDat items, TSSFile stringDic, Dictionary<uint, TSSEntry> inGameIdDict, bool phpLinks = false ) {
+		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, ItemDat.ItemDat items, TSSFile stringDic, Dictionary<uint, TSSEntry> inGameIdDict, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 			var item = items.itemIdDict[Item];
 			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
-			sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
-			sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version ) + "</a> x" + Count );
+			sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
+			sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, websiteLanguage ) + "</a> x" + Count );
 			return sb.ToString();
 		}
 	}

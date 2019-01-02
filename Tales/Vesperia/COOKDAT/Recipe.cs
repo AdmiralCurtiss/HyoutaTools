@@ -106,18 +106,25 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			return RefString;
 		}
 
-		public string GetDataAsHtml( GameVersion version, COOKDAT recipes, ItemDat.ItemDat items, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {
+		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, COOKDAT recipes, ItemDat.ItemDat items, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {
 			StringBuilder sb = new StringBuilder();
 			sb.Append( "<tr id=\"recipe" + ID + "\"><td>" );
 			sb.Append( "<img src=\"recipes/U_" + RefString + ".png\">" );
 			sb.Append( "</td><td>" );
-			sb.Append( "<span class=\"itemname\">" + inGameIdDict[NameStringDicID].StringJpnHtml( version ) + "</span><br>" );
-			sb.Append( inGameIdDict[DescriptionStringDicID].StringJpnHtml( version ) + "<br>" );
-			sb.Append( inGameIdDict[EffectStringDicID].StringJpnHtml( version ) + "<br>" );
-			sb.Append( "<br>" );
-			sb.Append( "<span class=\"itemname\">" + inGameIdDict[NameStringDicID].StringEngHtml( version ) + "</span><br>" );
-			sb.Append( inGameIdDict[DescriptionStringDicID].StringEngHtml( version ) + "<br>" );
-			sb.Append( inGameIdDict[EffectStringDicID].StringEngHtml( version ) + "<br>" );
+			if ( websiteLanguage.WantsJp() ) {
+				sb.Append( "<span class=\"itemname\">" + inGameIdDict[NameStringDicID].StringJpnHtml( version ) + "</span><br>" );
+				sb.Append( inGameIdDict[DescriptionStringDicID].StringJpnHtml( version ) + "<br>" );
+				sb.Append( inGameIdDict[EffectStringDicID].StringJpnHtml( version ) );
+			}
+			if ( websiteLanguage.WantsBoth() ) {
+				sb.Append( "<br>" );
+				sb.Append( "<br>" );
+			}
+			if ( websiteLanguage.WantsEn() ) {
+				sb.Append( "<span class=\"itemname\">" + inGameIdDict[NameStringDicID].StringEngHtml( version ) + "</span><br>" );
+				sb.Append( inGameIdDict[DescriptionStringDicID].StringEngHtml( version ) + "<br>" );
+				sb.Append( inGameIdDict[EffectStringDicID].StringEngHtml( version ) );
+			}
 
 			sb.Append( "</td><td>" );
 			for ( int i = 0; i < IngredientGroups.Length; ++i ) {
@@ -126,15 +133,15 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 					stringDicId = IngredientGroupDict[IngredientGroups[i]];
 					var entry = inGameIdDict[stringDicId];
 					sb.Append( "<img src=\"item-icons/ICON" + IngredientGroups[i] + ".png\" height=\"16\" width=\"16\"> " );
-					sb.Append( entry.StringEngOrJpnHtml( version ) + " x" + IngredientGroupCount[i] + "<br>" );
+					sb.Append( entry.StringEngOrJpnHtml( version, websiteLanguage ) + " x" + IngredientGroupCount[i] + "<br>" );
 				}
 			}
 			for ( int i = 0; i < Ingredients.Length; ++i ) {
 				if ( Ingredients[i] != 0 ) {
 					var item = items.itemIdDict[Ingredients[i]];
 					sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
-					sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
-					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version ) + "</a> x" + IngredientCount[i] + "<br>" );
+					sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
+					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, websiteLanguage ) + "</a> x" + IngredientCount[i] + "<br>" );
 				}
 			}
 
@@ -178,7 +185,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 						var otherRecipe = recipes.RecipeList[(int)RecipeCreationRecipe[i]];
 						Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ) );
 						sb.Append( " <a href=\"#recipe" + otherRecipe.ID + "\">" );
-						sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpnHtml( version ) );
+						sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpnHtml( version, websiteLanguage ) );
 						sb.Append( "</a>" );
 						sb.Append( "<br>" );
 					}

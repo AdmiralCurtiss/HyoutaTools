@@ -12,7 +12,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Items" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var item in Items.items ) {
 				int itemCat = (int)item.Data[(int)ItemDat.ItemData.Category];
@@ -22,7 +22,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				if ( category != null && category != itemCat ) { continue; }
 				if ( icon != null && icon != itemIcon ) { continue; }
 
-				sb.AppendLine( ItemDat.ItemDat.GetItemDataAsHtml( Version, Items, item, Skills, Enemies, Recipes, Locations, StringDic, InGameIdDict ) );
+				sb.AppendLine( ItemDat.ItemDat.GetItemDataAsHtml( Version, VersionPostfix, Locale, Language, Items, item, Skills, Enemies, Recipes, Locations, StringDic, InGameIdDict ) );
 				sb.AppendLine( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -35,12 +35,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Enemies" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var enemy in Enemies.EnemyList ) {
 				if ( enemy.InGameID == 0 ) { continue; }
 				if ( category != null && category != enemy.Category ) { continue; }
-				sb.AppendLine( enemy.GetDataAsHtml( Version, Items, Locations, StringDic, InGameIdDict ) );
+				sb.AppendLine( enemy.GetDataAsHtml( Version, VersionPostfix, Locale, Language, Items, Locations, StringDic, InGameIdDict ) );
 				sb.AppendLine( "<tr><td colspan=\"7\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -53,10 +53,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Enemy Groups" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var group in EnemyGroups.EnemyGroupList ) {
-				sb.AppendLine( group.GetDataAsHtml( Enemies, InGameIdDict, Version ) );
+				sb.AppendLine( group.GetDataAsHtml( Enemies, InGameIdDict, Version, VersionPostfix, Locale, Language ) );
 				sb.AppendLine( "<tr><td colspan=\"9\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -69,10 +69,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Encounter Groups" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var group in EncounterGroups.EncounterGroupList ) {
-				sb.AppendLine( group.GetDataAsHtml( EnemyGroups, Enemies, InGameIdDict, Version ) );
+				sb.AppendLine( group.GetDataAsHtml( EnemyGroups, Enemies, InGameIdDict, Version, VersionPostfix, Locale, Language ) );
 				sb.AppendLine( "<tr><td colspan=\"9\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -85,11 +85,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Skills" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var skill in Skills.SkillList ) {
 				if ( skill.ID == 0 ) { continue; }
-				sb.AppendLine( skill.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.AppendLine( skill.GetDataAsHtml( Version, VersionPostfix, Locale, Language, StringDic, InGameIdDict ) );
 				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -102,7 +102,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Artes" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var arte in Artes.ArteList ) {
 				switch ( arte.Type ) {
@@ -113,7 +113,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						//break;
 						continue;
 				}
-				sb.AppendLine( arte.GetDataAsHtml( Version, Artes.ArteIdDict, Enemies, Skills, StringDic, InGameIdDict ) );
+				sb.AppendLine( arte.GetDataAsHtml( Version, VersionPostfix, Locale, Language, Artes.ArteIdDict, Enemies, Skills, StringDic, InGameIdDict ) );
 				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -126,10 +126,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Synopsis" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			foreach ( var entry in Synopsis.SynopsisList ) {
 				if ( InGameIdDict[entry.NameStringDicId].StringEngOrJpn == "" ) { continue; }
-				sb.AppendLine( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.AppendLine( entry.GetDataAsHtml( Version, VersionPostfix, Locale, Language, StringDic, InGameIdDict ) );
 				sb.AppendLine( "<hr>" );
 			}
 			AddFooter( sb );
@@ -141,9 +141,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Skits" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			foreach ( var entry in Skits.SkitInfoList ) {
-				sb.AppendLine( entry.GetDataAsHtml( Version, Skits, InGameIdDict ) );
+				sb.AppendLine( entry.GetDataAsHtml( Version, VersionPostfix, Locale, Language, Skits, InGameIdDict ) );
 				sb.AppendLine( "<hr>" );
 			}
 			AddFooter( sb );
@@ -155,10 +155,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Skit Index" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var entry in Skits.SkitInfoList ) {
-				sb.AppendLine( entry.GetIndexDataAsHtml( Version, Skits, InGameIdDict ) );
+				sb.AppendLine( entry.GetIndexDataAsHtml( Version, VersionPostfix, Locale, Language, Skits, InGameIdDict ) );
 			}
 			sb.Append( "</table>" );
 			AddFooter( sb );
@@ -170,7 +170,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Battle Voices (End)" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			for ( int i = 0; i < BattleVoicesEnd.Blocks.Count; ++i ) {
 				{
@@ -281,7 +281,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Search Points" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<img src=\"PS3-SearchPoint.png\" width=\"1280\" height=\"1024\">" );
 			sb.Append( "<hr>" );
 			sb.Append( "<table>" );
@@ -289,7 +289,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			for ( int i = 0; i < SearchPoints.SearchPointDefinitions.Count; ++i ) {
 				var sp = SearchPoints.SearchPointDefinitions[i];
 				if ( sp.Unknown11 != 1 ) { continue; } // not sure what these mean exactly but only the ones with an '1' here show up in game
-				sb.Append( sp.GetDataAsHtml( Version, Items, StringDic, InGameIdDict, SearchPoints.SearchPointContents, SearchPoints.SearchPointItems, idx ) );
+				sb.Append( sp.GetDataAsHtml( Version, VersionPostfix, Locale, Language, Items, StringDic, InGameIdDict, SearchPoints.SearchPointContents, SearchPoints.SearchPointItems, idx ) );
 				sb.Append( "<tr><td colspan=\"5\"><hr></td></tr>" );
 				++idx;
 			}
@@ -303,12 +303,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Recipes" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			for ( int i = 1; i < Recipes.RecipeList.Count; ++i ) {
 				var recipe = Recipes.RecipeList[i];
 				sb.Append( "<tr>" );
-				sb.Append( recipe.GetDataAsHtml( Version, Recipes, Items, StringDic, InGameIdDict ) );
+				sb.Append( recipe.GetDataAsHtml( Version, VersionPostfix, Locale, Language, Recipes, Items, StringDic, InGameIdDict ) );
 				sb.Append( "</tr>" );
 				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
@@ -322,11 +322,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Locations" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.AppendLine( "<table>" );
 			for ( int i = 1; i < Locations.LocationList.Count; ++i ) {
 				var location = Locations.LocationList[i];
-				sb.AppendLine( location.GetDataAsHtml( Version, StringDic, InGameIdDict, EncounterGroups, EnemyGroups, Enemies, Shops ) );
+				sb.AppendLine( location.GetDataAsHtml( Version, VersionPostfix, Locale, Language, StringDic, InGameIdDict, EncounterGroups, EnemyGroups, Enemies, Shops ) );
 				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
 			}
 			sb.AppendLine( "</table>" );
@@ -339,16 +339,16 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Strategy" );
 			sb.Append( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var entry in Strategy.StrategySetList ) {
-				sb.Append( entry.GetDataAsHtml( Version, Strategy, StringDic, InGameIdDict ) );
+				sb.Append( entry.GetDataAsHtml( Version, VersionPostfix, Locale, Language, Strategy, StringDic, InGameIdDict ) );
 				sb.Append( "<tr><td colspan=\"10\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
 			sb.Append( "<table>" );
 			foreach ( var entry in Strategy.StrategyOptionList ) {
-				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.Append( entry.GetDataAsHtml( Version, VersionPostfix, Locale, Language, StringDic, InGameIdDict ) );
 				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -360,11 +360,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Shops" );
 			sb.Append( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var entry in Shops.ShopDefinitions ) {
 				if ( entry.InGameID == 1 ) { continue; } // dummy shop
-				sb.Append( entry.GetDataAsHtml( Version, Items, Shops, InGameIdDict ) );
+				sb.Append( entry.GetDataAsHtml( Version, VersionPostfix, Locale, Language, Items, Shops, InGameIdDict ) );
 				sb.Append( "<tr><td colspan=\"6\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -376,11 +376,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Titles" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var entry in Titles.TitleList ) {
 				if ( entry.Character == 0 ) { continue; }
-				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.Append( entry.GetDataAsHtml( Version, VersionPostfix, Locale, Language, StringDic, InGameIdDict ) );
 				sb.Append( "<tr><td colspan=\"4\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -393,7 +393,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Battle Book" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 
 			sb.Append( "<table>" );
 
@@ -401,7 +401,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				string data;
 				try {
 					if ( InGameIdDict[entry.NameStringDicId].StringEngOrJpn == "" ) { continue; }
-					data = entry.GetDataAsHtml( Version, StringDic, InGameIdDict );
+					data = entry.GetDataAsHtml( Version, VersionPostfix, Locale, Language, StringDic, InGameIdDict );
 				} catch ( KeyNotFoundException ) {
 					continue;
 				}
@@ -421,11 +421,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Records" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 
 			sb.Append( "<table>" );
 			foreach ( var i in Records ) {
-				AppendRecord( sb, Version, InGameIdDict, i );
+				AppendRecord( sb, Version, VersionPostfix, Locale, Language, InGameIdDict, i );
 			}
 			sb.Append( "</table>" );
 
@@ -438,11 +438,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Settings" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 
 			sb.Append( "<table class=\"settings\">" );
 			foreach ( var s in Settings ) {
-				AppendSetting( sb, Version, InGameIdDict, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0],
+				AppendSetting( sb, Version, VersionPostfix, Locale, Language, InGameIdDict, s.NameStringDicId, s.DescStringDicId, s.OptionsStringDicIds[0],
 					s.OptionsStringDicIds[1], s.OptionsStringDicIds[2], s.OptionsStringDicIds[3] );
 				sb.Append( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
@@ -457,13 +457,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Trophies" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var kvp in TrophyJp.Trophies ) {
-				var jp = TrophyJp.Trophies[kvp.Key];
-				var en = TrophyEn.Trophies[kvp.Key];
+				var jp = kvp.Value;
+				var en = TrophyEn?.Trophies[kvp.Key];
 
-				sb.Append( TrophyNodeToHtml( Version, jp, en ) );
+				sb.Append( TrophyNodeToHtml( Version, VersionPostfix, Locale, Language, jp, en ) );
 				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -476,11 +476,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Grade Shop" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table>" );
 			foreach ( var entry in GradeShop.GradeShopEntryList ) {
 				if ( entry.GradeCost == 0 ) { continue; }
-				sb.Append( entry.GetDataAsHtml( Version, StringDic, InGameIdDict ) );
+				sb.Append( entry.GetDataAsHtml( Version, VersionPostfix, Locale, Language, StringDic, InGameIdDict ) );
 				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -493,14 +493,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var sb = new StringBuilder();
 			AddHeader( sb, Version, "Necropolis of Nostalgia" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 
 			foreach ( var floor in NecropolisFloors.FloorList ) {
 				int floorNumberLong = Int32.Parse( floor.RefString1.Split( '_' ).Last() );
 				int floorNumber = ( floorNumberLong - 1 ) % 10 + 1;
 				int floorStratumAsNumber = ( floorNumberLong - 1 ) / 10 + 1;
 				string floorStratum = ( (char)( floorStratumAsNumber + 64 ) ).ToString();
-				string html = NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, showEnemies ? Enemies : null, showEnemies ? EnemyGroups : null, showEnemies ? EncounterGroups : null, Version, NecropolisTreasures, Items, InGameIdDict );
+				string html = NecropolisMaps[floor.RefString2].GetDataAsHtml( floorStratum, floorNumber, showEnemies ? Enemies : null, showEnemies ? EnemyGroups : null, showEnemies ? EncounterGroups : null, Version, VersionPostfix, Locale, Language, NecropolisTreasures, Items, InGameIdDict );
 				sb.Append( html );
 				sb.Append( "<hr>" );
 
@@ -510,7 +510,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb2.Append( html );
 				AddFooter( sb2 );
 				sb2.Append( "</body></html>" );
-				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( showEnemies ? WebsiteSection.NecropolisEnemy : WebsiteSection.NecropolisMap, Version, false, extra: floorStratum + floorNumber ) ), sb2.ToString(), Encoding.UTF8 );
+				System.IO.File.WriteAllText( Path.Combine( dir, WebsiteGenerator.GetUrl( showEnemies ? WebsiteSection.NecropolisEnemy : WebsiteSection.NecropolisMap, Version, VersionPostfix, Locale, Language, false, extra: floorStratum + floorNumber ) ), sb2.ToString(), Encoding.UTF8 );
 			}
 
 			/*
@@ -530,7 +530,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			StringBuilder sb = new StringBuilder();
 			AddHeader( sb, Version, "NPC Dialogue" );
 			sb.AppendLine( "<body>" );
-			//AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			//AddMenuBar( sb, Version, VersionPostfix, Locale, Language, IconsWithItems, InGameIdDict );
 			sb.Append( "<table class=\"npcdiff\">" );
 			foreach ( var kvp in NpcDefs ) {
 				for ( int i = 0; i < kvp.Value.NpcDefList.Count; ++i ) {
@@ -566,12 +566,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return sb.ToString();
 		}
 
-		public string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, ScenarioType type, GameVersion version, bool phpLinks = false ) {
+		public static string ScenarioProcessGroupsToHtml( List<List<ScenarioData>> groups, ScenarioType type, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Dictionary<uint, TSS.TSSEntry> inGameIdDict, uint[] iconsWithItems, bool phpLinks = false ) {
 			var sb = new StringBuilder();
 
-			AddHeader( sb, Version, "Scenario Index (" + type.ToString() + ")" );
+			AddHeader( sb, version, "Scenario Index (" + type.ToString() + ")" );
 			sb.AppendLine( "<body>" );
-			AddMenuBar( sb, Version, IconsWithItems, InGameIdDict );
+			AddMenuBar( sb, version, versionPostfix, locale, websiteLanguage, iconsWithItems, inGameIdDict );
 			sb.Append( "<div class=\"scenario-index\">" );
 
 			sb.Append( "<ul>" );
@@ -596,7 +596,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 					sb.Append( "<li>" );
 					sb.Append( "<a href=\"" );
-					sb.Append( WebsiteGenerator.GetUrl( WebsiteSection.Scenario, version, phpLinks, extra: scene.EpisodeId ) );
+					sb.Append( WebsiteGenerator.GetUrl( WebsiteSection.Scenario, version, versionPostfix, locale, websiteLanguage, phpLinks, extra: scene.EpisodeId ) );
 					sb.Append( "\">" );
 					sb.Append( scene.HumanReadableNameWithoutPrefix( commonBegin ) );
 					sb.Append( "</a>" );
@@ -605,12 +605,20 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						sb.Append( "<ul>" );
 						sb.Append( "<li>" );
 						sb.Append( "<a href=\"" );
-						sb.Append( WebsiteGenerator.GetUrl( WebsiteSection.Skit, version, phpLinks, extra: skit.RefString ) );
+						sb.Append( WebsiteGenerator.GetUrl( WebsiteSection.Skit, version, versionPostfix, locale, websiteLanguage, phpLinks, extra: skit.RefString ) );
 						sb.Append( "\">" );
-						sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 0, version ) );
-						sb.Append( " (" );
-						sb.Append( InGameIdDict[skit.StringDicIdName].GetStringHtml( 1, version ) );
-						sb.Append( ")" );
+						if ( websiteLanguage.WantsJp() ) {
+							sb.Append( inGameIdDict[skit.StringDicIdName].GetStringHtml( 0, version ) );
+						}
+						if ( websiteLanguage.WantsBoth() ) {
+							sb.Append( " (" );
+						}
+						if ( websiteLanguage.WantsEn() ) {
+							sb.Append( inGameIdDict[skit.StringDicIdName].GetStringHtml( 1, version ) );
+						}
+						if ( websiteLanguage.WantsBoth() ) {
+							sb.Append( ")" );
+						}
 						sb.Append( "</a>" );
 						sb.Append( "</li>" );
 						sb.Append( "</ul>" );

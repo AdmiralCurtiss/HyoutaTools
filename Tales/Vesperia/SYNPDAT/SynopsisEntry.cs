@@ -33,7 +33,7 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 			return RefString1;
 		}
 
-		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
 
 			var synopsisEntry = inGameIdDict[TextStringDicId];
@@ -54,22 +54,26 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 			if ( version.HasPS3Content() ) {
 				sb.Append( "<img src=\"synopsis/U_" + RefString1 + ".png\"><br><br>" );
 			}
-			sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version ) + "</td></tr><tr>" );
-			foreach ( string s in textJpn ) {
-				sb.Append( "<td>" + s + "</td>" );
+			if ( websiteLanguage.WantsJp() ) {
+				sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version ) + "</td></tr><tr>" );
+				foreach ( string s in textJpn ) {
+					sb.Append( "<td>" + s + "</td>" );
+				}
 			}
 			sb.Append( "</tr>" );
 			sb.Append( "</table>" );
-			sb.Append( "<br>" );
 
-			sb.Append( "<table class=\"synopsis\">" );
-			sb.Append( "<tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + textEng.Length + "\">" );
-			sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version ) + "</td></tr><tr>" );
-			foreach ( string s in textEng ) {
-				sb.Append( "<td>" + s + "</td>" );
+			if ( websiteLanguage.WantsEn() ) {
+				sb.Append( "<br>" );
+				sb.Append( "<table class=\"synopsis\">" );
+				sb.Append( "<tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + textEng.Length + "\">" );
+				sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version ) + "</td></tr><tr>" );
+				foreach ( string s in textEng ) {
+					sb.Append( "<td>" + s + "</td>" );
+				}
+				sb.Append( "</tr>" );
+				sb.Append( "</table>" );
 			}
-			sb.Append( "</tr>" );
-			sb.Append( "</table>" );
 
 			return sb.ToString();
 		}

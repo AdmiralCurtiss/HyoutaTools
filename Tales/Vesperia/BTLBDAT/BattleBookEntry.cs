@@ -16,21 +16,28 @@ namespace HyoutaTools.Tales.Vesperia.BTLBDAT {
 			stream.DiscardBytes( 0x4 );
 		}
 
-		public string GetDataAsHtml( GameVersion version, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, TSS.TSSFile stringDic, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			StringBuilder sb = new StringBuilder();
-			sb.Append( "<td>" );
 
-			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version ) );
-			sb.Append( "</span><br>" );
-			sb.Append( inGameIdDict[TextStringDicId].StringJpnHtml( version ) );
-			sb.Append( "</td>" );
-			sb.Append( "<td>" );
-			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version ) );
-			sb.Append( "</span><br>" );
-			sb.Append( inGameIdDict[TextStringDicId].StringEngHtml( version ) );
-			sb.Append( "</td>" );
+			int colspan = websiteLanguage.WantsBoth() ? 1 : 2;
+			if ( websiteLanguage.WantsJp() ) {
+				sb.Append( "<td colspan=\"" + colspan + "\">" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version ) );
+				sb.Append( "</span><br>" );
+				sb.Append( inGameIdDict[TextStringDicId].StringJpnHtml( version ) );
+				sb.Append( "</td>" );
+			}
+
+			if ( websiteLanguage.WantsEn() ) {
+				sb.Append( "<td colspan=\"" + colspan + "\">" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version ) );
+				sb.Append( "</span><br>" );
+				sb.Append( inGameIdDict[TextStringDicId].StringEngHtml( version ) );
+				sb.Append( "</td>" );
+			}
+
 			return sb.ToString();
 		}
 	}

@@ -116,61 +116,61 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "</style>" );
 			sb.AppendLine( "</head>" );
 		}
-		public static void AddMenuBar( StringBuilder sb, GameVersion Version, IEnumerable<uint> IconsWithItems, Dictionary<uint, TSS.TSSEntry> InGameIdDict ) {
+		public static void AddMenuBar( StringBuilder sb, GameVersion Version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, IEnumerable<uint> IconsWithItems, Dictionary<uint, TSS.TSSEntry> InGameIdDict ) {
 			sb.AppendLine( "<div id=\"header-name\">" );
 			sb.AppendLine( "<a href=\"index.html\">Tales of Vesperia - Data &amp; Translation Guide</a>" );
 			sb.AppendLine( "</div>" );
 
 			sb.AppendLine( "<div id=\"topmenu\">" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Arte, Version, false ) + "\"><img src=\"menu-icons/main-01.png\" title=\"Artes\"></a>" );
-			//sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Equipment, Version, false ) + "\"><img src=\"menu-icons/main-02.png\" title=\"Equipment\"></a>" );
-			//sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Item, Version, false ) + "\"><img src=\"menu-icons/main-03.png\" title=\"Items\"></a>" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Skill, Version, false ) + "\"><img src=\"menu-icons/main-04.png\" title=\"Skills\"></a>" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Strategy, Version, false ) + "\"><img src=\"menu-icons/main-05.png\" title=\"Strategy\"></a>" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Recipe, Version, false ) + "\"><img src=\"menu-icons/main-06.png\" title=\"Recipes\"></a>" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Shop, Version, false ) + "\"><img src=\"menu-icons/main-02.png\" title=\"Shops\"></a>" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Title, Version, false ) + "\"><img src=\"menu-icons/main-07.png\" title=\"Titles\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Arte, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/main-01.png\" title=\"Artes\"></a>" );
+			//sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Equipment, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/main-02.png\" title=\"Equipment\"></a>" );
+			//sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Item, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/main-03.png\" title=\"Items\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Skill, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/main-04.png\" title=\"Skills\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Strategy, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/main-05.png\" title=\"Strategy\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Recipe, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/main-06.png\" title=\"Recipes\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Shop, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/main-02.png\" title=\"Shops\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Title, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/main-07.png\" title=\"Titles\"></a>" );
 			//sb.AppendLine( "<img src=\"menu-icons/main-08.png\" title=\"Library\">" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Synopsis, Version, false ) + "\"><img src=\"menu-icons/sub-09.png\" title=\"Synopsis\"></a>" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.BattleBook, Version, false ) + "\"><img src=\"menu-icons/sub-14.png\" title=\"Battle Book\"></a>" );
-			//sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Enemy, Version, false ) + "\"><img src=\"menu-icons/sub-13.png\" title=\"Monster Book\"></a>" );
-			//sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Item, Version, false ) + "\"><img src=\"menu-icons/sub-11.png\" title=\"Collector's Book\"></a>" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Location, Version, false ) + "\"><img src=\"menu-icons/sub-10.png\" title=\"World Map\"></a>" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.SearchPoint, Version, false ) + "\"><img src=\"etc/U_ITEM_IRIKIAGRASS-64px.png\" title=\"Search Points\"></a>" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Record, Version, false ) + "\"><img src=\"menu-icons/sub-08.png\" title=\"Records\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Synopsis, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/sub-09.png\" title=\"Synopsis\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.BattleBook, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/sub-14.png\" title=\"Battle Book\"></a>" );
+			//sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Enemy, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/sub-13.png\" title=\"Monster Book\"></a>" );
+			//sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Item, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/sub-11.png\" title=\"Collector's Book\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Location, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/sub-10.png\" title=\"World Map\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.SearchPoint, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"etc/U_ITEM_IRIKIAGRASS-64px.png\" title=\"Search Points\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Record, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/sub-08.png\" title=\"Records\"></a>" );
 			//sb.AppendLine( "<img src=\"menu-icons/main-09.png\" title=\"Save & Load\">" );
 			//sb.AppendLine( "<img src=\"menu-icons/sub-06.png\" title=\"Save\">" );
 			//sb.AppendLine( "<img src=\"menu-icons/sub-05.png\" title=\"Load\">" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Settings, Version, false ) + "\"><img src=\"menu-icons/sub-07.png\" title=\"Settings\"></a>" );
-			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.GradeShop, Version, false ) + "\"><img src=\"item-categories/cat-01.png\" title=\"Grade Shop\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Settings, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/sub-07.png\" title=\"Settings\"></a>" );
+			sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.GradeShop, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"item-categories/cat-01.png\" title=\"Grade Shop\"></a>" );
 			if ( Version.HasPS3Content() ) {
-				sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.NecropolisMap, Version, false ) + "\"><img src=\"menu-icons/weather-4-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
+				sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.NecropolisMap, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"menu-icons/weather-4-64px.png\" title=\"Necropolis of Nostalgia Maps\"></a>" );
 			}
 			if ( Version == GameVersion.PS3 ) {
-				sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Trophy, Version, false ) + "\"><img src=\"trophies/gold.png\" title=\"Trophies\"></a>" );
+				sb.AppendLine( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Trophy, Version, versionPostfix, locale, websiteLanguage, false ) + "\"><img src=\"trophies/gold.png\" title=\"Trophies\"></a>" );
 			}
 			sb.AppendLine( "<br>" );
 			for ( uint i = 2; i < 12; ++i ) {
-				sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Item, Version, false, category: (int)i ) + "\">" );
-				sb.Append( "<img src=\"item-categories/cat-" + i.ToString( "D2" ) + ".png\" title=\"" + InGameIdDict[33912572u + i].StringEngOrJpnHtml( Version ) + "\" height=\"32\">" );
+				sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Item, Version, versionPostfix, locale, websiteLanguage, false, category: (int)i ) + "\">" );
+				sb.Append( "<img src=\"item-categories/cat-" + i.ToString( "D2" ) + ".png\" title=\"" + InGameIdDict[33912572u + i].StringEngOrJpnHtml( Version, websiteLanguage ) + "\" height=\"32\">" );
 				sb.Append( "</a>" );
 			}
 			sb.AppendLine();
 			for ( uint i = 0; i < 9; ++i ) {
-				sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Enemy, Version, false, category: (int)i ) + "\">" );
-				sb.Append( "<img src=\"monster-categories/cat-" + i + ".png\" title=\"" + InGameIdDict[33912323u + i].StringEngOrJpnHtml( Version ) + "\" height=\"32\">" );
+				sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Enemy, Version, versionPostfix, locale, websiteLanguage, false, category: (int)i ) + "\">" );
+				sb.Append( "<img src=\"monster-categories/cat-" + i + ".png\" title=\"" + InGameIdDict[33912323u + i].StringEngOrJpnHtml( Version, websiteLanguage ) + "\" height=\"32\">" );
 				sb.Append( "</a>" );
 			}
 			sb.AppendLine( "<br>" );
 			foreach ( uint i in IconsWithItems ) {
-				sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Item, Version, false, icon: (int)i ) + "\">" );
+				sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Item, Version, versionPostfix, locale, websiteLanguage, false, icon: (int)i ) + "\">" );
 				sb.Append( "<img src=\"item-icons/ICON" + i + ".png\" height=\"16\" width=\"16\">" );
 				sb.Append( "</a>" );
 			}
 			sb.AppendLine( "<br>" );
-			sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.ScenarioStoryIndex, Version, false ) + "\">Story</a> / " );
-			sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.ScenarioSidequestIndex, Version, false ) + "\">Sidequests</a> / " );
-			sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.SkitIndex, Version, false ) + "\">Skits</a>" );
+			sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.ScenarioStoryIndex, Version, versionPostfix, locale, websiteLanguage, false ) + "\">Story</a> / " );
+			sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.ScenarioSidequestIndex, Version, versionPostfix, locale, websiteLanguage, false ) + "\">Sidequests</a> / " );
+			sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.SkitIndex, Version, versionPostfix, locale, websiteLanguage, false ) + "\">Skits</a>" );
 			sb.AppendLine();
 			sb.AppendLine( "</div>" );
 			sb.AppendLine( "<hr>" );
@@ -222,19 +222,26 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				default: sb.Append( "[Unknown Element]" ); break;
 			}
 		}
-		public static void AppendRecord( StringBuilder sb, GameVersion version, Dictionary<uint, TSS.TSSEntry> InGameIdDict, uint id ) {
+		public static void AppendRecord( StringBuilder sb, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Dictionary<uint, TSS.TSSEntry> InGameIdDict, uint id ) {
 			sb.Append( "<tr>" );
-			sb.Append( "<td>" );
-			sb.Append( InGameIdDict[id].StringJpnHtml( version ) );
-			sb.Append( "</td>" );
-			sb.Append( "<td>" );
-			sb.Append( InGameIdDict[id].StringEngHtml( version ) );
-			sb.Append( "</td>" );
+			if ( websiteLanguage.WantsJp() ) {
+				sb.Append( "<td>" );
+				sb.Append( InGameIdDict[id].StringJpnHtml( version ) );
+				sb.Append( "</td>" );
+			}
+			if ( websiteLanguage.WantsEn() ) {
+				sb.Append( "<td>" );
+				sb.Append( InGameIdDict[id].StringEngHtml( version ) );
+				sb.Append( "</td>" );
+			}
 			sb.Append( "</tr>" );
 			//sb.Append( "<tr><td colspan=\"2\"><hr></td></tr>" );
 		}
-		public static void AppendSetting( StringBuilder sb, GameVersion Version, Dictionary<uint, TSS.TSSEntry> InGameIdDict, uint idName, uint idDesc, uint option1 = 0, uint option2 = 0, uint option3 = 0, uint option4 = 0 ) {
+		public static void AppendSetting( StringBuilder sb, GameVersion Version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Dictionary<uint, TSS.TSSEntry> InGameIdDict, uint idName, uint idDesc, uint option1 = 0, uint option2 = 0, uint option3 = 0, uint option4 = 0 ) {
 			for ( int i = 0; i < 2; ++i ) {
+				if ( !websiteLanguage.WantsJp() && i == 0 ) { continue; }
+				if ( !websiteLanguage.WantsEn() && i == 1 ) { continue; }
+
 				sb.Append( "<tr>" );
 				sb.Append( "<td>" );
 				sb.Append( "<span class=\"itemname\">" );
@@ -295,8 +302,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
-		public static string TrophyNodeToHtml( GameVersion version, HyoutaTools.Trophy.TrophyNode jp, HyoutaTools.Trophy.TrophyNode en ) {
+		public static string TrophyNodeToHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, HyoutaTools.Trophy.TrophyNode jp, HyoutaTools.Trophy.TrophyNode en ) {
 			var sb = new StringBuilder();
+			bool wantJp = websiteLanguage.WantsJp() && jp != null;
+			bool wantEn = websiteLanguage.WantsEn() && en != null;
+			bool wantBoth = wantJp && wantEn;
 
 			sb.Append( "<tr>" );
 
@@ -304,16 +314,20 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Append( "<img width=\"60\" height=\"60\" src=\"trophies/TROP" + jp.ID + ".PNG\"/>" );
 			sb.Append( "</td>" );
 
-			sb.Append( "<td>" );
-			sb.Append( "<span class=\"itemname\">" );
-			sb.Append( jp.Name );
-			sb.Append( "</span>" );
-			sb.Append( "<br/>" );
-			sb.Append( jp.Detail.ToHtmlJpn( version ) );
-			sb.Append( "</td>" );
+			int colspan = wantBoth ? 1 : 2;
 
-			if ( en != null ) {
-				sb.Append( "<td>" );
+			if ( wantJp ) {
+				sb.Append( "<td colspan=\"" + colspan + "\">" );
+				sb.Append( "<span class=\"itemname\">" );
+				sb.Append( jp.Name );
+				sb.Append( "</span>" );
+				sb.Append( "<br/>" );
+				sb.Append( jp.Detail.ToHtmlJpn( version ) );
+				sb.Append( "</td>" );
+			}
+
+			if ( wantEn ) {
+				sb.Append( "<td colspan=\"" + colspan + "\">" );
 				sb.Append( "<span class=\"itemname\">" );
 				sb.Append( en.Name );
 				sb.Append( "</span>" );
@@ -335,18 +349,40 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				default: throw new Exception( "Unknown version " + version );
 			}
 		}
-		public static string GetUrl( WebsiteSection section, GameVersion version, bool phpLink, int? id = null, int? category = null, int? icon = null, string extra = null ) {
+		public static string GetPhpUrlGameLocale( GameLocale locale ) {
+			switch ( locale ) {
+				case GameLocale.J: return "jp";
+				case GameLocale.US: return "us";
+				case GameLocale.UK: return "uk";
+				case GameLocale.DE: return "de";
+				case GameLocale.FR: return "fr";
+				default: throw new Exception( "Unknown locale " + locale );
+			}
+		}
+		public static string GetPhpUrlWebsiteLanguage( WebsiteLanguage lang ) {
+			switch ( lang ) {
+				case WebsiteLanguage.Jp: return "1";
+				case WebsiteLanguage.En: return "2";
+				case WebsiteLanguage.BothWithJpLinks: return "c1";
+				case WebsiteLanguage.BothWithEnLinks: return "c2";
+				default: throw new Exception( "Unknown website language " + lang );
+			}
+		}
+		public static string GetUrl( WebsiteSection section, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, bool phpLink, int? id = null, int? category = null, int? icon = null, string extra = null ) {
 			if ( phpLink ) {
 				string v = GetPhpUrlGameVersion( version );
+				string l = GetPhpUrlGameLocale( locale );
+				string w = GetPhpUrlWebsiteLanguage( websiteLanguage );
+				string begin = "?version=" + v + "&locale=" + l + "&compare=" + w;
 				switch ( section ) {
-					case WebsiteSection.Enemy: return "?version=" + v + "&section=enemies&category=" + category + ( id != null ? "#enemy" + id : "" );
-					case WebsiteSection.Item: return "?version=" + v + "&section=items&icon=" + icon + ( id != null ? "#item" + id : "" );
-					case WebsiteSection.Recipe: return "?version=" + v + "&section=recipes" + ( id != null ? "#recipe" + id : "" );
-					case WebsiteSection.Skill: return "?version=" + v + "&section=skills" + ( id != null ? "#skill" + id : "" );
-					case WebsiteSection.Location: return "?version=" + v + "&section=locations" + ( id != null ? "#location" + id : "" );
-					case WebsiteSection.Shop: return "?version=" + v + "&section=shops" + ( id != null ? "#shop" + id : "" );
-					case WebsiteSection.Skit: return "?version=" + v + "&section=skit" + ( extra != null ? "&name=" + extra : "" );
-					case WebsiteSection.Scenario: return "?version=" + v + "&section=scenario" + ( extra != null ? "&name=" + extra : "" );
+					case WebsiteSection.Enemy: return begin + "&section=enemies&category=" + category + ( id != null ? "#enemy" + id : "" );
+					case WebsiteSection.Item: return begin + "&section=items&icon=" + icon + ( id != null ? "#item" + id : "" );
+					case WebsiteSection.Recipe: return begin + "&section=recipes" + ( id != null ? "#recipe" + id : "" );
+					case WebsiteSection.Skill: return begin + "&section=skills" + ( id != null ? "#skill" + id : "" );
+					case WebsiteSection.Location: return begin + "&section=locations" + ( id != null ? "#location" + id : "" );
+					case WebsiteSection.Shop: return begin + "&section=shops" + ( id != null ? "#shop" + id : "" );
+					case WebsiteSection.Skit: return begin + "&section=skit" + ( extra != null ? "&name=" + extra : "" );
+					case WebsiteSection.Scenario: return begin + "&section=scenario" + ( extra != null ? "&name=" + extra : "" );
 					default: throw new Exception( "Unsupported PHP URL requested." );
 				}
 			} else {

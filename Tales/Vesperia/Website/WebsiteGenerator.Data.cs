@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public partial class WebsiteGenerator {
 		public GameVersion Version;
+		public string VersionPostfix;
 		public GameLocale Locale;
+		public WebsiteLanguage Language;
 
 		public ItemDat.ItemDat Items;
 		public TSS.TSSFile StringDic;
