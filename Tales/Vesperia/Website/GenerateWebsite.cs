@@ -36,14 +36,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return TryCreateStreamFromPath( Path.Combine( basepath, "item.svo.ext", "ITEM.DAT" ) );
 		}
 		public static Stream TryGetStringDic( string basepath, GameLocale locale, GameVersion version ) {
-			if ( version == GameVersion.X360 ) {
+			if ( version == GameVersion.X360_EU ) {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "language", "string_dic_" + locale.ToString().ToLowerInvariant() + ".so" ) );
 			} else {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "string.svo.ext", "STRING_DIC.SO" ) );
 			}
 		}
 		public static string ConstructBtlPackPath( string basepath, GameLocale locale, GameVersion version ) {
-			if ( version == GameVersion.X360 ) {
+			if ( version == GameVersion.X360_EU ) {
 				return Path.Combine( basepath, "btl.svo.ext", "BTL_PACK_" + locale.ToString().ToUpperInvariant() + ".DAT.ext" );
 			} else {
 				return Path.Combine( basepath, "btl.svo.ext", "BTL_PACK.DAT.ext" );
@@ -103,7 +103,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return TryCreateStreamFromPath( files[0] );
 		}
 		public static Stream TryGetRecipes( string basepath, GameLocale locale, GameVersion version ) {
-			if ( version == GameVersion.X360 ) {
+			if ( version.Is360() ) {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "cook.svo.ext", "COOKDATA.BIN" ) );
 			} else {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "menu.svo.ext", "COOKDATA.BIN" ) );
@@ -131,7 +131,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return TryCreateStreamFromPath( Path.Combine( basepath, "npc.svo.ext", "FIELD.DAT.dec.ext", "0005.dec" ) );
 		}
 		public static Stream TryGetScenarioFile( string basepath, int fileIndex, GameLocale locale, GameVersion version ) {
-			if ( version == GameVersion.X360 ) {
+			if ( version == GameVersion.X360_EU ) {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "language", "scenario_" + locale.ToString().ToLowerInvariant() + ".dat.ext", fileIndex.ToString( "D1" ) + ".d" ) );
 			} else {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "scenario.dat.ext", fileIndex.ToString( "D1" ) + ".d" ) );
@@ -144,7 +144,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			List<GenerateWebsiteInputOutputData> gens = new List<GenerateWebsiteInputOutputData>();
 			gens.Add( new GenerateWebsiteInputOutputData() {
 				GameDataPath = @"c:\Dropbox\ToV\360_EU\",
-				Version = GameVersion.X360,
+				Version = GameVersion.X360_EU,
 				Locale = GameLocale.UK,
 				ImportJpInGameDictLocale = GameLocale.US,
 				Endian = Util.Endianness.BigEndian,
@@ -159,7 +159,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				Endian = Util.Endianness.BigEndian,
 				Encoding = Util.GameTextEncoding.ShiftJIS,
 				WebsiteOutputPath = @"c:\Dropbox\ToV\website_out_PS3_with_patch\",
-				CompareSite = gens.Where( x => x.Version == GameVersion.X360 && x.Locale == GameLocale.UK ).First(),
+				CompareSite = gens.Where( x => x.Version == GameVersion.X360_EU && x.Locale == GameLocale.UK ).First(),
 			} );
 
 			Generate( gens );
@@ -272,7 +272,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				string name = site.Skits.SkitInfoList[i].RefString;
 				Stream stream = TryGetSkitText( gameDataPath, name, site.Locale, site.Version );
 				if ( stream != null ) {
-					bool forceShiftJis = name == "VC084" && version == GameVersion.X360 && ( locale == GameLocale.UK || locale == GameLocale.US );
+					bool forceShiftJis = name == "VC084" && version == GameVersion.X360_EU && ( locale == GameLocale.UK || locale == GameLocale.US );
 					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( stream, endian, forceShiftJis ? Util.GameTextEncoding.ShiftJIS : encoding );
 					site.SkitText.Add( name, chatFile );
 				} else {
@@ -285,13 +285,26 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			site.ScenarioFiles = new Dictionary<string, ScenarioFile.ScenarioFile>();
 
-			if ( version == GameVersion.X360 ) {
-				site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56, endian );
-				site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51,     9, 16, 18, 2, 17, 19, 10,     20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
-			} else {
-				site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1C9BC, 0x460 / 32, 0x980, 0x14CB8 / 56, endian );
-				site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
+			switch ( version ) {
+				case GameVersion.X360_US:
+					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1A718, 0x420 / 32, 0x8F8, 0x13780 / 56, endian );
+					break;
+				case GameVersion.X360_EU:
+					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56, endian );
+					break;
+				case GameVersion.PS3:
+					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1C9BC, 0x460 / 32, 0x980, 0x14CB8 / 56, endian );
+					break;
+				default:
+					throw new Exception( "Don't know shop data location for version " + version );
 			}
+
+			if ( version.HasPS3Content() ) {
+				site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51, 53, 9, 16, 18, 2, 17, 19, 10, 54, 20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
+			} else { 
+				site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51,     9, 16, 18, 2, 17, 19, 10,     20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
+			}
+
 			site.BattleTextFiles = WebsiteGenerator.LoadBattleText( gameDataPath, site.Locale, site.Version, endian, encoding );
 
 			if ( version == GameVersion.PS3 ) {

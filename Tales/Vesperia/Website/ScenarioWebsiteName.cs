@@ -17,7 +17,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public static SortedDictionary<int, ScenarioWebsiteName> GenerateWebsiteNames( GameVersion version ) {
 			var m = new SortedDictionary<int, ScenarioWebsiteName>();
 			switch ( version ) {
-				case GameVersion.X360: {
+				case GameVersion.X360_US:
+				case GameVersion.X360_EU: {
 					m.Add( 0, new ScenarioWebsiteName( ScenarioType.Maps ) );
 					m.Add( 1, new ScenarioWebsiteName( ScenarioType.Maps ) );
 					m.Add( 2, new ScenarioWebsiteName( ScenarioType.Maps ) );

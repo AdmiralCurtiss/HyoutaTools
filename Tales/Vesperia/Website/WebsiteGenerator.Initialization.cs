@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public partial class WebsiteGenerator {
 		public static SCFOMBIN.SCFOMBIN LoadBattleTextFile( string gameDataPath, string filename, GameLocale locale, GameVersion version, Util.Endianness endian, Util.GameTextEncoding encoding ) {
-			if ( version != GameVersion.X360 ) {
+			if ( !version.Is360() ) {
 				uint ptrDiff = 0x1888;
 				if ( filename.StartsWith( "BTL_XTM" ) ) { ptrDiff = 0x1B4C; }
 				var bin = new SCFOMBIN.SCFOMBIN( GenerateWebsite.TryGetBattleScenarioFile( gameDataPath, filename, locale, version ), endian, encoding, ptrDiff );
@@ -34,7 +34,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static List<uint> GenerateRecordsStringDicList( GameVersion version ) {
-			if ( version != GameVersion.X360 && version != GameVersion.PS3 ) {
+			if ( !( version.Is360() || version == GameVersion.PS3 ) ) {
 				throw new Exception( "Unknown game version for records menu: " + version );
 			}
 
@@ -60,7 +60,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				for ( uint i = 33912733; i < 33912751; ++i ) {
 					records.Add( i );
 				}
-			} else if ( version == GameVersion.X360 ) {
+			} else if ( version.Is360() ) {
 				records.Add( 33912621u ); // 30 man melee generic
 			}
 
@@ -77,7 +77,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static List<ConfigMenuSetting> GenerateSettingsStringDicList( GameVersion version ) {
-			if ( version != GameVersion.X360 && version != GameVersion.PS3 ) {
+			if ( !( version.Is360() || version == GameVersion.PS3 ) ) {
 				throw new Exception( "Unknown game version for settings menu: " + version );
 			}
 
@@ -85,7 +85,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			settings.Add( new ConfigMenuSetting( 33912401u, 33912401u + 46u, 33912427u, 33912426u, 33912425u, 33912424u ) ); // msg speed
 			settings.Add( new ConfigMenuSetting( 33912402u, 33912402u + 46u, 33912428u, 33912429u, 33912430u, 33912431u ) ); // difficulty
-			if ( version == GameVersion.X360 ) {
+			if ( version.Is360() ) {
 				settings.Add( new ConfigMenuSetting( 33912403u, 33912403u + 46u, 33912438u, 33912437u ) ); // x360 vibration
 			} else {
 				settings.Add( new ConfigMenuSetting( 33912679u, 33912681u, 33912438u, 33912437u ) ); // console-neutral vibration
@@ -114,7 +114,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			settings.Add( new ConfigMenuSetting( 33912417u, 33912417u + 46u, 33912438u, 33912437u ) ); // skit subs
 			settings.Add( new ConfigMenuSetting( 33912418u, 33912418u + 46u, 33912438u, 33912437u ) ); // movie subs
 			settings.Add( new ConfigMenuSetting( 33912420u, 33912420u + 46u, 33912440u, 33912441u, 33912442u ) ); // font
-			if ( version == GameVersion.X360 ) {
+			if ( version.Is360() ) {
 				settings.Add( new ConfigMenuSetting( 33912419u, 33912419u + 46u, 33912439u ) ); // brightness
 				settings.Add( new ConfigMenuSetting( 33912421u, 33912421u + 46u, 33912439u ) ); // marketplace
 			} else {

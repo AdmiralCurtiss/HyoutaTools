@@ -18,7 +18,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 			GameVersion? version = null;
 			switch ( args[0].ToUpperInvariant() ) {
 				case "360":
-					version = GameVersion.X360;
+					version = GameVersion.X360_EU;
 					break;
 				case "PS3":
 					version = GameVersion.PS3;

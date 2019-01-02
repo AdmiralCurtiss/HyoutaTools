@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace HyoutaTools.Tales.Vesperia {
 	public enum GameVersion {
-		X360, PS3
+		X360_US, X360_EU, PS3
 	}
 	public enum GameLocale {
 		J, US, UK, DE, FR
@@ -16,8 +16,11 @@ namespace HyoutaTools.Tales.Vesperia {
 	}
 
 	public static class VesperiaUtil {
+		public static bool Is360( this GameVersion version ) {
+			return version == GameVersion.X360_US || version == GameVersion.X360_EU;
+		}
 		public static bool HasPS3Content( this GameVersion version ) {
-			return version != GameVersion.X360;
+			return !version.Is360();
 		}
 		public static bool SwapsConfirmAndCancelDependingOnRegion( this GameVersion version ) {
 			return version == GameVersion.PS3;
@@ -185,7 +188,8 @@ namespace HyoutaTools.Tales.Vesperia {
 
 		public static String GetButtonName( GameVersion version, ControllerButton button ) {
 			switch ( version ) {
-				case GameVersion.X360:
+				case GameVersion.X360_US:
+				case GameVersion.X360_EU:
 					switch ( button ) {
 						case ControllerButton.Start: return "Start";
 						case ControllerButton.Select: return "Back";

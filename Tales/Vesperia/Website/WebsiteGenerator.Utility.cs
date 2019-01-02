@@ -329,7 +329,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		public static string GetPhpUrlGameVersion( GameVersion version ) {
 			switch ( version ) {
-				case GameVersion.X360: return "360";
+				case GameVersion.X360_US: return "360u";
+				case GameVersion.X360_EU: return "360e";
 				case GameVersion.PS3: return "ps3";
 				default: throw new Exception( "Unknown version " + version );
 			}
