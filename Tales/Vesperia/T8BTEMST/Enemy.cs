@@ -186,7 +186,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 
 			sb.Append( "<tr id=\"enemy" + InGameID + "\">" );
 
-			sb.Append( "<td style=\"height: 46px;\">" );
+			sb.Append( "<td style=\"height: 46px; width: 46px;\">" );
 			var enemyNameEntry = inGameIdDict[NameStringDicID];
 			sb.Append( "<img src=\"monster-icons/44px/monster-" + IconID.ToString( "D3" ) + ".png\" title=\"" + RefString + "\">" );
 			sb.Append( "</td>" );
