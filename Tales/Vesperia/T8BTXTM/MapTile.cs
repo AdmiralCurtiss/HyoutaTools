@@ -99,7 +99,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 									nextHumanReadable = targetStratum + "-1";
 								}
 
-								string linkStart = "<a href=\"" + ( phpLinks ? ( "?version=ps3&section=necropolis&map=" + targetLinkId ) : ( "#" + targetLinkId ) ) + "\">";
+								string linkStart = "<a href=\"" + ( phpLinks ?
+									Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.NecropolisMap, version, versionPostfix, locale, websiteLanguage, true, extra: targetLinkId ) :
+									( "#" + targetLinkId ) ) + "\">";
 								string linkEnd = "</a>";
 
 								string finalText;

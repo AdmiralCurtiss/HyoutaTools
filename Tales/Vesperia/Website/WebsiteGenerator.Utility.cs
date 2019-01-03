@@ -383,6 +383,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					case WebsiteSection.Shop: return begin + "&section=shops" + ( id != null ? "#shop" + id : "" );
 					case WebsiteSection.Skit: return begin + "&section=skit" + ( extra != null ? "&name=" + extra : "" );
 					case WebsiteSection.Scenario: return begin + "&section=scenario" + ( extra != null ? "&name=" + extra : "" );
+					case WebsiteSection.NecropolisMap: return begin + "&section=necropolis" + ( extra != null ? "&map=" + extra : "" );
 					default: throw new Exception( "Unsupported PHP URL requested." );
 				}
 			} else {
