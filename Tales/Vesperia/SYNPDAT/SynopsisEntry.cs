@@ -63,8 +63,10 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 			sb.Append( "</tr>" );
 			sb.Append( "</table>" );
 
-			if ( websiteLanguage.WantsEn() ) {
+			if ( websiteLanguage.WantsBoth() ) {
 				sb.Append( "<br>" );
+			}
+			if ( websiteLanguage.WantsEn() ) {
 				sb.Append( "<table class=\"synopsis\">" );
 				sb.Append( "<tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + textEng.Length + "\">" );
 				sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version ) + "</td></tr><tr>" );
