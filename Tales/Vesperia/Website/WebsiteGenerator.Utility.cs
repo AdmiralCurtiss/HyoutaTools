@@ -373,7 +373,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				string v = GetPhpUrlGameVersion( version );
 				string l = GetPhpUrlGameLocale( locale );
 				string w = GetPhpUrlWebsiteLanguage( websiteLanguage );
-				string begin = "?version=" + v + "&locale=" + l + "&compare=" + w;
+				string begin = "?version=" + v + versionPostfix + "&locale=" + l + "&compare=" + w;
 				switch ( section ) {
 					case WebsiteSection.Enemy: return begin + "&section=enemies&category=" + category + ( id != null ? "#enemy" + id : "" );
 					case WebsiteSection.Item: return begin + "&section=items&icon=" + icon + ( id != null ? "#item" + id : "" );
