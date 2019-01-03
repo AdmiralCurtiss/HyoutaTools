@@ -30,31 +30,31 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			StringBuilder sb = new StringBuilder();
 
 			int colspan = websiteLanguage.WantsBoth() ? 3 : 6;
-			sb.AppendLine( "<tr id=\"shop" + InGameID + "\">" );
+			sb.Append( "<tr id=\"shop" + InGameID + "\">" );
 			if ( websiteLanguage.WantsJp() ) {
-				sb.AppendLine( "<td class=\"synopsistitle\" colspan=\"" + colspan + "\">" );
-				sb.AppendLine( inGameIdDict[StringDicID].StringJpnHtml( version ) );
-				sb.AppendLine( "</td>" );
+				sb.Append( "<td class=\"synopsistitle\" colspan=\"" + colspan + "\">" );
+				sb.Append( inGameIdDict[StringDicID].StringJpnHtml( version ) );
+				sb.Append( "</td>" );
 			}
 			if ( websiteLanguage.WantsEn() ) {
-				sb.AppendLine( "<td class=\"synopsistitle\" colspan=\"" + colspan + "\">" );
-				sb.AppendLine( inGameIdDict[StringDicID].StringEngHtml( version ) );
-				sb.AppendLine( "</td>" );
+				sb.Append( "<td class=\"synopsistitle\" colspan=\"" + colspan + "\">" );
+				sb.Append( inGameIdDict[StringDicID].StringEngHtml( version ) );
+				sb.Append( "</td>" );
 			}
-			sb.AppendLine( "</tr>" );
-			sb.AppendLine( "<tr>" );
+			sb.Append( "</tr>" );
+			sb.Append( "<tr>" );
 			for ( int i = 2; i < 9; ++i ) {
 				if ( i == 4 ) { continue; }
-				sb.AppendLine( "<td>" );
+				sb.Append( "<td>" );
 				foreach ( var item in ShopItems ) {
 					if ( items.itemIdDict[item.ItemID].Data[(int)ItemDat.ItemData.Category] == i ) {
 						sb.Append( item.GetDataAsHtml( version, versionPostfix, locale, websiteLanguage, items, inGameIdDict, phpLinks: phpLinks ) );
 						sb.Append( "<br>" );
 					}
 				}
-				sb.AppendLine( "</td>" );
+				sb.Append( "</td>" );
 			}
-			sb.AppendLine( "</tr>" );
+			sb.Append( "</tr>" );
 			if ( OnTrigger > 0 ) {
 				sb.Append( "<tr>" );
 				sb.Append( "<td class=\"strategychar\" colspan=\"6\">" );

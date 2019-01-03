@@ -496,7 +496,6 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 						sb.Append( loc.GetLastValidName( dict ).StringEngOrJpnHtml( version, websiteLanguage ) + "</a>" );
 					}
 				}
-				sb.AppendLine();
 			}
 
 			sb.Append( "</td></tr><tr>" );

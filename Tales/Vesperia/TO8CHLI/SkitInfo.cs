@@ -151,17 +151,17 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 				//*/
 				for ( int i = 0; i < fw.SkitConditionCount; ++i ) {
 					var c = skits.SkitConditionList[(int)( fw.SkitConditionReference + i )];
-					sb.AppendLine( "<br>" );
+					sb.Append( "<br>" );
 					c.GetDataAsHtml( sb, version );
 				}
-				sb.AppendLine( "~SkitConditionRelated: " + SkitConditionRelated );
+				sb.Append( "~SkitConditionRelated: " + SkitConditionRelated );
 			}
 
 			sb.Append( "<br>" );
 			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, CharacterBitmask );
 												  
-			sb.AppendLine( "<br>" );
-			sb.AppendLine( "~4: 0x" + Data[4].ToString("X8") );
+			sb.Append( "<br>" );
+			sb.Append( "~4: 0x" + Data[4].ToString("X8") );
 			sb.Append( "<br>" );
 
 			return sb.ToString();

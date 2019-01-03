@@ -287,7 +287,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			}
 
 			if ( KillableWithFS == 0 ) {
-				sb.AppendLine( "Immune to Fatal Strike.<br>" );
+				sb.Append( "Immune to Fatal Strike.<br>" );
 			}
 
 			sb.Append( "</td>" );
@@ -295,19 +295,18 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 
 			/*
 			sb.Append( "<td rowspan=\"2\">" );
-			sb.AppendLine();
 			for ( int i = 0; i < 62; ++i ) {
 				if ( !KnownValues.Contains( i ) ) {
 					sb.Append( "~" + i + ": " + Data[i] );
 					sb.Append( " [" + Category + "/" + enemyNameEntry.StringEngOrJpn + "]" );
-					sb.AppendLine( "<br>" );
+					sb.Append( "<br>" );
 				}
 			}
 			for ( int i = 62; i < Data.Length; ++i ) {
 				if ( !KnownValues.Contains( i ) ) {
 					sb.Append( "~" + i + ": " + DataFloat[i] );
 					sb.Append( " [" + Category + "/" + enemyNameEntry.StringEngOrJpn + "]" );
-					sb.AppendLine( "<br>" );
+					sb.Append( "<br>" );
 				}
 			}
 			sb.Append( "</td>" );
@@ -319,16 +318,16 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			sb.Append( "<td colspan=\"2\">" );
 
 			if ( InMonsterBook == 0 ) {
-				sb.AppendLine( "Not in Monster Book.<br>" );
+				sb.Append( "Not in Monster Book.<br>" );
 			}
 
 			if ( Location != 0 ) {
 				var loc = locations.LocationIdDict[Location];
 				sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Location, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)loc.LocationID ) + "\">" );
 				if ( LocationWeather > -1 ) {
-					sb.AppendLine( "<img src=\"menu-icons/weather-" + LocationWeather + ".png\" width=\"16\" height=\"16\">" );
+					sb.Append( "<img src=\"menu-icons/weather-" + LocationWeather + ".png\" width=\"16\" height=\"16\">" );
 				}
-				sb.AppendLine( loc.GetLastValidName( inGameIdDict ).StringEngOrJpnHtml( version, websiteLanguage ) + "</a><br>" );
+				sb.Append( loc.GetLastValidName( inGameIdDict ).StringEngOrJpnHtml( version, websiteLanguage ) + "</a><br>" );
 			}
 
 			for ( int i = 0; i < DropItems.Length; ++i ) {
@@ -369,7 +368,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			sb.Append( "</td>" );
 
 
-			sb.AppendLine( "</tr>" );
+			sb.Append( "</tr>" );
 
 
 			return sb.ToString();
