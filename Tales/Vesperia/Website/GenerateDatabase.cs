@@ -327,7 +327,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		private void ExportScenarioMetadata() {
 			using ( var transaction = DB.BeginTransaction() ) {
 				using ( var command = DB.CreateCommand() ) {
-					command.CommandText = "CREATE TABLE ScenarioMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, type INT, sceneGroup INT, parent INT, episodeId VARCHAR(20), description TEXT, changeStatus INT )";
+					command.CommandText = "CREATE TABLE ScenarioMeta ( id INTEGER PRIMARY KEY AUTOINCREMENT, type INT, sceneGroup INT, parent INT, episodeId VARCHAR(20), descriptionJ TEXT, descriptionE TEXT, changeStatus INT )";
 					command.ExecuteNonQuery();
 				}
 				using ( var command = DB.CreateCommand() ) {
@@ -742,12 +742,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		private void ExportScenarioMetadata( IDbTransaction transaction, List<List<ScenarioData>> groups, int groupType, GameVersion version ) {
 			using ( var command = DB.CreateCommand() ) {
-				command.CommandText = "INSERT INTO ScenarioMeta ( type, sceneGroup, parent, episodeId, description, changeStatus ) VALUES ( @type, @sceneGroup, @parent, @episodeId, @description, @changeStatus )";
+				command.CommandText = "INSERT INTO ScenarioMeta ( type, sceneGroup, parent, episodeId, descriptionJ, descriptionE, changeStatus ) VALUES ( @type, @sceneGroup, @parent, @episodeId, @descriptionJ, @descriptionE, @changeStatus )";
 				command.AddParameter( "type" );
 				command.AddParameter( "sceneGroup" );
 				command.AddParameter( "parent" );
 				command.AddParameter( "episodeId" );
-				command.AddParameter( "description" );
+				command.AddParameter( "descriptionJ" );
+				command.AddParameter( "descriptionE" );
 				command.AddParameter( "changeStatus" );
 
 				int groupNumber = 0;
@@ -759,7 +760,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					command.GetParameter( "sceneGroup" ).Value = groupNumber;
 					command.GetParameter( "parent" ).Value = null;
 					command.GetParameter( "episodeId" ).Value = null;
-					command.GetParameter( "description" ).Value = commonBegin;
+					command.GetParameter( "descriptionJ" ).Value = commonBegin;
+					command.GetParameter( "descriptionE" ).Value = commonBegin;
 					command.GetParameter( "changeStatus" ).Value = -1;
 					command.ExecuteNonQuery();
 
@@ -769,7 +771,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "sceneGroup" ).Value = groupNumber;
 						command.GetParameter( "parent" ).Value = parentId;
 						command.GetParameter( "episodeId" ).Value = scene.EpisodeId;
-						command.GetParameter( "description" ).Value = scene.HumanReadableNameWithoutPrefix( commonBegin );
+						command.GetParameter( "descriptionJ" ).Value = scene.HumanReadableNameWithoutPrefix( commonBegin );
+						command.GetParameter( "descriptionE" ).Value = scene.HumanReadableNameWithoutPrefix( commonBegin );
 						object chst = SqliteUtil.SelectScalar( transaction, "SELECT MAX(changeStatus) FROM ScenarioDat WHERE episodeId = ? AND type != ?", new object[2] { scene.EpisodeId, (int)TextboxType.Information } );
 						command.GetParameter( "changeStatus" ).Value = chst == null ? -1L : chst == System.DBNull.Value ? -1L : chst;
 						command.ExecuteNonQuery();
@@ -777,12 +780,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						long sceneId = GetLastInsertedId();
 						foreach ( var skit in scene.Skits ) {
 							var name = Site.InGameIdDict[skit.StringDicIdName];
-							string d = name.GetStringHtml( 0, version ) + " (" + name.GetStringHtml( 1, version ) + ")";
 							command.GetParameter( "type" ).Value = groupType;
 							command.GetParameter( "sceneGroup" ).Value = groupNumber;
 							command.GetParameter( "parent" ).Value = sceneId;
 							command.GetParameter( "episodeId" ).Value = skit.RefString;
-							command.GetParameter( "description" ).Value = d;
+							command.GetParameter( "descriptionJ" ).Value = name.GetStringHtml( 0, version );
+							command.GetParameter( "descriptionE" ).Value = name.GetStringHtml( 1, version );
 							chst = SqliteUtil.SelectScalar( transaction, "SELECT MAX(changeStatus) FROM SkitText WHERE skitId = ?", new object[1] { skit.RefString } );
 							command.GetParameter( "changeStatus" ).Value = chst == null ? -1L : chst == System.DBNull.Value ? -1L : chst;
 							command.ExecuteNonQuery();
