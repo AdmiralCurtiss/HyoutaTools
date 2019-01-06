@@ -30,13 +30,30 @@ namespace HyoutaTools.Textures.PixelOrderIterators {
 			}
 		}
 
+		private static IEnumerable<(int x, int y)> GenerateBlockOrderMacroblocks( int blocksX, int blocksY ) {
+			int blockOffset = blocksY / 2;
+			for ( int macroblock = 0; macroblock < blocksX / blocksY; ++macroblock ) {
+				for ( int y = 0; y < blocksY; y += blockOffset ) {
+					for ( int x = 0; x < blocksY; x += blockOffset ) {
+						foreach ( var v in GenerateBlockOrder( x + ( macroblock * blocksY ), y, blockOffset, blockOffset ) ) {
+							yield return v;
+						}
+					}
+				}
+			}
+		}
+
 		private static IEnumerable<(int X, int Y)> GeneratePixelOrder( int width, int height ) {
 			int blocksX = ( width + 1 ) / 2;
 			int blocksY = ( height + 1 ) / 2;
-			if ( blocksX > blocksY ) {
-				Console.WriteLine( "WARNING: Proper pixel order not known for this image, result may look scrambled." );
+			IEnumerable<(int x, int y)> generator;
+			if ( blocksX > blocksY && blocksX > 1 && blocksY > 1 ) { // ???
+				Console.WriteLine( "WARNING: Proper pixel order not fully understood for this image, result may look scrambled." );
+				generator = GenerateBlockOrderMacroblocks( blocksX, blocksY );
+			} else {
+				generator = GenerateBlockOrder( 0, 0, blocksX, blocksY );
 			}
-			foreach ( var block in GenerateBlockOrder( 0, 0, blocksX, blocksY ) ) {
+			foreach ( var block in generator ) {
 				yield return (block.x * 2 + 0, block.y * 2 + 0);
 				yield return (block.x * 2 + 1, block.y * 2 + 0);
 				yield return (block.x * 2 + 0, block.y * 2 + 1);
