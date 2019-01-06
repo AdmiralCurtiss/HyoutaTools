@@ -103,14 +103,40 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 		}
 
 		public uint GetByteCount() {
-			uint mip0 = GetBitPerPixel() * Width * Height * Depth;
+			uint bpp = GetBitPerPixel();
 			uint sum = 0;
-			uint mipdiv = 1;
+
+			uint w = Width;
+			uint h = Height;
+			uint d = Depth;
 			for ( uint i = 0; i < Mipmaps; ++i ) {
-				sum += mip0 / mipdiv;
-				mipdiv *= 4;
+				uint mip = bpp * w * h * d;
+				sum += mip;
+				w = Math.Max( MinimumWidthPerMip(), w / 2 );
+				h = Math.Max( MinimumHeightPerMip(), h / 2 );
+				d = Math.Max( MinimumDepthPerMip(), d / 2 );
 			}
 			return sum / 8;
+		}
+
+		private uint MinimumWidthPerMip() {
+			if ( Format == TextureFormat.ARGBa ) {
+				return 2;
+			} else {
+				return 1;
+			}
+		}
+
+		private uint MinimumHeightPerMip() {
+			if ( Format == TextureFormat.ARGBa ) {
+				return 2;
+			} else {
+				return 1;
+			}
+		}
+
+		private uint MinimumDepthPerMip() {
+			return 1;
 		}
 
 		public uint GetByteCount( int mipmaplevel ) {
@@ -146,6 +172,10 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 
 		public override Stream GetSinglePlane( Stream inputStream, uint depthlevel ) {
 			return inputStream;
+		}
+
+		public override string ToString() {
+			return String.Format( "{4}: {0}x{1}, {2} mips, {3}, @0x{5:X8}", Width, Height, Mipmaps, Format.ToString(), Name, TxvLocation );
 		}
 	}
 

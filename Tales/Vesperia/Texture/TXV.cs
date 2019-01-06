@@ -84,10 +84,17 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 							list.Add( new DDS( header, plane ).ConvertToBitmap() );
 						}
 						break;
+					case TextureFormat.ARGBa:
 					case TextureFormat.ARGBb:
 						for ( uint mip = 0; mip < TXM.Mipmaps; ++mip ) {
 							var dims = TXM.GetDimensions( (int)mip );
-							var bmp = new ColorFetcherARGB8888( plane, dims.width, dims.height ).ConvertToBitmap( new LinearPixelOrderIterator( (int)dims.width, (int)dims.height ), dims.width, dims.height );
+							IPixelOrderIterator pxit;
+							if ( TXM.Format == TextureFormat.ARGBa ) {
+								pxit = new ARGBaPixelOrderIterator( (int)dims.width, (int)dims.height );
+							} else {
+								pxit = new LinearPixelOrderIterator( (int)dims.width, (int)dims.height );
+							}
+							var bmp = new ColorFetcherARGB8888( plane, dims.width, dims.height ).ConvertToBitmap( pxit, dims.width, dims.height );
 							list.Add( bmp );
 						}
 						break;
@@ -118,10 +125,17 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 							list.Add( (name, stream) );
 						}
 						break;
+					case TextureFormat.ARGBa:
 					case TextureFormat.ARGBb:
 						for ( uint mip = 0; mip < TXM.Mipmaps; ++mip ) {
 							var dims = TXM.GetDimensions( (int)mip );
-							Stream stream = new ColorFetcherARGB8888( plane, dims.width, dims.height ).WriteSingleImageToPngStream( new LinearPixelOrderIterator( (int)dims.width, (int)dims.height ), dims.width, dims.height );
+							IPixelOrderIterator pxit;
+							if ( TXM.Format == TextureFormat.ARGBa ) {
+								pxit = new ARGBaPixelOrderIterator( (int)dims.width, (int)dims.height );
+							} else {
+								pxit = new LinearPixelOrderIterator( (int)dims.width, (int)dims.height );
+							}
+							Stream stream = new ColorFetcherARGB8888( plane, dims.width, dims.height ).WriteSingleImageToPngStream( pxit, dims.width, dims.height );
 							string name = TXM.Name + ( TXM.Depth > 1 ? ( "_Plane" + depth ) : "" ) + ( TXM.Mipmaps > 1 ? ( "_Mip" + mip ) : "" ) + ".png";
 							list.Add( (name, stream) );
 						}
