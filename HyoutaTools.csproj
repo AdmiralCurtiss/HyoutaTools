@@ -214,6 +214,8 @@
     <Compile Include="Tales\Vesperia\Scenario\Program.cs" />
     <Compile Include="Tales\Vesperia\Scenario\ScenarioDat.cs" />
     <Compile Include="Tales\Vesperia\SCFOMBIN\SCFOMBIN.cs" />
+    <Compile Include="Tales\Vesperia\SE3\Program.cs" />
+    <Compile Include="Tales\Vesperia\SE3\SE3.cs" />
     <Compile Include="Tales\Vesperia\ShopData\ShopDefinition.cs" />
     <Compile Include="Tales\Vesperia\ShopData\ShopData.cs" />
     <Compile Include="Tales\Vesperia\ShopData\ShopItem.cs" />

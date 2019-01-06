@@ -14,8 +14,8 @@ namespace HyoutaTools.Tales.Vesperia.xma {
 				Console.WriteLine( "-- unpack chat.svo (FPS4 archive, with HyoutaTools -> ToVfps4e)" );
 				Console.WriteLine( "-- decompress individual skit with xbdecompress" );
 				Console.WriteLine( "-- unpack skit (FPS4 archive, with HyoutaTools -> ToVfps4e)" );
-				Console.WriteLine( "-- cut SE3 header from audio file to get a nub archive" );
-				Console.WriteLine( "   (file 0004, seems to be 0x800 bytes for skits but can be bigger, first four bytes of new file should be 0x00020100)" );
+				Console.WriteLine( "-- convert SE3 to NUB (with HyoutaTools -> SE3toNUB)" );
+				Console.WriteLine( "   (first four bytes of nub file should be 0x00020100)" );
 				Console.WriteLine( "-- extract nub archive with NUBExt r12beta" );
 				Console.WriteLine( "-- this gives you an \"xma\" file that isn't actually an xma, run this tool on it" );
 				Console.WriteLine( "-- resulting file is a valid enough xma file that can be converted to WAV with \"toWav\"" );

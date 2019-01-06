@@ -107,6 +107,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.Texture.Decode",           "-"           ),  Tales.Vesperia.Texture.Decode.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.SaveDataParser",           "-"           ),  Tales.Vesperia.SaveData.SaveDataParser.Parse) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "AceAttorneyInvestigations.ScriptDumper",  "-"           ),  Other.AceAttorneyInvestigationsScriptDump.Dumper.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.SE3toNUB",                 "SE3toNUB"    ),  Tales.Vesperia.SE3.Program.ExtractToNub) },
 		};
 	}
 }
