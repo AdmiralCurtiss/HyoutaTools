@@ -285,6 +285,7 @@
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherARGB8888.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherRGB565.cs" />
     <Compile Include="Textures\ColorFetchingIterators\IColorFetchingIterator.cs" />
+    <Compile Include="Textures\ColorPositionFetcher.cs" />
     <Compile Include="Textures\DDS.cs" />
     <Compile Include="Textures\PixelOrderIterators\IPixelOrderIterator.cs" />
     <Compile Include="Textures\PixelOrderIterators\TiledPixelOrderIterator.cs" />

@@ -243,6 +243,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 				}
 
 				for ( int idx = 0; idx < Images[i].Count; ++idx ) {
+					var pp = pixelPosition.GetEnumerator();
 					uint rawcolor = Images[i][idx];
 					Color color;
 
@@ -284,10 +285,11 @@ namespace HyoutaTools.Other.PSP.GIM {
 							throw new Exception( "Unexpected image color type: " + psec.Format );
 					}
 
-					if ( pixelPosition.X < w && pixelPosition.Y < h ) {
-						bmp.SetPixel( pixelPosition.X, pixelPosition.Y, color );
+					pp.MoveNext();
+					var xy = pp.Current;
+					if ( xy.X < w && xy.Y < h ) {
+						bmp.SetPixel( xy.X, xy.Y, color );
 					}
-					pixelPosition.Next();
 				}
 				bitmaps.Add( bmp );
 			}

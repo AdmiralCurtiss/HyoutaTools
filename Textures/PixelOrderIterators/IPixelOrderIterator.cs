@@ -5,9 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HyoutaTools.Textures.PixelOrderIterators {
-	public interface IPixelOrderIterator {
-		int X { get; }
-		int Y { get; }
-		void Next();
+	public interface IPixelOrderIterator : IEnumerable<(int X, int Y)> {
 	}
 }
