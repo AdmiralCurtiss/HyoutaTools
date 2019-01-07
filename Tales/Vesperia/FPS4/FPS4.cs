@@ -380,6 +380,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		}
 
 		public void Close() {
+			if ( contentFile != null && contentFile != infile ) {
+				contentFile.Close();
+				contentFile = null;
+			}
 			if ( infile != null ) {
 				infile.Close();
 				infile = null;
