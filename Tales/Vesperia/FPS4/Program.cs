@@ -169,7 +169,19 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				files = files.OrderBy( x => x.Split( '.' ).Last() ).ToArray();
 			}
 
-			fps4.Pack( files, outName, headerName: outHeaderName, metadata: metadata );
+			FPS4.Pack(
+				files,
+				outName,
+				fps4.ContentBitmask,
+				fps4.Endian,
+				fps4.Unknown2,
+				originalFps4 != null ? new System.IO.FileStream( originalFps4, System.IO.FileMode.Open ) : null,
+				fps4.ArchiveName,
+				fps4.FirstFileStart,
+				fps4.Alignment,
+				headerName: outHeaderName,
+				metadata: metadata
+			);
 
 			return 0;
 		}

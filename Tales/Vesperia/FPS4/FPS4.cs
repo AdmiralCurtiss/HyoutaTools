@@ -28,7 +28,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		FileStream contentFile = null;
 		uint FileCount;
 		uint HeaderSize;
-		uint FirstFileStart;
+		public uint FirstFileStart;
 		ushort EntrySize;
 		public ushort ContentBitmask;
 		public uint Unknown2;
@@ -48,6 +48,12 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public bool ContainsFilenames { get { return ( ContentBitmask & 0x0008 ) == 0x0008; } }
 		public bool ContainsFiletypes { get { return ( ContentBitmask & 0x0020 ) == 0x0020; } }
 		public bool ContainsFileMetadata { get { return ( ContentBitmask & 0x0040 ) == 0x0040; } }
+		public static bool StaticContainsStartPointers( ushort ContentBitmask ) { return ( ContentBitmask & 0x0001 ) == 0x0001; }
+		public static bool StaticContainsSectorSizes( ushort ContentBitmask ) { return ( ContentBitmask & 0x0002 ) == 0x0002; }
+		public static bool StaticContainsFileSizes( ushort ContentBitmask ) { return ( ContentBitmask & 0x0004 ) == 0x0004; }
+		public static bool StaticContainsFilenames( ushort ContentBitmask ) { return ( ContentBitmask & 0x0008 ) == 0x0008; }
+		public static bool StaticContainsFiletypes( ushort ContentBitmask ) { return ( ContentBitmask & 0x0020 ) == 0x0020; }
+		public static bool StaticContainsFileMetadata( ushort ContentBitmask ) { return ( ContentBitmask & 0x0040 ) == 0x0040; }
 
 		private bool LoadFile( string headerFilename, string contentFilename = null ) {
 			try {
@@ -197,21 +203,30 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 		}
 
-		public void Pack( string inPath, string outFilename, string headerName = null, string metadata = null ) {
-			var files = System.IO.Directory.GetFiles( inPath, "*", System.IO.SearchOption.AllDirectories );
-			Pack( files, outFilename, headerName, metadata );
-		}
-		public void Pack( string[] files, string outFilename, string headerName = null, string metadata = null ) {
-			FileCount = (uint)files.Length + 1;
-			HeaderSize = 0x1C;
+		public static void Pack(
+			string[] files,
+			string outFilename,
+			ushort ContentBitmask,
+			Util.Endianness Endian,
+			uint Unknown2,
+			Stream infile,
+			string ArchiveName,
+			uint FirstFileStart,
+			uint Alignment,
+			string headerName = null,
+			string metadata = null
+		) {
+			uint FileCount = (uint)files.Length + 1;
+			uint HeaderSize = 0x1C;
 
-			EntrySize = 0;
-			if ( ContainsStartPointers ) { EntrySize += 4; }
-			if ( ContainsSectorSizes ) { EntrySize += 4; }
-			if ( ContainsFileSizes ) { EntrySize += 4; }
-			if ( ContainsFilenames ) { EntrySize += 0x20; }
-			if ( ContainsFiletypes ) { EntrySize += 4; }
-			if ( ContainsFileMetadata ) { EntrySize += 4; }
+			ushort EntrySize = 0;
+
+			if ( StaticContainsStartPointers( ContentBitmask ) ) { EntrySize += 4; }
+			if ( StaticContainsSectorSizes( ContentBitmask ) ) { EntrySize += 4; }
+			if ( StaticContainsFileSizes( ContentBitmask ) ) { EntrySize += 4; }
+			if ( StaticContainsFilenames( ContentBitmask ) ) { EntrySize += 0x20; }
+			if ( StaticContainsFiletypes( ContentBitmask ) ) { EntrySize += 4; }
+			if ( StaticContainsFileMetadata( ContentBitmask ) ) { EntrySize += 4; }
 
 			bool headerToSeparateFile = false;
 			if ( headerName != null ) { headerToSeparateFile = true; }
@@ -230,10 +245,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				// file list
 				for ( int i = 0; i < files.Length; ++i ) {
 					var fi = new System.IO.FileInfo( files[i] );
-					if ( ContainsStartPointers ) { f.WriteUInt32( 0 ); } // properly written later
-					if ( ContainsSectorSizes ) { f.WriteUInt32( 0 ); } // properly written later
-					if ( ContainsFileSizes ) { f.WriteUInt32( ( (uint)( fi.Length ) ).ToEndian( Endian ) ); }
-					if ( ContainsFilenames ) {
+					if ( StaticContainsStartPointers( ContentBitmask ) ) { f.WriteUInt32( 0 ); } // properly written later
+					if ( StaticContainsSectorSizes( ContentBitmask ) ) { f.WriteUInt32( 0 ); } // properly written later
+					if ( StaticContainsFileSizes( ContentBitmask ) ) { f.WriteUInt32( ( (uint)( fi.Length ) ).ToEndian( Endian ) ); }
+					if ( StaticContainsFilenames( ContentBitmask ) ) {
 						string filename = fi.Name.Truncate( 0x1F );
 						byte[] fnbytes = Util.ShiftJISEncoding.GetBytes( filename );
 						f.Write( fnbytes, 0, fnbytes.Length );
@@ -241,7 +256,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							f.WriteByte( 0 );
 						}
 					}
-					if ( ContainsFiletypes ) {
+					if ( StaticContainsFiletypes( ContentBitmask ) ) {
 						string extension = fi.Extension.TrimStart( '.' ).Truncate( 4 );
 						byte[] extbytes = Util.ShiftJISEncoding.GetBytes( extension );
 						f.Write( extbytes, 0, extbytes.Length );
@@ -249,7 +264,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							f.WriteByte( 0 );
 						}
 					}
-					if ( ContainsFileMetadata ) {
+					if ( StaticContainsFileMetadata( ContentBitmask ) ) {
 						if ( infile != null ) {
 							// copy this from original file, very hacky when filenames/filecount/metadata changes
 							infile.Position = f.Position;
@@ -271,7 +286,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				// with all the metadata in a param=data format separated by spaces
 				// maybe including a filepath at the start without a param=
 				// strings should be after the filelist block but before the actual files
-				if ( ContainsFileMetadata && metadata != null ) {
+				if ( StaticContainsFileMetadata( ContentBitmask ) && metadata != null ) {
 					for ( int i = 0; i < files.Length; ++i ) {
 						var fi = new System.IO.FileInfo( files[i] );
 						long ptrPos = 0x1C + ( ( i + 1 ) * EntrySize ) - 4;
@@ -299,7 +314,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				// write original archive filepath
 				if ( ArchiveName != null ) {
 					// put the location into the header
-					ArchiveNameLocation = Convert.ToUInt32( f.Position );
+					uint ArchiveNameLocation = Convert.ToUInt32( f.Position );
 					f.Position = 0x18;
 					f.WriteUInt32( ArchiveNameLocation.ToEndian( Endian ) );
 					f.Position = ArchiveNameLocation;
@@ -333,8 +348,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					for ( int i = 0; i < files.Length; ++i ) {
 						f.Position = 0x1C + ( i * EntrySize );
 						var fi = new System.IO.FileInfo( files[i] );
-						if ( ContainsStartPointers ) { f.WriteUInt32( ptr.ToEndian( Endian ) ); }
-						if ( ContainsSectorSizes ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
+						if ( StaticContainsStartPointers( ContentBitmask ) ) { f.WriteUInt32( ptr.ToEndian( Endian ) ); }
+						if ( StaticContainsSectorSizes( ContentBitmask ) ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
 						ptr += (uint)fi.Length.Align( (int)Alignment );
 					}
 					f.Position = 0x1C + ( files.Length * EntrySize );
@@ -360,16 +375,16 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				// actually write files
 				if ( headerToSeparateFile ) {
 					using ( FileStream dataStream = new FileStream( outFilename, FileMode.Create ) ) {
-						WriteFilesToFileStream( files, dataStream );
+						WriteFilesToFileStream( files, dataStream, Alignment );
 						dataStream.Close();
 					}
 				} else {
-					WriteFilesToFileStream( files, f );
+					WriteFilesToFileStream( files, f, Alignment );
 				}
 			}
 		}
 
-		private void WriteFilesToFileStream( string[] files, FileStream f ) {
+		private static void WriteFilesToFileStream( string[] files, FileStream f, uint Alignment ) {
 			for ( int i = 0; i < files.Length; ++i ) {
 				using ( var fs = new System.IO.FileStream( files[i], FileMode.Open, FileAccess.Read ) ) {
 					Console.WriteLine( "Packing #" + i.ToString( "D4" ) + ": " + files[i] );
@@ -395,7 +410,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		}
 
 		// FIXME: this works only with pretty specific input, good enough for what I need but certainly not usable for generic cases
-		private string GetRelativePath( string fromDirectory, string toFile ) {
+		private static string GetRelativePath( string fromDirectory, string toFile ) {
 			fromDirectory = System.IO.Path.GetDirectoryName( System.IO.Path.GetFullPath( fromDirectory ) );
 			string relative = toFile.Substring( fromDirectory.Length );
 			relative = String.Join( "/", relative.Split( new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries ).Skip( 1 ).ToArray() );
