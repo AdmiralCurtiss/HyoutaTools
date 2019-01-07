@@ -113,7 +113,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					throw new Exception( "FPS4 extraction failure: Doesn't contain file start pointers!" );
 				}
 
-				if ( ContainsFileSizes && ContainsSectorSizes ) {
+				if ( ContainsSectorSizes ) {
 					sectsize = infile.ReadUInt32().FromEndian( Endian );
 				}
 
