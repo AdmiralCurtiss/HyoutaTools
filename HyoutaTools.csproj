@@ -87,6 +87,12 @@
     <Compile Include="DanganRonpa\Pak\Program.cs" />
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
     <Compile Include="ExternalProgramExecution.cs" />
+    <Compile Include="FileContainer\DirectoryOnDisk.cs" />
+    <Compile Include="FileContainer\FileFromStream.cs" />
+    <Compile Include="FileContainer\FileOnDisk.cs" />
+    <Compile Include="FileContainer\IContainer.cs" />
+    <Compile Include="FileContainer\IFile.cs" />
+    <Compile Include="FileContainer\INode.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\DATA.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\FileSectionFactory.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\MES.cs" />
