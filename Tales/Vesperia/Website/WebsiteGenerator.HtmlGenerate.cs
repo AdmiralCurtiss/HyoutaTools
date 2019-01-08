@@ -399,12 +399,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			foreach ( var entry in BattleBook.BattleBookEntryList ) {
 				string data;
-				try {
-					if ( InGameIdDict[entry.NameStringDicId].StringEngOrJpn == "" ) { continue; }
-					data = entry.GetDataAsHtml( Version, VersionPostfix, Locale, Language, StringDic, InGameIdDict );
-				} catch ( KeyNotFoundException ) {
-					continue;
-				}
+				if ( InGameIdDict[entry.NameStringDicId].StringEngOrJpn == "" ) { continue; }
+				data = entry.GetDataAsHtml( Version, VersionPostfix, Locale, Language, StringDic, InGameIdDict );
 				sb.Append( "<tr>" );
 				sb.Append( data );
 				sb.Append( "</tr>" );

@@ -1435,7 +1435,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 					for ( int i = 0; i < Site.BattleBook.BattleBookEntryList.Count; ++i ) {
 						var b = Site.BattleBook.BattleBookEntryList[i];
-						if ( b.NameStringDicId == 0xFFFFFFFFu || b.NameStringDicId == 0 ) { continue; }
 						command.GetParameter( "strDicName" ).Value = b.NameStringDicId;
 						command.GetParameter( "strDicDesc" ).Value = b.TextStringDicId;
 						command.GetParameter( "unlock" ).Value = b.UnlockReferenceMaybe;

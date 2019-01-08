@@ -24,8 +24,10 @@ namespace HyoutaTools.Tales.Vesperia.BTLBDAT {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
+			uint unknown1 = stream.ReadUInt32().FromEndian( endian );
 			uint entryCount = stream.ReadUInt32().FromEndian( endian );
-			uint refStringStart = stream.ReadUInt32().FromEndian( endian );
+			uint unknown2 = stream.ReadUInt32().FromEndian( endian );
+			stream.DiscardBytes( 12 );
 
 			BattleBookEntryList = new List<BattleBookEntry>( (int)entryCount );
 			for ( uint i = 0; i < entryCount; ++i ) {
