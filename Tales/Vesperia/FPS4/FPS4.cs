@@ -5,9 +5,27 @@ using System.Text;
 using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
+	public struct ContentInfo {
+		public ushort Value { get; private set; }
+		public ContentInfo( ushort contentBitmask ) {
+			Value = contentBitmask;
+		}
+
+		// -- bitmask examples --
+		// 0x000F -> loc, end, size, name
+		// 0x0007 -> loc, end, size
+		// 0x0047 -> loc, end, size, ptr to path? attributes? something like that
+		public bool ContainsStartPointers { get { return ( Value & 0x0001 ) == 0x0001; } }
+		public bool ContainsSectorSizes { get { return ( Value & 0x0002 ) == 0x0002; } }
+		public bool ContainsFileSizes { get { return ( Value & 0x0004 ) == 0x0004; } }
+		public bool ContainsFilenames { get { return ( Value & 0x0008 ) == 0x0008; } }
+		public bool ContainsFiletypes { get { return ( Value & 0x0020 ) == 0x0020; } }
+		public bool ContainsFileMetadata { get { return ( Value & 0x0040 ) == 0x0040; } }
+	}
+
 	public class FPS4 : IDisposable {
 		public FPS4() {
-			ContentBitmask = 0x000F;
+			ContentBitmask = new ContentInfo( 0x000F );
 			Alignment = 0x800;
 		}
 		public FPS4( string inFilename ) {
@@ -30,30 +48,13 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		uint HeaderSize;
 		public uint FirstFileStart;
 		ushort EntrySize;
-		public ushort ContentBitmask;
+		public ContentInfo ContentBitmask;
 		public uint Unknown2;
 		uint ArchiveNameLocation;
 
 		public string ArchiveName = null;
 		public uint Alignment;
 		public Util.Endianness Endian = Util.Endianness.BigEndian;
-
-		// -- bitmask examples --
-		// 0x000F -> loc, end, size, name
-		// 0x0007 -> loc, end, size
-		// 0x0047 -> loc, end, size, ptr to path? attributes? something like that
-		public bool ContainsStartPointers { get { return ( ContentBitmask & 0x0001 ) == 0x0001; } }
-		public bool ContainsSectorSizes { get { return ( ContentBitmask & 0x0002 ) == 0x0002; } }
-		public bool ContainsFileSizes { get { return ( ContentBitmask & 0x0004 ) == 0x0004; } }
-		public bool ContainsFilenames { get { return ( ContentBitmask & 0x0008 ) == 0x0008; } }
-		public bool ContainsFiletypes { get { return ( ContentBitmask & 0x0020 ) == 0x0020; } }
-		public bool ContainsFileMetadata { get { return ( ContentBitmask & 0x0040 ) == 0x0040; } }
-		public static bool StaticContainsStartPointers( ushort ContentBitmask ) { return ( ContentBitmask & 0x0001 ) == 0x0001; }
-		public static bool StaticContainsSectorSizes( ushort ContentBitmask ) { return ( ContentBitmask & 0x0002 ) == 0x0002; }
-		public static bool StaticContainsFileSizes( ushort ContentBitmask ) { return ( ContentBitmask & 0x0004 ) == 0x0004; }
-		public static bool StaticContainsFilenames( ushort ContentBitmask ) { return ( ContentBitmask & 0x0008 ) == 0x0008; }
-		public static bool StaticContainsFiletypes( ushort ContentBitmask ) { return ( ContentBitmask & 0x0020 ) == 0x0020; }
-		public static bool StaticContainsFileMetadata( ushort ContentBitmask ) { return ( ContentBitmask & 0x0040 ) == 0x0040; }
 
 		private bool LoadFile( string headerFilename, string contentFilename = null ) {
 			try {
@@ -88,7 +89,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			FirstFileStart = infile.ReadUInt32().FromEndian( Endian );
 			EntrySize = infile.ReadUInt16().FromEndian( Endian );
-			ContentBitmask = infile.ReadUInt16().FromEndian( Endian );
+			ContentBitmask = new ContentInfo( infile.ReadUInt16().FromEndian( Endian ) );
 			Unknown2 = infile.ReadUInt32().FromEndian( Endian );
 			ArchiveNameLocation = infile.ReadUInt32().FromEndian( Endian );
 			infile.Position = ArchiveNameLocation;
@@ -98,7 +99,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			Alignment = FirstFileStart;
 
-			Console.WriteLine( "Content Bitmask: 0x" + ContentBitmask.ToString( "X4" ) );
+			Console.WriteLine( "Content Bitmask: 0x" + ContentBitmask.Value.ToString( "X4" ) );
 
 			return true;
 		}
@@ -113,19 +114,19 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				uint sectsize = 0;
 				uint filesize = 0;
 
-				if ( ContainsStartPointers ) {
+				if ( ContentBitmask.ContainsStartPointers ) {
 					fileloc = infile.ReadUInt32().FromEndian( Endian );
 				} else {
 					throw new Exception( "FPS4 extraction failure: Doesn't contain file start pointers!" );
 				}
 
-				if ( ContainsSectorSizes ) {
+				if ( ContentBitmask.ContainsSectorSizes ) {
 					sectsize = infile.ReadUInt32().FromEndian( Endian );
 				}
 
-				if ( ContainsFileSizes ) {
+				if ( ContentBitmask.ContainsFileSizes ) {
 					filesize = infile.ReadUInt32().FromEndian( Endian );
-				} else if ( ContainsSectorSizes ) {
+				} else if ( ContentBitmask.ContainsSectorSizes ) {
 					filesize = sectsize;
 				} else {
 					throw new Exception( "FPS4 extraction failure: Doesn't contain filesize information!" );
@@ -137,17 +138,17 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				string filename = "";
-				if ( ContainsFilenames ) {
+				if ( ContentBitmask.ContainsFilenames ) {
 					filename = infile.ReadAsciiNullterm();
 				}
 
 				string extension = "";
-				if ( ContainsFiletypes ) {
+				if ( ContentBitmask.ContainsFiletypes ) {
 					extension = '.' + infile.ReadAscii( 4 ).TrimNull();
 				}
 
 				string path = "";
-				if ( ContainsFileMetadata && !noMetadataParsing ) {
+				if ( ContentBitmask.ContainsFileMetadata && !noMetadataParsing ) {
 					uint pathLocation = infile.ReadUInt32().FromEndian( Endian );
 					if ( pathLocation != 0x00 ) {
 						long tmp = infile.Position;
@@ -206,7 +207,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public static void Pack(
 			string[] files,
 			string outFilename,
-			ushort ContentBitmask,
+			ContentInfo ContentBitmask,
 			Util.Endianness Endian,
 			uint Unknown2,
 			Stream infile,
@@ -221,12 +222,12 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			ushort EntrySize = 0;
 
-			if ( StaticContainsStartPointers( ContentBitmask ) ) { EntrySize += 4; }
-			if ( StaticContainsSectorSizes( ContentBitmask ) ) { EntrySize += 4; }
-			if ( StaticContainsFileSizes( ContentBitmask ) ) { EntrySize += 4; }
-			if ( StaticContainsFilenames( ContentBitmask ) ) { EntrySize += 0x20; }
-			if ( StaticContainsFiletypes( ContentBitmask ) ) { EntrySize += 4; }
-			if ( StaticContainsFileMetadata( ContentBitmask ) ) { EntrySize += 4; }
+			if ( ContentBitmask.ContainsStartPointers ) { EntrySize += 4; }
+			if ( ContentBitmask.ContainsSectorSizes ) { EntrySize += 4; }
+			if ( ContentBitmask.ContainsFileSizes ) { EntrySize += 4; }
+			if ( ContentBitmask.ContainsFilenames ) { EntrySize += 0x20; }
+			if ( ContentBitmask.ContainsFiletypes ) { EntrySize += 4; }
+			if ( ContentBitmask.ContainsFileMetadata ) { EntrySize += 4; }
 
 			bool headerToSeparateFile = false;
 			if ( headerName != null ) { headerToSeparateFile = true; }
@@ -238,17 +239,17 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				f.WriteUInt32( HeaderSize.ToEndian( Endian ) );
 				f.WriteUInt32( 0 ); // start of first file goes here, will be filled in later
 				f.WriteUInt16( EntrySize.ToEndian( Endian ) );
-				f.WriteUInt16( ContentBitmask.ToEndian( Endian ) );
+				f.WriteUInt16( ContentBitmask.Value.ToEndian( Endian ) );
 				f.WriteUInt32( Unknown2.ToEndian( Endian ) );
 				f.WriteUInt32( 0 ); // ArchiveNameLocation, will be filled in later
 
 				// file list
 				for ( int i = 0; i < files.Length; ++i ) {
 					var fi = new System.IO.FileInfo( files[i] );
-					if ( StaticContainsStartPointers( ContentBitmask ) ) { f.WriteUInt32( 0 ); } // properly written later
-					if ( StaticContainsSectorSizes( ContentBitmask ) ) { f.WriteUInt32( 0 ); } // properly written later
-					if ( StaticContainsFileSizes( ContentBitmask ) ) { f.WriteUInt32( ( (uint)( fi.Length ) ).ToEndian( Endian ) ); }
-					if ( StaticContainsFilenames( ContentBitmask ) ) {
+					if ( ContentBitmask.ContainsStartPointers ) { f.WriteUInt32( 0 ); } // properly written later
+					if ( ContentBitmask.ContainsSectorSizes ) { f.WriteUInt32( 0 ); } // properly written later
+					if ( ContentBitmask.ContainsFileSizes ) { f.WriteUInt32( ( (uint)( fi.Length ) ).ToEndian( Endian ) ); }
+					if ( ContentBitmask.ContainsFilenames ) {
 						string filename = fi.Name.Truncate( 0x1F );
 						byte[] fnbytes = Util.ShiftJISEncoding.GetBytes( filename );
 						f.Write( fnbytes, 0, fnbytes.Length );
@@ -256,7 +257,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							f.WriteByte( 0 );
 						}
 					}
-					if ( StaticContainsFiletypes( ContentBitmask ) ) {
+					if ( ContentBitmask.ContainsFiletypes ) {
 						string extension = fi.Extension.TrimStart( '.' ).Truncate( 4 );
 						byte[] extbytes = Util.ShiftJISEncoding.GetBytes( extension );
 						f.Write( extbytes, 0, extbytes.Length );
@@ -264,7 +265,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							f.WriteByte( 0 );
 						}
 					}
-					if ( StaticContainsFileMetadata( ContentBitmask ) ) {
+					if ( ContentBitmask.ContainsFileMetadata ) {
 						if ( infile != null ) {
 							// copy this from original file, very hacky when filenames/filecount/metadata changes
 							infile.Position = f.Position;
@@ -286,7 +287,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				// with all the metadata in a param=data format separated by spaces
 				// maybe including a filepath at the start without a param=
 				// strings should be after the filelist block but before the actual files
-				if ( StaticContainsFileMetadata( ContentBitmask ) && metadata != null ) {
+				if ( ContentBitmask.ContainsFileMetadata && metadata != null ) {
 					for ( int i = 0; i < files.Length; ++i ) {
 						var fi = new System.IO.FileInfo( files[i] );
 						long ptrPos = 0x1C + ( ( i + 1 ) * EntrySize ) - 4;
@@ -348,8 +349,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					for ( int i = 0; i < files.Length; ++i ) {
 						f.Position = 0x1C + ( i * EntrySize );
 						var fi = new System.IO.FileInfo( files[i] );
-						if ( StaticContainsStartPointers( ContentBitmask ) ) { f.WriteUInt32( ptr.ToEndian( Endian ) ); }
-						if ( StaticContainsSectorSizes( ContentBitmask ) ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
+						if ( ContentBitmask.ContainsStartPointers ) { f.WriteUInt32( ptr.ToEndian( Endian ) ); }
+						if ( ContentBitmask.ContainsSectorSizes ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
 						ptr += (uint)fi.Length.Align( (int)Alignment );
 					}
 					f.Position = 0x1C + ( files.Length * EntrySize );

@@ -153,7 +153,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				fps4 = new FPS4();
 			}
 
-			if ( bitmask != null ) { fps4.ContentBitmask = (ushort)bitmask; }
+			if ( bitmask != null ) { fps4.ContentBitmask = new ContentInfo( (ushort)bitmask ); }
 			if ( alignment != null ) { fps4.Alignment = (uint)alignment; }
 			if ( littleEndian ) { fps4.Endian = Util.Endianness.LittleEndian; }
 			if ( comment != null ) { fps4.ArchiveName = comment; }
