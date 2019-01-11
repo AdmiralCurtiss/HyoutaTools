@@ -37,8 +37,6 @@ namespace HyoutaTools.Tales.tlzc {
 		class Compression2 {
 			public byte[] Compress( byte[] buffer ) {
 				MemoryStream result = new MemoryStream();
-				int offset = 0;
-
 				BinaryWriter bw = new BinaryWriter( result );
 
 				bw.Write( new byte[] { 0x54, 0x4C, 0x5A, 0x43 } );
@@ -51,8 +49,15 @@ namespace HyoutaTools.Tales.tlzc {
 				bw.Write( (int)0 );   // unknown, 0
 				bw.Write( (int)0 );   // unknown, 0
 
-				using ( DeflateStream compressionStream = new DeflateStream( result, CompressionLevel.Optimal ) ) {
-					compressionStream.Write( buffer );
+				bool assume_zlib = true;
+				if ( assume_zlib ) {
+					using ( Stream compressionStream = new Ionic.Zlib.ZlibStream( result, Ionic.Zlib.CompressionMode.Compress, Ionic.Zlib.CompressionLevel.BestCompression ) ) {
+						compressionStream.Write( buffer );
+					}
+				} else {
+					using ( DeflateStream compressionStream = new DeflateStream( result, CompressionLevel.Optimal ) ) {
+						compressionStream.Write( buffer );
+					}
 				}
 
 				byte[] retval = result.ToArray();
