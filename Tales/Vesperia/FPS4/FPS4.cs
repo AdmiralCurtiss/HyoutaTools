@@ -54,6 +54,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		public string ArchiveName = null;
 		public uint Alignment;
+		public uint FileLocationMultiplier;
 		public Util.Endianness Endian = Util.Endianness.BigEndian;
 
 		private bool LoadFile( string headerFilename, string contentFilename = null ) {
@@ -99,9 +100,31 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			Alignment = FirstFileStart;
 
+			FileLocationMultiplier = CalculateFileLocationMultiplier();
+
 			Console.WriteLine( "Content Bitmask: 0x" + ContentBitmask.Value.ToString( "X4" ) );
 
 			return true;
+		}
+
+		public uint CalculateFileLocationMultiplier() {
+			if ( ContentBitmask.ContainsStartPointers ) {
+				uint smallestFileLoc = uint.MaxValue;
+				for ( uint i = 0; i < FileCount - 1; ++i ) {
+					infile.Seek( HeaderSize + ( i * EntrySize ), SeekOrigin.Begin );
+					uint fileloc = infile.ReadUInt32().FromEndian( Endian );
+					if ( fileloc > 0 && fileloc != 0xFFFFFFFF ) {
+						smallestFileLoc = Math.Min( fileloc, smallestFileLoc );
+					}
+				}
+				if (smallestFileLoc == uint.MaxValue || smallestFileLoc == FirstFileStart) {
+					return 1;
+				}
+				if (FirstFileStart % smallestFileLoc == 0) {
+					return FirstFileStart / smallestFileLoc;
+				}
+			}
+			return 1;
 		}
 
 		public void Extract( string dirname, bool noMetadataParsing = false ) {
@@ -136,6 +159,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					Console.WriteLine( "Skipped #" + i.ToString( "D4" ) + ", can't find file" );
 					continue;
 				}
+
+				fileloc = fileloc * FileLocationMultiplier;
 
 				string filename = "";
 				if ( ContentBitmask.ContainsFilenames ) {
