@@ -69,8 +69,15 @@ namespace HyoutaTools.Tales.tlzc {
 				int outSize = BitConverter.ToInt32( buffer, 12 );
 				int offset = 0x18;
 
-				using ( DeflateStream decompressionStream = new DeflateStream( new MemoryStream( buffer, offset, inSize - offset ), CompressionMode.Decompress ) ) {
-					Util.CopyStream( decompressionStream, result, outSize );
+				bool assume_zlib = true;
+				if ( assume_zlib ) {
+					using ( Stream decompressionStream = new Ionic.Zlib.ZlibStream( new MemoryStream( buffer, offset, inSize - offset ), Ionic.Zlib.CompressionMode.Decompress ) ) {
+						Util.CopyStream( decompressionStream, result, outSize );
+					}
+				} else {
+					using ( DeflateStream decompressionStream = new DeflateStream( new MemoryStream( buffer, offset, inSize - offset ), CompressionMode.Decompress ) ) {
+						Util.CopyStream( decompressionStream, result, outSize );
+					}
 				}
 
 				return result.ToArray();
