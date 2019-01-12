@@ -11,22 +11,23 @@ namespace HyoutaTools.Tales.Vesperia.T8BTGR {
 		public uint NameStringDicID;
 		public uint DescStringDicID;
 		public uint GradeCost;
-		
+
 		public string RefString;
-		public GradeShopEntry( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public GradeShopEntry( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
 			uint entrySize = stream.ReadUInt32().FromEndian( endian );
+			if ( entrySize != ( 0x18 + bits.NumberOfBytes() ) ) {
+				throw new Exception( "Unexpected GradeShopEntry size." );
+			}
+
 			ID = stream.ReadUInt32().FromEndian( endian );
 			InGameID = stream.ReadUInt32().FromEndian( endian );
-			uint refStringLocation = stream.ReadUInt32().FromEndian( endian );
+			ulong refStringLocation = stream.ReadUInt( bits ).FromEndian( endian );
 
 			NameStringDicID = stream.ReadUInt32().FromEndian( endian );
 			DescStringDicID = stream.ReadUInt32().FromEndian( endian );
 			GradeCost = stream.ReadUInt32().FromEndian( endian );
 
-			long pos = stream.Position;
-			stream.Position = refStringStart + refStringLocation;
-			RefString = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+			RefString = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + refStringLocation ) );
 		}
 
 		public override string ToString() {
