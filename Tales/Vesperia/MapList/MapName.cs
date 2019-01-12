@@ -10,11 +10,11 @@ namespace HyoutaTools.Tales.Vesperia.MapList {
 		public string Name3;
 		public short Unknown6a;
 
-		public MapName( System.IO.Stream stream, uint textstart, Util.Endianness endian ) {
-			uint p1 = stream.ReadUInt32().FromEndian( endian );
-			uint p2 = stream.ReadUInt32().FromEndian( endian );
-			uint p3 = stream.ReadUInt32().FromEndian( endian );
-			uint unknown4 = stream.ReadUInt32().FromEndian( endian );
+		public MapName( System.IO.Stream stream, uint textstart, Util.Endianness endian, Util.Bitness bits ) {
+			ulong p1 = stream.ReadUInt( bits, endian );
+			ulong p2 = stream.ReadUInt( bits, endian );
+			ulong p3 = stream.ReadUInt( bits, endian );
+			ulong unknown4 = stream.ReadUInt( bits, endian ); // either this or unknown5 is bitness affected, probably?
 			Util.Assert( unknown4 == 0 );
 
 			uint unknown5 = stream.ReadUInt32().FromEndian( endian );
@@ -27,9 +27,9 @@ namespace HyoutaTools.Tales.Vesperia.MapList {
 			uint unknown8 = stream.ReadUInt32().FromEndian( endian );
 			Util.Assert( unknown8 == 0 );
 
-			Name1 = stream.ReadAsciiNulltermFromLocationAndReset( textstart + p1 );
-			Name2 = stream.ReadAsciiNulltermFromLocationAndReset( textstart + p2 );
-			Name3 = stream.ReadAsciiNulltermFromLocationAndReset( textstart + p3 );
+			Name1 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( textstart + p1 ) );
+			Name2 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( textstart + p2 ) );
+			Name3 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( textstart + p3 ) );
 		}
 
 		public override string ToString() {

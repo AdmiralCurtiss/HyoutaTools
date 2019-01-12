@@ -7,21 +7,21 @@ namespace HyoutaTools.Tales.Vesperia.MapList {
 	public class MapList {
 		public List<MapName> MapNames;
 
-		public MapList( string filename, Util.Endianness endian ) {
+		public MapList( string filename, Util.Endianness endian, Util.Bitness bits ) {
 			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open, System.IO.FileAccess.Read ) ) {
-				if ( !LoadFile( stream, endian ) ) {
+				if ( !LoadFile( stream, endian, bits ) ) {
 					throw new Exception( "Loading MapList failed!" );
 				}
 			}
 		}
 
-		public MapList( System.IO.Stream stream, Util.Endianness endian ) {
-			if ( !LoadFile( stream, endian ) ) {
+		public MapList( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+			if ( !LoadFile( stream, endian, bits ) ) {
 				throw new Exception( "Loading MapList failed!" );
 			}
 		}
 
-		private bool LoadFile( System.IO.Stream stream, Util.Endianness endian ) {
+		private bool LoadFile( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
 			if ( magic != "TO8MAPL\0" ) {
 				return false;
@@ -37,7 +37,7 @@ namespace HyoutaTools.Tales.Vesperia.MapList {
 
 			stream.Position = liststart;
 			for ( uint i = 0; i < mapcount; ++i ) {
-				MapNames.Add( new MapName( stream, textstart, endian ) );
+				MapNames.Add( new MapName( stream, textstart, endian, bits ) );
 			}
 
 			return true;
