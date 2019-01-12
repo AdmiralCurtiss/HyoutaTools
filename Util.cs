@@ -432,6 +432,16 @@ namespace HyoutaTools {
 
 		public enum Bitness { B8, B16, B32, B64 }
 
+		public static uint NumberOfBytes( this Bitness bits ) {
+			switch ( bits ) {
+				case Bitness.B8: return 1;
+				case Bitness.B16: return 2;
+				case Bitness.B32: return 4;
+				case Bitness.B64: return 8;
+			}
+			throw new Exception( "Number of bits not implemented for bitness " + bits.ToString() );
+		}
+
 		public static ulong ReadUInt64( this Stream s ) {
 			ulong b1 = (ulong)s.ReadByte();
 			ulong b2 = (ulong)s.ReadByte();
