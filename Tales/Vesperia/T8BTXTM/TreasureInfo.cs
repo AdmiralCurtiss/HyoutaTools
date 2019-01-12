@@ -8,7 +8,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 		public uint EntrySize;
 		public uint ID;
 		public uint IDAgain;
-		public uint RefStringLocation;
+		public ulong RefStringLocation;
 
 		// treasure chest types?
 		public uint[] ChestTypes;
@@ -22,11 +22,11 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 
 		public string RefString;
 
-		public TreasureInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public TreasureInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
 			EntrySize = stream.ReadUInt32().FromEndian( endian );
 			ID = stream.ReadUInt32().FromEndian( endian );
 			IDAgain = stream.ReadUInt32().FromEndian( endian );
-			RefStringLocation = stream.ReadUInt32().FromEndian( endian );
+			RefStringLocation = stream.ReadUInt( bits, endian );
 
 			ChestTypes = new uint[4];
 			for ( int i = 0; i < ChestTypes.Length; ++i ) {
@@ -47,10 +47,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 				Chances[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
-			long pos = stream.Position;
-			stream.Position = refStringStart + RefStringLocation;
-			RefString = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+			RefString = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + RefStringLocation ) );
 		}
 
 		public override string ToString() {

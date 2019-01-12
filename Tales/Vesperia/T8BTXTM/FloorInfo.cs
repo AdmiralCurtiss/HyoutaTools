@@ -6,25 +6,28 @@ using System.Text;
 namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 	public class FloorInfo {
 		public uint EntrySize;
-		public uint[] RestData;
 
 		public string RefString1;
 		public string RefString2;
 
-		public FloorInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public FloorInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+			uint atLeastBytes = ( 0x10 + 2 * ( bits.NumberOfBytes() ) );
 			EntrySize = stream.ReadUInt32().FromEndian( endian );
-			RestData = new uint[( EntrySize - 4 ) / 4];
-
-			for ( int i = 0; i < RestData.Length; ++i ) {
-				RestData[i] = stream.ReadUInt32().FromEndian( endian );
+			if ( EntrySize < atLeastBytes ) {
+				throw new Exception( "This file confuses me." );
 			}
 
-			long pos = stream.Position;
-			stream.Position = refStringStart + RestData[2];
-			RefString1 = stream.ReadAsciiNullterm();
-			stream.Position = refStringStart + RestData[4];
-			RefString2 = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+			uint unknown2 = stream.ReadUInt32().FromEndian( endian );
+			uint unknown3 = stream.ReadUInt32().FromEndian( endian );
+			ulong unknown4 = stream.ReadUInt( bits, endian );
+			uint unknown5 = stream.ReadUInt32().FromEndian( endian );
+			ulong unknown6 = stream.ReadUInt( bits, endian );
+			if ( EntrySize > atLeastBytes ) {
+				stream.DiscardBytes( EntrySize - atLeastBytes );
+			}
+
+			RefString1 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + unknown4 ) );
+			RefString2 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + unknown6 ) );
 		}
 
 		public override string ToString() {

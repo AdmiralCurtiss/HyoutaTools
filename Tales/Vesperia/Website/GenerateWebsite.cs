@@ -316,8 +316,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.BattleTextFiles = WebsiteGenerator.LoadBattleText( gameDataPath, site.Locale, site.Version, endian, encoding );
 
 			if ( version == GameVersion.PS3 ) {
-				site.NecropolisFloors = new T8BTXTM.T8BTXTMA( TryGetNecropolisFloors( gameDataPath, site.Locale, site.Version ), endian );
-				site.NecropolisTreasures = new T8BTXTM.T8BTXTMT( TryGetNecropolisTreasures( gameDataPath, site.Locale, site.Version ), endian );
+				site.NecropolisFloors = new T8BTXTM.T8BTXTMA( TryGetNecropolisFloors( gameDataPath, site.Locale, site.Version ), endian, bits );
+				site.NecropolisTreasures = new T8BTXTM.T8BTXTMT( TryGetNecropolisTreasures( gameDataPath, site.Locale, site.Version ), endian, bits );
 				site.NecropolisMaps = new SortedDictionary<string, T8BTXTM.T8BTXTMM>();
 				foreach ( T8BTXTM.FloorInfo floor in site.NecropolisFloors.FloorList ) {
 					if ( !site.NecropolisMaps.ContainsKey( floor.RefString2 ) ) {
