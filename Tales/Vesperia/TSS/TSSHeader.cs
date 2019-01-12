@@ -15,15 +15,15 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public UInt32 TextLength;
 		public UInt32 SectorSize;
 
-		public TSSHeader( Stream Header ) {
+		public TSSHeader( Stream Header, Util.Endianness endian ) {
 			Magic = Header.ReadUInt32().SwapEndian();
-			CodeStart = Header.ReadUInt32().SwapEndian();
-			CodeLength = Header.ReadUInt32().SwapEndian();
-			TextStart = Header.ReadUInt32().SwapEndian();
-			EntryCodeStart = Header.ReadUInt32().SwapEndian();
-			EntryPointerEnd = Header.ReadUInt32().SwapEndian();
-			TextLength = Header.ReadUInt32().SwapEndian();
-			SectorSize = Header.ReadUInt32().SwapEndian();
+			CodeStart = Header.ReadUInt32().FromEndian( endian );
+			CodeLength = Header.ReadUInt32().FromEndian( endian );
+			TextStart = Header.ReadUInt32().FromEndian( endian );
+			EntryCodeStart = Header.ReadUInt32().FromEndian( endian );
+			EntryPointerEnd = Header.ReadUInt32().FromEndian( endian );
+			TextLength = Header.ReadUInt32().FromEndian( endian );
+			SectorSize = Header.ReadUInt32().FromEndian( endian );
 		}
 
 		public byte[] Serialize() {

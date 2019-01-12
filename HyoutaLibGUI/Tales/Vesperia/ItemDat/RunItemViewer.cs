@@ -34,7 +34,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 
 			TSSFile TSS;
 			try {
-				TSS = new TSSFile( args[2], Util.GameTextEncoding.ShiftJIS );
+				TSS = new TSSFile( args[2], Util.GameTextEncoding.ShiftJIS, Util.Endianness.BigEndian );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
 				return -1;

@@ -180,7 +180,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					// patch original PS3 data with fantranslation
 					{
 						// STRING_DIC
-						var stringDicTranslated = new TSS.TSSFile( TryGetStringDic( g.GamePatchPath, g.Locale, g.Version ), g.Encoding );
+						var stringDicTranslated = new TSS.TSSFile( TryGetStringDic( g.GamePatchPath, g.Locale, g.Version ), g.Encoding, g.Endian );
 						Util.Assert( site.StringDic.Entries.Length == stringDicTranslated.Entries.Length );
 						for ( int i = 0; i < site.StringDic.Entries.Length; ++i ) {
 							Util.Assert( site.StringDic.Entries[i].inGameStringId == stringDicTranslated.Entries[i].inGameStringId );
@@ -230,7 +230,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 				if ( g.ImportJpInGameDictLocale != null ) {
 					// copy over Japanese stuff into StringDic from other locale
-					var StringDicUs = new TSS.TSSFile( TryGetStringDic( g.GameDataPath, g.ImportJpInGameDictLocale.Value, g.Version ), g.Encoding );
+					var StringDicUs = new TSS.TSSFile( TryGetStringDic( g.GameDataPath, g.ImportJpInGameDictLocale.Value, g.Version ), g.Encoding, g.Endian );
 					var IdDictUs = StringDicUs.GenerateInGameIdDictionary();
 					foreach ( var kvp in IdDictUs ) {
 						site.InGameIdDict[kvp.Key].StringJpn = kvp.Value.StringJpn;
@@ -251,7 +251,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Language = websiteLanguage;
 
 			site.Items = new ItemDat.ItemDat( TryGetItemDat( gameDataPath, site.Locale, site.Version ), endian );
-			site.StringDic = new TSS.TSSFile( TryGetStringDic( gameDataPath, site.Locale, site.Version ), encoding );
+			site.StringDic = new TSS.TSSFile( TryGetStringDic( gameDataPath, site.Locale, site.Version ), encoding, endian );
 			site.Artes = new T8BTMA.T8BTMA( TryGetArtes( gameDataPath, site.Locale, site.Version ), endian );
 			site.Skills = new T8BTSK.T8BTSK( TryGetSkills( gameDataPath, site.Locale, site.Version ), endian );
 			site.Enemies = new T8BTEMST.T8BTEMST( TryGetEnemies( gameDataPath, site.Locale, site.Version ), endian );

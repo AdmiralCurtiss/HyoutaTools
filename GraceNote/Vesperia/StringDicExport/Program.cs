@@ -28,7 +28,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 			Console.WriteLine( "Opening STRING_DIC.SO..." );
 			TSSFile TSS;
 			try {
-				TSS = new TSSFile( "STRING_DIC.SO", Util.GameTextEncoding.ShiftJIS );
+				TSS = new TSSFile( "STRING_DIC.SO", Util.GameTextEncoding.ShiftJIS, Util.Endianness.BigEndian );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
 				return -1;

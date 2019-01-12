@@ -11,25 +11,25 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public TSSHeader Header;
 		public TSSEntry[] Entries;
 
-		public TSSFile( string filename, Util.GameTextEncoding encoding ) {
+		public TSSFile( string filename, Util.GameTextEncoding encoding, Util.Endianness endian ) {
 			using ( Stream stream = new FileStream( filename, FileMode.Open, FileAccess.Read ) ) {
-				if ( !LoadFile( stream, encoding ) ) {
+				if ( !LoadFile( stream, encoding, endian ) ) {
 					throw new Exception( "Loading TSSFile failed!" );
 				}
 			}
 		}
 
-		public TSSFile( Stream stream, Util.GameTextEncoding encoding ) {
-			if ( !LoadFile( stream, encoding ) ) {
+		public TSSFile( Stream stream, Util.GameTextEncoding encoding, Util.Endianness endian ) {
+			if ( !LoadFile( stream, encoding, endian ) ) {
 				throw new Exception( "Loading TSSFile failed!" );
 			}
 		}
 
-		private bool LoadFile( Stream File, Util.GameTextEncoding encoding ) {
+		private bool LoadFile( Stream File, Util.GameTextEncoding encoding, Util.Endianness endian ) {
 			long pos = File.Position;
 
 			// set header
-			Header = new TSSHeader( File );
+			Header = new TSSHeader( File, endian );
 
 			if ( Header.Magic != 0x54535300 ) {
 				Console.WriteLine( "File is not a TSS file!" );
@@ -43,7 +43,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			List<uint> EntryUIntList = new List<uint>();
 
 			while ( CurrentLocation < EntriesEnd ) {
-				uint Instruction = File.ReadUInt32().SwapEndian();
+				uint Instruction = File.ReadUInt32().FromEndian( endian );
 				EntryUIntList.Add( Instruction );
 				CurrentLocation += 4;
 			}
