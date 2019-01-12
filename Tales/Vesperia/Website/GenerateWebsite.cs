@@ -17,6 +17,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public GameLocale? ImportJpInGameDictLocale = null;
 		public Util.Endianness Endian;
 		public Util.GameTextEncoding Encoding;
+		public Util.Bitness Bits = Util.Bitness.B32;
 		public string WebsiteOutputPath;
 
 		public WebsiteGenerator Generator = null;
@@ -174,7 +175,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		public static void Generate( List<GenerateWebsiteInputOutputData> gens ) {
 			foreach ( var g in gens ) {
-				WebsiteGenerator site = LoadWebsiteGenerator( g.GameDataPath, g.Version, g.VersionPostfix, g.Locale, g.Language, g.Endian, g.Encoding );
+				WebsiteGenerator site = LoadWebsiteGenerator( g.GameDataPath, g.Version, g.VersionPostfix, g.Locale, g.Language, g.Endian, g.Encoding, g.Bits );
 
 				if ( g.GamePatchPath != null ) {
 					// patch original PS3 data with fantranslation
@@ -243,7 +244,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
-		public static WebsiteGenerator LoadWebsiteGenerator( string gameDataPath, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+		public static WebsiteGenerator LoadWebsiteGenerator( string gameDataPath, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits ) {
 			WebsiteGenerator site = new WebsiteGenerator();
 			site.Locale = locale;
 			site.Version = version;
@@ -253,7 +254,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Items = new ItemDat.ItemDat( TryGetItemDat( gameDataPath, site.Locale, site.Version ), endian );
 			site.StringDic = new TSS.TSSFile( TryGetStringDic( gameDataPath, site.Locale, site.Version ), encoding, endian );
 			site.Artes = new T8BTMA.T8BTMA( TryGetArtes( gameDataPath, site.Locale, site.Version ), endian );
-			site.Skills = new T8BTSK.T8BTSK( TryGetSkills( gameDataPath, site.Locale, site.Version ), endian, Util.Bitness.B32 );
+			site.Skills = new T8BTSK.T8BTSK( TryGetSkills( gameDataPath, site.Locale, site.Version ), endian, bits );
 			site.Enemies = new T8BTEMST.T8BTEMST( TryGetEnemies( gameDataPath, site.Locale, site.Version ), endian );
 			site.EnemyGroups = new T8BTEMGP.T8BTEMGP( TryGetEnemyGroups( gameDataPath, site.Locale, site.Version ), endian );
 			site.EncounterGroups = new T8BTEMEG.T8BTEMEG( TryGetEncounterGroups( gameDataPath, site.Locale, site.Version ), endian );
@@ -261,7 +262,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.Locations = new WRLDDAT.WRLDDAT( TryGetLocations( gameDataPath, site.Locale, site.Version ), endian );
 			site.Synopsis = new SYNPDAT.SYNPDAT( TryGetSynopsis( gameDataPath, site.Locale, site.Version ), endian );
 			site.Titles = new FAMEDAT.FAMEDAT( TryGetTitles( gameDataPath, site.Locale, site.Version ), endian );
-			site.GradeShop = new T8BTGR.T8BTGR( TryGetGradeShop( gameDataPath, site.Locale, site.Version ), endian, Util.Bitness.B32 );
+			site.GradeShop = new T8BTGR.T8BTGR( TryGetGradeShop( gameDataPath, site.Locale, site.Version ), endian, bits );
 			site.BattleBook = new BTLBDAT.BTLBDAT( TryGetBattleBook( gameDataPath, site.Locale, site.Version ), endian );
 			site.Strategy = new T8BTTA.T8BTTA( TryGetStrategy( gameDataPath, site.Locale, site.Version ), endian );
 			site.BattleVoicesEnd = new T8BTVA.T8BTVA( TryGetBattleVoicesEnd( gameDataPath, site.Locale, site.Version ), endian );
@@ -273,7 +274,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				site.WorldMapImage = IntegerScaled( new Bitmap( gameDataPath + "UI.svo.ext/WORLDNAVI.TXM.ext/U_WORLDNAVI00.png" ), 5, 4 );
 				site.SearchPoints = new TOVSEAF.TOVSEAF( TryGetSearchPoints( gameDataPath, site.Locale, site.Version ), endian );
 			}
-			site.Skits = new TO8CHLI.TO8CHLI( TryGetSkitMetadata( gameDataPath, site.Locale, site.Version ), endian, Util.Bitness.B32 );
+			site.Skits = new TO8CHLI.TO8CHLI( TryGetSkitMetadata( gameDataPath, site.Locale, site.Version ), endian, bits );
 			site.SkitText = new Dictionary<string, TO8CHTX.ChatFile>();
 			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
 				string name = site.Skits.SkitInfoList[i].RefString;
