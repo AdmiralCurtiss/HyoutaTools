@@ -54,15 +54,20 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 		public uint TPUsage;
 		public uint UsableInMenu;
 
-		public Arte( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public Arte( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
 			uint Size = stream.PeekUInt32().FromEndian( endian );
 			if ( ( Size % 4 ) != 0 ) {
 				throw new Exception( "Arte data size not divisble by 4." );
 			}
 
+			Size -= ( bits.NumberOfBytes() - 4 ) * 2; // just hack this so i don't have to rewrite this mess...
 			Data = new uint[Size / 4];
 			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().FromEndian( endian );
+				if ( i == 3 || i == 4 ) {
+					Data[i] = (uint)stream.ReadUInt( bits, endian ); // just hack this so i don't have to rewrite this mess...
+				} else {
+					Data[i] = stream.ReadUInt32().FromEndian( endian );
+				}
 			}
 
 			ID = Data[1];

@@ -9,7 +9,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			TSS.TSSFile stringDic = new TSS.TSSFile( args[1], Util.GameTextEncoding.ShiftJIS, Util.Endianness.BigEndian );
 			var stringIdDict = stringDic.GenerateInGameIdDictionary();
 
-			T8BTMA arteFile = new T8BTMA( args[0], Util.Endianness.BigEndian );
+			T8BTMA arteFile = new T8BTMA( args[0], Util.Endianness.BigEndian, Util.Bitness.B32 );
 
 			StringBuilder sb = new StringBuilder();
 			foreach ( var a in arteFile.ArteList ) {

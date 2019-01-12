@@ -5,16 +5,16 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 	public class T8BTMA {
-		public T8BTMA( string filename, Util.Endianness endian ) {
+		public T8BTMA( string filename, Util.Endianness endian, Util.Bitness bits ) {
 			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open, System.IO.FileAccess.Read ) ) {
-				if ( !LoadFile( stream, endian ) ) {
+				if ( !LoadFile( stream, endian, bits ) ) {
 					throw new Exception( "Loading T8BTMA failed!" );
 				}
 			}
 		}
 
-		public T8BTMA( System.IO.Stream stream, Util.Endianness endian ) {
-			if ( !LoadFile( stream, endian ) ) {
+		public T8BTMA( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+			if ( !LoadFile( stream, endian, bits ) ) {
 				throw new Exception( "Loading T8BTMA failed!" );
 			}
 		}
@@ -22,7 +22,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 		public List<Arte> ArteList;
 		public Dictionary<uint, Arte> ArteIdDict;
 
-		private bool LoadFile( System.IO.Stream stream, Util.Endianness endian ) {
+		private bool LoadFile( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
 			if ( magic != "T8BTMA  " ) {
 				return false;
@@ -33,7 +33,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 
 			ArteList = new List<Arte>( (int)arteCount );
 			for ( uint i = 0; i < arteCount; ++i ) {
-				Arte a = new Arte( stream, stringStart, endian );
+				Arte a = new Arte( stream, stringStart, endian, bits );
 				ArteList.Add( a );
 			}
 
