@@ -7,6 +7,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 	public class Skill {
 		public uint ID;
 		public uint InGameID;
+		public uint Unknown4;
 		public uint NameStringDicID;
 		public uint DescStringDicID;
 
@@ -25,11 +26,15 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 
 		public string RefString;
 
-		public Skill( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public Skill( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
 			uint entrySize = stream.ReadUInt32().FromEndian( endian );
+			if ( entrySize != ( 0x3C + bits.NumberOfBytes() ) ) {
+				throw new Exception( "Unknown Skill size." );
+			}
+
 			ID = stream.ReadUInt32().FromEndian( endian );
 			InGameID = stream.ReadUInt32().FromEndian( endian );
-			uint refStringLocation = stream.ReadUInt32().FromEndian( endian );
+			ulong refStringLocation = stream.ReadUInt( bits ).FromEndian( endian );
 
 			NameStringDicID = stream.ReadUInt32().FromEndian( endian );
 			DescStringDicID = stream.ReadUInt32().FromEndian( endian );
@@ -47,10 +52,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 			Unknown15 = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
 			Inactive = stream.ReadUInt32().FromEndian( endian );
 
-			long pos = stream.Position;
-			stream.Position = refStringStart + refStringLocation;
-			RefString = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+			RefString = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + refStringLocation ) );
 		}
 
 		public override string ToString() {
