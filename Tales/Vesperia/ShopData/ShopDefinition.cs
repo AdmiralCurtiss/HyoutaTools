@@ -5,8 +5,6 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.ShopData {
 	public class ShopDefinition {
-		uint[] Data;
-
 		public uint InGameID;
 		public uint StringDicID;
 		public uint OnTrigger;
@@ -14,16 +12,14 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 
 		public ShopItem[] ShopItems;
 
-		public ShopDefinition( System.IO.Stream stream, Util.Endianness endian ) {
-			Data = new uint[8];
-			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().FromEndian( endian );
-			}
-
-			InGameID = Data[0];
-			StringDicID = Data[1];
-			OnTrigger = Data[4];
-			ChangeToShop = Data[5];
+		public ShopDefinition( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+			InGameID = stream.ReadUInt32().FromEndian( endian );
+			StringDicID = stream.ReadUInt32().FromEndian( endian );
+			stream.ReadUInt32().FromEndian( endian ); // second instance of string dic id?
+			stream.ReadUInt32().FromEndian( endian ); // always empty?
+			OnTrigger = stream.ReadUInt32().FromEndian( endian );
+			ChangeToShop = stream.ReadUInt32().FromEndian( endian );
+			stream.DiscardBytes( 4 + bits.NumberOfBytes() ); // always empty?
 		}
 
 		public string GetDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, ItemDat.ItemDat items, ShopData shops, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool phpLinks = false ) {

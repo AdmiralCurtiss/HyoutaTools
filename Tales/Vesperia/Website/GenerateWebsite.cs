@@ -295,13 +295,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			switch ( version ) {
 				case GameVersion.X360_US:
-					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1A718, 0x420 / 32, 0x8F8, 0x13780 / 56, endian );
+					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1A718, 0x420 / 32, 0x8F8, 0x13780 / 56, endian, bits );
 					break;
 				case GameVersion.X360_EU:
-					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56, endian );
+					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56, endian, bits );
 					break;
 				case GameVersion.PS3:
-					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1C9BC, 0x460 / 32, 0x980, 0x14CB8 / 56, endian );
+					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1C9BC, 0x460 / 32, 0x980, 0x14CB8 / 56, endian, bits );
 					break;
 				default:
 					throw new Exception( "Don't know shop data location for version " + version );
