@@ -217,7 +217,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						// chat.svo
 						var chatFile = kvp.Value;
 						Stream streamMod = TryGetSkitText( g.GamePatchPath, kvp.Key, g.Locale, g.Version );
-						var chatFileMod = new TO8CHTX.ChatFile( streamMod, g.Endian, g.Encoding );
+						var chatFileMod = new TO8CHTX.ChatFile( streamMod, g.Endian, g.Encoding, g.Bits, 2 );
 						Util.Assert( chatFile.Lines.Length == chatFileMod.Lines.Length );
 						for ( int j = 0; j < chatFile.Lines.Length; ++j ) {
 							chatFile.Lines[j].SENG = chatFileMod.Lines[j].SJPN;
@@ -281,7 +281,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				Stream stream = TryGetSkitText( gameDataPath, name, site.Locale, site.Version );
 				if ( stream != null ) {
 					bool forceShiftJis = name == "VC084" && version == GameVersion.X360_EU && ( locale == GameLocale.UK || locale == GameLocale.US );
-					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( stream, endian, forceShiftJis ? Util.GameTextEncoding.ShiftJIS : encoding );
+					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( stream, endian, forceShiftJis ? Util.GameTextEncoding.ShiftJIS : encoding, bits, 2 );
 					site.SkitText.Add( name, chatFile );
 				} else {
 					Console.WriteLine( "Couldn't find chat file " + name + "! (" + version + ", " + locale + ")" );

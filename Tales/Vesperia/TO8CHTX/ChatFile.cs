@@ -16,39 +16,42 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 	}
 
 	public class ChatFileLine {
-		public Int32 Location;
+		public int Location;
 
-		public UInt32 Name;
-		public UInt32 JPN;
-		public UInt32 ENG;
-		public UInt32 Unknown;
+		public ulong NamePointer;
+		public ulong[] TextPointers = new ulong[2];
+		public uint Unknown;
 
-		public String SName;
-		public String SJPN;
-		public String SENG;
+		public string SName;
+		public string[] STexts = new string[2];
+
+		public ulong JPN { get { return TextPointers[0]; } set { TextPointers[0] = value; } }
+		public ulong ENG { get { return TextPointers[1]; } set { TextPointers[1] = value; } }
+		public string SJPN { get { return STexts[0]; } set { STexts[0] = value; } }
+		public string SENG { get { return STexts[1]; } set { STexts[1] = value; } }
 
 		// this field does not actually exist in the game files, used as a hotfix for matching up original and modified files in GenerateWebsite/Database
-		public String SNameEnglishNotUsedByGame = null;
+		public string SNameEnglishNotUsedByGame = null;
 	}
 
 	public class ChatFile {
 		public ChatFileHeader Header;
 		public ChatFileLine[] Lines;
 
-		public ChatFile( string filename, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+		public ChatFile( string filename, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits, int languageCount ) {
 			using ( Stream stream = new FileStream( filename, FileMode.Open, FileAccess.Read ) ) {
-				LoadFile( stream, endian, encoding );
+				LoadFile( stream, endian, encoding, bits, languageCount );
 			}
 		}
 
-		public ChatFile( Stream file, Util.Endianness endian, Util.GameTextEncoding encoding ) {
-			LoadFile( file, endian, encoding );
+		public ChatFile( Stream file, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits, int languageCount ) {
+			LoadFile( file, endian, encoding, bits, languageCount );
 		}
 
-		private void LoadFile( Stream TO8CHTX, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+		private void LoadFile( Stream TO8CHTX, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits, int languageCount ) {
 			Header = new ChatFileHeader();
 
-			long pos = TO8CHTX.Position;
+			ulong pos = (ulong)TO8CHTX.Position;
 			Header.Identify = TO8CHTX.ReadUInt64().FromEndian( endian );
 			Header.Filesize = TO8CHTX.ReadUInt32().FromEndian( endian );
 			Header.Lines = TO8CHTX.ReadUInt32().FromEndian( endian );
@@ -58,17 +61,22 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 
 			Lines = new ChatFileLine[Header.Lines];
 
+			int entrySize = (int)( 4 + ( languageCount + 1 ) * bits.NumberOfBytes() );
 			for ( int i = 0; i < Header.Lines; i++ ) {
 				Lines[i] = new ChatFileLine();
-				Lines[i].Location = 0x20 + i * 0x10;
-				Lines[i].Name = TO8CHTX.ReadUInt32().FromEndian( endian );
-				Lines[i].JPN = TO8CHTX.ReadUInt32().FromEndian( endian );
-				Lines[i].ENG = TO8CHTX.ReadUInt32().FromEndian( endian );
+				Lines[i].Location = 0x20 + i * entrySize;
+				Lines[i].NamePointer = TO8CHTX.ReadUInt( bits ).FromEndian( endian );
+				Lines[i].TextPointers = new ulong[languageCount];
+				for ( int j = 0; j < languageCount; ++j ) {
+					Lines[i].TextPointers[j] = TO8CHTX.ReadUInt( bits ).FromEndian( endian );
+				}
 				Lines[i].Unknown = TO8CHTX.ReadUInt32().FromEndian( endian );
 
-				Lines[i].SName = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].Name + Header.TextStart, encoding );
-				Lines[i].SJPN = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].JPN + Header.TextStart, encoding );
-				Lines[i].SENG = TO8CHTX.ReadNulltermStringFromLocationAndReset( pos + Lines[i].ENG + Header.TextStart, encoding ).Replace( '@', ' ' );
+				Lines[i].SName = TO8CHTX.ReadNulltermStringFromLocationAndReset( (long)( pos + Lines[i].NamePointer + Header.TextStart ), encoding );
+				Lines[i].STexts = new string[languageCount];
+				for ( int j = 0; j < languageCount; ++j ) {
+					Lines[i].STexts[j] = TO8CHTX.ReadNulltermStringFromLocationAndReset( (long)( pos + Lines[i].TextPointers[j] + Header.TextStart ), encoding ).Replace( '@', ' ' );
+				}
 			}
 		}
 
@@ -118,9 +126,9 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Empty ) ) );
 
 			foreach ( ChatFileLine Line in Lines ) {
-				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Line.Name ) ) );
-				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Line.ENG ) ) );
-				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Line.ENG ) ) );
+				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( (uint)Line.NamePointer ) ) );
+				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( (uint)Line.ENG ) ) );
+				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( (uint)Line.ENG ) ) );
 				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Line.Unknown ) ) );
 			}
 
@@ -139,7 +147,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public void RecalculatePointers() {
 			uint Size = Header.TextStart;
 			for ( int i = 0; i < Lines.Length; i++ ) {
-				Lines[i].Name = Size - Header.TextStart;
+				Lines[i].NamePointer = Size - Header.TextStart;
 				Size += (uint)Util.StringToBytesShiftJis( Lines[i].SName ).Length;
 				Size++;
 				Lines[i].JPN = Size - Header.TextStart;
