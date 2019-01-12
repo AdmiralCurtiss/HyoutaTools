@@ -15,26 +15,16 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 		public uint ID;
 
 		public string RefString;
-		public StrategyOption( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
-			uint entrySize = stream.PeekUInt32().FromEndian( endian );
-
-			Data = new uint[entrySize / 4];
-			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().FromEndian( endian );
-			}
-
-			Category = Data[1];
-			InGameID = Data[2];
-			uint refStringLocation = Data[3];
-			NameStringDicID = Data[4];
-			DescStringDicID = Data[5];
-			Characters = Data[6];
-			ID = Data[7];
-
-			long pos = stream.Position;
-			stream.Position = refStringStart + refStringLocation;
-			RefString = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+		public StrategyOption( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+			uint entrySize = stream.ReadUInt32().FromEndian( endian );
+			Category = stream.ReadUInt32().FromEndian( endian );
+			InGameID = stream.ReadUInt32().FromEndian( endian );
+			ulong refStringLocation = stream.ReadUInt( bits, endian );
+			NameStringDicID = stream.ReadUInt32().FromEndian( endian );
+			DescStringDicID = stream.ReadUInt32().FromEndian( endian );
+			Characters = stream.ReadUInt32().FromEndian( endian );
+			ID = stream.ReadUInt32().FromEndian( endian );
+			RefString = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + refStringLocation ) );
 		}
 
 		public override string ToString() {

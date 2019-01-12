@@ -6,16 +6,16 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 	public class T8BTTA {
-		public T8BTTA( String filename, Util.Endianness endian ) {
+		public T8BTTA( String filename, Util.Endianness endian, Util.Bitness bits ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
-				if ( !LoadFile( stream, endian ) ) {
+				if ( !LoadFile( stream, endian, bits ) ) {
 					throw new Exception( "Loading T8BTTA failed!" );
 				}
 			}
 		}
 
-		public T8BTTA( Stream stream, Util.Endianness endian ) {
-			if ( !LoadFile( stream, endian ) ) {
+		public T8BTTA( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+			if ( !LoadFile( stream, endian, bits ) ) {
 				throw new Exception( "Loading T8BTTA failed!" );
 			}
 		}
@@ -24,7 +24,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 		public List<StrategyOption> StrategyOptionList;
 		public Dictionary<uint, StrategyOption> StrategyOptionDict;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian ) {
+		private bool LoadFile( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
 			uint strategySetCount = stream.ReadUInt32().FromEndian( endian );
 			uint strategyOptionCount = stream.ReadUInt32().FromEndian( endian );
@@ -32,12 +32,12 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 
 			StrategySetList = new List<StrategySet>( (int)strategySetCount );
 			for ( uint i = 0; i < strategySetCount; ++i ) {
-				StrategySet ss = new StrategySet( stream, refStringStart, endian );
+				StrategySet ss = new StrategySet( stream, refStringStart, endian, bits );
 				StrategySetList.Add( ss );
 			}
 			StrategyOptionList = new List<StrategyOption>( (int)strategyOptionCount );
 			for ( uint i = 0; i < strategyOptionCount; ++i ) {
-				StrategyOption so = new StrategyOption( stream, refStringStart, endian );
+				StrategyOption so = new StrategyOption( stream, refStringStart, endian, bits );
 				StrategyOptionList.Add( so );
 			}
 

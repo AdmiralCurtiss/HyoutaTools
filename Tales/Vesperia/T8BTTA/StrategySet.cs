@@ -15,42 +15,32 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 		public float[] UnknownFloats2;
 
 		public string RefString;
-		public StrategySet( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
-			uint[] Data;
-			uint entrySize = stream.PeekUInt32().FromEndian( endian );
-
-			Data = new uint[entrySize / 4];
-			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().FromEndian( endian );
-			}
-
-			ID = Data[1];
-			uint refStringLocation = Data[2];
-			NameStringDicID = Data[3];
-			DescStringDicID = Data[4];
+		public StrategySet( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+			uint entrySize = stream.ReadUInt32().FromEndian( endian );
+			ID = stream.ReadUInt32().FromEndian( endian );
+			ulong refStringLocation = stream.ReadUInt( bits, endian );
+			NameStringDicID = stream.ReadUInt32().FromEndian( endian );
+			DescStringDicID = stream.ReadUInt32().FromEndian( endian );
 
 			StrategyDefaults = new uint[8, 9];
 			for ( uint x = 0; x < 8; ++x ) {
 				for ( uint y = 0; y < 9; ++y ) {
-					StrategyDefaults[x, y] = Data[x * 9 + y + 5];
+					StrategyDefaults[x, y] = stream.ReadUInt32().FromEndian( endian );
 				}
 			}
 
-			ID2 = Data[77];
+			ID2 = stream.ReadUInt32().FromEndian( endian );
 
 			UnknownFloats1 = new float[9];
 			for ( int i = 0; i < UnknownFloats1.Length; ++i ) {
-				UnknownFloats1[i] = Data[78 + i].UIntToFloat();
+				UnknownFloats1[i] = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
 			}
 			UnknownFloats2 = new float[9];
 			for ( int i = 0; i < UnknownFloats2.Length; ++i ) {
-				UnknownFloats2[i] = Data[87 + i].UIntToFloat();
+				UnknownFloats2[i] = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
 			}
 
-			long pos = stream.Position;
-			stream.Position = refStringStart + refStringLocation;
-			RefString = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+			RefString = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + refStringLocation ) );
 		}
 
 		public override string ToString() {
