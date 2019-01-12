@@ -193,7 +193,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						if ( kvp.Value.EntryList.Count > 0 && kvp.Value.Metadata.ScenarioDatIndex >= 0 ) {
 							Stream streamMod = TryGetScenarioFile( g.GamePatchPath, kvp.Value.Metadata.ScenarioDatIndex, g.Locale, g.Version );
 							if ( streamMod != null ) {
-								var scenarioMod = new ScenarioFile.ScenarioFile( streamMod, g.Encoding );
+								var scenarioMod = new ScenarioFile.ScenarioFile( streamMod, g.Encoding, g.Endian, g.Bits );
 								Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
 								for ( int i = 0; i < kvp.Value.EntryList.Count; ++i ) {
 									kvp.Value.EntryList[i].EnName = scenarioMod.EntryList[i].JpName;
@@ -205,7 +205,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					foreach ( var kvp in site.BattleTextFiles ) {
 						// btl.svo/BATTLE_PACK
 						if ( kvp.Value.EntryList.Count > 0 ) {
-							var scenarioMod = WebsiteGenerator.LoadBattleTextFile( g.GamePatchPath, kvp.Key, g.Locale, g.Version, g.Endian, g.Encoding );
+							var scenarioMod = WebsiteGenerator.LoadBattleTextFile( g.GamePatchPath, kvp.Key, g.Locale, g.Version, g.Endian, g.Encoding, g.Bits );
 							Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
 							for ( int i = 0; i < kvp.Value.EntryList.Count; ++i ) {
 								kvp.Value.EntryList[i].EnName = scenarioMod.EntryList[i].JpName;
@@ -313,7 +313,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				site.IconsWithItems = new uint[] { 35, 36, 37, 60, 38, 1, 4, 12, 6, 5, 13, 14, 15, 7, 52, 51,     9, 16, 18, 2, 17, 19, 10,     20, 21, 22, 23, 24, 25, 26, 27, 56, 30, 28, 32, 31, 33, 29, 34, 41, 42, 43, 44, 45, 57, 61, 63, 39, 3, 40 };
 			}
 
-			site.BattleTextFiles = WebsiteGenerator.LoadBattleText( gameDataPath, site.Locale, site.Version, endian, encoding );
+			site.BattleTextFiles = WebsiteGenerator.LoadBattleText( gameDataPath, site.Locale, site.Version, endian, encoding, bits );
 
 			if ( version == GameVersion.PS3 ) {
 				site.NecropolisFloors = new T8BTXTM.T8BTXTMA( TryGetNecropolisFloors( gameDataPath, site.Locale, site.Version ), endian, bits );
@@ -338,9 +338,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 
 			var maplist = new MapList.MapList( TryGetMaplist( gameDataPath, site.Locale, site.Version ), endian, bits );
-			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, maplist, gameDataPath, encoding );
-			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, maplist, gameDataPath, encoding );
-			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, maplist, gameDataPath, encoding );
+			site.ScenarioGroupsStory = site.CreateScenarioIndexGroups( ScenarioType.Story, maplist, gameDataPath, encoding, endian, bits );
+			site.ScenarioGroupsSidequests = site.CreateScenarioIndexGroups( ScenarioType.Sidequests, maplist, gameDataPath, encoding, endian, bits );
+			site.ScenarioGroupsMaps = site.CreateScenarioIndexGroups( ScenarioType.Maps, maplist, gameDataPath, encoding, endian, bits );
 			site.ScenarioAddSkits( site.ScenarioGroupsStory );
 
 			return site;

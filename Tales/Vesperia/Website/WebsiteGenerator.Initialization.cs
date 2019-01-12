@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public partial class WebsiteGenerator {
-		public static SCFOMBIN.SCFOMBIN LoadBattleTextFile( string gameDataPath, string filename, GameLocale locale, GameVersion version, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+		public static SCFOMBIN.SCFOMBIN LoadBattleTextFile( string gameDataPath, string filename, GameLocale locale, GameVersion version, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits ) {
 			if ( !version.Is360() ) {
 				uint ptrDiff = 0x1888;
 				if ( filename.StartsWith( "BTL_XTM" ) ) { ptrDiff = 0x1B4C; }
 				var bin = new SCFOMBIN.SCFOMBIN( GenerateWebsite.TryGetBattleScenarioFile( gameDataPath, filename, locale, version ), endian, encoding, ptrDiff );
 				return bin;
 			} else {
-				var bin = new ScenarioFile.ScenarioFile( GenerateWebsite.TryGetBattleScenarioFile( gameDataPath, filename, locale, version ), encoding );
+				var bin = new ScenarioFile.ScenarioFile( GenerateWebsite.TryGetBattleScenarioFile( gameDataPath, filename, locale, version ), encoding, endian, bits );
 				var btl = new SCFOMBIN.SCFOMBIN();
 				btl.EntryList = bin.EntryList;
 				return btl;
 			}
 		}
 
-		public static Dictionary<string, SCFOMBIN.SCFOMBIN> LoadBattleText( string gameDataPath, GameLocale locale, GameVersion version, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+		public static Dictionary<string, SCFOMBIN.SCFOMBIN> LoadBattleText( string gameDataPath, GameLocale locale, GameVersion version, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits ) {
 			var BattleTextFiles = new Dictionary<string, SCFOMBIN.SCFOMBIN>();
 
 			foreach ( var filename in GenerateWebsite.GetBattleScenarioFileNames( gameDataPath, locale, version ) ) {
 				if ( filename.StartsWith( "BTL_" ) ) {
-					var bin = LoadBattleTextFile( gameDataPath, filename, locale, version, endian, encoding );
+					var bin = LoadBattleTextFile( gameDataPath, filename, locale, version, endian, encoding, bits );
 					BattleTextFiles.Add( filename, bin );
 				}
 			}
@@ -125,7 +125,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return settings;
 		}
 
-		public List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, MapList.MapList maplist, string gameDataPath, Util.GameTextEncoding encoding ) {
+		public List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, MapList.MapList maplist, string gameDataPath, Util.GameTextEncoding encoding, Util.Endianness endian, Util.Bitness bits ) {
 			SortedDictionary<int, ScenarioWebsiteName> websiteNames = ScenarioWebsiteName.GenerateWebsiteNames( this.Version );
 			Util.Assert( maplist.MapNames.Count == websiteNames.Count );
 
@@ -150,7 +150,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				var metadata = new ScenarioData() { ScenarioDatIndex = num, EpisodeId = episodeID, HumanReadableName = d.Value.Description != null ? d.Value.Description : episodeID };
 				System.IO.Stream stream = GenerateWebsite.TryGetScenarioFile( gameDataPath, num, Locale, Version );
 				if ( stream != null ) {
-					var orig = new ScenarioFile.ScenarioFile( stream, encoding );
+					var orig = new ScenarioFile.ScenarioFile( stream, encoding, endian, bits );
 					orig.Metadata = metadata;
 					scenarioFiles.Add( orig );
 					scenes.Add( metadata );
