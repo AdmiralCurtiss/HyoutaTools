@@ -21,8 +21,8 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 		public ushort SkitFlagUnique;
 		public uint CharacterBitmask;
 		public uint Unknown4;
-		// ID of the data structure holding this skit's trigger condition, -1 if none
-		public long SkitConditionForwarderReference;
+		// ID of the data structure holding this skit's trigger condition, 0xFFFFFFFF if none
+		public ulong SkitConditionForwarderReference;
 		public uint SkitConditionRelated;
 
 		public string RefString;
@@ -54,7 +54,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			Category = stream.ReadUInt32().FromEndian( endian );
 			CharacterBitmask = stream.ReadUInt32().FromEndian( endian );
 			Unknown4 = stream.ReadUInt32().FromEndian( endian );
-			SkitConditionForwarderReference = stream.ReadInt( bits, endian );
+			SkitConditionForwarderReference = stream.ReadUInt( bits, endian );
 			SkitConditionRelated = stream.ReadUInt32().FromEndian( endian );
 			SkitFlag = stream.ReadUInt32().FromEndian( endian );
 			ulong refStringPos = stream.ReadUInt( bits, endian );
@@ -128,7 +128,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 				sb.Append( "<br>Expires after event: " );
 				sb.Append( FlagCancel );
 			}
-			if ( SkitConditionForwarderReference == -1 ) {
+			if ( SkitConditionForwarderReference == 0xFFFFFFFF ) {
 				Util.Assert( SkitConditionRelated == 0 );
 				sb.Append( "<br>No special condition." );
 			} else {
