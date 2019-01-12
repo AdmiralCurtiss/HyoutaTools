@@ -21,7 +21,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTGR {
 
 			ID = stream.ReadUInt32().FromEndian( endian );
 			InGameID = stream.ReadUInt32().FromEndian( endian );
-			ulong refStringLocation = stream.ReadUInt( bits ).FromEndian( endian );
+			ulong refStringLocation = stream.ReadUInt( bits, endian );
 
 			NameStringDicID = stream.ReadUInt32().FromEndian( endian );
 			DescStringDicID = stream.ReadUInt32().FromEndian( endian );

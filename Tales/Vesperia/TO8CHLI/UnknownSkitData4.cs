@@ -12,7 +12,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 		public UnknownSkitData4( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			ScenarioBegin = stream.ReadUInt32().FromEndian( endian );
 			ScenarioEnd = stream.ReadUInt32().FromEndian( endian );
-			DataBegin = stream.ReadUInt( bits ).FromEndian( endian );
+			DataBegin = stream.ReadUInt( bits, endian );
 			DataCount = stream.ReadUInt32().FromEndian( endian );
 		}
 

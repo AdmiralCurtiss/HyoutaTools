@@ -8,7 +8,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 		public ulong SkitConditionReference;
 		public uint SkitConditionCount;
 		public SkitConditionForwarder( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
-			SkitConditionReference = stream.ReadUInt( bits ).FromEndian( endian );
+			SkitConditionReference = stream.ReadUInt( bits, endian );
 			SkitConditionCount = stream.ReadUInt32().FromEndian( endian );
 		}
 	}

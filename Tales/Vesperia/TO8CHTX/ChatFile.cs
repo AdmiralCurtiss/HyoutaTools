@@ -65,10 +65,10 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 			for ( int i = 0; i < Header.Lines; i++ ) {
 				Lines[i] = new ChatFileLine();
 				Lines[i].Location = 0x20 + i * entrySize;
-				Lines[i].NamePointer = TO8CHTX.ReadUInt( bits ).FromEndian( endian );
+				Lines[i].NamePointer = TO8CHTX.ReadUInt( bits, endian );
 				Lines[i].TextPointers = new ulong[languageCount];
 				for ( int j = 0; j < languageCount; ++j ) {
-					Lines[i].TextPointers[j] = TO8CHTX.ReadUInt( bits ).FromEndian( endian );
+					Lines[i].TextPointers[j] = TO8CHTX.ReadUInt( bits, endian );
 				}
 				Lines[i].Unknown = TO8CHTX.ReadUInt32().FromEndian( endian );
 

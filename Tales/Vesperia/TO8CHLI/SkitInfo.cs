@@ -54,10 +54,10 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			Category = stream.ReadUInt32().FromEndian( endian );
 			CharacterBitmask = stream.ReadUInt32().FromEndian( endian );
 			Unknown4 = stream.ReadUInt32().FromEndian( endian );
-			SkitConditionForwarderReference = stream.ReadInt( bits ).FromEndian( endian );
+			SkitConditionForwarderReference = stream.ReadInt( bits, endian );
 			SkitConditionRelated = stream.ReadUInt32().FromEndian( endian );
 			SkitFlag = stream.ReadUInt32().FromEndian( endian );
-			ulong refStringPos = stream.ReadUInt( bits ).FromEndian( endian );
+			ulong refStringPos = stream.ReadUInt( bits, endian );
 			StringDicIdName = stream.ReadUInt32().FromEndian( endian );
 			StringDicIdCondition = stream.ReadUInt32().FromEndian( endian );
 

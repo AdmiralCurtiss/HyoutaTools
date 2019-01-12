@@ -638,39 +638,39 @@ namespace HyoutaTools {
 			return data;
 		}
 
-		public static ulong ReadUInt( this Stream s, Bitness bits ) {
+		public static ulong ReadUInt( this Stream s, Bitness bits, Endianness endian ) {
 			switch ( bits ) {
 				case Bitness.B8: return s.ReadUInt8();
-				case Bitness.B16: return s.ReadUInt16();
-				case Bitness.B32: return s.ReadUInt32();
-				case Bitness.B64: return s.ReadUInt64();
+				case Bitness.B16: return s.ReadUInt16().FromEndian( endian );
+				case Bitness.B32: return s.ReadUInt32().FromEndian( endian );
+				case Bitness.B64: return s.ReadUInt64().FromEndian( endian );
 			}
 			throw new Exception( "Reading uint not implemented for bitness " + bits.ToString() );
 		}
-		public static long ReadInt( this Stream s, Bitness bits ) {
+		public static long ReadInt( this Stream s, Bitness bits, Endianness endian ) {
 			switch ( bits ) {
 				case Bitness.B8: return s.ReadInt8();
-				case Bitness.B16: return s.ReadInt16();
-				case Bitness.B32: return s.ReadInt32();
-				case Bitness.B64: return s.ReadInt64();
+				case Bitness.B16: return s.ReadInt16().FromEndian( endian );
+				case Bitness.B32: return s.ReadInt32().FromEndian( endian );
+				case Bitness.B64: return s.ReadInt64().FromEndian( endian );
 			}
 			throw new Exception( "Reading int not implemented for bitness " + bits.ToString() );
 		}
-		public static ulong PeekUInt( this Stream s, Bitness bits ) {
+		public static ulong PeekUInt( this Stream s, Bitness bits, Endianness endian ) {
 			switch ( bits ) {
 				case Bitness.B8: return s.PeekUInt8();
-				case Bitness.B16: return s.PeekUInt16();
-				case Bitness.B32: return s.PeekUInt32();
-				case Bitness.B64: return s.PeekUInt64();
+				case Bitness.B16: return s.PeekUInt16().FromEndian( endian );
+				case Bitness.B32: return s.PeekUInt32().FromEndian( endian );
+				case Bitness.B64: return s.PeekUInt64().FromEndian( endian );
 			}
 			throw new Exception( "Peeking uint not implemented for bitness " + bits.ToString() );
 		}
-		public static long PeekInt( this Stream s, Bitness bits ) {
+		public static long PeekInt( this Stream s, Bitness bits, Endianness endian ) {
 			switch ( bits ) {
 				case Bitness.B8: return s.PeekInt8();
-				case Bitness.B16: return s.PeekInt16();
-				case Bitness.B32: return s.PeekInt32();
-				case Bitness.B64: return s.PeekInt64();
+				case Bitness.B16: return s.PeekInt16().FromEndian( endian );
+				case Bitness.B32: return s.PeekInt32().FromEndian( endian );
+				case Bitness.B64: return s.PeekInt64().FromEndian( endian );
 			}
 			throw new Exception( "Peeking int not implemented for bitness " + bits.ToString() );
 		}
