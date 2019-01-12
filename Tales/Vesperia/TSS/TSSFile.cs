@@ -329,12 +329,12 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			if ( updateDatabaseWithInGameStringId ) {
 				string npcListFilename = @"d:\Dropbox\ToV\PS3\orig\npc.svo.ext\NPC.DAT.dec.ext\0000.dec";
 				if ( System.IO.File.Exists( npcListFilename ) ) {
-					var npcListPS3 = new TOVNPC.TOVNPCL( npcListFilename, Util.Endianness.BigEndian );
+					var npcListPS3 = new TOVNPC.TOVNPCL( npcListFilename, Util.Endianness.BigEndian, Util.Bitness.B32 );
 					Dictionary<string, TOVNPC.TOVNPCT> npcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
 					foreach ( var f in npcListPS3.NpcFileList ) {
 						string filename = @"d:\Dropbox\ToV\PS3\orig\npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
 						if ( System.IO.File.Exists( filename ) ) {
-							var d = new TOVNPC.TOVNPCT( filename, Util.Endianness.BigEndian );
+							var d = new TOVNPC.TOVNPCT( filename, Util.Endianness.BigEndian, Util.Bitness.B32 );
 							npcDefs.Add( f.Map, d );
 						}
 					}

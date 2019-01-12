@@ -326,12 +326,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 				site.TrophyJp = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( gameDataPath + @"TROPHY.TRP.ext\TROP.SFM", gameDataPath + @"TROPHY.TRP.ext\TROPCONF.SFM" );
 
-				site.NpcList = new TOVNPC.TOVNPCL( gameDataPath + @"npc.svo.ext\NPC.DAT.dec.ext\0000.dec", endian );
+				site.NpcList = new TOVNPC.TOVNPCL( gameDataPath + @"npc.svo.ext\NPC.DAT.dec.ext\0000.dec", endian, bits );
 				site.NpcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
 				foreach ( var f in site.NpcList.NpcFileList ) {
 					string filename = gameDataPath + @"npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
 					if ( File.Exists( filename ) ) {
-						var d = new TOVNPC.TOVNPCT( filename, endian );
+						var d = new TOVNPC.TOVNPCT( filename, endian, bits );
 						site.NpcDefs.Add( f.Map, d );
 					}
 				}

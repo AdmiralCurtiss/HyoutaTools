@@ -9,18 +9,14 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 		public string Filename;
 		public uint Filesize;
 
-		public NpcFileReference( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
-			uint refStringLocation1 = stream.ReadUInt32().FromEndian( endian );
-			uint refStringLocation2 = stream.ReadUInt32().FromEndian( endian );
+		public NpcFileReference( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+			ulong refStringLocation1 = stream.ReadUInt( bits, endian );
+			ulong refStringLocation2 = stream.ReadUInt( bits, endian );
 			Filesize = stream.ReadUInt32().FromEndian( endian );
 			stream.ReadUInt32();
 
-			long pos = stream.Position;
-			stream.Position = refStringStart + refStringLocation1;
-			Map = stream.ReadAsciiNullterm();
-			stream.Position = refStringStart + refStringLocation2;
-			Filename = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+			Map = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + refStringLocation1 ) );
+			Filename = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + refStringLocation2 ) );
 		}
 
 		public override string ToString() {

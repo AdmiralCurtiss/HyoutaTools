@@ -21,8 +21,8 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 		public ushort Unknown7b;
 		public uint Unknown8;
 
-		public uint RefStringLocation1;
-		public uint RefStringLocation2;
+		public ulong RefStringLocation1;
+		public ulong RefStringLocation2;
 		public uint Unknown11;
 		public uint Unknown12;
 
@@ -34,7 +34,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 		public string RefString1;
 		public string RefString2;
 
-		public NpcDialogueDefinition( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public NpcDialogueDefinition( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
 			Unknown1 = stream.ReadUInt32().FromEndian( endian );
 			Unknown2 = stream.ReadUInt32().FromEndian( endian );
 			StringDicId = stream.ReadUInt32().FromEndian( endian );
@@ -51,8 +51,8 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 			Unknown7b = stream.ReadUInt16().FromEndian( endian );
 			Unknown8 = stream.ReadUInt32().FromEndian( endian );
 
-			RefStringLocation1 = stream.ReadUInt32().FromEndian( endian );
-			RefStringLocation2 = stream.ReadUInt32().FromEndian( endian );
+			RefStringLocation1 = stream.ReadUInt( bits, endian );
+			RefStringLocation2 = stream.ReadUInt( bits, endian );
 			Unknown11 = stream.ReadUInt32().FromEndian( endian );
 			Unknown12 = stream.ReadUInt32().FromEndian( endian );
 
@@ -61,12 +61,8 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 			Unknown15 = stream.ReadUInt32().FromEndian( endian );
 			Unknown16 = stream.ReadUInt32().FromEndian( endian );
 
-			long pos = stream.Position;
-			stream.Position = refStringStart + RefStringLocation1;
-			RefString1 = stream.ReadAsciiNullterm();
-			stream.Position = refStringStart + RefStringLocation2;
-			RefString2 = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+			RefString1 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + RefStringLocation1 ) );
+			RefString2 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + RefStringLocation2 ) );
 		}
 
 		public override string ToString() {

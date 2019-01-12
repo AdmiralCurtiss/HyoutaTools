@@ -7,23 +7,23 @@ using System.IO;
 namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 	public class TOVNPCT {
 		// NPC dialogue definition files, I think?
-		public TOVNPCT( String filename, Util.Endianness endian ) {
+		public TOVNPCT( String filename, Util.Endianness endian, Util.Bitness bits ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
-				if ( !LoadFile( stream, endian ) ) {
+				if ( !LoadFile( stream, endian, bits ) ) {
 					throw new Exception( "Loading TOVNPCT failed!" );
 				}
 			}
 		}
 
-		public TOVNPCT( Stream stream, Util.Endianness endian ) {
-			if ( !LoadFile( stream, endian ) ) {
+		public TOVNPCT( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+			if ( !LoadFile( stream, endian, bits ) ) {
 				throw new Exception( "Loading TOVNPCT failed!" );
 			}
 		}
 
 		public List<NpcDialogueDefinition> NpcDefList;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian ) {
+		private bool LoadFile( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
 			uint fileSize = stream.ReadUInt32().FromEndian( endian );
 			uint unknownDataStart = stream.ReadUInt32().FromEndian( endian );
@@ -35,7 +35,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 			stream.Position = npcDefStart;
 			NpcDefList = new List<NpcDialogueDefinition>( (int)npcDefCount );
 			for ( uint i = 0; i < npcDefCount; ++i ) {
-				NpcDialogueDefinition n = new NpcDialogueDefinition( stream, refStringStart, endian );
+				NpcDialogueDefinition n = new NpcDialogueDefinition( stream, refStringStart, endian, bits );
 				NpcDefList.Add( n );
 			}
 
