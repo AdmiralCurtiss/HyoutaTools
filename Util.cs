@@ -430,6 +430,8 @@ namespace HyoutaTools {
 			return true;
 		}
 
+		public enum Bitness { B8, B16, B32, B64 }
+
 		public static ulong ReadUInt64( this Stream s ) {
 			ulong b1 = (ulong)s.ReadByte();
 			ulong b2 = (ulong)s.ReadByte();
@@ -624,6 +626,43 @@ namespace HyoutaTools {
 				data[i] = s.ReadUInt32().FromEndian( endianness );
 			}
 			return data;
+		}
+
+		public static ulong ReadUInt( this Stream s, Bitness bits ) {
+			switch ( bits ) {
+				case Bitness.B8: return s.ReadUInt8();
+				case Bitness.B16: return s.ReadUInt16();
+				case Bitness.B32: return s.ReadUInt32();
+				case Bitness.B64: return s.ReadUInt64();
+			}
+			throw new Exception( "Reading uint not implemented for bitness " + bits.ToString() );
+		}
+		public static long ReadInt( this Stream s, Bitness bits ) {
+			switch ( bits ) {
+				case Bitness.B8: return s.ReadInt8();
+				case Bitness.B16: return s.ReadInt16();
+				case Bitness.B32: return s.ReadInt32();
+				case Bitness.B64: return s.ReadInt64();
+			}
+			throw new Exception( "Reading int not implemented for bitness " + bits.ToString() );
+		}
+		public static ulong PeekUInt( this Stream s, Bitness bits ) {
+			switch ( bits ) {
+				case Bitness.B8: return s.PeekUInt8();
+				case Bitness.B16: return s.PeekUInt16();
+				case Bitness.B32: return s.PeekUInt32();
+				case Bitness.B64: return s.PeekUInt64();
+			}
+			throw new Exception( "Peeking uint not implemented for bitness " + bits.ToString() );
+		}
+		public static long PeekInt( this Stream s, Bitness bits ) {
+			switch ( bits ) {
+				case Bitness.B8: return s.PeekInt8();
+				case Bitness.B16: return s.PeekInt16();
+				case Bitness.B32: return s.PeekInt32();
+				case Bitness.B64: return s.PeekInt64();
+			}
+			throw new Exception( "Peeking int not implemented for bitness " + bits.ToString() );
 		}
 
 		public static void ReadAlign( this Stream s, long alignment ) {
