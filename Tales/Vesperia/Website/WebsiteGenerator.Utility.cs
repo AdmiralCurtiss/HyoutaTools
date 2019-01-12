@@ -346,17 +346,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				case GameVersion.X360_US: return "360u";
 				case GameVersion.X360_EU: return "360e";
 				case GameVersion.PS3: return "ps3";
+				case GameVersion.PC: return "pc";
 				default: throw new Exception( "Unknown version " + version );
 			}
 		}
 		public static string GetPhpUrlGameLocale( GameLocale locale ) {
 			switch ( locale ) {
 				case GameLocale.J: return "jp";
-				case GameLocale.US: return "us";
-				case GameLocale.UK: return "uk";
-				case GameLocale.DE: return "de";
-				case GameLocale.FR: return "fr";
-				default: throw new Exception( "Unknown locale " + locale );
+				default: return locale.ToString().ToLowerInvariant();
 			}
 		}
 		public static string GetPhpUrlWebsiteLanguage( WebsiteLanguage lang ) {

@@ -34,7 +34,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static List<uint> GenerateRecordsStringDicList( GameVersion version ) {
-			if ( !( version.Is360() || version == GameVersion.PS3 ) ) {
+			if ( !( version.Is360() || version == GameVersion.PS3 || version == GameVersion.PC ) ) {
 				throw new Exception( "Unknown game version for records menu: " + version );
 			}
 
@@ -55,7 +55,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			records.Add( 33912587u );
 			records.Add( 33912588u );
 
-			if ( version == GameVersion.PS3 ) {
+			if ( version.HasPS3Content() ) {
 				// repede snowboarding 1 - 8, team melee, 30 man per character
 				for ( uint i = 33912733; i < 33912751; ++i ) {
 					records.Add( i );
@@ -77,7 +77,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static List<ConfigMenuSetting> GenerateSettingsStringDicList( GameVersion version ) {
-			if ( !( version.Is360() || version == GameVersion.PS3 ) ) {
+			if ( !( version.Is360() || version == GameVersion.PS3 || version == GameVersion.PC ) ) {
 				throw new Exception( "Unknown game version for settings menu: " + version );
 			}
 
@@ -91,11 +91,16 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				settings.Add( new ConfigMenuSetting( 33912679u, 33912681u, 33912438u, 33912437u ) ); // console-neutral vibration
 			}
 			settings.Add( new ConfigMenuSetting( 33912404u, 33912404u + 46u, 33912432u, 33912433u ) ); // camera controls
-			if ( version == GameVersion.PS3 ) {
+			if ( version.HasPS3Content() && version != GameVersion.PC ) {
 				settings.Add( new ConfigMenuSetting( 33912751u, 33912752u, 33912443u, 33912444u ) ); // stick/dpad controls
 			}
 			settings.Add( new ConfigMenuSetting( 33912405u, 33912405u + 46u, 33912439u ) ); // button config
-			settings.Add( new ConfigMenuSetting( 33912406u, 33912406u + 46u, 33912436u, 33912435u, 33912434u ) ); // sound
+			if ( version != GameVersion.PC ) {
+				settings.Add( new ConfigMenuSetting( 33912406u, 33912406u + 46u, 33912436u, 33912435u, 33912434u ) ); // sound
+			}
+			if ( version == GameVersion.PC ) {
+				settings.Add( new ConfigMenuSetting( 33912779u, 33912780u, 33912439u ) ); // graphics settings
+			}
 			settings.Add( new ConfigMenuSetting( 33912407u, 33912407u + 46u ) ); // bgm
 			settings.Add( new ConfigMenuSetting( 33912408u, 33912408u + 46u ) ); // se
 			settings.Add( new ConfigMenuSetting( 33912409u, 33912409u + 46u ) ); // battle se
@@ -103,7 +108,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			settings.Add( new ConfigMenuSetting( 33912414u, 33912414u + 46u ) ); // event voice
 			settings.Add( new ConfigMenuSetting( 33912422u, 33912422u + 46u ) ); // skit
 			settings.Add( new ConfigMenuSetting( 33912423u, 33912423u + 46u ) ); // movie
-			if ( version == GameVersion.PS3 ) {
+			if ( version.HasPS3Content() ) {
 				settings.Add( new ConfigMenuSetting( 33912656u, 33912657u, 33912658u, 33912659u ) ); // item request type
 			}
 			settings.Add( new ConfigMenuSetting( 33912410u, 33912410u + 46u, 33912438u, 33912437u ) ); // engage cam
@@ -113,10 +118,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			settings.Add( new ConfigMenuSetting( 33912416u, 33912416u + 46u, 33912438u, 33912437u ) ); // skit titles
 			settings.Add( new ConfigMenuSetting( 33912417u, 33912417u + 46u, 33912438u, 33912437u ) ); // skit subs
 			settings.Add( new ConfigMenuSetting( 33912418u, 33912418u + 46u, 33912438u, 33912437u ) ); // movie subs
+			if ( version == GameVersion.PC ) {
+				settings.Add( new ConfigMenuSetting( 33912881u, 33912880u, 33912438u, 33912437u ) ); // post-battle subs
+			}
 			settings.Add( new ConfigMenuSetting( 33912420u, 33912420u + 46u, 33912440u, 33912441u, 33912442u ) ); // font
-			if ( version.Is360() ) {
+			if ( version.Is360() || version == GameVersion.PC ) {
 				settings.Add( new ConfigMenuSetting( 33912419u, 33912419u + 46u, 33912439u ) ); // brightness
-				settings.Add( new ConfigMenuSetting( 33912421u, 33912421u + 46u, 33912439u ) ); // marketplace
+				settings.Add( new ConfigMenuSetting( 33912421u, 33912421u + 46u, 33912439u ) ); // marketplace / steam
 			} else {
 				settings.Add( new ConfigMenuSetting( 33912713u, 33912714u, 33912439u ) ); // brightness & screen pos
 			}

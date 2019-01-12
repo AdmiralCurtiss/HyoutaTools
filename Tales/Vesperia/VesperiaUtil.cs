@@ -6,10 +6,10 @@ using System.Text.RegularExpressions;
 
 namespace HyoutaTools.Tales.Vesperia {
 	public enum GameVersion {
-		X360_US, X360_EU, PS3
+		X360_US, X360_EU, PS3, PC
 	}
 	public enum GameLocale {
-		J, US, UK, DE, FR
+		J, US, UK, DE, FR, BRA, DEU, ENG, ESN, ESP, FRA, ITA, KOR, RUS, ZHT
 	}
 	public enum ControllerButton {
 		Start, Select, RightButton, LowerButton, LeftButton, UpperButton, L1, L2, L3, R1, R2, R3, LeftStick, RightStick, DPad, System
@@ -203,9 +203,10 @@ namespace HyoutaTools.Tales.Vesperia {
 			switch ( version ) {
 				case GameVersion.X360_US:
 				case GameVersion.X360_EU:
+				case GameVersion.PC:
 					switch ( button ) {
-						case ControllerButton.Start: return "Start";
-						case ControllerButton.Select: return "Back";
+						case ControllerButton.Start: return version == GameVersion.PC ? "Menu" : "Start";
+						case ControllerButton.Select: return version == GameVersion.PC ? "View" : "Back";
 						case ControllerButton.RightButton: return "B";
 						case ControllerButton.LowerButton: return "A";
 						case ControllerButton.LeftButton: return "X";

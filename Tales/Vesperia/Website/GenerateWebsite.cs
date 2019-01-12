@@ -39,7 +39,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return TryCreateStreamFromPath( Path.Combine( basepath, "item.svo.ext", "ITEM.DAT" ) );
 		}
 		public static Stream TryGetStringDic( string basepath, GameLocale locale, GameVersion version ) {
-			if ( version == GameVersion.X360_EU ) {
+			if ( version == GameVersion.X360_EU || version == GameVersion.PC ) {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "language", "string_dic_" + locale.ToString().ToLowerInvariant() + ".so" ) );
 			} else {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "string.svo.ext", "STRING_DIC.SO" ) );
@@ -128,14 +128,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return TryCreateStreamFromPath( Path.Combine( basepath, "chat.svo.ext", "CHAT.DAT.dec" ) );
 		}
 		public static Stream TryGetSkitText( string basepath, string skit, GameLocale locale, GameVersion version ) {
-			return TryCreateStreamFromPath( Path.Combine( basepath, "chat.svo.ext", skit + locale.ToString().ToUpperInvariant() + ".DAT.dec.ext", "0003" ) );
+			return TryCreateStreamFromPath( Path.Combine( basepath, "chat.svo.ext", skit + ( version == GameVersion.PC ? "J" : locale.ToString().ToUpperInvariant() ) + ".DAT.dec.ext", "0003" ) );
 		}
 		public static Stream TryGetSearchPoints( string basepath, GameLocale locale, GameVersion version ) {
 			return TryCreateStreamFromPath( Path.Combine( basepath, "npc.svo.ext", "FIELD.DAT.dec.ext", "0005.dec" ) );
 		}
 		public static Stream TryGetScenarioFile( string basepath, int fileIndex, GameLocale locale, GameVersion version ) {
-			if ( version == GameVersion.X360_EU ) {
-				return TryCreateStreamFromPath( Path.Combine( basepath, "language", "scenario_" + locale.ToString().ToLowerInvariant() + ".dat.ext", fileIndex.ToString( "D1" ) + ".d" ) );
+			if ( version == GameVersion.X360_EU || version == GameVersion.PC ) {
+				return TryCreateStreamFromPath( Path.Combine( basepath, "language", "scenario_" + ( version == GameVersion.X360_EU ? locale.ToString().ToLowerInvariant() : locale.ToString().ToUpperInvariant() ) + ".dat.ext", fileIndex.ToString( "D1" ) + ".d" ) );
 			} else {
 				return TryCreateStreamFromPath( Path.Combine( basepath, "scenario.dat.ext", fileIndex.ToString( "D1" ) + ".d" ) );
 			}
@@ -251,7 +251,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.VersionPostfix = versionPostfix;
 			site.Language = websiteLanguage;
 
-			site.Items = new ItemDat.ItemDat( TryGetItemDat( gameDataPath, site.Locale, site.Version ), endian );
+			site.Items = new ItemDat.ItemDat( TryGetItemDat( gameDataPath, site.Locale, site.Version ), Util.Endianness.BigEndian );
 			site.StringDic = new TSS.TSSFile( TryGetStringDic( gameDataPath, site.Locale, site.Version ), encoding, endian );
 			site.Artes = new T8BTMA.T8BTMA( TryGetArtes( gameDataPath, site.Locale, site.Version ), endian );
 			site.Skills = new T8BTSK.T8BTSK( TryGetSkills( gameDataPath, site.Locale, site.Version ), endian, bits );
@@ -265,8 +265,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.GradeShop = new T8BTGR.T8BTGR( TryGetGradeShop( gameDataPath, site.Locale, site.Version ), endian, bits );
 			site.BattleBook = new BTLBDAT.BTLBDAT( TryGetBattleBook( gameDataPath, site.Locale, site.Version ), endian );
 			site.Strategy = new T8BTTA.T8BTTA( TryGetStrategy( gameDataPath, site.Locale, site.Version ), endian );
-			site.BattleVoicesEnd = new T8BTVA.T8BTVA( TryGetBattleVoicesEnd( gameDataPath, site.Locale, site.Version ), endian );
-			if ( site.Version == GameVersion.PS3 ) {
+			if ( site.Version != GameVersion.PC ) { // TODO
+				site.BattleVoicesEnd = new T8BTVA.T8BTVA( TryGetBattleVoicesEnd( gameDataPath, site.Locale, site.Version ), endian );
+			}
+			if ( !site.Version.Is360() ) { // 360 version stores search points differently, haven't decoded that
 				//var txm = new Texture.TXM( gameDataPath + "UI.svo.ext/WORLDNAVI.TXM" );
 				//var txv = new Texture.TXV( txm, gameDataPath + "UI.svo.ext/WORLDNAVI.TXV" );
 				//var tex = txv.textures.Where( x => x.TXM.Name == "U_WORLDNAVI00" ).First();
@@ -281,7 +283,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				Stream stream = TryGetSkitText( gameDataPath, name, site.Locale, site.Version );
 				if ( stream != null ) {
 					bool forceShiftJis = name == "VC084" && version == GameVersion.X360_EU && ( locale == GameLocale.UK || locale == GameLocale.US );
-					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( stream, endian, forceShiftJis ? Util.GameTextEncoding.ShiftJIS : encoding, bits, 2 );
+					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( stream, endian, forceShiftJis ? Util.GameTextEncoding.ShiftJIS : encoding, bits, version == GameVersion.PC ? 11 : 2 );
 					site.SkitText.Add( name, chatFile );
 				} else {
 					Console.WriteLine( "Couldn't find chat file " + name + "! (" + version + ", " + locale + ")" );
@@ -301,6 +303,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1A780, 0x420 / 32, 0x8F8, 0x13780 / 56, endian, bits );
 					break;
 				case GameVersion.PS3:
+				case GameVersion.PC:
 					site.Shops = new ShopData.ShopData( TryGetScenarioFile( gameDataPath, 0, site.Locale, site.Version ), 0x1C9BC, 0x460 / 32, 0x980, 0x14CB8 / 56, endian, bits );
 					break;
 				default:
@@ -315,7 +318,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			site.BattleTextFiles = WebsiteGenerator.LoadBattleText( gameDataPath, site.Locale, site.Version, endian, encoding, bits );
 
-			if ( version == GameVersion.PS3 ) {
+			if ( version.HasPS3Content() ) {
 				site.NecropolisFloors = new T8BTXTM.T8BTXTMA( TryGetNecropolisFloors( gameDataPath, site.Locale, site.Version ), endian, bits );
 				site.NecropolisTreasures = new T8BTXTM.T8BTXTMT( TryGetNecropolisTreasures( gameDataPath, site.Locale, site.Version ), endian, bits );
 				site.NecropolisMaps = new SortedDictionary<string, T8BTXTM.T8BTXTMM>();
@@ -324,8 +327,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						site.NecropolisMaps.Add( floor.RefString2, new T8BTXTM.T8BTXTMM( TryGetNecropolisMap( gameDataPath, floor.RefString2, site.Locale, site.Version ), endian ) );
 					}
 				}
-				site.TrophyJp = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( gameDataPath + @"TROPHY.TRP.ext\TROP.SFM", gameDataPath + @"TROPHY.TRP.ext\TROPCONF.SFM" );
+			}
 
+			if ( version == GameVersion.PS3 ) {
+				site.TrophyJp = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( gameDataPath + @"TROPHY.TRP.ext\TROP.SFM", gameDataPath + @"TROPHY.TRP.ext\TROPCONF.SFM" );
+			}
+
+			if ( version.HasPS3Content() ) {
 				site.NpcList = new TOVNPC.TOVNPCL( gameDataPath + @"npc.svo.ext\NPC.DAT.dec.ext\0000.dec", endian, bits );
 				site.NpcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
 				foreach ( var f in site.NpcList.NpcFileList ) {
