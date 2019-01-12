@@ -5,8 +5,6 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 	public class SkitInfo : IComparable<SkitInfo> {
-		uint[] Data;
-
 		// always 1
 		public ushort Unknown2;
 
@@ -22,8 +20,9 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 		// similar to the skit flag, except gives unique values for the Heliord stuff (and similar in theory?)
 		public ushort SkitFlagUnique;
 		public uint CharacterBitmask;
+		public uint Unknown4;
 		// ID of the data structure holding this skit's trigger condition, -1 if none
-		public int SkitConditionForwarderReference;
+		public long SkitConditionForwarderReference;
 		public uint SkitConditionRelated;
 
 		public string RefString;
@@ -43,34 +42,26 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			}
 		}
 
-		public SkitInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public SkitInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
 			// first 16 bytes are always null in the existing files
 			stream.DiscardBytes( 0x10 );
 
 			SkitFlagUnique = stream.ReadUInt16().FromEndian( endian );
 			Unknown2 = stream.ReadUInt16().FromEndian( endian );
 
-			Data = new uint[11];
-			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().FromEndian( endian );
-			}
+			FlagTrigger = stream.ReadUInt32().FromEndian( endian );
+			FlagCancel = stream.ReadUInt32().FromEndian( endian );
+			Category = stream.ReadUInt32().FromEndian( endian );
+			CharacterBitmask = stream.ReadUInt32().FromEndian( endian );
+			Unknown4 = stream.ReadUInt32().FromEndian( endian );
+			SkitConditionForwarderReference = stream.ReadInt( bits ).FromEndian( endian );
+			SkitConditionRelated = stream.ReadUInt32().FromEndian( endian );
+			SkitFlag = stream.ReadUInt32().FromEndian( endian );
+			ulong refStringPos = stream.ReadUInt( bits ).FromEndian( endian );
+			StringDicIdName = stream.ReadUInt32().FromEndian( endian );
+			StringDicIdCondition = stream.ReadUInt32().FromEndian( endian );
 
-
-			FlagTrigger = Data[0];
-			FlagCancel = Data[1];
-			Category = Data[2];
-			CharacterBitmask = Data[3];
-			SkitConditionForwarderReference = (int)Data[5];
-			SkitConditionRelated = Data[6];
-			SkitFlag = Data[7];
-			uint refStringPos = Data[8];
-			StringDicIdName = Data[9];
-			StringDicIdCondition = Data[10];
-
-			long pos = stream.Position;
-			stream.Position = refStringStart + refStringPos;
-			RefString = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+			RefString = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + refStringPos ) );
 
 			return;
 		}
@@ -142,14 +133,14 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 				sb.Append( "<br>No special condition." );
 			} else {
 				Util.Assert( SkitConditionRelated > 0 );
-				var fw = skits.SkitConditionForwarderList[SkitConditionForwarderReference];
+				var fw = skits.SkitConditionForwarderList[(int)SkitConditionForwarderReference];
 				/*
 				sb.AppendLine();
 				sb.Append( "<br>Trigger Condition #" + SkitConditionForwarderReference );
 				sb.Append( " / Condition: " + fw.SkitConditionReference );
 				sb.Append( " / Count: " + fw.SkitConditionCount );
 				//*/
-				for ( int i = 0; i < fw.SkitConditionCount; ++i ) {
+				for ( uint i = 0; i < fw.SkitConditionCount; ++i ) {
 					var c = skits.SkitConditionList[(int)( fw.SkitConditionReference + i )];
 					sb.Append( "<br>" );
 					c.GetDataAsHtml( sb, version );
@@ -161,7 +152,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, CharacterBitmask );
 												  
 			sb.Append( "<br>" );
-			sb.Append( "~4: 0x" + Data[4].ToString("X8") );
+			sb.Append( "~4: 0x" + Unknown4.ToString("X8") );
 			sb.Append( "<br>" );
 
 			return sb.ToString();

@@ -5,9 +5,9 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 	public class UnknownSkitData5 {
-		public uint Unknown1;
-		public UnknownSkitData5( System.IO.Stream stream, Util.Endianness endian ) {
-			Unknown1 = stream.ReadUInt32().FromEndian( endian );
+		public ulong Unknown1;
+		public UnknownSkitData5( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+			Unknown1 = stream.ReadUInt( bits ).FromEndian( endian );
 		}
 
 		public override string ToString() {
