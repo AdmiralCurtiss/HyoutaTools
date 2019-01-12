@@ -25,7 +25,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			var itemData = new ItemDat.ItemDat( @"c:\Dropbox\ToV\PS3\orig\item.svo.ext\ITEM.DAT", endian );
 			var itemDataSorted = itemData.GetSortedByInGameSorting();
 			var titles = new FAMEDAT.FAMEDAT( @"c:\Dropbox\ToV\PS3\orig\menu.svo.ext\FAMEDATA.BIN", endian );
-			var enemies = new T8BTEMST.T8BTEMST( @"c:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000", endian );
+			var enemies = new T8BTEMST.T8BTEMST( @"c:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000", endian, Util.Bitness.B32 );
 
 			using ( Stream file = new FileStream( args[0], FileMode.Open, FileAccess.Read ) ) {
 				file.DiscardBytes( 0x228 ); // short header, used for save menu on 360 version to display basic info about save

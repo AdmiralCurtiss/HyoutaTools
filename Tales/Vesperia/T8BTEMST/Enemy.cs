@@ -15,9 +15,6 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		Physical = 6
 	}
 	public class Enemy {
-		public uint[] Data;
-		public float[] DataFloat;
-
 		public uint ID;
 		public uint NameStringDicID;
 		public uint InGameID;
@@ -71,110 +68,117 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		public uint FatalTypeDrop;
 		public uint[] DropModifier;
 
-		/*
-		public static int[] KnownValues = new int[] { 32, 46, 47, 48, 49, 50, 55, 58, 3, 4, 68, 69, 56, 51, 52, 53, 54, 14, 1, 20, 21, 22, 0, 2, 5, 57, 7, 8, 9, 10, 11, 12, 13, 15, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 60, 61, 6, 24, 59, 17, 18, 19 };
-		//*/
 		// 14 is always zero
 		// 16 is zero except on the new giganto monsters and spiral draco
 		// 76 is on PS3 only, StringDicID for the dummy description
 
-		public Enemy( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
-			uint entryLength = stream.ReadUInt32().FromEndian( endian );
-			Data = new uint[entryLength / 4];
-			DataFloat = new float[entryLength / 4];
-			Data[0] = entryLength;
+		public Enemy( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+			long pos = stream.Position;
 
-			for ( int i = 1; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().FromEndian( endian );
-				DataFloat[i] = Data[i].UIntToFloat();
-			}
+			uint entryLength = stream.ReadUInt32().FromEndian( endian ); // 0
 
-			ID = Data[1];
-			NameStringDicID = Data[2];
-			InGameID = Data[5];
-			IconID = Data[57];
+			ID = stream.ReadUInt32().FromEndian( endian ); // 1
+			NameStringDicID = stream.ReadUInt32().FromEndian( endian ); // 2
+			ulong ref3 = stream.ReadUInt( bits, endian ); // 3
+			ulong ref4 = stream.ReadUInt( bits, endian ); // 4
+			InGameID = stream.ReadUInt32().FromEndian( endian ); // 5
+			ulong ref6 = stream.ReadUInt( bits, endian ); // 6
+			Level = stream.ReadUInt32().FromEndian( endian ); // 7
+			HP = stream.ReadUInt32().FromEndian( endian ); // 8
+			TP = stream.ReadUInt32().FromEndian( endian ); // 9
+			PATK = stream.ReadUInt32().FromEndian( endian ); // 10
+			PDEF = stream.ReadUInt32().FromEndian( endian ); // 11
+			MATK = stream.ReadUInt32().FromEndian( endian ); // 12
+			MDEF = stream.ReadUInt32().FromEndian( endian ); // 13
+			stream.ReadUInt32().FromEndian( endian ); // 14
+			AGL = stream.ReadUInt32().FromEndian( endian ); // 15
+			stream.ReadUInt32().FromEndian( endian ); // 16
 
-			Level = Data[7];
-			Category = Data[24];
+			FatalBlue = stream.ReadUInt32().FromEndian( endian ).UIntToFloat(); // 17
+			FatalRed = stream.ReadUInt32().FromEndian( endian ).UIntToFloat(); // 18
+			FatalGreen = stream.ReadUInt32().FromEndian( endian ).UIntToFloat(); // 19
+			FatalBlueRelated = stream.ReadUInt32().FromEndian( endian ).UIntToFloat(); // 20
+			FatalRedRelated = stream.ReadUInt32().FromEndian( endian ).UIntToFloat(); // 21
+			FatalGreenRelated = stream.ReadUInt32().FromEndian( endian ).UIntToFloat(); // 22
 
-			HP = Data[8];
-			TP = Data[9];
-			PATK = Data[10];
-			PDEF = Data[11];
-			MATK = Data[12];
-			MDEF = Data[13];
-			AGL = Data[15];
+			stream.ReadUInt32().FromEndian( endian ); // 23
 
-			FatalBlue = DataFloat[17];
-			FatalRed = DataFloat[18];
-			FatalGreen = DataFloat[19];
-			FatalBlueRelated = DataFloat[20];
-			FatalRedRelated = DataFloat[21];
-			FatalGreenRelated = DataFloat[22];
+			Category = stream.ReadUInt32().FromEndian( endian ); // 24
+
+			stream.ReadUInt32().FromEndian( endian ); // 25
 
 			// > 100 weak, < 100 resist, 0 nullify, negative absorb
 			// effectively a damage multiplier in percent
 			Attributes = new int[7];
-			Attributes[0] = (int)Data[26];
-			Attributes[1] = (int)Data[27];
-			Attributes[2] = (int)Data[28];
-			Attributes[3] = (int)Data[29];
-			Attributes[4] = (int)Data[30];
-			Attributes[5] = (int)Data[31];
-			Attributes[6] = (int)Data[32];
+			Attributes[0] = (int)stream.ReadUInt32().FromEndian( endian ); // 26
+			Attributes[1] = (int)stream.ReadUInt32().FromEndian( endian ); // 27
+			Attributes[2] = (int)stream.ReadUInt32().FromEndian( endian ); // 28
+			Attributes[3] = (int)stream.ReadUInt32().FromEndian( endian ); // 29
+			Attributes[4] = (int)stream.ReadUInt32().FromEndian( endian ); // 30
+			Attributes[5] = (int)stream.ReadUInt32().FromEndian( endian ); // 31
+			Attributes[6] = (int)stream.ReadUInt32().FromEndian( endian ); // 32
 
-			EXP = Data[33];
-			Gald = Data[34];
-			LP = Data[35];
+			EXP = stream.ReadUInt32().FromEndian( endian ); // 33
+			Gald = stream.ReadUInt32().FromEndian( endian ); // 34
+			LP = stream.ReadUInt32().FromEndian( endian ); // 35
 
 			DropItems = new uint[4];
-			DropItems[0] = Data[36];
-			DropItems[1] = Data[37];
-			DropItems[2] = Data[38];
-			DropItems[3] = Data[39];
+			DropItems[0] = stream.ReadUInt32().FromEndian( endian ); // 36
+			DropItems[1] = stream.ReadUInt32().FromEndian( endian ); // 37
+			DropItems[2] = stream.ReadUInt32().FromEndian( endian ); // 38
+			DropItems[3] = stream.ReadUInt32().FromEndian( endian ); // 39
 			DropChances = new uint[4];
-			DropChances[0] = Data[40];
-			DropChances[1] = Data[41];
-			DropChances[2] = Data[42];
-			DropChances[3] = Data[43];
-			StealItem = Data[44];
-			StealChance = Data[45];
+			DropChances[0] = stream.ReadUInt32().FromEndian( endian ); // 40
+			DropChances[1] = stream.ReadUInt32().FromEndian( endian ); // 41
+			DropChances[2] = stream.ReadUInt32().FromEndian( endian ); // 42
+			DropChances[3] = stream.ReadUInt32().FromEndian( endian ); // 43
+			StealItem = stream.ReadUInt32().FromEndian( endian ); // 44
+			StealChance = stream.ReadUInt32().FromEndian( endian ); // 45
 
-			FatalTypeExp = Data[46];
-			EXPModifier = Data[47];
-			FatalTypeLP = Data[48];
-			LPModifier = Data[49];
-			FatalTypeDrop = Data[50];
+			FatalTypeExp = stream.ReadUInt32().FromEndian( endian ); // 46
+			EXPModifier = stream.ReadUInt32().FromEndian( endian ); // 47
+			FatalTypeLP = stream.ReadUInt32().FromEndian( endian ); // 48
+			LPModifier = stream.ReadUInt32().FromEndian( endian ); // 49
+			FatalTypeDrop = stream.ReadUInt32().FromEndian( endian ); // 50
 			DropModifier = new uint[4];
-			DropModifier[0] = Data[51];
-			DropModifier[1] = Data[52];
-			DropModifier[2] = Data[53];
-			DropModifier[3] = Data[54];
+			DropModifier[0] = stream.ReadUInt32().FromEndian( endian ); // 51
+			DropModifier[1] = stream.ReadUInt32().FromEndian( endian ); // 52
+			DropModifier[2] = stream.ReadUInt32().FromEndian( endian ); // 53
+			DropModifier[3] = stream.ReadUInt32().FromEndian( endian ); // 54
 
-			KillableWithFS = Data[56];
+			ulong ref55 = stream.ReadUInt( bits, endian ); // 55
 
-			InMonsterBook = Data[59];
-			Location = Data[60];
+			KillableWithFS = stream.ReadUInt32().FromEndian( endian ); // 56
+
+			IconID = stream.ReadUInt32().FromEndian( endian ); // 57
+
+			ulong ref58 = stream.ReadUInt( bits, endian ); // 58
+
+			InMonsterBook = stream.ReadUInt32().FromEndian( endian ); // 59
+			Location = stream.ReadUInt32().FromEndian( endian ); // 60
 			// -1: None shown, 0: Sun, 1: Rain, 2: Snow, 3: Windy, 4: Night, 5: Cloudy
-			LocationWeather = (int)Data[61];
+			LocationWeather = (int)stream.ReadUInt32().FromEndian( endian ); // 61
 
-			SecretMissionDrop = Data[68];
-			SecretMissionDropChance = Data[69];
+			stream.ReadUInt32().FromEndian( endian ); // 62
+			stream.ReadUInt32().FromEndian( endian ); // 63
+			stream.ReadUInt32().FromEndian( endian ); // 64
+			stream.ReadUInt32().FromEndian( endian ); // 65
+			stream.ReadUInt32().FromEndian( endian ); // 66
+			stream.ReadUInt32().FromEndian( endian ); // 67
 
-			long pos = stream.Position;
+			SecretMissionDrop = stream.ReadUInt32().FromEndian( endian ); // 68
+			SecretMissionDropChance = stream.ReadUInt32().FromEndian( endian ); // 69
 
-			stream.Position = refStringStart + Data[6];
-			RefString = stream.ReadAsciiNullterm();
-			stream.Position = refStringStart + Data[3];
-			RefString2 = stream.ReadAsciiNullterm();
-			stream.Position = refStringStart + Data[4];
-			RefString3 = stream.ReadAsciiNullterm();
-			stream.Position = refStringStart + Data[55];
-			RefString4 = stream.ReadAsciiNullterm();
-			stream.Position = refStringStart + Data[58];
-			RefString5 = stream.ReadAsciiNullterm();
+			long bytesleft = ( pos + entryLength ) - stream.Position;
+			if ( bytesleft > 0 ) {
+				stream.DiscardBytes( (uint)bytesleft );
+			}
 
-			stream.Position = pos;
+			RefString = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + ref6 ) );
+			RefString2 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + ref3 ) );
+			RefString3 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + ref4 ) );
+			RefString4 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + ref55 ) );
+			RefString5 = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + ref58 ) );
 		}
 
 		public override string ToString() {
@@ -291,26 +295,6 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			}
 
 			sb.Append( "</td>" );
-
-
-			/*
-			sb.Append( "<td rowspan=\"2\">" );
-			for ( int i = 0; i < 62; ++i ) {
-				if ( !KnownValues.Contains( i ) ) {
-					sb.Append( "~" + i + ": " + Data[i] );
-					sb.Append( " [" + Category + "/" + enemyNameEntry.StringEngOrJpn + "]" );
-					sb.Append( "<br>" );
-				}
-			}
-			for ( int i = 62; i < Data.Length; ++i ) {
-				if ( !KnownValues.Contains( i ) ) {
-					sb.Append( "~" + i + ": " + DataFloat[i] );
-					sb.Append( " [" + Category + "/" + enemyNameEntry.StringEngOrJpn + "]" );
-					sb.Append( "<br>" );
-				}
-			}
-			sb.Append( "</td>" );
-			//*/
 
 			sb.Append( "</tr>" );
 
