@@ -278,11 +278,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 			site.Skits = new TO8CHLI.TO8CHLI( TryGetSkitMetadata( gameDataPath, site.Locale, site.Version ), endian, bits );
 			site.SkitText = new Dictionary<string, TO8CHTX.ChatFile>();
+			ISet<string> forceShiftJisSkits = version == GameVersion.X360_EU && ( locale == GameLocale.UK || locale == GameLocale.US ) ?
+				new HashSet<string> { "VC051", "VC052", "VC053", "VC054", "VC055", "VC056", "VC057", "VC084", "VC719", "VC954" } : new HashSet<string>();
 			for ( int i = 0; i < site.Skits.SkitInfoList.Count; ++i ) {
 				string name = site.Skits.SkitInfoList[i].RefString;
 				Stream stream = TryGetSkitText( gameDataPath, name, site.Locale, site.Version );
 				if ( stream != null ) {
-					bool forceShiftJis = name == "VC084" && version == GameVersion.X360_EU && ( locale == GameLocale.UK || locale == GameLocale.US );
+					bool forceShiftJis = forceShiftJisSkits.Contains( name );
 					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( stream, endian, forceShiftJis ? Util.GameTextEncoding.ShiftJIS : encoding, bits, version == GameVersion.PC ? 11 : 2 );
 					site.SkitText.Add( name, chatFile );
 				} else {
