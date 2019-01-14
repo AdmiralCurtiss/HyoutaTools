@@ -6,16 +6,16 @@ using System.IO;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 	public class T8BTEMGP {
-		public T8BTEMGP( String filename, Util.Endianness endian ) {
+		public T8BTEMGP( String filename, Util.Endianness endian, Util.Bitness bits ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
-				if ( !LoadFile( stream, endian ) ) {
+				if ( !LoadFile( stream, endian, bits ) ) {
 					throw new Exception( "Loading T8BTEMGP failed!" );
 				}
 			}
 		}
 
-		public T8BTEMGP( Stream stream, Util.Endianness endian ) {
-			if ( !LoadFile( stream, endian ) ) {
+		public T8BTEMGP( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+			if ( !LoadFile( stream, endian, bits ) ) {
 				throw new Exception( "Loading T8BTEMGP failed!" );
 			}
 		}
@@ -23,14 +23,14 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 		public List<EnemyGroup> EnemyGroupList;
 		public Dictionary<uint, EnemyGroup> EnemyGroupIdDict;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian ) {
+		private bool LoadFile( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
 			uint enemyGroupCount = stream.ReadUInt32().FromEndian( endian );
 			uint refStringStart = stream.ReadUInt32().FromEndian( endian );
 
 			EnemyGroupList = new List<EnemyGroup>( (int)enemyGroupCount );
 			for ( uint i = 0; i < enemyGroupCount; ++i ) {
-				EnemyGroup s = new EnemyGroup( stream, refStringStart, endian );
+				EnemyGroup s = new EnemyGroup( stream, refStringStart, endian, bits );
 				EnemyGroupList.Add( s );
 			}
 

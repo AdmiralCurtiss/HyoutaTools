@@ -5,8 +5,6 @@ using System.Text;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 	public class EnemyGroup {
-		uint[] Data;
-
 		public uint ID;
 		public uint StringDicID;
 		public uint InGameID;
@@ -19,49 +17,43 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 		public uint SomeFlag;
 		public uint[] UnknownInts;
 
-		public EnemyGroup( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
-			uint entryLength = stream.PeekUInt32().FromEndian( endian );
-			Data = new uint[entryLength / 4];
-			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().FromEndian( endian );
-			}
+		public EnemyGroup( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+			uint entryLength = stream.ReadUInt32().FromEndian( endian );
 
-			ID = Data[1];
-			StringDicID = Data[2];
-			InGameID = Data[3];
+			ID = stream.ReadUInt32().FromEndian( endian );
+			StringDicID = stream.ReadUInt32().FromEndian( endian );
+			InGameID = stream.ReadUInt32().FromEndian( endian );
+			ulong refLoc = stream.ReadUInt( bits, endian );
 
 			EnemyIDs = new int[8];
 			for ( int i = 0; i < EnemyIDs.Length; ++i ) {
-				EnemyIDs[i] = (int)Data[5 + i];
+				EnemyIDs[i] = (int)stream.ReadUInt32().FromEndian( endian );
 			}
 
 			UnknownFloats = new float[8];
 			for ( int i = 0; i < UnknownFloats.Length; ++i ) {
-				UnknownFloats[i] = Data[13 + i].UIntToFloat();
+				UnknownFloats[i] = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
 			}
 			PosX = new float[8];
 			for ( int i = 0; i < PosX.Length; ++i ) {
-				PosX[i] = Data[21 + i].UIntToFloat();
+				PosX[i] = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
 			}
 			PosY = new float[8];
 			for ( int i = 0; i < PosY.Length; ++i ) {
-				PosY[i] = Data[29 + i].UIntToFloat();
+				PosY[i] = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
 			}
 			Scale = new float[8];
 			for ( int i = 0; i < Scale.Length; ++i ) {
-				Scale[i] = Data[37 + i].UIntToFloat();
+				Scale[i] = stream.ReadUInt32().FromEndian( endian ).UIntToFloat();
 			}
 
-			SomeFlag = Data[45];
+			SomeFlag = stream.ReadUInt32().FromEndian( endian );
 			UnknownInts = new uint[8];
 			for ( int i = 0; i < UnknownInts.Length; ++i ) {
-				UnknownInts[i] = Data[46 + i];
+				UnknownInts[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
-			long pos = stream.Position;
-			stream.Position = refStringStart + Data[4];
-			RefString = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+			RefString = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + refLoc ) );
 		}
 
 		public override string ToString() {

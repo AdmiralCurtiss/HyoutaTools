@@ -11,27 +11,19 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMEG {
 		public string RefString;
 		public uint[] EnemyGroupIDs;
 
-		public EncounterGroup( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
-			uint[] Data;
-			uint entryLength = stream.PeekUInt32().FromEndian( endian );
-			Data = new uint[entryLength / 4];
-			for ( int i = 0; i < Data.Length; ++i ) {
-				Data[i] = stream.ReadUInt32().FromEndian( endian );
-			}
-
-			ID = Data[1];
-			StringDicID = Data[2];
-			InGameID = Data[3];
+		public EncounterGroup( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+			uint entryLength = stream.ReadUInt32().FromEndian( endian );
+			ID = stream.ReadUInt32().FromEndian( endian );
+			StringDicID = stream.ReadUInt32().FromEndian( endian );
+			InGameID = stream.ReadUInt32().FromEndian( endian );
+			ulong refLoc = stream.ReadUInt( bits, endian );
 
 			EnemyGroupIDs = new uint[10];
 			for ( int i = 0; i < 10; ++i ) {
-				EnemyGroupIDs[i] = Data[5 + i];
+				EnemyGroupIDs[i] = stream.ReadUInt32().FromEndian( endian );
 			}
 
-			long pos = stream.Position;
-			stream.Position = refStringStart + Data[4];
-			RefString = stream.ReadAsciiNullterm();
-			stream.Position = pos;
+			RefString = stream.ReadAsciiNulltermFromLocationAndReset( (long)( refStringStart + refLoc ) );
 		}
 
 		public override string ToString() {
