@@ -17,27 +17,27 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 				return String.IsNullOrEmpty( StringEng ) ? StringJpn : StringEng;
 			}
 		}
-		public string StringJpnHtml( GameVersion version ) {
+		public string StringJpnHtml( GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			string jp = StringJpn != null ? StringJpn : "";
-			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( jp ), version, true ).ToString(), true, true ).Replace( "\n", "<br />" );
+			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( jp ), inGameIdDict, version, true ).ToString(), inGameIdDict, true, true ).Replace( "\n", "<br />" );
 		}
-		public string StringEngHtml( GameVersion version ) {
+		public string StringEngHtml( GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			string en = StringEng != null ? StringEng : "";
-			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( en ), version, false ).ToString(), false, true ).Replace( "\n", "<br />" );
+			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( en ), inGameIdDict, version, false ).ToString(), inGameIdDict, false, true ).Replace( "\n", "<br />" );
 		}
-		public string StringEngOrJpnHtml( GameVersion version, WebsiteLanguage lang ) {
+		public string StringEngOrJpnHtml( GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameIdDict, WebsiteLanguage lang ) {
 			if ( lang == WebsiteLanguage.Jp || lang == WebsiteLanguage.BothWithJpLinks ) {
-				return String.IsNullOrEmpty( StringJpn ) ? StringEngHtml( version ) : StringJpnHtml( version );
+				return String.IsNullOrEmpty( StringJpn ) ? StringEngHtml( version, inGameIdDict ) : StringJpnHtml( version, inGameIdDict );
 			} else {
-				return String.IsNullOrEmpty( StringEng ) ? StringJpnHtml( version ) : StringEngHtml( version );
+				return String.IsNullOrEmpty( StringEng ) ? StringJpnHtml( version, inGameIdDict ) : StringEngHtml( version, inGameIdDict );
 			}
 		}
 
 		public string GetString( int index ) {
 			if ( index == 0 ) { return StringJpn; } else { return StringEng; }
 		}
-		public string GetStringHtml( int index, GameVersion version ) {
-			if ( index == 0 ) { return StringJpnHtml( version ); } else { return StringEngHtml( version ); }
+		public string GetStringHtml( int index, GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
+			if ( index == 0 ) { return StringJpnHtml( version, inGameIdDict ); } else { return StringEngHtml( version, inGameIdDict ); }
 		}
 
 		public TSSEntry( uint[] entry, String stringJpn, String stringEng, int stringJpnIndex, int stringEngIndex, int inGameStringId ) {

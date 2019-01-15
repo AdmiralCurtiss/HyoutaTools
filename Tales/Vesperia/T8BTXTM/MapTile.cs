@@ -57,7 +57,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 							if ( enemyId < 0 ) { continue; }
 							var enemy = Enemies.EnemyIdDict[(uint)enemyId];
 							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, versionPostfix, locale, websiteLanguage, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
-							sb.Append( "<img src=\"monster-icons/46px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" title=\"" + inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version, websiteLanguage ) + "\" width=\"23\" height=\"23\">" );
+							sb.Append( "<img src=\"monster-icons/46px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" title=\"" + inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "\" width=\"23\" height=\"23\">" );
 							sb.Append( "</a>" );
 						}
 						sb.Append( "<br>" );
@@ -136,7 +136,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 							var item = items.itemIdDict[treasureInfo.Items[i]];
 							sb.Append( "<td>" );
 							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
-							sb.Append( "<img src=\"items/U_" + item.ItemString.TrimNull() + ".png\" height=\"32\" width=\"32\" title=\"" + inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, websiteLanguage ) + "\">" );
+							sb.Append( "<img src=\"items/U_" + item.ItemString.TrimNull() + ".png\" height=\"32\" width=\"32\" title=\"" + inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "\">" );
 							sb.Append( "</a>" );
 							sb.Append( "</td>" );
 						}
@@ -157,7 +157,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 						var item = items.itemIdDict[treasureInfo.Items[0]];
 						sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemDat.ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 						sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
-						sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, websiteLanguage ) + "</a><br>" );
+						sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a><br>" );
 					}
 				}
 

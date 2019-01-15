@@ -36,17 +36,17 @@ namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 			StringBuilder sb = new StringBuilder();
 			sb.Append( "<tr>" );
 			sb.Append( "<td>" );
-			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, 1u << (int)( Character - 1 ) );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, 1u << (int)( Character - 1 ) );
 			sb.Append( "</td>" );
 
 			int colspan = websiteLanguage.WantsBoth() ? 1 : 2;
 			if ( websiteLanguage.WantsJp() ) {
 				sb.Append( "<td colspan=\"" + colspan + "\">" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version ) );
+				sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version, inGameIdDict ) );
 				sb.Append( "</span>" );
 				sb.Append( "<br>" );
-				sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version ) );
+				sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version, inGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 
@@ -55,15 +55,15 @@ namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 				sb.Append( "<span class=\"itemname\">" );
 
 				if ( nameEn.Contains( "\x06(COS)" ) && !nameJp.Contains( "\x06(COS)" ) ) {
-					sb.Append( nameEn.Replace( "\x06(COS)", "" ).ToHtmlEng( version ) );
+					sb.Append( nameEn.Replace( "\x06(COS)", "" ).ToHtmlEng( inGameIdDict, version ) );
 					Console.WriteLine( "Removed EN costume icon for " + nameEn );
 				} else {
-					sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
+					sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version, inGameIdDict ) );
 				}
 
 				sb.Append( "</span>" );
 				sb.Append( "<br>" );
-				sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
+				sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version, inGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 

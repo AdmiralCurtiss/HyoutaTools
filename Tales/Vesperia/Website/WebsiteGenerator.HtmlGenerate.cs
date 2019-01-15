@@ -180,16 +180,16 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					sb.Append( "<td>" ).Append( v.Entries[0].ScenarioStart ).Append( "</td>" );
 					sb.Append( "<td>" ).Append( v.Entries[0].ScenarioEnd ).Append( "</td>" );
 					sb.Append( "<td>" );
-					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, Version, v.Entries[0].CharacterBitmask );
+					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, v.Entries[0].CharacterBitmask );
 					sb.Append( "</td>" );
 					sb.Append( "<td>" );
 					sb.Append( "Kill: " );
-					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, Version, v.Entries[0].KillCharacterBitmask );
+					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, v.Entries[0].KillCharacterBitmask );
 					sb.Append( "</td>" );
 					for ( int j = 0; j < v.CharacterSpecificData.Length; ++j ) {
 						if ( v.CharacterSpecificData[j] != 0 ) {
 							sb.Append( "<td>" );
-							Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, Version, (uint)( 1 << j ) );
+							Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, (uint)( 1 << j ) );
 							sb.Append( v.CharacterSpecificData[j] );
 							sb.Append( "</td>" );
 						}
@@ -226,7 +226,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 								case 15:
 									if ( e.Data[j] != 16 ) {
 										sb.Append( j ).Append( ": " ).Append( e.Data[j] );
-										Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, Version, (uint)( 1 << (int)( j - 7 ) ) );
+										Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, (uint)( 1 << (int)( j - 7 ) ) );
 										sb.Append( "<br>" );
 									}
 									break;
@@ -254,7 +254,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 								case 9999:
 									if ( e.Data[j] != 0 ) {
 										sb.Append( j ).Append( ": " );
-										Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, Version, e.Data[j] );
+										Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, e.Data[j] );
 										sb.Append( "<br>" );
 									}
 									break;
@@ -459,7 +459,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				var jp = kvp.Value;
 				var en = TrophyEn?.Trophies[kvp.Key];
 
-				sb.Append( TrophyNodeToHtml( Version, VersionPostfix, Locale, Language, jp, en ) );
+				sb.Append( TrophyNodeToHtml( Version, InGameIdDict, VersionPostfix, Locale, Language, jp, en ) );
 				sb.Append( "<tr><td colspan=\"3\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );
@@ -544,11 +544,11 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					sb.Append( "</td>" );
 
 					sb.Append( "<td>" );
-					sb.Append( InGameIdDict[d.StringDicId].StringJpnHtml( Version ) );
+					sb.Append( InGameIdDict[d.StringDicId].StringJpnHtml( Version, InGameIdDict ) );
 					sb.Append( "</td>" );
 
 					sb.Append( "<td>" );
-					sb.Append( InGameIdDict[d.StringDicId].StringEngHtml( Version ) );
+					sb.Append( InGameIdDict[d.StringDicId].StringEngHtml( Version, InGameIdDict ) );
 					sb.Append( "</td>" );
 
 					sb.Append( "</tr>" );
@@ -604,13 +604,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						sb.Append( WebsiteGenerator.GetUrl( WebsiteSection.Skit, version, versionPostfix, locale, websiteLanguage, phpLinks, extra: skit.RefString ) );
 						sb.Append( "\">" );
 						if ( websiteLanguage.WantsJp() ) {
-							sb.Append( inGameIdDict[skit.StringDicIdName].GetStringHtml( 0, version ) );
+							sb.Append( inGameIdDict[skit.StringDicIdName].GetStringHtml( 0, version, inGameIdDict ) );
 						}
 						if ( websiteLanguage.WantsBoth() ) {
 							sb.Append( " (" );
 						}
 						if ( websiteLanguage.WantsEn() ) {
-							sb.Append( inGameIdDict[skit.StringDicIdName].GetStringHtml( 1, version ) );
+							sb.Append( inGameIdDict[skit.StringDicIdName].GetStringHtml( 1, version, inGameIdDict ) );
 						}
 						if ( websiteLanguage.WantsBoth() ) {
 							sb.Append( ")" );

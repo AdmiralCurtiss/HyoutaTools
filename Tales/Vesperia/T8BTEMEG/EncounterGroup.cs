@@ -36,7 +36,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMEG {
 			sb.Append( "<tr><td>" );
 			sb.Append( RefString );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[StringDicID].StringEngOrJpnHtml( version, websiteLanguage ) );
+			sb.Append( inGameIdDict[StringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
 			for ( int i = 0; i < EnemyGroupIDs.Length; ++i ) {
 				if ( EnemyGroupIDs[i] == 0xFFFFFFFFu ) { continue; }
 
@@ -44,7 +44,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMEG {
 				foreach ( int enemyId in group.EnemyIDs ) {
 					if ( enemyId < 0 ) { continue; }
 					var enemy = enemies.EnemyIdDict[(uint)enemyId];
-					sb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version, websiteLanguage ) );
+					sb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
 					sb.Append( "<br>" );
 				}
 			}

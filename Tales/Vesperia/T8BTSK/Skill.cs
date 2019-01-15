@@ -72,27 +72,27 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 			if ( websiteLanguage.WantsJp() ) {
 				sb.Append( "<td colspan=\"" + colspan + "\" class=\"skilljpn\">" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version ) );
+				sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version, inGameIdDict ) );
 				sb.Append( "</span>" );
 				sb.Append( "<br>" );
-				sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version ) );
+				sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version, inGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 
 			if ( websiteLanguage.WantsEn() ) {
 				sb.Append( "<td colspan=\"" + colspan + "\">" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
+				sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version, inGameIdDict ) );
 				sb.Append( "</span>" );
 				sb.Append( "<br>" );
-				sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
+				sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version, inGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 
 			sb.Append( "<td class=\"skilldata\">" );
 			if ( LearnableByBitmask > 0 ) {
 				sb.Append( "<span class=\"equip\">" );
-				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, LearnableByBitmask );
+				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, LearnableByBitmask );
 				sb.Append( "</span>" );
 			}
 			sb.Append( EquipCost + "&nbsp;SP<br>" );

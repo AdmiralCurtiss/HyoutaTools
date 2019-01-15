@@ -27,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			var item = items.itemIdDict[ItemID];
 			sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 			sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
-			sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, websiteLanguage ) + "</a>" );
+			sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a>" );
 
 			return sb.ToString();
 		}

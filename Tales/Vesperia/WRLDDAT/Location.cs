@@ -81,7 +81,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 					// references to shops
 					var shop = shops.ShopDictionary[ShopsOrEnemyGroups[i]];
 					shopEnemySb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Shop, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)shop.InGameID ) + "\">" );
-					shopEnemySb.Append( inGameIdDict[shop.StringDicID].StringEngOrJpnHtml( version, websiteLanguage ) );
+					shopEnemySb.Append( inGameIdDict[shop.StringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
 					shopEnemySb.Append( "</a>" );
 				} else {
 					// references to encounter groups
@@ -94,7 +94,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 							var enemy = enemies.EnemyIdDict[id];
 							shopEnemySb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" height=\"22\" width=\"22\"> " );
 							shopEnemySb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, versionPostfix, locale, websiteLanguage, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
-							shopEnemySb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version, websiteLanguage ) + "</a>" );
+							shopEnemySb.Append( inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a>" );
 							shopEnemySb.Append( "<br>" );
 
 							alreadyPrinted.Add( id );
@@ -146,10 +146,10 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				sb.Append( "<td>" );
 				if ( websiteLanguage.WantsJp() ) {
 					sb.Append( "<span class=\"itemname\">" );
-					sb.Append( name.StringJpnHtml( version ) );
+					sb.Append( name.StringJpnHtml( version, inGameIdDict ) );
 					sb.Append( "</span>" );
 					sb.Append( "<br>" );
-					sb.Append( desc.StringJpnHtml( version ) );
+					sb.Append( desc.StringJpnHtml( version, inGameIdDict ) );
 				}
 				if ( websiteLanguage.WantsBoth() ) {
 					sb.Append( "<br>" );
@@ -157,10 +157,10 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 				}
 				if ( websiteLanguage.WantsEn() ) {
 					sb.Append( "<span class=\"itemname\">" );
-					sb.Append( name.StringEngHtml( version ) );
+					sb.Append( name.StringEngHtml( version, inGameIdDict ) );
 					sb.Append( "</span>" );
 					sb.Append( "<br>" );
-					sb.Append( desc.StringEngHtml( version ) );
+					sb.Append( desc.StringEngHtml( version, inGameIdDict ) );
 				}
 				if ( RefStrings[i] == "" ) {
 					sb.Append( "<br>" );

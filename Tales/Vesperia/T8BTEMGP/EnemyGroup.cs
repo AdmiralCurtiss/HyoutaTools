@@ -68,7 +68,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 			sb.Append( "<td>" );
 			sb.Append( RefString );
 			sb.Append( "<br>" );
-			sb.Append( inGameIdDict[StringDicID].StringEngOrJpnHtml( version, websiteLanguage ) );
+			sb.Append( inGameIdDict[StringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
 			sb.Append( "<br>" );
 			sb.Append( "ID: " );
 			sb.Append( ID );
@@ -83,7 +83,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 			for ( int i = 0; i < EnemyIDs.Length; ++i ) {
 				sb.Append( "<td>" );
 				if ( EnemyIDs[i] >= 0 ) {
-					sb.Append( inGameIdDict[enemies.EnemyIdDict[(uint)EnemyIDs[i]].NameStringDicID].StringEngOrJpnHtml( version, websiteLanguage ) );
+					sb.Append( inGameIdDict[enemies.EnemyIdDict[(uint)EnemyIDs[i]].NameStringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
 					sb.Append( "<br>" );
 					sb.Append( "~1: " );
 					sb.Append( UnknownFloats[i] );

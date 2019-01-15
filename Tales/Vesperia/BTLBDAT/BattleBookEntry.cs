@@ -23,18 +23,18 @@ namespace HyoutaTools.Tales.Vesperia.BTLBDAT {
 			if ( websiteLanguage.WantsJp() ) {
 				sb.Append( "<td colspan=\"" + colspan + "\">" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version ) );
+				sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version, inGameIdDict ) );
 				sb.Append( "</span><br>" );
-				sb.Append( inGameIdDict[TextStringDicId].StringJpnHtml( version ) );
+				sb.Append( inGameIdDict[TextStringDicId].StringJpnHtml( version, inGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 
 			if ( websiteLanguage.WantsEn() ) {
 				sb.Append( "<td colspan=\"" + colspan + "\">" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version ) );
+				sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version, inGameIdDict ) );
 				sb.Append( "</span><br>" );
-				sb.Append( inGameIdDict[TextStringDicId].StringEngHtml( version ) );
+				sb.Append( inGameIdDict[TextStringDicId].StringEngHtml( version, inGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 

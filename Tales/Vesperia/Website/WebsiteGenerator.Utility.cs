@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public partial class WebsiteGenerator {
-		public static StringBuilder ReplaceIconsWithHtml( StringBuilder sb, GameVersion Version, bool japaneseStyle ) {
+		public static StringBuilder ReplaceIconsWithHtml( StringBuilder sb, Dictionary<uint, TSS.TSSEntry> inGameIdDict, GameVersion Version, bool japaneseStyle ) {
 			sb.Replace( "\x06(ST1)", "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\">" );
 			sb.Replace( "\x06(ST2)", "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\">" );
 			sb.Replace( "\x06(ST3)", "<img src=\"text-icons/icon-status-03.png\" height=\"16\" width=\"16\">" );
@@ -152,13 +152,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<br>" );
 			for ( uint i = 2; i < 12; ++i ) {
 				sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Item, Version, versionPostfix, locale, websiteLanguage, false, category: (int)i ) + "\">" );
-				sb.Append( "<img src=\"item-categories/cat-" + i.ToString( "D2" ) + ".png\" title=\"" + InGameIdDict[33912572u + i].StringEngOrJpnHtml( Version, websiteLanguage ) + "\" height=\"32\">" );
+				sb.Append( "<img src=\"item-categories/cat-" + i.ToString( "D2" ) + ".png\" title=\"" + InGameIdDict[33912572u + i].StringEngOrJpnHtml( Version, InGameIdDict, websiteLanguage ) + "\" height=\"32\">" );
 				sb.Append( "</a>" );
 			}
 			sb.AppendLine();
 			for ( uint i = 0; i < 9; ++i ) {
 				sb.Append( "<a href=\"" + WebsiteGenerator.GetUrl( WebsiteSection.Enemy, Version, versionPostfix, locale, websiteLanguage, false, category: (int)i ) + "\">" );
-				sb.Append( "<img src=\"monster-categories/cat-" + i + ".png\" title=\"" + InGameIdDict[33912323u + i].StringEngOrJpnHtml( Version, websiteLanguage ) + "\" height=\"32\">" );
+				sb.Append( "<img src=\"monster-categories/cat-" + i + ".png\" title=\"" + InGameIdDict[33912323u + i].StringEngOrJpnHtml( Version, InGameIdDict, websiteLanguage ) + "\" height=\"32\">" );
 				sb.Append( "</a>" );
 			}
 			sb.AppendLine( "<br>" );
@@ -181,7 +181,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<div id=\"footer\">All Tales of Vesperia game content © 2008/2009 Bandai Namco Games Inc.</div>" );
 		}
 
-		public static void AppendCharacterBitfieldAsImageString( StringBuilder sb, GameVersion version, uint equip ) {
+		public static void AppendCharacterBitfieldAsImageString( StringBuilder sb, Dictionary<uint, TSS.TSSEntry> inGameIdDict, GameVersion version, uint equip ) {
 			if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/YUR.png\" height=\"32\" width=\"24\" title=\"Yuri\">" ); }
 			if ( ( equip & 2 ) == 2 ) { sb.Append( "<img src=\"chara-icons/EST.png\" height=\"32\" width=\"24\" title=\"Estelle\">" ); }
 			if ( ( equip & 4 ) == 4 ) { sb.Append( "<img src=\"chara-icons/KAR.png\" height=\"32\" width=\"24\" title=\"Karol\">" ); }
@@ -192,7 +192,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/FRE.png\" height=\"32\" width=\"24\" title=\"Flynn\">" ); }
 			if ( version.HasPS3Content() && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/PAT.png\" height=\"32\" width=\"24\" title=\"Patty\">" ); }
 		}
-		public static void AppendPhysicalAilmentBitfieldAsImageString( StringBuilder sb, uint physAil ) {
+		public static void AppendPhysicalAilmentBitfieldAsImageString( StringBuilder sb, Dictionary<uint, TSS.TSSEntry> inGameIdDict, uint physAil ) {
 			if ( ( physAil & 1 ) == 1 ) { sb.Append( "<img src=\"text-icons/icon-status-13.png\" height=\"16\" width=\"16\" title=\"Death\">" ); }
 			if ( ( physAil & 2 ) == 2 ) { sb.Append( "<img src=\"text-icons/icon-status-01.png\" height=\"16\" width=\"16\" title=\"Poison\">" ); }
 			if ( ( physAil & 4 ) == 4 ) { sb.Append( "<img src=\"text-icons/icon-status-02.png\" height=\"16\" width=\"16\" title=\"Paralysis\">" ); }
@@ -202,7 +202,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			if ( ( physAil & 64 ) == 64 ) { sb.Append( "<img src=\"text-icons/icon-status-06.png\" height=\"16\" width=\"16\" title=\"Sealed Skills\">" ); }
 			if ( ( physAil & 128 ) == 128 ) { sb.Append( "<img src=\"text-icons/icon-status-07.png\" height=\"16\" width=\"16\" title=\"Contamination\">" ); }
 		}
-		public static void AppendFatalStrikeIcon( StringBuilder sb, uint fstype ) {
+		public static void AppendFatalStrikeIcon( StringBuilder sb, Dictionary<uint, TSS.TSSEntry> inGameIdDict, uint fstype ) {
 			switch ( fstype ) {
 				case 0: sb.Append( "<img src=\"menu-icons/artes-13.png\" width=\"16\" height=\"16\">" ); break;
 				case 1: sb.Append( "<img src=\"menu-icons/artes-15.png\" width=\"16\" height=\"16\">" ); break;
@@ -210,7 +210,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				default: sb.Append( "[Unknown Fatal Strike Type]" ); break;
 			}
 		}
-		public static void AppendElementIcon( StringBuilder sb, T8BTEMST.Element element ) {
+		public static void AppendElementIcon( StringBuilder sb, Dictionary<uint, TSS.TSSEntry> inGameIdDict, T8BTEMST.Element element ) {
 			switch ( element ) {
 				case T8BTEMST.Element.Fire: sb.Append( "<img src=\"text-icons/icon-element-02.png\" width=\"16\" height=\"16\">" ); break;
 				case T8BTEMST.Element.Earth: sb.Append( "<img src=\"text-icons/icon-element-04.png\" width=\"16\" height=\"16\">" ); break;
@@ -226,12 +226,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.Append( "<tr>" );
 			if ( websiteLanguage.WantsJp() ) {
 				sb.Append( "<td>" );
-				sb.Append( InGameIdDict[id].StringJpnHtml( version ) );
+				sb.Append( InGameIdDict[id].StringJpnHtml( version, InGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 			if ( websiteLanguage.WantsEn() ) {
 				sb.Append( "<td>" );
-				sb.Append( InGameIdDict[id].StringEngHtml( version ) );
+				sb.Append( InGameIdDict[id].StringEngHtml( version, InGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 			sb.Append( "</tr>" );
@@ -245,7 +245,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( "<tr>" );
 				sb.Append( "<td>" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( InGameIdDict[idName].GetStringHtml( i, Version ) );
+				sb.Append( InGameIdDict[idName].GetStringHtml( i, Version, InGameIdDict ) );
 				sb.Append( "</span>" );
 				sb.Append( "</td>" );
 
@@ -265,7 +265,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						} else {
 							sb.Append( "<td>" );
 						}
-						sb.Append( InGameIdDict[option1].GetStringHtml( i, Version ) );
+						sb.Append( InGameIdDict[option1].GetStringHtml( i, Version, InGameIdDict ) );
 						sb.Append( "</td>" );
 					}
 					if ( option2 > 0 ) {
@@ -274,7 +274,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						} else {
 							sb.Append( "<td>" );
 						}
-						sb.Append( InGameIdDict[option2].GetStringHtml( i, Version ) );
+						sb.Append( InGameIdDict[option2].GetStringHtml( i, Version, InGameIdDict ) );
 						sb.Append( "</td>" );
 					}
 					if ( option3 > 0 ) {
@@ -283,12 +283,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						} else {
 							sb.Append( "<td>" );
 						}
-						sb.Append( InGameIdDict[option3].GetStringHtml( i, Version ) );
+						sb.Append( InGameIdDict[option3].GetStringHtml( i, Version, InGameIdDict ) );
 						sb.Append( "</td>" );
 					}
 					if ( option4 > 0 ) {
 						sb.Append( "<td>" );
-						sb.Append( InGameIdDict[option4].GetStringHtml( i, Version ) );
+						sb.Append( InGameIdDict[option4].GetStringHtml( i, Version, InGameIdDict ) );
 						sb.Append( "</td>" );
 					}
 				}
@@ -296,13 +296,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 				sb.Append( "<tr>" );
 				sb.Append( "<td colspan=\"5\">" );
-				sb.Append( InGameIdDict[idDesc].GetStringHtml( i, Version ) );
+				sb.Append( InGameIdDict[idDesc].GetStringHtml( i, Version, InGameIdDict ) );
 				sb.Append( "</td>" );
 				sb.Append( "</tr>" );
 			}
 		}
 
-		public static string TrophyNodeToHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, HyoutaTools.Trophy.TrophyNode jp, HyoutaTools.Trophy.TrophyNode en ) {
+		public static string TrophyNodeToHtml( GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameIdDict, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, HyoutaTools.Trophy.TrophyNode jp, HyoutaTools.Trophy.TrophyNode en ) {
 			var sb = new StringBuilder();
 			bool wantJp = websiteLanguage.WantsJp() && jp != null;
 			bool wantEn = websiteLanguage.WantsEn() && en != null;
@@ -322,7 +322,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( jp.Name );
 				sb.Append( "</span>" );
 				sb.Append( "<br/>" );
-				sb.Append( jp.Detail.ToHtmlJpn( version ) );
+				sb.Append( jp.Detail.ToHtmlJpn( inGameIdDict, version ) );
 				sb.Append( "</td>" );
 			}
 
@@ -332,7 +332,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				sb.Append( en.Name );
 				sb.Append( "</span>" );
 				sb.Append( "<br/>" );
-				sb.Append( en.Detail.ToHtmlEng( version ) );
+				sb.Append( en.Detail.ToHtmlEng( inGameIdDict, version ) );
 				sb.Append( "</td>" );
 			}
 

@@ -162,12 +162,12 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			sb.Append( "<td style=\"text-align: right;\">" );
 			//sb.Append( RefString + "<br>" );
 			if ( Character > 0 && Character <= 9 ) {
-				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, 1u << (int)( Character - 1 ) );
+				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, 1u << (int)( Character - 1 ) );
 			}
 			if ( Character > 9 ) {
 				var enemy = enemies.EnemyIdDict[Character];
 				sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, versionPostfix, locale, websiteLanguage, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
-				sb.Append( "<img src=\"monster-icons/48px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" width=\"32\" height=\"32\" title=\"" + inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version, websiteLanguage ) + "\">" );
+				sb.Append( "<img src=\"monster-icons/48px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" width=\"32\" height=\"32\" title=\"" + inGameIdDict[enemy.NameStringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "\">" );
 				sb.Append( "</a>" );
 			}
 			sb.Append( "<img src=\"menu-icons/artes-" );
@@ -192,15 +192,15 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			if ( websiteLanguage.WantsJp() ) {
 				sb.Append( "<td colspan=\"" + colspan + "\">" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version ) + "</span><br>" );
-				sb.Append( inGameIdDict[DescStringDicId].StringJpnHtml( version ) );
+				sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version, inGameIdDict ) + "</span><br>" );
+				sb.Append( inGameIdDict[DescStringDicId].StringJpnHtml( version, inGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 			if ( websiteLanguage.WantsEn() ) {
 				sb.Append( "<td colspan=\"" + colspan + "\">" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version ) + "</span><br>" );
-				sb.Append( inGameIdDict[DescStringDicId].StringEngHtml( version ) );
+				sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version, inGameIdDict ) + "</span><br>" );
+				sb.Append( inGameIdDict[DescStringDicId].StringEngHtml( version, inGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 			sb.Append( "<td>" );
@@ -237,7 +237,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 							var otherArte = arteIdDict[LearnRequirementsOtherArtesId[i]];
 							if ( otherArte.ID != this.ID ) {
 								sb.Append( "<img src=\"menu-icons/artes-" + otherArte.GetIconNumber() + ".png\" width=\"16\" height=\"16\">" );
-								sb.Append( "<a href=\"#arte" + otherArte.InGameID + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpnHtml( version, websiteLanguage ) );
+								sb.Append( "<a href=\"#arte" + otherArte.InGameID + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
 								sb.Append( "</a>, " );
 							} else {
 								sb.Append( "Learn with " );
@@ -263,12 +263,12 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 							var otherArte = arteIdDict[AlteredArteRequirementId[i]];
 							sb.Append( "Alters from " );
 							sb.Append( "<img src=\"menu-icons/artes-" + otherArte.GetIconNumber() + ".png\" width=\"16\" height=\"16\">" );
-							sb.Append( "<a href=\"#arte" + otherArte.InGameID + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpnHtml( version, websiteLanguage ) + "</a>" );
+							sb.Append( "<a href=\"#arte" + otherArte.InGameID + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a>" );
 							break;
 						case 3: // skill
 							var skill = skills.SkillIdDict[AlteredArteRequirementId[i]];
 							sb.Append( "<img src=\"skill-icons/category-" + skill.Category + ".png\" width=\"16\" height=\"16\">" );
-							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Skill, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)skill.InGameID ) + "\">" + inGameIdDict[skill.NameStringDicID].StringEngOrJpnHtml( version, websiteLanguage ) + "</a>" );
+							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Skill, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)skill.InGameID ) + "\">" + inGameIdDict[skill.NameStringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a>" );
 							break;
 						default:
 							sb.Append( "##Unknown Altered Type: " + AlteredArteRequirementType[i] + "<br>" );

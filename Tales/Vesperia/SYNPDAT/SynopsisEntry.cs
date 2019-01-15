@@ -38,14 +38,14 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 
 			var synopsisEntry = inGameIdDict[TextStringDicId];
 			string jp = synopsisEntry.StringJpn != null ? synopsisEntry.StringJpn : "";
-			jp = Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( jp ), version, true ).ToString();
+			jp = Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( jp ), inGameIdDict, version, true ).ToString();
 			string en = synopsisEntry.StringEng != null ? synopsisEntry.StringEng : "";
-			en = Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( en ), version, false ).ToString();
+			en = Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( en ), inGameIdDict, version, false ).ToString();
 
 			string[] textJpn = jp.Split( '\f' );
 			string[] textEng = en.Split( '\f' );
-			for ( int i = 0; i < textJpn.Length; ++i ) { textJpn[i] = VesperiaUtil.RemoveTags( textJpn[i], true, true ).Replace( "\n", "<br />" ); }
-			for ( int i = 0; i < textEng.Length; ++i ) { textEng[i] = VesperiaUtil.RemoveTags( textEng[i], false, true ).Replace( "\n", "<br />" ); }
+			for ( int i = 0; i < textJpn.Length; ++i ) { textJpn[i] = VesperiaUtil.RemoveTags( textJpn[i], inGameIdDict, true, true ).Replace( "\n", "<br />" ); }
+			for ( int i = 0; i < textEng.Length; ++i ) { textEng[i] = VesperiaUtil.RemoveTags( textEng[i], inGameIdDict, false, true ).Replace( "\n", "<br />" ); }
 
 			//sb.Append( "Unlocks between " + StoryIdMin + " and " + StoryIdMax + "<br>" );
 
@@ -55,7 +55,7 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 				sb.Append( "<img src=\"synopsis/U_" + RefString1 + ".png\"><br><br>" );
 			}
 			if ( websiteLanguage.WantsJp() ) {
-				sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version ) + "</td></tr><tr>" );
+				sb.Append( inGameIdDict[NameStringDicId].StringJpnHtml( version, inGameIdDict ) + "</td></tr><tr>" );
 				foreach ( string s in textJpn ) {
 					sb.Append( "<td>" + s + "</td>" );
 				}
@@ -69,7 +69,7 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 			if ( websiteLanguage.WantsEn() ) {
 				sb.Append( "<table class=\"synopsis\">" );
 				sb.Append( "<tr id=\"synopsis" + ID + "\"><td class=\"synopsistitle\" colspan=\"" + textEng.Length + "\">" );
-				sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version ) + "</td></tr><tr>" );
+				sb.Append( inGameIdDict[NameStringDicId].StringEngHtml( version, inGameIdDict ) + "</td></tr><tr>" );
 				foreach ( string s in textEng ) {
 					sb.Append( "<td>" + s + "</td>" );
 				}

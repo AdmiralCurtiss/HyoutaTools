@@ -23,6 +23,8 @@ namespace HyoutaLibGUI.Tales.Vesperia.Font.Viewer {
 		public string Filepath;
 		public string FontPngDir;
 
+		public Dictionary<uint, HyoutaTools.Tales.Vesperia.TSS.TSSEntry> InGameIdDict;
+
 		public FontViewer() {
 			InitializeComponent();
 			this.FontPngDir = @"FontTex";
@@ -58,7 +60,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.Font.Viewer {
 			}
 
 			String Text = sb.ToString();
-			Text = VesperiaUtil.RemoveTags( Text );
+			Text = VesperiaUtil.RemoveTags( Text, InGameIdDict );
 
 			if ( BoxByBox ) {
 				List<string> lst = new List<string>();
@@ -155,7 +157,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.Font.Viewer {
 		}
 
 		public void UpdateText( string Text ) {
-			Text = VesperiaUtil.RemoveTags( Text );
+			Text = VesperiaUtil.RemoveTags( Text, InGameIdDict );
 			if ( LastText == Text ) return;
 			LastText = Text;
 

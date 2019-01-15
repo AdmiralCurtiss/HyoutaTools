@@ -39,7 +39,7 @@ namespace HyoutaTools.Tales.Vesperia {
 			return lang.WantsJp() && lang.WantsEn();
 		}
 
-		public static String RemoveTags( String s, bool useJapaneseNames = false, bool outputAsHtml = false, bool removeKanjiWithFurigana = false ) {
+		public static string RemoveTags( string s, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool useJapaneseNames = false, bool outputAsHtml = false, bool removeKanjiWithFurigana = false ) {
 			s = s.Replace( "''", "'" );
 			if ( useJapaneseNames ) {
 				s = s.Replace( "\x04(YUR)", "ユーリ" );
@@ -192,11 +192,11 @@ namespace HyoutaTools.Tales.Vesperia {
 			return str;
 		}
 
-		public static string ToHtmlJpn( this string str, GameVersion version ) {
-			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( str ), version, true ).ToString(), true, true ).Replace( "\n", "<br />" );
+		public static string ToHtmlJpn( this string str, Dictionary<uint, TSS.TSSEntry> inGameIdDict, GameVersion version ) {
+			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( str ), inGameIdDict, version, true ).ToString(), inGameIdDict, true, true ).Replace( "\n", "<br />" );
 		}
-		public static string ToHtmlEng( this string str, GameVersion version ) {
-			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( str ), version, false ).ToString(), false, true ).Replace( "\n", "<br />" );
+		public static string ToHtmlEng( this string str, Dictionary<uint, TSS.TSSEntry> inGameIdDict, GameVersion version ) {
+			return VesperiaUtil.RemoveTags( Website.WebsiteGenerator.ReplaceIconsWithHtml( new StringBuilder( str ), inGameIdDict, version, false ).ToString(), inGameIdDict, false, true ).Replace( "\n", "<br />" );
 		}
 
 		public static String GetButtonName( GameVersion version, ControllerButton button ) {

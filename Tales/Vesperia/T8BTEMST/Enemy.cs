@@ -196,13 +196,13 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 			sb.Append( "</td>" );
 			sb.Append( "<td style=\"height: 46px;\">" );
 			if ( websiteLanguage.WantsJp() ) {
-				sb.Append( "<span class=\"itemname\">" + enemyNameEntry.StringJpnHtml( version ) + "</span>" );
+				sb.Append( "<span class=\"itemname\">" + enemyNameEntry.StringJpnHtml( version, inGameIdDict ) + "</span>" );
 			}
 			if ( websiteLanguage.WantsBoth() ) {
 				sb.Append( "<br>" );
 			}
 			if ( websiteLanguage.WantsEn() ) {
-				sb.Append( "<span class=\"itemname\">" + enemyNameEntry.StringEngHtml( version ) + "</span>" );
+				sb.Append( "<span class=\"itemname\">" + enemyNameEntry.StringEngHtml( version, inGameIdDict ) + "</span>" );
 			}
 			//sb.Append( RefString2 + "<br>" );
 			//sb.Append( RefString3 + "<br>" );
@@ -218,21 +218,21 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 
 			sb.Append( "<td rowspan=\"2\">" );
 			sb.Append( "EXP: " + EXP + ", " );
-			Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, FatalTypeExp );
+			Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, inGameIdDict, FatalTypeExp );
 			sb.Append( " +" + EXPModifier + "<br>" );
 			sb.Append( "LP: " + LP + ", " );
-			Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, FatalTypeLP );
+			Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, inGameIdDict, FatalTypeLP );
 			sb.Append( " +" + LPModifier + "<br>" );
 			sb.Append( "Gald: " + Gald + "<br>" );
 
 			sb.Append( "Fatal Strike Resistances:<br>" );
-			Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, 0 );
+			Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, inGameIdDict, 0 );
 			sb.Append( FatalBlue );
 			sb.Append( " " );
-			Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, 1 );
+			Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, inGameIdDict, 1 );
 			sb.Append( FatalRed );
 			sb.Append( " " );
-			Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, 2 );
+			Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, inGameIdDict, 2 );
 			sb.Append( FatalGreen );
 			sb.Append( "<br>" );
 
@@ -251,7 +251,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 				sb.Append( "Weak: " );
 				for ( int i = 0; i < Attributes.Length; ++i ) {
 					if ( Attributes[i] > 100 ) {
-						Website.WebsiteGenerator.AppendElementIcon( sb, (Element)i );
+						Website.WebsiteGenerator.AppendElementIcon( sb, inGameIdDict, (Element)i );
 						sb.Append( Attributes[i] - 100 );
 						sb.Append( "% " );
 					}
@@ -262,7 +262,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 				sb.Append( "Strong: " );
 				for ( int i = 0; i < Attributes.Length; ++i ) {
 					if ( Attributes[i] > 0 && Attributes[i] < 100 ) {
-						Website.WebsiteGenerator.AppendElementIcon( sb, (Element)i );
+						Website.WebsiteGenerator.AppendElementIcon( sb, inGameIdDict, (Element)i );
 						sb.Append( Attributes[i] );
 						sb.Append( "% " );
 					}
@@ -273,7 +273,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 				sb.Append( "Immune: " );
 				for ( int i = 0; i < Attributes.Length; ++i ) {
 					if ( Attributes[i] == 0 ) {
-						Website.WebsiteGenerator.AppendElementIcon( sb, (Element)i );
+						Website.WebsiteGenerator.AppendElementIcon( sb, inGameIdDict, (Element)i );
 					}
 				}
 				sb.Append( "<br>" );
@@ -282,7 +282,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 				sb.Append( "Absorb: " );
 				for ( int i = 0; i < Attributes.Length; ++i ) {
 					if ( Attributes[i] < 0 ) {
-						Website.WebsiteGenerator.AppendElementIcon( sb, (Element)i );
+						Website.WebsiteGenerator.AppendElementIcon( sb, inGameIdDict, (Element)i );
 						sb.Append( -Attributes[i] );
 						sb.Append( "% " );
 					}
@@ -311,7 +311,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 				if ( LocationWeather > -1 ) {
 					sb.Append( "<img src=\"menu-icons/weather-" + LocationWeather + ".png\" width=\"16\" height=\"16\">" );
 				}
-				sb.Append( loc.GetLastValidName( inGameIdDict ).StringEngOrJpnHtml( version, websiteLanguage ) + "</a><br>" );
+				sb.Append( loc.GetLastValidName( inGameIdDict ).StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a><br>" );
 			}
 
 			for ( int i = 0; i < DropItems.Length; ++i ) {
@@ -325,11 +325,11 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 					var item = items.itemIdDict[DropItems[i]];
 					sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 					sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
-					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, websiteLanguage ) + "</a>" );
+					sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a>" );
 					sb.Append( ", " + DropChances[i] + "%" );
 					if ( DropChances[i] < 100 ) {
 						sb.Append( ", " );
-						Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, FatalTypeDrop );
+						Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, inGameIdDict, FatalTypeDrop );
 						sb.Append( " +" + DropModifier[i] + "%" );
 					}
 					sb.Append( "<br>" );
@@ -340,14 +340,14 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 				var item = items.itemIdDict[SecretMissionDrop];
 				sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 				sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
-				sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, websiteLanguage ) + "</a>, " + SecretMissionDropChance + "%<br>" );
+				sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a>, " + SecretMissionDropChance + "%<br>" );
 			}
 			if ( StealItem != 0 ) {
 				sb.Append( "Steal:<br>" );
 				var item = items.itemIdDict[StealItem];
 				sb.Append( "<img src=\"item-icons/ICON" + item.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
 				sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)item.Data[(int)ItemData.ID], icon: (int)item.Data[(int)ItemData.Icon] ) + "\">" );
-				sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, websiteLanguage ) + "</a>, " + StealChance + "%<br>" );
+				sb.Append( inGameIdDict[item.NamePointer].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a>, " + StealChance + "%<br>" );
 			}
 			sb.Append( "</td>" );
 

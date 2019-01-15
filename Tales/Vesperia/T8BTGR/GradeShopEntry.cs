@@ -47,20 +47,20 @@ namespace HyoutaTools.Tales.Vesperia.T8BTGR {
 			if ( websiteLanguage.WantsJp() ) {
 				sb.Append( "<td colspan=\"" + colspan + "\">" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version ) );
+				sb.Append( inGameIdDict[NameStringDicID].StringJpnHtml( version, inGameIdDict ) );
 				sb.Append( "</span>" );
 				sb.Append( "<br>" );
-				sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version ) );
+				sb.Append( inGameIdDict[DescStringDicID].StringJpnHtml( version, inGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 
 			if ( websiteLanguage.WantsEn() ) {
 				sb.Append( "<td colspan=\"" + colspan + "\">" );
 				sb.Append( "<span class=\"itemname\">" );
-				sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version ) );
+				sb.Append( inGameIdDict[NameStringDicID].StringEngHtml( version, inGameIdDict ) );
 				sb.Append( "</span>" );
 				sb.Append( "<br>" );
-				sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version ) );
+				sb.Append( inGameIdDict[DescStringDicID].StringEngHtml( version, inGameIdDict ) );
 				sb.Append( "</td>" );
 			}
 

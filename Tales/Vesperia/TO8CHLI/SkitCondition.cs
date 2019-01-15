@@ -59,7 +59,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			Value3 = (int)stream.ReadUInt32().FromEndian( endian );
 		}
 
-		public void GetDataAsHtml( StringBuilder sb, GameVersion version ) {
+		public void GetDataAsHtml( StringBuilder sb, GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameIdDict ) {
 			switch ( Type ) {
 				case SkitConditionType.AllPartyMemberLevels:
 					sb.AppendFormat( "All Party Member Levels {0} {1}", MathOpString, Value1 );
@@ -121,7 +121,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 					return;
 				case SkitConditionType.CookingCharacterBitmask:
 					sb.Append( "Characters " );
-					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, version, (uint)Value1 );
+					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, (uint)Value1 );
 					sb.AppendFormat( " have cooked {0} {1} times", MathOpString, Value2 );
 					Util.Assert( Value3 == 0 );
 					return;
