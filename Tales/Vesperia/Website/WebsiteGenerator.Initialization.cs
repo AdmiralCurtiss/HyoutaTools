@@ -85,10 +85,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 			settings.Add( new ConfigMenuSetting( 33912401u, 33912401u + 46u, 33912427u, 33912426u, 33912425u, 33912424u ) ); // msg speed
 			settings.Add( new ConfigMenuSetting( 33912402u, 33912402u + 46u, 33912428u, 33912429u, 33912430u, 33912431u ) ); // difficulty
-			if ( version.Is360() ) {
-				settings.Add( new ConfigMenuSetting( 33912403u, 33912403u + 46u, 33912438u, 33912437u ) ); // x360 vibration
+			if ( version != GameVersion.PS3 ) {
+				settings.Add( new ConfigMenuSetting( 33912403u, 33912403u + 46u, 33912438u, 33912437u ) ); // in 360/PS3 this is the 360 vibration string, in PC this is just the general one
 			} else {
-				settings.Add( new ConfigMenuSetting( 33912679u, 33912681u, 33912438u, 33912437u ) ); // console-neutral vibration
+				settings.Add( new ConfigMenuSetting( 33912679u, 33912681u, 33912438u, 33912437u ) ); // console-neutral vibration string used in ps3 version only
 			}
 			settings.Add( new ConfigMenuSetting( 33912404u, 33912404u + 46u, 33912432u, 33912433u ) ); // camera controls
 			if ( version.HasPS3Content() && version != GameVersion.PC ) {
