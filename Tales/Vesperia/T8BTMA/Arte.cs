@@ -237,7 +237,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 							var otherArte = arteIdDict[LearnRequirementsOtherArtesId[i]];
 							if ( otherArte.ID != this.ID ) {
 								sb.Append( "<img src=\"menu-icons/artes-" + otherArte.GetIconNumber() + ".png\" width=\"16\" height=\"16\">" );
-								sb.Append( "<a href=\"#arte" + otherArte.InGameID + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
+								sb.Append( "<a href=\"" + Vesperia.Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Recipe, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)otherArte.InGameID ) + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
 								sb.Append( "</a>, " );
 							} else {
 								sb.Append( "Learn with " );
@@ -263,7 +263,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 							var otherArte = arteIdDict[AlteredArteRequirementId[i]];
 							sb.Append( "Alters from " );
 							sb.Append( "<img src=\"menu-icons/artes-" + otherArte.GetIconNumber() + ".png\" width=\"16\" height=\"16\">" );
-							sb.Append( "<a href=\"#arte" + otherArte.InGameID + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a>" );
+							sb.Append( "<a href=\"" + Vesperia.Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Recipe, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)otherArte.InGameID ) + "\">" + inGameIdDict[otherArte.NameStringDicId].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) + "</a>" );
 							break;
 						case 3: // skill
 							var skill = skills.SkillIdDict[AlteredArteRequirementId[i]];

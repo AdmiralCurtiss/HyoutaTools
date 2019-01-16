@@ -184,7 +184,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 					if ( RecipeCreationCharacter[i] != 0 ) {
 						var otherRecipe = recipes.RecipeList[(int)RecipeCreationRecipe[i]];
 						Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ) );
-						sb.Append( " <a href=\"#recipe" + otherRecipe.ID + "\">" );
+						sb.Append( " <a href=\"" + Vesperia.Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Recipe, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)otherRecipe.ID ) + "\">" );
 						sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
 						sb.Append( "</a>" );
 						sb.Append( "<br>" );

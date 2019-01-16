@@ -372,12 +372,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				string w = GetPhpUrlWebsiteLanguage( websiteLanguage );
 				string begin = "?version=" + v + versionPostfix + "&locale=" + l + "&compare=" + w;
 				switch ( section ) {
-					case WebsiteSection.Enemy: return begin + "&section=enemies&category=" + category + ( id != null ? "#enemy" + id : "" );
-					case WebsiteSection.Item: return begin + "&section=items&icon=" + icon + ( id != null ? "#item" + id : "" );
-					case WebsiteSection.Recipe: return begin + "&section=recipes" + ( id != null ? "#recipe" + id : "" );
-					case WebsiteSection.Skill: return begin + "&section=skills" + ( id != null ? "#skill" + id : "" );
-					case WebsiteSection.Location: return begin + "&section=locations" + ( id != null ? "#location" + id : "" );
-					case WebsiteSection.Shop: return begin + "&section=shops" + ( id != null ? "#shop" + id : "" );
+					case WebsiteSection.Enemy: return begin + "&section=enemies&category=" + category + ( id != null ? "&id=" + id : "" );
+					case WebsiteSection.Item: return begin + "&section=items&icon=" + icon + ( id != null ? "&id=" + id : "" );
+					case WebsiteSection.Recipe: return begin + "&section=recipes" + ( id != null ? "&id=" + id : "" );
+					case WebsiteSection.Skill: return begin + "&section=skills" + ( id != null ? "&id=" + id : "" );
+					case WebsiteSection.Location: return begin + "&section=locations" + ( id != null ? "&id=" + id : "" );
+					case WebsiteSection.Shop: return begin + "&section=shops" + ( id != null ? "&id=" + id : "" );
 					case WebsiteSection.Skit: return begin + "&section=skit" + ( extra != null ? "&name=" + extra : "" );
 					case WebsiteSection.Scenario: return begin + "&section=scenario" + ( extra != null ? "&name=" + extra : "" );
 					case WebsiteSection.NecropolisMap: return begin + "&section=necropolis" + ( extra != null ? "&map=" + extra : "" );

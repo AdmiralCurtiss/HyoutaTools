@@ -54,7 +54,7 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			if ( OnTrigger > 0 ) {
 				sb.Append( "<tr>" );
 				sb.Append( "<td class=\"strategychar\" colspan=\"6\">" );
-				sb.Append( "Changes to <a href=\"#shop" + ChangeToShop + "\">" );
+				sb.Append( "Changes to <a href=\"" + Vesperia.Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Shop, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)ChangeToShop ) + "\">" );
 				sb.Append( inGameIdDict[shops.ShopDictionary[ChangeToShop].StringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
 				sb.Append( "</a>" );
 				sb.Append( "</td>" );
