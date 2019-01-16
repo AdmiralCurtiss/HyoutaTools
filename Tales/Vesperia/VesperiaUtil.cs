@@ -40,35 +40,20 @@ namespace HyoutaTools.Tales.Vesperia {
 		}
 
 		public static string RemoveTags( string s, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool useJapaneseNames = false, bool outputAsHtml = false, bool removeKanjiWithFurigana = false ) {
-			s = s.Replace( "''", "'" );
-			if ( useJapaneseNames ) {
-				s = s.Replace( "\x04(YUR)", "ユーリ" );
-				s = s.Replace( "\x04(EST)", "エステリーゼ" );
-				s = s.Replace( "\x04(EST_P)", "エステル" );
-				s = s.Replace( "\x04(KAR)", "カロル" );
-				s = s.Replace( "\x04(RIT)", "リタ" );
-				s = s.Replace( "\x04(RAV)", "レイヴン" );
-				s = s.Replace( "\x04(JUD)", "ジュディス" );
-				s = s.Replace( "\x04(JUD_P)", "ジュディ" );
-				s = s.Replace( "\x04(RAP)", "ラピード" );
-				s = s.Replace( "\x04(FRE)", "フレン" );
-				s = s.Replace( "\x04(PAT)", "パティ" );
-				s = s.Replace( "\x04(BAU)", "バウル" );
-				s = s.Replace( "\x04(ALL)", "みんな" );
-			} else {
-				s = s.Replace( "\x04(YUR)", "Yuri" );
-				s = s.Replace( "\x04(EST)", "Estellise" );
-				s = s.Replace( "\x04(EST_P)", "Estelle" );
-				s = s.Replace( "\x04(KAR)", "Karol" );
-				s = s.Replace( "\x04(RIT)", "Rita" );
-				s = s.Replace( "\x04(RAV)", "Raven" );
-				s = s.Replace( "\x04(JUD)", "Judith" );
-				s = s.Replace( "\x04(JUD_P)", "Judy" );
-				s = s.Replace( "\x04(RAP)", "Repede" );
-				s = s.Replace( "\x04(FRE)", "Flynn" );
-				s = s.Replace( "\x04(PAT)", "Patty" );
-				s = s.Replace( "\x04(BAU)", "Ba'ul" );
-				s = s.Replace( "\x04(ALL)", "Everyone" );
+			s = s.Replace( "\x04(YUR)",   inGameIdDict[33902112].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(EST)",   inGameIdDict[33902115].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(EST_P)", inGameIdDict[33902117].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(KAR)",   inGameIdDict[33902118].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(RIT)",   inGameIdDict[33902121].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(RAV)",   inGameIdDict[33902124].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(JUD)",   inGameIdDict[33902127].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(JUD_P)", inGameIdDict[33902129].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(RAP)",   inGameIdDict[33902130].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(FRE)",   inGameIdDict[33902133].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(PAT)",   inGameIdDict[33902136].GetString( useJapaneseNames ? 0 : 1 ) );
+			s = s.Replace( "\x04(BAU)",   inGameIdDict[33902139].GetString( useJapaneseNames ? 0 : 1 ) );
+			if ( inGameIdDict.ContainsKey( 33902199 ) ) { // not in 360
+				s = s.Replace( "\x04(ALL)", inGameIdDict[33902199].GetString( useJapaneseNames ? 0 : 1 ) );
 			}
 
 			s = s.Replace( "\f", "\n\n" );
