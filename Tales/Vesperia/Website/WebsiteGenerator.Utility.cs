@@ -378,6 +378,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					case WebsiteSection.Skill: return begin + "&section=skills" + ( id != null ? "&id=" + id : "" );
 					case WebsiteSection.Location: return begin + "&section=locations" + ( id != null ? "&id=" + id : "" );
 					case WebsiteSection.Shop: return begin + "&section=shops" + ( id != null ? "&id=" + id : "" );
+					case WebsiteSection.SearchPoint: return begin + "&section=searchpoint" + ( id != null ? "#searchpoint" + id : "" );
 					case WebsiteSection.Skit: return begin + "&section=skit" + ( extra != null ? "&name=" + extra : "" );
 					case WebsiteSection.Scenario: return begin + "&section=scenario" + ( extra != null ? "&name=" + extra : "" );
 					case WebsiteSection.NecropolisMap: return begin + "&section=necropolis" + ( extra != null ? "&map=" + extra : "" );

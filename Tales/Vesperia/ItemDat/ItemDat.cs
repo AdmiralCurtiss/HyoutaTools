@@ -272,7 +272,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			return null;
 		}
 
-		public static string GetItemDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, WRLDDAT.WRLDDAT Locations, ShopData.ShopData shopData, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict, bool phpLinks = false ) {
+		public static string GetItemDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, WRLDDAT.WRLDDAT Locations, ShopData.ShopData shopData, TOVSEAF.TOVSEAF searchPoints, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict, bool phpLinks = false ) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
 			bool trustItemBookForShops = true; // true to use the values of the item book for shop locations; false to parse it out from the actual data
 			bool trustItemBookForEnemies = false; // true to use the values of the item book for enemy drop/steal lists; false to parse it out from the actual data
@@ -621,6 +621,37 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				sb.Append( "</td>" );
 			}
 			sb.Append( "<td>" );
+			if ( searchPoints != null ) {
+				List<string> searchPointStrings = new List<string>();
+				int idx = 1;
+				foreach ( var searchPoint in searchPoints.SearchPointDefinitions ) {
+					if ( searchPoint.Unknown11 != 1 ) { continue; }
+					for ( uint spcc = 0; spcc < searchPoint.SearchPointContentCount; ++spcc ) {
+						var content = searchPoints.SearchPointContents[(int)( searchPoint.SearchPointContentIndex + spcc )];
+						for ( uint spic = 0; spic < content.SearchPointItemCount; ++spic ) {
+							var spitem = searchPoints.SearchPointItems[(int)( content.SearchPointItemIndex + spic )];
+							if ( spitem.Item == item.Data[(int)ItemData.ID] ) {
+								searchPointStrings.Add( new StringBuilder()
+									.Append( "<a href=\"" )
+									.Append( Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.SearchPoint, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)searchPoint.Index ) )
+									.Append( "\">" )
+									.Append( "#" ).Append( idx ).Append( ", Group " ).Append( spcc + 1 ).Append( "</a> (x" ).Append( spitem.Count ).Append( ")" ).ToString() );
+							}
+						}
+					}
+					++idx;
+				}
+
+				if ( searchPointStrings.Count > 0 ) {
+					sb.Append( "Can be found in Search Point" );
+					if ( searchPointStrings.Count > 1 ) {
+						sb.Append( "s" );
+					}
+					foreach ( string s in searchPointStrings ) {
+						sb.Append( "<br>" ).Append( s );
+					}
+				}
+			}
 			sb.Append( "</td>" );
 
 			sb.Append( "</tr>" );
