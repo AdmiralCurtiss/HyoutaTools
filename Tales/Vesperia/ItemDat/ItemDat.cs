@@ -593,50 +593,28 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			}
 
 			for ( int j = 0; j < 2; ++j ) {
-				sb.Append( "<td colspan=\"2\">" );
+				sb.Append( "<td>" );
 				if ( enemyIds[j].Count > 0 ) {
-					int colCount = Math.Min( 4, enemyIds[j].Count );
-					int rowCount = ( enemyIds[j].Count - 1 ) / 4 + 1;
+					sb.Append( j == 0 ? "Dropped by" : "Can be stolen from" );
 
-					sb.Append( "<table class=\"element\">" );
-					sb.Append( "<tr><td colspan=\"" + colCount + "\">" );
-					sb.Append( j == 0 ? "Drop" : "Steal" );
-					sb.Append( "</td></tr>" );
-
-					int cellCount = 0;
 					foreach ( var enemyAndDrop in enemyIds[j] ) {
 						uint enemyId = enemyAndDrop.enemyId;
-
 						if ( enemyId != 0 ) {
-							if ( cellCount % 4 == 0 ) {
-								sb.Append( "<tr>" );
-							}
-							sb.Append( "<td>" );
+							sb.Append( "<br>" );
 							var enemy = enemies.EnemyIdDict[enemyId];
 							var enemyNameEntry = dict[enemy.NameStringDicID];
 							string enemyName = enemyNameEntry.StringEngOrJpnHtml( version, dict, websiteLanguage );
-							sb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\"><br>" );
+							sb.Append( "<img src=\"monster-icons/48px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\" height=\"16\" width=\"16\"> " );
 							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, versionPostfix, locale, websiteLanguage, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
-							sb.Append( enemyName + "</a><br>" + enemyAndDrop.dropChance + "%" );
-							sb.Append( "</td>" );
-							if ( cellCount % 4 == 3 ) {
-								sb.Append( "</tr>" );
-							}
-							cellCount++;
+							sb.Append( enemyName + "</a>, " );
+							sb.Append( enemyAndDrop.dropChance + "%" );
 						}
 					}
-					if ( cellCount % 4 != 0 ) {
-						if ( cellCount > 4 ) {
-							for ( int i = cellCount % 4; i < 4; ++i ) {
-								sb.Append( "<td></td>" );
-							}
-						}
-						sb.Append( "</tr>" );
-					}
-					sb.Append( "</table>" );
 				}
 				sb.Append( "</td>" );
 			}
+			sb.Append( "<td colspan=\"2\">" );
+			sb.Append( "</td>" );
 
 			sb.Append( "</tr>" );
 			return sb.ToString();
