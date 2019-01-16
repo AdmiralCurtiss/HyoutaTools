@@ -38,6 +38,12 @@ namespace HyoutaTools.Tales.Vesperia {
 		public static bool WantsBoth( this WebsiteLanguage lang ) {
 			return lang.WantsJp() && lang.WantsEn();
 		}
+		public static bool MainJp( this WebsiteLanguage lang ) {
+			return lang == WebsiteLanguage.Jp || lang == WebsiteLanguage.BothWithJpLinks;
+		}
+		public static bool MainEn( this WebsiteLanguage lang ) {
+			return lang == WebsiteLanguage.En || lang == WebsiteLanguage.BothWithEnLinks;
+		}
 
 		public static string RemoveTags( string s, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool useJapaneseNames = false, bool outputAsHtml = false, bool removeKanjiWithFurigana = false ) {
 			s = s.Replace( "\x04(YUR)",   inGameIdDict[33902112].GetString( useJapaneseNames ? 0 : 1 ) );

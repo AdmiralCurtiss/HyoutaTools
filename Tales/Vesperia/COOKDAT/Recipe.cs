@@ -183,7 +183,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 				for ( int i = 0; i < RecipeCreationCharacter.Length; ++i ) {
 					if ( RecipeCreationCharacter[i] != 0 ) {
 						var otherRecipe = recipes.RecipeList[(int)RecipeCreationRecipe[i]];
-						Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ) );
+						Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, (uint)( 1 << (int)( RecipeCreationCharacter[i] - 1 ) ), websiteLanguage.MainJp() );
 						sb.Append( " <a href=\"" + Vesperia.Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Recipe, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)otherRecipe.ID ) + "\">" );
 						sb.Append( inGameIdDict[otherRecipe.NameStringDicID].StringEngOrJpnHtml( version, inGameIdDict, websiteLanguage ) );
 						sb.Append( "</a>" );
@@ -200,10 +200,10 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 
 			sb.Append( "<tr>" );
 			sb.Append( "<td>" );
-			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharactersLike );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharactersLike, websiteLanguage.MainJp() );
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
-			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharactersDislike );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharactersDislike, websiteLanguage.MainJp() );
 			sb.Append( "</td>" );
 			sb.Append( "</tr>" );
 			sb.Append( "<tr>" );
@@ -212,10 +212,10 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			sb.Append( "</tr>" );
 			sb.Append( "<tr>" );
 			sb.Append( "<td>" );
-			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharactersGoodAtMaking );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharactersGoodAtMaking, websiteLanguage.MainJp() );
 			sb.Append( "</td>" );
 			sb.Append( "<td>" );
-			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharactersBadAtMaking );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharactersBadAtMaking, websiteLanguage.MainJp() );
 			sb.Append( "</td>" );
 			sb.Append( "</tr>" );
 

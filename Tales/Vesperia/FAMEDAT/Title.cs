@@ -36,7 +36,7 @@ namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 			StringBuilder sb = new StringBuilder();
 			sb.Append( "<tr>" );
 			sb.Append( "<td>" );
-			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, 1u << (int)( Character - 1 ) );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, 1u << (int)( Character - 1 ), websiteLanguage.MainJp() );
 			sb.Append( "</td>" );
 
 			int colspan = websiteLanguage.WantsBoth() ? 1 : 2;

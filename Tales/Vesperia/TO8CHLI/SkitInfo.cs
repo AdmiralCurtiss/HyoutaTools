@@ -95,7 +95,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 				sb.Append( "</td>" );
 			}
 			sb.Append( "<td>" );
-			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharacterBitmask );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharacterBitmask, websiteLanguage.MainJp() );
 			sb.Append( "</td>" );
 
 			sb.Append( "</tr>" );
@@ -143,13 +143,13 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 				for ( uint i = 0; i < fw.SkitConditionCount; ++i ) {
 					var c = skits.SkitConditionList[(int)( fw.SkitConditionReference + i )];
 					sb.Append( "<br>" );
-					c.GetDataAsHtml( sb, version, inGameIdDict );
+					c.GetDataAsHtml( sb, version, websiteLanguage, inGameIdDict );
 				}
 				sb.Append( "~SkitConditionRelated: " + SkitConditionRelated );
 			}
 
 			sb.Append( "<br>" );
-			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharacterBitmask );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, CharacterBitmask, websiteLanguage.MainJp() );
 												  
 			sb.Append( "<br>" );
 			sb.Append( "~4: 0x" + Unknown4.ToString("X8") );

@@ -853,7 +853,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 						command.GetParameter( "enCond" ).Value = Site.InGameIdDict[skit.StringDicIdCondition].StringEngHtml( Site.Version, Site.InGameIdDict );
 						command.GetParameter( "changeStatus" ).Value = changeStatus[skit.RefString];
 						StringBuilder sb = new StringBuilder();
-						Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, Site.InGameIdDict, Site.Version, skit.CharacterBitmask );
+						Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, Site.InGameIdDict, Site.Version, skit.CharacterBitmask, false ); // FIXME: Language-specific!
 						command.GetParameter( "charHtml" ).Value = sb.ToString();
 						command.ExecuteNonQuery();
 					}

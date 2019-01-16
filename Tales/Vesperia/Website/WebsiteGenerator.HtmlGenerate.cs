@@ -180,16 +180,16 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					sb.Append( "<td>" ).Append( v.Entries[0].ScenarioStart ).Append( "</td>" );
 					sb.Append( "<td>" ).Append( v.Entries[0].ScenarioEnd ).Append( "</td>" );
 					sb.Append( "<td>" );
-					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, v.Entries[0].CharacterBitmask );
+					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, v.Entries[0].CharacterBitmask, Language.MainJp() );
 					sb.Append( "</td>" );
 					sb.Append( "<td>" );
 					sb.Append( "Kill: " );
-					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, v.Entries[0].KillCharacterBitmask );
+					Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, v.Entries[0].KillCharacterBitmask, Language.MainJp() );
 					sb.Append( "</td>" );
 					for ( int j = 0; j < v.CharacterSpecificData.Length; ++j ) {
 						if ( v.CharacterSpecificData[j] != 0 ) {
 							sb.Append( "<td>" );
-							Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, (uint)( 1 << j ) );
+							Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, (uint)( 1 << j ), Language.MainJp() );
 							sb.Append( v.CharacterSpecificData[j] );
 							sb.Append( "</td>" );
 						}
@@ -226,7 +226,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 								case 15:
 									if ( e.Data[j] != 16 ) {
 										sb.Append( j ).Append( ": " ).Append( e.Data[j] );
-										Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, (uint)( 1 << (int)( j - 7 ) ) );
+										Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, (uint)( 1 << (int)( j - 7 ) ), Language.MainJp() );
 										sb.Append( "<br>" );
 									}
 									break;
@@ -254,7 +254,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 								case 9999:
 									if ( e.Data[j] != 0 ) {
 										sb.Append( j ).Append( ": " );
-										Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, e.Data[j] );
+										Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, InGameIdDict, Version, e.Data[j], Language.MainJp() );
 										sb.Append( "<br>" );
 									}
 									break;

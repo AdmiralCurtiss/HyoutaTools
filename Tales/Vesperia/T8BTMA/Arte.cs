@@ -162,7 +162,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			sb.Append( "<td style=\"text-align: right;\">" );
 			//sb.Append( RefString + "<br>" );
 			if ( Character > 0 && Character <= 9 ) {
-				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, 1u << (int)( Character - 1 ) );
+				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, 1u << (int)( Character - 1 ), websiteLanguage.MainJp() );
 			}
 			if ( Character > 9 ) {
 				var enemy = enemies.EnemyIdDict[Character];

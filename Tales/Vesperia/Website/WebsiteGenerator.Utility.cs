@@ -181,16 +181,16 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<div id=\"footer\">All Tales of Vesperia game content © 2008/2009 Bandai Namco Games Inc.</div>" );
 		}
 
-		public static void AppendCharacterBitfieldAsImageString( StringBuilder sb, Dictionary<uint, TSS.TSSEntry> inGameIdDict, GameVersion version, uint equip ) {
-			if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/YUR.png\" height=\"32\" width=\"24\" title=\"Yuri\">" ); }
-			if ( ( equip & 2 ) == 2 ) { sb.Append( "<img src=\"chara-icons/EST.png\" height=\"32\" width=\"24\" title=\"Estelle\">" ); }
-			if ( ( equip & 4 ) == 4 ) { sb.Append( "<img src=\"chara-icons/KAR.png\" height=\"32\" width=\"24\" title=\"Karol\">" ); }
-			if ( ( equip & 8 ) == 8 ) { sb.Append( "<img src=\"chara-icons/RIT.png\" height=\"32\" width=\"24\" title=\"Rita\">" ); }
-			if ( ( equip & 16 ) == 16 ) { sb.Append( "<img src=\"chara-icons/RAV.png\" height=\"32\" width=\"24\" title=\"Raven\">" ); }
-			if ( ( equip & 32 ) == 32 ) { sb.Append( "<img src=\"chara-icons/JUD.png\" height=\"32\" width=\"24\" title=\"Judith\">" ); }
-			if ( ( equip & 64 ) == 64 ) { sb.Append( "<img src=\"chara-icons/RAP.png\" height=\"32\" width=\"24\" title=\"Repede\">" ); }
-			if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/FRE.png\" height=\"32\" width=\"24\" title=\"Flynn\">" ); }
-			if ( version.HasPS3Content() && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/PAT.png\" height=\"32\" width=\"24\" title=\"Patty\">" ); }
+		public static void AppendCharacterBitfieldAsImageString( StringBuilder sb, Dictionary<uint, TSS.TSSEntry> inGameIdDict, GameVersion version, uint equip, bool useJapaneseNames ) {
+			if ( ( equip & 1 ) == 1 ) { sb.Append( "<img src=\"chara-icons/YUR.png\" height=\"32\" width=\"24\" title=\"" + inGameIdDict[33902112].GetString( useJapaneseNames ? 0 : 1 ) + "\">" ); }
+			if ( ( equip & 2 ) == 2 ) { sb.Append( "<img src=\"chara-icons/EST.png\" height=\"32\" width=\"24\" title=\"" + inGameIdDict[33902117].GetString( useJapaneseNames ? 0 : 1 ) + "\">" ); }
+			if ( ( equip & 4 ) == 4 ) { sb.Append( "<img src=\"chara-icons/KAR.png\" height=\"32\" width=\"24\" title=\"" + inGameIdDict[33902118].GetString( useJapaneseNames ? 0 : 1 ) + "\">" ); }
+			if ( ( equip & 8 ) == 8 ) { sb.Append( "<img src=\"chara-icons/RIT.png\" height=\"32\" width=\"24\" title=\"" + inGameIdDict[33902121].GetString( useJapaneseNames ? 0 : 1 ) + "\">" ); }
+			if ( ( equip & 16 ) == 16 ) { sb.Append( "<img src=\"chara-icons/RAV.png\" height=\"32\" width=\"24\" title=\"" + inGameIdDict[33902124].GetString( useJapaneseNames ? 0 : 1 ) + "\">" ); }
+			if ( ( equip & 32 ) == 32 ) { sb.Append( "<img src=\"chara-icons/JUD.png\" height=\"32\" width=\"24\" title=\"" + inGameIdDict[33902127].GetString( useJapaneseNames ? 0 : 1 ) + "\">" ); }
+			if ( ( equip & 64 ) == 64 ) { sb.Append( "<img src=\"chara-icons/RAP.png\" height=\"32\" width=\"24\" title=\"" + inGameIdDict[33902130].GetString( useJapaneseNames ? 0 : 1 ) + "\">" ); }
+			if ( ( equip & 128 ) == 128 ) { sb.Append( "<img src=\"chara-icons/FRE.png\" height=\"32\" width=\"24\" title=\"" + inGameIdDict[33902133].GetString( useJapaneseNames ? 0 : 1 ) + "\">" ); }
+			if ( version.HasPS3Content() && ( equip & 256 ) == 256 ) { sb.Append( "<img src=\"chara-icons/PAT.png\" height=\"32\" width=\"24\" title=\"" + inGameIdDict[33902136].GetString( useJapaneseNames ? 0 : 1 ) + "\">" ); }
 		}
 		public static void AppendPhysicalAilmentBitfieldAsImageString( StringBuilder sb, Dictionary<uint, TSS.TSSEntry> inGameIdDict, uint physAil ) {
 			if ( ( physAil & 1 ) == 1 ) { sb.Append( "<img src=\"text-icons/icon-status-13.png\" height=\"16\" width=\"16\" title=\"Death\">" ); }

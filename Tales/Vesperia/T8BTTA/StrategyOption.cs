@@ -61,7 +61,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 			}
 
 			sb.Append( "<td>" );
-			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, Characters );
+			Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, Characters, websiteLanguage.MainJp() );
 			sb.Append( "</td>" );
 
 			sb.Append( "</tr>" );

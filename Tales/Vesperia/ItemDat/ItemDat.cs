@@ -288,7 +288,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			uint equip = item.Data[(int)ItemData.EquippableByBitfield];
 			if ( equip > 0 ) {
 				sb.Append( "<span class=\"equip\">" );
-				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, dict, version, equip );
+				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, dict, version, equip, websiteLanguage.MainJp() );
 				sb.Append( "</span>" );
 			}
 

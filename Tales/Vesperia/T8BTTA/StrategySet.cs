@@ -78,7 +78,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 			sb.Append( "</td>" );
 			for ( int i = 0; i < StrategyDefaults.GetLength( 1 ); ++i ) {
 				sb.Append( "<td class=\"strategychar\">" );
-				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, 1u << i );
+				Website.WebsiteGenerator.AppendCharacterBitfieldAsImageString( sb, inGameIdDict, version, 1u << i, websiteLanguage.MainJp() );
 				sb.Append( "</td>" );
 			}
 			sb.Append( "</tr>" );
