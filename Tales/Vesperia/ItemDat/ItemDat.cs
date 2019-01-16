@@ -557,45 +557,47 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			sb.Append( "</td></tr><tr>" );
 
-
-
-			// read how many drops and steals this item lists
-			List<(uint enemyId, uint dropChance)>[] enemyIds = new List<(uint enemyId, uint dropChance)>[2];
+			// drops and steals
+			List<(uint enemyId, uint dropChance, uint? fatalType, uint? fatalIncrease)>[] enemyIds = new List<(uint enemyId, uint dropChance, uint? fatalType, uint? fatalIncrease)>[3];
+			enemyIds[0] = new List<(uint enemyId, uint dropChance, uint? fatalType, uint? fatalIncrease)>();
+			enemyIds[1] = new List<(uint enemyId, uint dropChance, uint? fatalType, uint? fatalIncrease)>();
+			enemyIds[2] = new List<(uint enemyId, uint dropChance, uint? fatalType, uint? fatalIncrease)>();
 			if ( trustItemBookForEnemies ) {
 				for ( int j = 0; j < 2; ++j ) {
-					enemyIds[j] = new List<(uint enemyId, uint dropChance)>();
 					for ( int i = 0; i < 16; ++i ) {
 						uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j * 32];
 						if ( enemyId != 0 ) {
 							uint dropChance = item.Data[(int)ItemData.Drop1Chance + i + j * 32];
-							enemyIds[j].Add( (enemyId, dropChance) );
+							enemyIds[j].Add( (enemyId, dropChance, null, null) );
 						}
 					}
 				}
 			} else {
-				enemyIds[0] = new List<(uint enemyId, uint dropChance)>();
-				enemyIds[1] = new List<(uint enemyId, uint dropChance)>();
 				foreach ( var enemy in enemies.EnemyIdDict ) {
 					if ( enemy.Value.InMonsterBook > 0 ) {
 						for ( int d = 0; d < enemy.Value.DropItems.Length; ++d ) {
 							if ( enemy.Value.DropItems[d] == item.Data[(int)ItemData.ID] && enemy.Value.DropItems[d] != 0 ) {
-								enemyIds[0].Add( (enemy.Key, enemy.Value.DropChances[d]) );
+								enemyIds[0].Add( (enemy.Key, enemy.Value.DropChances[d], enemy.Value.FatalTypeDrop, enemy.Value.DropModifier[d]) );
 								break;
 							}
 						}
 						if ( enemy.Value.StealItem == item.Data[(int)ItemData.ID] && enemy.Value.StealItem != 0 ) {
-							enemyIds[1].Add( (enemy.Key, enemy.Value.StealChance) );
+							enemyIds[1].Add( (enemy.Key, enemy.Value.StealChance, null, null) );
+						}
+						if ( enemy.Value.SecretMissionDrop == item.Data[(int)ItemData.ID] && enemy.Value.SecretMissionDrop != 0 && enemy.Value.SecretMissionDropChance > 0 ) {
+							enemyIds[2].Add( (enemy.Key, enemy.Value.SecretMissionDropChance, null, null) );
 						}
 					}
 				}
 				enemyIds[0] = enemyIds[0].OrderByDescending( x => x.dropChance ).ToList();
 				enemyIds[1] = enemyIds[1].OrderByDescending( x => x.dropChance ).ToList();
+				enemyIds[2] = enemyIds[2].OrderByDescending( x => x.dropChance ).ToList();
 			}
 
-			for ( int j = 0; j < 2; ++j ) {
+			for ( int j = 0; j < 3; ++j ) {
 				sb.Append( "<td>" );
 				if ( enemyIds[j].Count > 0 ) {
-					sb.Append( j == 0 ? "Dropped by" : "Can be stolen from" );
+					sb.Append( j == 0 ? "Dropped by" : j == 1 ? "Can be stolen from" : "Secret Mission reward from" );
 
 					foreach ( var enemyAndDrop in enemyIds[j] ) {
 						uint enemyId = enemyAndDrop.enemyId;
@@ -608,12 +610,17 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, versionPostfix, locale, websiteLanguage, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
 							sb.Append( enemyName + "</a>, " );
 							sb.Append( enemyAndDrop.dropChance + "%" );
+							if ( enemyAndDrop.fatalType != null && enemyAndDrop.dropChance < 100 ) {
+								sb.Append( ", " );
+								Website.WebsiteGenerator.AppendFatalStrikeIcon( sb, dict, enemyAndDrop.fatalType.Value );
+								sb.Append( " +" + enemyAndDrop.fatalIncrease.Value + "%" );
+							}
 						}
 					}
 				}
 				sb.Append( "</td>" );
 			}
-			sb.Append( "<td colspan=\"2\">" );
+			sb.Append( "<td>" );
 			sb.Append( "</td>" );
 
 			sb.Append( "</tr>" );
