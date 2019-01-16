@@ -22,7 +22,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				if ( category != null && category != itemCat ) { continue; }
 				if ( icon != null && icon != itemIcon ) { continue; }
 
-				sb.AppendLine( ItemDat.ItemDat.GetItemDataAsHtml( Version, VersionPostfix, Locale, Language, Items, item, Skills, Enemies, Recipes, Locations, StringDic, InGameIdDict ) );
+				sb.AppendLine( ItemDat.ItemDat.GetItemDataAsHtml( Version, VersionPostfix, Locale, Language, Items, item, Skills, Enemies, Recipes, Locations, Shops, StringDic, InGameIdDict ) );
 				sb.AppendLine( "<tr><td colspan=\"5\"><hr></td></tr>" );
 			}
 			sb.Append( "</table>" );

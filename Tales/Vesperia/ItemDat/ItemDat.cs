@@ -250,8 +250,33 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			return sb.ToString();
 		}
 
-		public static string GetItemDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, WRLDDAT.WRLDDAT Locations, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict, bool phpLinks = false ) {
+		private static WRLDDAT.Location FindLocationOfShop( ShopData.ShopDefinition shop, ShopData.ShopData shops, WRLDDAT.WRLDDAT locations ) {
+			foreach ( var loc in locations.LocationIdDict ) {
+				if ( loc.Value.Category == 1 ) {
+					foreach ( var shopid in loc.Value.ShopsOrEnemyGroups ) {
+						if ( shopid != 0 ) {
+							if ( shopid == shop.InGameID ) {
+								return loc.Value;
+							}
+							uint shopIdEvolve = shopid;
+							while ( shops.ShopDictionary[shopIdEvolve].ChangeToShop != 0 ) {
+								shopIdEvolve = shops.ShopDictionary[shopIdEvolve].ChangeToShop;
+								if ( shopIdEvolve == shop.InGameID ) {
+									return loc.Value;
+								}
+							}
+						}
+					}
+				}
+			}
+			return null;
+		}
+
+		public static string GetItemDataAsHtml( GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, WRLDDAT.WRLDDAT Locations, ShopData.ShopData shopData, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict, bool phpLinks = false ) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
+			bool trustItemBookForShops = true; // true to use the values of the item book for shop locations; false to parse it out from the actual data
+			bool trustItemBookForEnemies = false; // true to use the values of the item book for enemy drop/steal lists; false to parse it out from the actual data
+
 			var sb = new StringBuilder();
 
 			sb.Append( "<tr id=\"item" + item.Data[(int)ItemData.ID] + "\">" );
@@ -487,13 +512,45 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			sb.Append( item.Data[(int)ItemData.ShopPrice] + " Gald" );
 
-			if ( item.Data[(int)ItemData.BuyableIn1] > 0 || item.Data[(int)ItemData.BuyableIn2] > 0 || item.Data[(int)ItemData.BuyableIn3] > 0 ) {
-				//sb.Append( "<br>Available at shops in:" );
-				for ( int i = 0; i < 3; ++i ) {
-					if ( item.Data[(int)ItemData.BuyableIn1 + i] > 0 ) {
-						var loc = Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1 + i]];
-						sb.Append( "<br><a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Location, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)loc.LocationID ) + "\">" );
-						sb.Append( loc.GetLastValidName( dict ).StringEngOrJpnHtml( version, dict, websiteLanguage ) + "</a>" );
+			if ( trustItemBookForShops ) {
+				if ( item.Data[(int)ItemData.BuyableIn1] > 0 || item.Data[(int)ItemData.BuyableIn2] > 0 || item.Data[(int)ItemData.BuyableIn3] > 0 ) {
+					//sb.Append( "<br>Available at shops in:" );
+					for ( int i = 0; i < 3; ++i ) {
+						if ( item.Data[(int)ItemData.BuyableIn1 + i] > 0 ) {
+							var loc = Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1 + i]];
+							sb.Append( "<br><a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Location, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)loc.LocationID ) + "\">" );
+							sb.Append( loc.GetLastValidName( dict ).StringEngOrJpnHtml( version, dict, websiteLanguage ) + "</a>" );
+						}
+					}
+				}
+			} else {
+				List<ShopData.ShopDefinition> shops = new List<ShopData.ShopDefinition>();
+				foreach ( var kvp in shopData.ShopDictionary ) {
+					ShopData.ShopDefinition shop = kvp.Value;
+					foreach ( var shopItem in shop.ShopItems ) {
+						if ( shopItem.ItemID == item.Data[(int)ItemData.ID] ) {
+							shops.Add( shop );
+							break;
+						}
+					}
+				}
+
+				bool printShopsDirectly = false;
+				if ( printShopsDirectly ) {
+					foreach ( var shop in shops ) {
+						sb.Append( "<br><a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Shop, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)shop.InGameID ) + "\">" );
+						sb.Append( dict[shop.StringDicID].StringEngOrJpnHtml( version, dict, websiteLanguage ) + "</a>" );
+					}
+				} else {
+					foreach ( var shop in shops ) {
+						WRLDDAT.Location loc = FindLocationOfShop( shop, shopData, Locations );
+						if ( loc != null ) {
+							sb.Append( "<br><a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Location, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)loc.LocationID ) + "\">" );
+							sb.Append( loc.GetLastValidName( dict ).StringEngOrJpnHtml( version, dict, websiteLanguage ) + "</a>" );
+						} else {
+							sb.Append( "<br><a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Shop, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)shop.InGameID ) + "\">" );
+							sb.Append( dict[shop.StringDicID].StringEngOrJpnHtml( version, dict, websiteLanguage ) + "</a>" );
+						}
 					}
 				}
 			}
@@ -503,20 +560,43 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 			// read how many drops and steals this item lists
-			int[] dropStealCount = new int[2];
-			for ( int j = 0; j < 2; ++j ) {
-				dropStealCount[j] = 0;
-				for ( int i = 0; i < 16; ++i ) {
-					uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j * 32];
-					if ( enemyId != 0 ) { dropStealCount[j]++; }
+			List<(uint enemyId, uint dropChance)>[] enemyIds = new List<(uint enemyId, uint dropChance)>[2];
+			if ( trustItemBookForEnemies ) {
+				for ( int j = 0; j < 2; ++j ) {
+					enemyIds[j] = new List<(uint enemyId, uint dropChance)>();
+					for ( int i = 0; i < 16; ++i ) {
+						uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j * 32];
+						if ( enemyId != 0 ) {
+							uint dropChance = item.Data[(int)ItemData.Drop1Chance + i + j * 32];
+							enemyIds[j].Add( (enemyId, dropChance) );
+						}
+					}
 				}
+			} else {
+				enemyIds[0] = new List<(uint enemyId, uint dropChance)>();
+				enemyIds[1] = new List<(uint enemyId, uint dropChance)>();
+				foreach ( var enemy in enemies.EnemyIdDict ) {
+					if ( enemy.Value.InMonsterBook > 0 ) {
+						for ( int d = 0; d < enemy.Value.DropItems.Length; ++d ) {
+							if ( enemy.Value.DropItems[d] == item.Data[(int)ItemData.ID] && enemy.Value.DropItems[d] != 0 ) {
+								enemyIds[0].Add( (enemy.Key, enemy.Value.DropChances[d]) );
+								break;
+							}
+						}
+						if ( enemy.Value.StealItem == item.Data[(int)ItemData.ID] && enemy.Value.StealItem != 0 ) {
+							enemyIds[1].Add( (enemy.Key, enemy.Value.StealChance) );
+						}
+					}
+				}
+				enemyIds[0] = enemyIds[0].OrderByDescending( x => x.dropChance ).ToList();
+				enemyIds[1] = enemyIds[1].OrderByDescending( x => x.dropChance ).ToList();
 			}
 
 			for ( int j = 0; j < 2; ++j ) {
 				sb.Append( "<td colspan=\"2\">" );
-				if ( dropStealCount[j] > 0 ) {
-					int colCount = Math.Min( 4, dropStealCount[j] );
-					int rowCount = ( dropStealCount[j] - 1 ) / 4 + 1;
+				if ( enemyIds[j].Count > 0 ) {
+					int colCount = Math.Min( 4, enemyIds[j].Count );
+					int rowCount = ( enemyIds[j].Count - 1 ) / 4 + 1;
 
 					sb.Append( "<table class=\"element\">" );
 					sb.Append( "<tr><td colspan=\"" + colCount + "\">" );
@@ -524,8 +604,8 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					sb.Append( "</td></tr>" );
 
 					int cellCount = 0;
-					for ( int i = 0; i < 16; ++i ) {
-						uint enemyId = item.Data[(int)ItemData.Drop1Enemy + i + j * 32];
+					foreach ( var enemyAndDrop in enemyIds[j] ) {
+						uint enemyId = enemyAndDrop.enemyId;
 
 						if ( enemyId != 0 ) {
 							if ( cellCount % 4 == 0 ) {
@@ -537,7 +617,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							string enemyName = enemyNameEntry.StringEngOrJpnHtml( version, dict, websiteLanguage );
 							sb.Append( "<img src=\"monster-icons/44px/monster-" + enemy.IconID.ToString( "D3" ) + ".png\"><br>" );
 							sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Enemy, version, versionPostfix, locale, websiteLanguage, phpLinks, category: (int)enemy.Category, id: (int)enemy.InGameID ) + "\">" );
-							sb.Append( enemyName + "</a><br>" + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
+							sb.Append( enemyName + "</a><br>" + enemyAndDrop.dropChance + "%" );
 							sb.Append( "</td>" );
 							if ( cellCount % 4 == 3 ) {
 								sb.Append( "</tr>" );
