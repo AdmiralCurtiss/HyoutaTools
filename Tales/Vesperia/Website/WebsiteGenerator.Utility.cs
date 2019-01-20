@@ -372,6 +372,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				string w = GetPhpUrlWebsiteLanguage( websiteLanguage );
 				string begin = "?version=" + v + versionPostfix + "&locale=" + l + "&compare=" + w;
 				switch ( section ) {
+					case WebsiteSection.Arte: return begin + "&section=artes" + ( id != null ? "&id=" + id : "" );
 					case WebsiteSection.Enemy: return begin + "&section=enemies&category=" + category + ( id != null ? "&id=" + id : "" );
 					case WebsiteSection.Item: return begin + "&section=items&icon=" + icon + ( id != null ? "&id=" + id : "" );
 					case WebsiteSection.Recipe: return begin + "&section=recipes" + ( id != null ? "&id=" + id : "" );
