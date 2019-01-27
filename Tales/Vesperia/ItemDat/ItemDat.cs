@@ -507,7 +507,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 
-			sb.Append( "<td colspan=\"2\">" );
+			sb.Append( "<td>" );
 
 
 			sb.Append( item.Data[(int)ItemData.ShopPrice] + " Gald" );
@@ -552,6 +552,22 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 							sb.Append( dict[shop.StringDicID].StringEngOrJpnHtml( version, dict, websiteLanguage ) + "</a>" );
 						}
 					}
+				}
+			}
+
+			sb.Append( "</td><td>" );
+
+			List<uint> itemsRequireSynth = FindItemsThatRequireForSynth( item.Data[(int)ItemData.ID], items );
+			if ( itemsRequireSynth.Count > 0 ) {
+				sb.Append( "Can be used to synthesize" );
+				foreach ( uint otherItemId in itemsRequireSynth ) {
+					ItemDatSingle otherItem = items.itemIdDict[otherItemId];
+					sb.Append( "<br>" );
+					var otherItemNameEntry = dict[otherItem.NamePointer];
+					string otherItemName = otherItemNameEntry.StringEngOrJpnHtml( version, dict, websiteLanguage );
+					sb.Append( "<img src=\"item-icons/ICON" + otherItem.Data[(int)ItemData.Icon] + ".png\" height=\"16\" width=\"16\"> " );
+					sb.Append( "<a href=\"" + Website.WebsiteGenerator.GetUrl( Website.WebsiteSection.Item, version, versionPostfix, locale, websiteLanguage, phpLinks, id: (int)otherItem.Data[(int)ItemData.ID], icon: (int)otherItem.Data[(int)ItemData.Icon] ) + "\">" );
+					sb.Append( otherItemName + "</a>" );
 				}
 			}
 
@@ -656,6 +672,30 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			sb.Append( "</tr>" );
 			return sb.ToString();
+		}
+
+		private static bool DoesItemRequireForSynth( ItemDatSingle item, uint id ) {
+			uint synthCount = item.Data[(int)ItemData.SynthRecipeCount];
+			for ( int j = 0; j < synthCount; ++j ) {
+				uint synthItemCount = item.Data[(int)ItemData.Synth1ItemSlotCount + j * 16];
+				for ( int i = 0; i < synthItemCount; ++i ) {
+					uint otherItemId = item.Data[(int)ItemData.Synth1Item1Type + i * 2 + j * 16];
+					if ( otherItemId == id ) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		private static List<uint> FindItemsThatRequireForSynth( uint id, ItemDat items ) {
+			List<uint> l = new List<uint>();
+			foreach ( var kvp in items.itemIdDict ) {
+				if ( DoesItemRequireForSynth( kvp.Value, id ) ) {
+					l.Add( kvp.Key );
+				}
+			}
+			return l;
 		}
 	}
 }
