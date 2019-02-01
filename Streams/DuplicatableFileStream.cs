@@ -15,7 +15,7 @@ namespace HyoutaTools.Streams {
 		private FileAccess Access;
 		private FileShare Share;
 
-		public DuplicatableFileStream( string path, FileMode mode, FileAccess access, FileShare share ) {
+		public DuplicatableFileStream( string path, FileMode mode = FileMode.Open, FileAccess access = FileAccess.Read, FileShare share = FileShare.Read ) {
 			Base = new FileStream( path, mode, access, share );
 			Path = path;
 			Mode = mode;

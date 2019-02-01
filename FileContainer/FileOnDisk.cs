@@ -8,7 +8,7 @@ using HyoutaTools.Streams;
 namespace HyoutaTools.FileContainer {
 	public class FileOnDisk : IFile {
 		public FileOnDisk( string path ) {
-			DataStream = new DuplicatableFileStream( path, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read );
+			DataStream = new DuplicatableFileStream( path );
 		}
 
 		public bool IsFile => true;
