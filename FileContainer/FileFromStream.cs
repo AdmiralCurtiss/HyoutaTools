@@ -17,5 +17,9 @@ namespace HyoutaTools.FileContainer {
 		public IContainer AsContainer => null;
 
 		public DuplicatableStream DataStream { get; }
+
+		public void Dispose() {
+			DataStream.Dispose();
+		}
 	}
 }

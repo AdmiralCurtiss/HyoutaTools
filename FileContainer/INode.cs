@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HyoutaTools.FileContainer {
-	public interface INode {
+	public interface INode : IDisposable {
 		bool IsFile { get; }
 		bool IsContainer { get; }
 		IFile AsFile { get; }

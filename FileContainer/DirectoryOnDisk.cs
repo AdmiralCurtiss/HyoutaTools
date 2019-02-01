@@ -32,5 +32,8 @@ namespace HyoutaTools.FileContainer {
 			}
 			return null;
 		}
+
+		public void Dispose() {
+		}
 	}
 }
