@@ -17,9 +17,17 @@ namespace HyoutaTools.FileContainer {
 		public IFile AsFile => null;
 		public IContainer AsContainer => this;
 
+		private static INode CreateNode( System.IO.FileSystemInfo f ) {
+			if ( f is System.IO.DirectoryInfo ) {
+				return new DirectoryOnDisk( f.FullName );
+			} else {
+				return new FileOnDisk( f.FullName );
+			}
+		}
+
 		public INode GetChildByIndex( long index ) {
 			if ( index > 0 && index < Children.Length ) {
-				return new FileOnDisk( Children[index].FullName );
+				return CreateNode( Children[index] );
 			}
 			return null;
 		}
@@ -27,7 +35,7 @@ namespace HyoutaTools.FileContainer {
 		public INode GetChildByName( string name ) {
 			foreach ( var ch in Children ) {
 				if ( ch.Name == name ) {
-					return new FileOnDisk( ch.FullName );
+					return CreateNode( ch );
 				}
 			}
 			return null;
