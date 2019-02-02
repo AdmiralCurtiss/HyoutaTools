@@ -9,21 +9,38 @@ using System.Threading.Tasks;
 
 namespace HyoutaTools.Streams {
 	public class DuplicatableFileStream : DuplicatableStream {
-		private FileStream Base;
+		private FileStream BaseStreamInternal;
 		private string Path;
 		private FileMode Mode;
 		private FileAccess Access;
 		private FileShare Share;
+		private bool Disposed;
+
+		private FileStream Base {
+			get {
+				if ( Disposed ) {
+					throw new Exception( "Accessing disposed DuplicatableFileStream." );
+				}
+				if ( BaseStreamInternal == null ) {
+					BaseStreamInternal = new FileStream( Path, Mode, Access, Share );
+				}
+				return BaseStreamInternal;
+			}
+		}
 
 		public DuplicatableFileStream( string path, FileMode mode = FileMode.Open, FileAccess access = FileAccess.Read, FileShare share = FileShare.Read ) {
-			Base = new FileStream( path, mode, access, share );
+			BaseStreamInternal = null;
 			Path = path;
 			Mode = mode;
 			Access = access;
 			Share = share;
+			Disposed = false;
 		}
 
 		public override DuplicatableStream Duplicate() {
+			if ( Disposed ) {
+				throw new Exception( "Duplicating disposed DuplicatableFileStream." );
+			}
 			return new DuplicatableFileStream( Path, Mode, Access, Share );
 		}
 
@@ -41,10 +58,25 @@ namespace HyoutaTools.Streams {
 		public override int ReadByte() { return Base.ReadByte(); }
 		public override void WriteByte( byte value ) { Base.WriteByte( value ); }
 
-		protected override void Dispose( bool disposing ) { Base.Close(); }
+		protected override void Dispose( bool disposing ) {
+			End();
+			Disposed = true;
+		}
 
 		public override string ToString() {
-			return Base.ToString();
+			return "File at " + Path;
+		}
+
+		public override void ReStart() {
+			// Base accessor creates the stream if it's currently not
+			Base.Position = 0;
+		}
+
+		public override void End() {
+			if ( BaseStreamInternal != null ) {
+				BaseStreamInternal.Dispose();
+				BaseStreamInternal = null;
+			}
 		}
 	}
 }

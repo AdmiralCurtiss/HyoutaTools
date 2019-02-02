@@ -7,11 +7,21 @@ using System.Threading.Tasks;
 
 namespace HyoutaTools.Streams {
 	public class PartialStream : DuplicatableStream {
-		private DuplicatableStream BaseStream;
+		private DuplicatableStream BaseStreamInternal;
+		private bool Initialized;
 		private long PartialStart;
 		private long PartialLength;
 
 		private long CurrentPosition;
+
+		private DuplicatableStream BaseStream {
+			get {
+				if ( !Initialized ) {
+					ReStart();
+				}
+				return BaseStreamInternal;
+			}
+		}
 
 		private long PartialEnd { get { return PartialStart + PartialLength; } }
 		private long PartialBytesLeft { get { return PartialLength - CurrentPosition; } }
@@ -20,11 +30,11 @@ namespace HyoutaTools.Streams {
 			if ( position < 0 ) { throw new Exception( "Invalid position, must be positive." ); }
 			if ( length < 0 ) { throw new Exception( "Invalid length, must be positive." ); }
 
-			BaseStream = stream.Duplicate();
+			BaseStreamInternal = stream.Duplicate();
+			Initialized = false;
 			PartialStart = position;
 			PartialLength = length;
 			CurrentPosition = 0;
-			BaseStream.Position = PartialStart;
 		}
 
 		public override bool CanRead => BaseStream.CanRead;
@@ -97,7 +107,32 @@ namespace HyoutaTools.Streams {
 		}
 
 		public override DuplicatableStream Duplicate() {
-			return new PartialStream( BaseStream, PartialStart, PartialLength );
+			return new PartialStream( BaseStreamInternal, PartialStart, PartialLength );
+		}
+
+		public override void ReStart() {
+			BaseStreamInternal.ReStart();
+			BaseStreamInternal.Position = PartialStart;
+			CurrentPosition = 0;
+			Initialized = true;
+		}
+
+		public override void End() {
+			BaseStreamInternal.End();
+			CurrentPosition = 0;
+			Initialized = false;
+		}
+
+		protected override void Dispose( bool disposing ) {
+			BaseStreamInternal.Dispose();
+		}
+
+		public override void Close() {
+			BaseStreamInternal.Close();
+		}
+
+		public override string ToString() {
+			return "Partial stream [" + PartialStart + ", " + PartialEnd + "] of " + BaseStreamInternal.ToString();
 		}
 	}
 }
