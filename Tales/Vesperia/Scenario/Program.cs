@@ -14,7 +14,7 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 			string inPath = args[0];
 			string outPath = args.Count > 1 ? args[1] : args[0] + ".ext";
 			
-			var scenario = new ScenarioDat( new System.IO.FileStream( inPath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) );
+			var scenario = new ScenarioDat( new Streams.DuplicatableFileStream( inPath ) );
 			scenario.Extract( outPath );
 
 			return 0;

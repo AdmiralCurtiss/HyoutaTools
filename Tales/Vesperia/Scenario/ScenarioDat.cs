@@ -3,30 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaTools.FileContainer;
+using HyoutaTools.Streams;
 
 namespace HyoutaTools.Tales.Vesperia.Scenario {
-	public class ScenarioDatEntry {
+	public class ScenarioDatEntry : IFile {
 		public uint Offset;
 		public uint FilesizeCompressed;
 		public uint FilesizeUncompressed;
 
-		public Stream Data = null;
+		public DuplicatableStream DataStream { get; set; }
+		public bool HasData => DataStream != null;
 
 		public ScenarioDatEntry() { }
-		public ScenarioDatEntry( Stream data, uint FilesOffset ) {
+		public ScenarioDatEntry( DuplicatableStream data, uint FilesOffset ) {
 			Offset = data.ReadUInt32().SwapEndian();
 			FilesizeCompressed = data.ReadUInt32().SwapEndian();
 			FilesizeUncompressed = data.ReadUInt32().SwapEndian();
 
 			if ( FilesizeCompressed > 0 ) {
-				data.Position = Offset + FilesOffset;
-				Data = new MemoryStream( (int)FilesizeCompressed );
-				Util.CopyStream( data, Data, (int)FilesizeCompressed );
+				DataStream = new PartialStream( data, Offset + FilesOffset, FilesizeCompressed );
+			} else {
+				DataStream = null;
 			}
+		}
+
+		public bool IsFile => true;
+		public bool IsContainer => false;
+		public IFile AsFile => this;
+		public IContainer AsContainer => null;
+
+		public void Dispose() {
+			DataStream.Dispose();
 		}
 	}
 
-	public class ScenarioDat : IDisposable {
+	public class ScenarioDat : IContainer {
 		public string Magic;
 		public uint Filesize;
 		public uint Unknown;
@@ -36,12 +48,17 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 
 		public List<ScenarioDatEntry> Entries;
 
+		public bool IsFile => false;
+		public bool IsContainer => true;
+		public IFile AsFile => null;
+		public IContainer AsContainer => this;
+
 		public ScenarioDat() {
 			Magic = "TO8SCEL\0";
 			Unknown = 0x20;
 			Entries = new List<ScenarioDatEntry>();
 		}
-		public ScenarioDat( Stream data ) {
+		public ScenarioDat( Streams.DuplicatableStream data ) {
 			Magic = data.ReadAscii( 8 );
 			Filesize = data.ReadUInt32().SwapEndian();
 			Unknown = data.ReadUInt32().SwapEndian();
@@ -63,11 +80,12 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 			System.IO.Directory.CreateDirectory( outPath );
 			for ( int i = 0; i < Entries.Count; ++i ) {
 				var e = Entries[i];
-				if ( e.FilesizeCompressed > 0 ) {
-					var fs = new System.IO.FileStream( System.IO.Path.Combine( outPath, i.ToString() ), FileMode.Create );
-					e.Data.Position = 0;
-					Util.CopyStream( e.Data, fs, (int)e.Data.Length );
-					fs.Close();
+				if ( e.HasData ) {
+					using ( var fs = new System.IO.FileStream( System.IO.Path.Combine( outPath, i.ToString() ), FileMode.Create ) ) {
+						e.DataStream.ReStart();
+						Util.CopyStream( e.DataStream, fs, (int)e.DataStream.Length );
+						e.DataStream.End();
+					}
 				}
 			}
 		}
@@ -82,12 +100,12 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 				// make sure an entry for that file exists
 				for ( int i = Entries.Count; i <= fileNumber; ++i ) { Entries.Add( new ScenarioDatEntry() ); }
 
-				Entries[fileNumber].Data = new FileStream( f, FileMode.Open );
-				Entries[fileNumber].FilesizeCompressed = (uint)Entries[fileNumber].Data.Length;
+				Entries[fileNumber].DataStream = new DuplicatableFileStream( f );
+				Entries[fileNumber].FilesizeCompressed = (uint)Entries[fileNumber].DataStream.Length;
 
-				Entries[fileNumber].Data.Position = 0x05;
-				Entries[fileNumber].FilesizeUncompressed = Entries[fileNumber].Data.ReadUInt32();
-				Entries[fileNumber].Data.Position = 0;
+				Entries[fileNumber].DataStream.Position = 0x05;
+				Entries[fileNumber].FilesizeUncompressed = Entries[fileNumber].DataStream.ReadUInt32();
+				Entries[fileNumber].DataStream.Position = 0;
 			}
 
 			Filecount = (uint)Entries.Count;
@@ -105,22 +123,22 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 
 			// write files
 			for ( int i = 0; i < Entries.Count; ++i ) {
-				if ( Entries[i].Data != null ) {
+				if ( Entries[i].DataStream != null ) {
 					// special case: if multiple files in a row are identical, only add them once and point the offsets at the same data
 					// oddly enough for the two times it happens in the original files, it only does it once, so no idea what is actually
 					// the proper way to handle it, faking it with that last condition
-					if ( i >= 1 && Entries[i - 1].Data != null && Entries[i - 1].Data.Length == Entries[i].Data.Length && Entries[i].Data.Length > 0x30 ) {
-						Entries[i - 1].Data.Position = 0;
-						Entries[i].Data.Position = 0;
-						if ( Entries[i - 1].Data.IsIdentical( Entries[i].Data, Entries[i].Data.Length ) ) {
+					if ( i >= 1 && Entries[i - 1].DataStream != null && Entries[i - 1].DataStream.Length == Entries[i].DataStream.Length && Entries[i].DataStream.Length > 0x30 ) {
+						Entries[i - 1].DataStream.Position = 0;
+						Entries[i].DataStream.Position = 0;
+						if ( Entries[i - 1].DataStream.IsIdentical( Entries[i].DataStream, Entries[i].DataStream.Length ) ) {
 							Entries[i].Offset = Entries[i - 1].Offset;
 							continue;
 						}
 					}
 
 					Entries[i].Offset = (uint)f.Position - FilesOffset;
-					Entries[i].Data.Position = 0;
-					Util.CopyStream( Entries[i].Data, f, (int)Entries[i].Data.Length );
+					Entries[i].DataStream.Position = 0;
+					Util.CopyStream( Entries[i].DataStream, f, (int)Entries[i].DataStream.Length );
 					while ( f.Length % align != 0 ) { f.WriteByte( 0 ); }
 				}
 			}
@@ -151,11 +169,26 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 		public void Dispose() {
 			if ( Entries != null ) {
 				for ( int i = 0; i < Entries.Count; ++i ) {
-					if ( Entries[i].Data != null ) {
-						Entries[i].Data.Close();
+					if ( Entries[i].DataStream != null ) {
+						Entries[i].DataStream.Dispose();
+						Entries[i].DataStream = null;
 					}
 				}
 			}
+		}
+
+		public INode GetChildByIndex( long index ) {
+			if ( index >= 0 && index < Entries.Count ) {
+				var e = Entries[(int)index];
+				if ( e.HasData ) {
+					return e;
+				}
+			}
+			return null;
+		}
+
+		public INode GetChildByName( string name ) {
+			return null;
 		}
 	}
 }
