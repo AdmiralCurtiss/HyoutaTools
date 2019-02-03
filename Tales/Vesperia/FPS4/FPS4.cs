@@ -27,6 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	}
 
 	public class FileInfo {
+		public uint FileIndex;
 		public uint? Location = null;
 		public uint? SectorSize = null;
 		public uint? FileSize = null;
@@ -37,7 +38,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		public bool ShouldSkip => ( Location != null && Location == 0xFFFFFFFF ) || ( Unknown0x0080 != null && Unknown0x0080 > 0 );
 
-		public FileInfo( Stream stream, ContentInfo bitmask, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+		public FileInfo( Stream stream, uint fileIndex, ContentInfo bitmask, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+			FileIndex = fileIndex;
 			if ( bitmask.ContainsStartPointers ) {
 				Location = stream.ReadUInt32().FromEndian( endian );
 			}
@@ -73,11 +75,24 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 		}
 
-		public uint? GuessFileSize() {
-			return FileSize ?? SectorSize;
+		public uint? GuessFileSize( List<FileInfo> files ) {
+			uint? r = FileSize ?? SectorSize;
+			if ( r != null ) {
+				return r;
+			}
+
+			if ( Location != null && files != null ) {
+				for ( int i = (int)( FileIndex + 1 ); i < files.Count; ++i ) {
+					if ( !files[i].ShouldSkip ) {
+						return files[i].Location - Location;
+					}
+				}
+			}
+
+			return null;
 		}
 
-		public (string Path, string Name) GuessFilePathName( long index ) {
+		public (string Path, string Name) GuessFilePathName() {
 			string path = Metadata?.FirstOrDefault( x => x.Key == null ).Value;
 			if ( string.IsNullOrWhiteSpace( path ) ) {
 				path = null;
@@ -92,7 +107,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				return (path, nameFromMetadata);
 			}
 
-			string indexString = index.ToString( "D4" );
+			string indexString = FileIndex.ToString( "D4" );
 			string indexStringWithType = string.IsNullOrWhiteSpace( FileType ) ? indexString : indexString + "." + FileType;
 			if ( path == null ) {
 				return (null, indexStringWithType);
@@ -138,6 +153,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public string ArchiveName = null;
 		public uint Alignment;
 		public uint FileLocationMultiplier;
+		public bool ShouldGuessFilesizeFromNextFile;
 		public Util.Endianness Endian = Util.Endianness.BigEndian;
 
 		public List<FileInfo> Files;
@@ -194,15 +210,34 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Files = new List<FileInfo>( (int)FileCount );
 			for ( uint i = 0; i < FileCount; ++i ) {
 				infile.Position = HeaderSize + ( i * EntrySize );
-				Files.Add( new FileInfo( infile, ContentBitmask, Endian, Util.GameTextEncoding.ASCII ) );
+				Files.Add( new FileInfo( infile, i, ContentBitmask, Endian, Util.GameTextEncoding.ASCII ) );
 			}
 
 			FileLocationMultiplier = CalculateFileLocationMultiplier();
+			ShouldGuessFilesizeFromNextFile = !ContentBitmask.ContainsFileSizes && !ContentBitmask.ContainsSectorSizes && CalculateIsLinear();
 
 			if ( infile != contentFile ) {
 				infile.Close();
 			}
 			return true;
+		}
+
+		public bool CalculateIsLinear() {
+			if ( ContentBitmask.ContainsStartPointers ) {
+				uint lastFilePosition = Files[0].Location.Value;
+				for ( int i = 1; i < FileCount; ++i ) {
+					FileInfo fi = Files[i];
+					if ( fi.ShouldSkip ) {
+						continue;
+					}
+					if ( fi.Location.Value <= lastFilePosition ) {
+						return false;
+					}
+					lastFilePosition = fi.Location.Value;
+				}
+				return true;
+			}
+			return false;
 		}
 
 		public uint CalculateFileLocationMultiplier() {
@@ -238,14 +273,14 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				if ( fi.Location == null ) {
 					throw new Exception( "FPS4 extraction failure: Doesn't contain file start pointers!" );
 				}
-				uint? maybeFilesize = fi.GuessFileSize();
+				uint? maybeFilesize = fi.GuessFileSize( ShouldGuessFilesizeFromNextFile ? Files : null );
 				if ( maybeFilesize == null ) {
 					throw new Exception( "FPS4 extraction failure: Doesn't contain filesize information!" );
 				}
 
 				uint fileloc = fi.Location.Value * FileLocationMultiplier;
 				uint filesize = maybeFilesize.Value;
-				(string path, string filename) = fi.GuessFilePathName( i );
+				(string path, string filename) = fi.GuessFilePathName();
 
 				if ( path != null ) {
 					Directory.CreateDirectory( dirname + '/' + path );
