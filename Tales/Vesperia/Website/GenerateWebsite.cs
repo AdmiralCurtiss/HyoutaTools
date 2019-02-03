@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HyoutaTools.Tales.Vesperia.ItemDat;
 using System.IO;
 using System.Drawing;
+using HyoutaTools.FileContainer;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateWebsiteInputOutputData {
@@ -24,7 +24,33 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public GenerateWebsiteInputOutputData CompareSite = null;
 	}
 
-	public class GenerateWebsite {
+	public static class GenerateWebsite {
+		public static IContainer TryGetContainerFromDisk( string path ) {
+			if ( File.Exists( path ) ) {
+				return new FPS4.FPS4( path );
+			}
+			if ( Directory.Exists( path ) ) {
+				return new DirectoryOnDisk( path );
+			}
+			if ( Directory.Exists( path + ".ext" ) ) {
+				return new DirectoryOnDisk( path + ".ext" );
+			}
+			return null;
+		}
+		private static INode FindChildByName( this IContainer node, string name ) {
+			INode n = node.GetChildByName( name );
+			if ( n != null ) {
+				return n;
+			}
+			return node.GetChildByName( name + ".ext" );
+		}
+		private static IContainer ToFps4( this INode node ) {
+			if ( node.IsFile ) {
+				return new FPS4.FPS4( node.AsFile.DataStream );
+			}
+			return node.AsContainer;
+		}
+
 		public static Stream TryCreateStreamFromPath( string path ) {
 			try {
 				return new FileStream( path, FileMode.Open, FileAccess.Read );
@@ -36,13 +62,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static Stream TryGetItemDat( string basepath, GameLocale locale, GameVersion version ) {
-			return TryCreateStreamFromPath( Path.Combine( basepath, "item.svo.ext", "ITEM.DAT" ) );
+			return TryGetContainerFromDisk( basepath )?.FindChildByName( "item.svo" )?.ToFps4()?.FindChildByName( "ITEM.DAT" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetStringDic( string basepath, GameLocale locale, GameVersion version ) {
 			if ( version == GameVersion.X360_EU || version == GameVersion.PC ) {
-				return TryCreateStreamFromPath( Path.Combine( basepath, "language", "string_dic_" + locale.ToString().ToLowerInvariant() + ".so" ) );
+				return TryGetContainerFromDisk( basepath )?.FindChildByName( "language" )?.AsContainer?.FindChildByName( "string_dic_" + locale.ToString().ToLowerInvariant() + ".so" )?.AsFile?.DataStream;
 			} else {
-				return TryCreateStreamFromPath( Path.Combine( basepath, "string.svo.ext", "STRING_DIC.SO" ) );
+				return TryGetContainerFromDisk( basepath )?.FindChildByName( "string.svo" )?.ToFps4()?.FindChildByName( "STRING_DIC.SO" )?.AsFile?.DataStream;
 			}
 		}
 		public static string ConstructBtlPackPath( string basepath, GameLocale locale, GameVersion version ) {
@@ -52,38 +78,39 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				return Path.Combine( basepath, "btl.svo.ext", "BTL_PACK.DAT.ext" );
 			}
 		}
-		public static Stream TryGetBtlPack( string basepath, int folderIndex, string filename, GameLocale locale, GameVersion version ) {
-			return TryCreateStreamFromPath( Path.Combine( ConstructBtlPackPath( basepath, locale, version ), folderIndex.ToString( "D4" ) + ".ext", filename ) );
+		public static IContainer TryOpenBtlPack( string basepath, GameLocale locale, GameVersion version ) {
+			string btlPackName = version == GameVersion.X360_EU ? "BTL_PACK_" + locale.ToString().ToUpperInvariant() + ".DAT" : "BTL_PACK.DAT";
+			return TryGetContainerFromDisk( basepath )?.FindChildByName( "btl.svo" )?.ToFps4()?.FindChildByName( btlPackName )?.ToFps4();
 		}
 		public static Stream TryGetArtes( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetBtlPack( basepath, 4, "ALL.0000", locale, version );
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 4 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetSkills( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetBtlPack( basepath, 10, "ALL.0000", locale, version );
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 10 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetEnemies( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetBtlPack( basepath, 5, "ALL.0000", locale, version );
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 5 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetEnemyGroups( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetBtlPack( basepath, 6, "ALL.0000", locale, version );
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 6 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetEncounterGroups( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetBtlPack( basepath, 7, "ALL.0000", locale, version );
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 7 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetGradeShop( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetBtlPack( basepath, 16, "ALL.0000", locale, version );
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 16 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetStrategy( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetBtlPack( basepath, 11, "ALL.0000", locale, version );
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 11 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetBattleVoicesEnd( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetBtlPack( basepath, 19, "END.0000", locale, version );
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 19 )?.ToFps4()?.FindChildByName( "END.0000" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetNecropolisFloors( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetBtlPack( basepath, 21, "ALL.0000", locale, version );
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 21 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetNecropolisTreasures( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetBtlPack( basepath, 22, "ALL.0000", locale, version );
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 22 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetNecropolisMap( string basepath, string mapname, GameLocale locale, GameVersion version ) {
 			string folder = Path.Combine( ConstructBtlPackPath( basepath, locale, version ), 23.ToString( "D4" ) + ".ext" );
@@ -107,22 +134,22 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 		public static Stream TryGetRecipes( string basepath, GameLocale locale, GameVersion version ) {
 			if ( version.Is360() ) {
-				return TryCreateStreamFromPath( Path.Combine( basepath, "cook.svo.ext", "COOKDATA.BIN" ) );
+				return TryGetContainerFromDisk( basepath )?.FindChildByName( "cook.svo" )?.ToFps4()?.FindChildByName( "COOKDATA.BIN" )?.AsFile?.DataStream;
 			} else {
-				return TryCreateStreamFromPath( Path.Combine( basepath, "menu.svo.ext", "COOKDATA.BIN" ) );
+				return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "COOKDATA.BIN" )?.AsFile?.DataStream;
 			}
 		}
 		public static Stream TryGetLocations( string basepath, GameLocale locale, GameVersion version ) {
-			return TryCreateStreamFromPath( Path.Combine( basepath, "menu.svo.ext", "WORLDDATA.BIN" ) );
+			return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "WORLDDATA.BIN" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetSynopsis( string basepath, GameLocale locale, GameVersion version ) {
-			return TryCreateStreamFromPath( Path.Combine( basepath, "menu.svo.ext", "SYNOPSISDATA.BIN" ) );
+			return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "SYNOPSISDATA.BIN" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetTitles( string basepath, GameLocale locale, GameVersion version ) {
-			return TryCreateStreamFromPath( Path.Combine( basepath, "menu.svo.ext", "FAMEDATA.BIN" ) );
+			return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "FAMEDATA.BIN" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetBattleBook( string basepath, GameLocale locale, GameVersion version ) {
-			return TryCreateStreamFromPath( Path.Combine( basepath, "menu.svo.ext", "BATTLEBOOKDATA.BIN" ) );
+			return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "BATTLEBOOKDATA.BIN" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetSkitMetadata( string basepath, GameLocale locale, GameVersion version ) {
 			return TryCreateStreamFromPath( Path.Combine( basepath, "chat.svo.ext", "CHAT.DAT.dec" ) );
@@ -141,7 +168,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 		public static Stream TryGetMaplist( string basepath, GameLocale locale, GameVersion version ) {
-			return TryCreateStreamFromPath( Path.Combine( basepath, "map.svo.ext", "MAPLIST.DAT" ) );
+			return TryGetContainerFromDisk( basepath )?.FindChildByName( "map.svo" )?.ToFps4()?.FindChildByName( "MAPLIST.DAT" )?.AsFile?.DataStream;
 		}
 		public static int Generate( List<string> args ) {
 			List<GenerateWebsiteInputOutputData> gens = new List<GenerateWebsiteInputOutputData>();
