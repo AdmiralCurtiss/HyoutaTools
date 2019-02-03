@@ -23,6 +23,81 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public bool ContainsFileMetadata { get { return ( Value & 0x0040 ) == 0x0040; } }
 	}
 
+	public class FileInfo {
+		public uint? Location = null;
+		public uint? SectorSize = null;
+		public uint? FileSize = null;
+		public string FileName = null;
+		public string FileType = null;
+		public List<(string Key, string Value)> Metadata = null;
+
+		public FileInfo( Stream stream, ContentInfo bitmask, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+			if ( bitmask.ContainsStartPointers ) {
+				Location = stream.ReadUInt32().FromEndian( endian );
+			}
+			if ( bitmask.ContainsSectorSizes ) {
+				SectorSize = stream.ReadUInt32().FromEndian( endian );
+			}
+			if ( bitmask.ContainsFileSizes ) {
+				FileSize = stream.ReadUInt32().FromEndian( endian );
+			}
+			if ( bitmask.ContainsFilenames ) {
+				FileName = stream.ReadSizedString( 0x20, encoding ).TrimNull();
+			}
+			if ( bitmask.ContainsFiletypes ) {
+				FileType = stream.ReadSizedString( 0x04, encoding ).TrimNull();
+			}
+			if ( bitmask.ContainsFileMetadata ) {
+				uint pathLocation = stream.ReadUInt32().FromEndian( endian );
+				if ( pathLocation != 0 ) {
+					string md = stream.ReadNulltermStringFromLocationAndReset( pathLocation, encoding );
+					Metadata = new List<(string Key, string Value)>();
+					foreach ( string m in md.Split( new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ) ) {
+						if ( m.Contains( "=" ) ) {
+							var s = m.Split( new char[] { '=' }, 2 );
+							Metadata.Add( (s[0], s[1]) );
+						} else {
+							Metadata.Add( (null, m) );
+						}
+					}
+				}
+			}
+		}
+
+		public uint? GuessFileSize() {
+			return FileSize ?? SectorSize;
+		}
+
+		public (string Path, string Name) GuessFilePathName( long index ) {
+			string path = Metadata?.FirstOrDefault( x => x.Key == null ).Value;
+			if ( string.IsNullOrWhiteSpace( path ) ) {
+				path = null;
+			}
+
+			if ( !string.IsNullOrWhiteSpace( FileName ) ) {
+				return (path, FileName);
+			}
+
+			string nameFromMetadata = Metadata?.FirstOrDefault( x => x.Key == "name" ).Value;
+			if ( !string.IsNullOrWhiteSpace( nameFromMetadata ) ) {
+				return (path, nameFromMetadata);
+			}
+
+			string indexString = index.ToString( "D4" );
+			string indexStringWithType = string.IsNullOrWhiteSpace( FileType ) ? indexString : indexString + "." + FileType;
+			if ( path == null ) {
+				return (null, indexStringWithType);
+			}
+
+			int finaldir = path.LastIndexOf( '/' );
+			if ( finaldir == -1 ) {
+				return (null, path + "." + indexStringWithType);
+			} else {
+				return (path.Substring( 0, finaldir ), path.Substring( finaldir + 1 ) + "." + indexStringWithType);
+			}
+		}
+	}
+
 	public class FPS4 : IDisposable {
 		public FPS4() {
 			ContentBitmask = new ContentInfo( 0x000F );
@@ -132,96 +207,33 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			for ( uint i = 0; i < FileCount - 1; ++i ) {
 				infile.Seek( HeaderSize + ( i * EntrySize ), SeekOrigin.Begin );
+				FileInfo fi = new FileInfo( infile, ContentBitmask, Endian, Util.GameTextEncoding.ASCII );
 
-				uint fileloc = 0;
-				uint sectsize = 0;
-				uint filesize = 0;
-
-				if ( ContentBitmask.ContainsStartPointers ) {
-					fileloc = infile.ReadUInt32().FromEndian( Endian );
-				} else {
+				if ( fi.Location == null ) {
 					throw new Exception( "FPS4 extraction failure: Doesn't contain file start pointers!" );
 				}
-
-				if ( ContentBitmask.ContainsSectorSizes ) {
-					sectsize = infile.ReadUInt32().FromEndian( Endian );
-				}
-
-				if ( ContentBitmask.ContainsFileSizes ) {
-					filesize = infile.ReadUInt32().FromEndian( Endian );
-				} else if ( ContentBitmask.ContainsSectorSizes ) {
-					filesize = sectsize;
-				} else {
-					throw new Exception( "FPS4 extraction failure: Doesn't contain filesize information!" );
-				}
-
-				if ( fileloc == 0xFFFFFFFF ) {
+				if ( fi.Location.Value == 0xFFFFFFFF ) {
 					Console.WriteLine( "Skipped #" + i.ToString( "D4" ) + ", can't find file" );
 					continue;
 				}
-
-				fileloc = fileloc * FileLocationMultiplier;
-
-				string filename = "";
-				if ( ContentBitmask.ContainsFilenames ) {
-					filename = infile.ReadAsciiNullterm();
+				uint? maybeFilesize = fi.GuessFileSize();
+				if ( maybeFilesize == null ) {
+					throw new Exception( "FPS4 extraction failure: Doesn't contain filesize information!" );
 				}
 
-				string extension = "";
-				if ( ContentBitmask.ContainsFiletypes ) {
-					extension = '.' + infile.ReadAscii( 4 ).TrimNull();
+				uint fileloc = fi.Location.Value * FileLocationMultiplier;
+				uint filesize = maybeFilesize.Value;
+				(string path, string filename) = fi.GuessFilePathName( i );
+
+				if ( path != null ) {
+					Directory.CreateDirectory( dirname + '/' + path );
+					path = path + '/' + filename;
+				} else {
+					path = filename;
 				}
+				FileStream outfile = new FileStream( Path.Combine( dirname, path ), FileMode.Create );
 
-				string path = "";
-				if ( ContentBitmask.ContainsFileMetadata && !noMetadataParsing ) {
-					uint pathLocation = infile.ReadUInt32().FromEndian( Endian );
-					if ( pathLocation != 0x00 ) {
-						long tmp = infile.Position;
-						infile.Seek( pathLocation, SeekOrigin.Begin );
-						path = infile.ReadAsciiNullterm();
-						infile.Seek( tmp, SeekOrigin.Begin );
-
-						if ( path.StartsWith( "name=" ) ) {
-							path = path.Substring( 5 );
-						}
-
-						int finaldir = path.LastIndexOf( '/' );
-						if ( filename == "" ) {
-							filename = path.Substring( finaldir + 1 ) + '.' + i.ToString( "D4" );
-						} else {
-							filename = path.Substring( finaldir + 1 ) + '.' + filename;
-						}
-
-						if ( finaldir == -1 ) {
-							path = "";
-						} else {
-							path = path.Substring( 0, finaldir );
-						}
-					}
-				}
-				//string description = Util.GetText( (int)( Util.FromEndian( BitConverter.ToUInt32( b, (int)( headersize + ( i * entrysize ) + 0x2C ) ), Endian ) ), b );
-
-				if ( filename == "" ) {
-					filename = i.ToString( "D4" );
-				}
-
-				FileStream outfile;
-				try {
-					System.IO.Directory.CreateDirectory( dirname + '/' + path );
-					outfile = new FileStream( dirname + '/' + path + '/' + filename + extension, FileMode.Create );
-				} catch ( Exception ) {
-					try {
-						outfile = new FileStream( dirname + '/' + path + '/' + i.ToString( "D4" ) + extension, FileMode.Create );
-					} catch ( Exception ) {
-						try {
-							outfile = new FileStream( dirname + '/' + i.ToString( "D4" ) + extension, FileMode.Create );
-						} catch ( Exception ) {
-							outfile = new FileStream( dirname + '/' + i.ToString( "D4" ), FileMode.Create );
-						}
-					}
-				}
-
-				Console.WriteLine( "Extracting #" + i.ToString( "D4" ) + ": " + path + '/' + System.IO.Path.GetFileName( outfile.Name ) );
+				Console.WriteLine( "Extracting #" + i.ToString( "D4" ) + ": " + path );
 
 				contentFile.Seek( fileloc, SeekOrigin.Begin );
 				Util.CopyStream( contentFile, outfile, (int)filesize );
