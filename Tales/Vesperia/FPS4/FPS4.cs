@@ -129,14 +129,15 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			ContentBitmask = new ContentInfo( 0x000F );
 			Alignment = 0x800;
 		}
-		public FPS4( string inFilename ) {
-			if ( !LoadFile( inFilename ) ) {
-				throw new Exception( "Failed loading FPS4: " + inFilename );
+		public FPS4( string headerFilename, string contentFilename = null ) {
+			DuplicatableFileStream headerStream = new DuplicatableFileStream( headerFilename );
+			if ( !LoadFile( headerStream, contentFilename != null ? new DuplicatableFileStream( contentFilename ) : headerStream ) ) {
+				throw new Exception( "Failed loading FPS4." );
 			}
 		}
-		public FPS4( string headerFilename, string contentFilename ) {
-			if ( !LoadFile( headerFilename, contentFilename ) ) {
-				throw new Exception( "Failed loading FPS4: " + headerFilename + " + " + contentFilename );
+		public FPS4( DuplicatableStream headerStream, DuplicatableStream contentStream = null ) {
+			if ( !LoadFile( headerStream, contentStream != null ? contentStream : headerStream ) ) {
+				throw new Exception( "Failed loading FPS4." );
 			}
 		}
 		~FPS4() {
@@ -160,21 +161,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		public List<FileInfo> Files;
 
-		private bool LoadFile( string headerFilename, string contentFilename = null ) {
-			DuplicatableStream infile = null;
-			try {
-				infile = new DuplicatableFileStream( headerFilename );
-				infile.ReStart();
-				if ( contentFilename != null ) {
-					contentFile = new DuplicatableFileStream( contentFilename );
-					contentFile.ReStart();
-				} else {
-					contentFile = infile;
-				}
-			} catch ( Exception ) {
-				Console.WriteLine( "ERROR: can't open " + headerFilename );
-				return false;
-			}
+		private bool LoadFile( DuplicatableStream headerStream, DuplicatableStream contentStream ) {
+			DuplicatableStream infile = headerStream.Duplicate();
+			contentFile = contentStream.Duplicate();
 
 			infile.Seek( 0x00, SeekOrigin.Begin );
 			string magic = infile.ReadAscii( 4 );
@@ -220,9 +209,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			FileLocationMultiplier = CalculateFileLocationMultiplier();
 			ShouldGuessFilesizeFromNextFile = !ContentBitmask.ContainsFileSizes && !ContentBitmask.ContainsSectorSizes && CalculateIsLinear();
 
-			if ( infile != contentFile ) {
-				infile.Close();
-			}
+			infile.Dispose();
 			return true;
 		}
 
