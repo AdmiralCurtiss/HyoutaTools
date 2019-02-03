@@ -87,7 +87,9 @@
     <Compile Include="DanganRonpa\Pak\Program.cs" />
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
     <Compile Include="ExternalProgramExecution.cs" />
+    <Compile Include="FileContainer\ContainerBase.cs" />
     <Compile Include="FileContainer\DirectoryOnDisk.cs" />
+    <Compile Include="FileContainer\FileBase.cs" />
     <Compile Include="FileContainer\FileFromStream.cs" />
     <Compile Include="FileContainer\FileOnDisk.cs" />
     <Compile Include="FileContainer\IContainer.cs" />

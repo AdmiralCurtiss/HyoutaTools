@@ -38,7 +38,7 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 		}
 	}
 
-	public class ScenarioDat : IContainer {
+	public class ScenarioDat : ContainerBase {
 		public string Magic;
 		public uint Filesize;
 		public uint Unknown;
@@ -47,11 +47,6 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 		public uint FilesOffset;
 
 		public List<ScenarioDatEntry> Entries;
-
-		public bool IsFile => false;
-		public bool IsContainer => true;
-		public IFile AsFile => null;
-		public IContainer AsContainer => this;
 
 		public ScenarioDat() {
 			Magic = "TO8SCEL\0";
@@ -166,7 +161,7 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 			f.Close();
 		}
 
-		public void Dispose() {
+		public override void Dispose() {
 			if ( Entries != null ) {
 				for ( int i = 0; i < Entries.Count; ++i ) {
 					if ( Entries[i].DataStream != null ) {
@@ -177,7 +172,7 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 			}
 		}
 
-		public INode GetChildByIndex( long index ) {
+		public override INode GetChildByIndex( long index ) {
 			if ( index >= 0 && index < Entries.Count ) {
 				var e = Entries[(int)index];
 				if ( e.HasData ) {
@@ -187,7 +182,7 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 			return null;
 		}
 
-		public INode GetChildByName( string name ) {
+		public override INode GetChildByName( string name ) {
 			return null;
 		}
 	}
