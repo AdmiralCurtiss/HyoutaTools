@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaTools.Streams;
+using HyoutaTools.FileContainer;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public struct ContentInfo {
@@ -122,7 +124,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		}
 	}
 
-	public class FPS4 : IDisposable {
+	public class FPS4 : ContainerBase {
 		public FPS4() {
 			ContentBitmask = new ContentInfo( 0x000F );
 			Alignment = 0x800;
@@ -141,7 +143,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Close();
 		}
 
-		FileStream contentFile = null;
+		DuplicatableStream contentFile = null;
 		uint FileCount;
 		uint HeaderSize;
 		public uint FirstFileStart;
@@ -159,11 +161,13 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public List<FileInfo> Files;
 
 		private bool LoadFile( string headerFilename, string contentFilename = null ) {
-			FileStream infile = null;
+			DuplicatableStream infile = null;
 			try {
-				infile = new FileStream( headerFilename, FileMode.Open );
+				infile = new DuplicatableFileStream( headerFilename );
+				infile.ReStart();
 				if ( contentFilename != null ) {
-					contentFile = new FileStream( contentFilename, FileMode.Open );
+					contentFile = new DuplicatableFileStream( contentFilename );
+					contentFile.ReStart();
 				} else {
 					contentFile = infile;
 				}
@@ -259,6 +263,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			return 1;
 		}
 
+		// TODO: Clean up code duplication between Extract(), GetChildByIndex(), GetChildByName()!
+
 		public void Extract( string dirname, bool noMetadataParsing = false ) {
 			System.IO.Directory.CreateDirectory( dirname );
 
@@ -296,6 +302,57 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				Util.CopyStream( contentFile, outfile, (int)filesize );
 				outfile.Close();
 			}
+		}
+
+		public override INode GetChildByIndex( long index ) {
+			if ( index >= 0 && index < Files.Count - 1 ) {
+				FileInfo fi = Files[(int)index];
+				if ( fi.ShouldSkip ) {
+					return null;
+				}
+				if ( fi.Location == null ) {
+					return null;
+				}
+				uint? maybeFilesize = fi.GuessFileSize( ShouldGuessFilesizeFromNextFile ? Files : null );
+				if ( maybeFilesize == null ) {
+					return null;
+				}
+
+				uint fileloc = fi.Location.Value * FileLocationMultiplier;
+				uint filesize = maybeFilesize.Value;
+				return new FileFromStream( new PartialStream( contentFile, fileloc, filesize ) );
+			}
+
+			return null;
+		}
+
+		public override INode GetChildByName( string name ) {
+			for ( int i = 0; i < Files.Count - 1; ++i ) {
+				FileInfo fi = Files[i];
+				if ( fi.ShouldSkip ) {
+					continue;
+				}
+				if ( fi.Location == null ) {
+					continue;
+				}
+				uint? maybeFilesize = fi.GuessFileSize( ShouldGuessFilesizeFromNextFile ? Files : null );
+				if ( maybeFilesize == null ) {
+					continue;
+				}
+
+				(string path, string filename) = fi.GuessFilePathName();
+				if ( path != null ) {
+					path = path + '/' + filename;
+				} else {
+					path = filename;
+				}
+
+				if ( path == name ) {
+					return GetChildByIndex( i );
+				}
+			}
+
+			return null;
 		}
 
 		public static void Pack(
@@ -496,7 +553,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 		}
 
-		public void Dispose() {
+		public override void Dispose() {
 			Close();
 		}
 
