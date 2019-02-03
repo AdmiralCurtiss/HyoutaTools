@@ -47,8 +47,9 @@ namespace HyoutaTools.Streams {
 				if ( value < 0 ) {
 					throw new Exception( "Invalid position for partial stream." );
 				}
-				CurrentPosition = Math.Min( value, PartialLength );
-				BaseStream.Position = PartialStart + CurrentPosition;
+				long v = Math.Min( value, PartialLength );
+				BaseStream.Position = PartialStart + v;
+				CurrentPosition = v;
 			}
 		}
 
