@@ -21,6 +21,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public bool ContainsFilenames { get { return ( Value & 0x0008 ) == 0x0008; } }
 		public bool ContainsFiletypes { get { return ( Value & 0x0020 ) == 0x0020; } }
 		public bool ContainsFileMetadata { get { return ( Value & 0x0040 ) == 0x0040; } }
+		public bool Contains0x0080 { get { return ( Value & 0x0080 ) == 0x0080; } }
+
+		public bool HasUnknownDataTypes { get { return ( Value & 0xFF10 ) != 0; } }
 	}
 
 	public class FileInfo {
@@ -30,6 +33,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public string FileName = null;
 		public string FileType = null;
 		public List<(string Key, string Value)> Metadata = null;
+		public uint? Unknown0x0080 = null;
+
+		public bool ShouldSkip => ( Location != null && Location == 0xFFFFFFFF ) || ( Unknown0x0080 != null && Unknown0x0080 > 0 );
 
 		public FileInfo( Stream stream, ContentInfo bitmask, Util.Endianness endian, Util.GameTextEncoding encoding ) {
 			if ( bitmask.ContainsStartPointers ) {
@@ -61,6 +67,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						}
 					}
 				}
+			}
+			if ( bitmask.Contains0x0080 ) {
+				Unknown0x0080 = stream.ReadUInt32().FromEndian( endian );
 			}
 		}
 
@@ -178,6 +187,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			FileLocationMultiplier = CalculateFileLocationMultiplier();
 
 			Console.WriteLine( "Content Bitmask: 0x" + ContentBitmask.Value.ToString( "X4" ) );
+			if ( ContentBitmask.HasUnknownDataTypes ) {
+				Console.WriteLine( "WARNING: Bitmask identifies unknown data types, data interpretation will probably be incorrect." );
+			}
 
 			return true;
 		}
@@ -209,12 +221,13 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				infile.Seek( HeaderSize + ( i * EntrySize ), SeekOrigin.Begin );
 				FileInfo fi = new FileInfo( infile, ContentBitmask, Endian, Util.GameTextEncoding.ASCII );
 
+				if ( fi.ShouldSkip ) {
+					Console.WriteLine( "Skipped #" + i.ToString( "D4" ) );
+					continue;
+				}
+
 				if ( fi.Location == null ) {
 					throw new Exception( "FPS4 extraction failure: Doesn't contain file start pointers!" );
-				}
-				if ( fi.Location.Value == 0xFFFFFFFF ) {
-					Console.WriteLine( "Skipped #" + i.ToString( "D4" ) + ", can't find file" );
-					continue;
 				}
 				uint? maybeFilesize = fi.GuessFileSize();
 				if ( maybeFilesize == null ) {
