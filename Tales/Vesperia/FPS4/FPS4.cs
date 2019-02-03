@@ -126,7 +126,6 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Close();
 		}
 
-		FileStream infile = null;
 		FileStream contentFile = null;
 		uint FileCount;
 		uint HeaderSize;
@@ -141,7 +140,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public uint FileLocationMultiplier;
 		public Util.Endianness Endian = Util.Endianness.BigEndian;
 
+		public List<FileInfo> Files;
+
 		private bool LoadFile( string headerFilename, string contentFilename = null ) {
+			FileStream infile = null;
 			try {
 				infile = new FileStream( headerFilename, FileMode.Open );
 				if ( contentFilename != null ) {
@@ -184,30 +186,38 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			Alignment = FirstFileStart;
 
-			FileLocationMultiplier = CalculateFileLocationMultiplier();
-
 			Console.WriteLine( "Content Bitmask: 0x" + ContentBitmask.Value.ToString( "X4" ) );
 			if ( ContentBitmask.HasUnknownDataTypes ) {
 				Console.WriteLine( "WARNING: Bitmask identifies unknown data types, data interpretation will probably be incorrect." );
 			}
 
+			Files = new List<FileInfo>( (int)FileCount );
+			for ( uint i = 0; i < FileCount; ++i ) {
+				infile.Position = HeaderSize + ( i * EntrySize );
+				Files.Add( new FileInfo( infile, ContentBitmask, Endian, Util.GameTextEncoding.ASCII ) );
+			}
+
+			FileLocationMultiplier = CalculateFileLocationMultiplier();
+
+			if ( infile != contentFile ) {
+				infile.Close();
+			}
 			return true;
 		}
 
 		public uint CalculateFileLocationMultiplier() {
 			if ( ContentBitmask.ContainsStartPointers ) {
 				uint smallestFileLoc = uint.MaxValue;
-				for ( uint i = 0; i < FileCount - 1; ++i ) {
-					infile.Seek( HeaderSize + ( i * EntrySize ), SeekOrigin.Begin );
-					uint fileloc = infile.ReadUInt32().FromEndian( Endian );
-					if ( fileloc > 0 && fileloc != 0xFFFFFFFF ) {
-						smallestFileLoc = Math.Min( fileloc, smallestFileLoc );
+				for ( int i = 0; i < Files.Count - 1; ++i ) {
+					FileInfo fi = Files[i];
+					if ( !fi.ShouldSkip && fi.Location.Value > 0 ) {
+						smallestFileLoc = Math.Min( fi.Location.Value, smallestFileLoc );
 					}
 				}
-				if (smallestFileLoc == uint.MaxValue || smallestFileLoc == FirstFileStart) {
+				if ( smallestFileLoc == uint.MaxValue || smallestFileLoc == FirstFileStart ) {
 					return 1;
 				}
-				if (FirstFileStart % smallestFileLoc == 0) {
+				if ( FirstFileStart % smallestFileLoc == 0 ) {
 					return FirstFileStart / smallestFileLoc;
 				}
 			}
@@ -217,9 +227,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public void Extract( string dirname, bool noMetadataParsing = false ) {
 			System.IO.Directory.CreateDirectory( dirname );
 
-			for ( uint i = 0; i < FileCount - 1; ++i ) {
-				infile.Seek( HeaderSize + ( i * EntrySize ), SeekOrigin.Begin );
-				FileInfo fi = new FileInfo( infile, ContentBitmask, Endian, Util.GameTextEncoding.ASCII );
+			for ( int i = 0; i < Files.Count - 1; ++i ) {
+				FileInfo fi = Files[i];
 
 				if ( fi.ShouldSkip ) {
 					Console.WriteLine( "Skipped #" + i.ToString( "D4" ) );
@@ -446,13 +455,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		}
 
 		public void Close() {
-			if ( contentFile != null && contentFile != infile ) {
+			if ( contentFile != null ) {
 				contentFile.Close();
 				contentFile = null;
-			}
-			if ( infile != null ) {
-				infile.Close();
-				infile = null;
 			}
 		}
 
