@@ -11,9 +11,8 @@ using System.Windows.Forms;
 namespace HyoutaToolsGUI {
 	public partial class ToolSelectionForm : Form {
 		private class ToolInList {
-			public HyoutaTools.ProgramName Name;
-			public HyoutaTools.ProgramNames.ExecuteProgramDelegate Exec;
-			public override string ToString() { return Name.Name; }
+			public HyoutaTools.IProgram Program;
+			public override string ToString() { return Program.Identifiers().First(); }
 		}
 
 		public ToolSelectionForm() {
@@ -21,8 +20,8 @@ namespace HyoutaToolsGUI {
 
 			HyoutaTools.Initialization.Initialize();
 			HyoutaLibGUI.Initialization.RegisterGuiOnlyTools();
-			foreach ( var tool in HyoutaTools.Initialization.GetRegisteredTools().OrderBy( x => x.Key ) ) {
-				listBoxTools.Items.Add( new ToolInList() { Name = tool.Key, Exec = tool.Value } );
+			foreach ( var tool in HyoutaTools.Initialization.GetRegisteredTools().OrderBy( x => x.Identifiers().First() ) ) {
+				listBoxTools.Items.Add( new ToolInList() { Program = tool } );
 			}
 		}
 
@@ -31,7 +30,7 @@ namespace HyoutaToolsGUI {
 			if ( t != null ) {
 				try {
 					// TODO: Better args handling or whatever.
-					t.Exec( textBoxArgs.Text.Split( new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ).ToList() );
+					t.Program.Execute( textBoxArgs.Text.Split( new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ).ToList() );
 				} catch ( Exception ex ) {
 					Console.WriteLine( "Error during execution: " + ex.ToString() );
 				}

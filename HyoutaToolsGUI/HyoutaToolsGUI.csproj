@@ -84,6 +84,10 @@
       <Project>{32cfc5d9-8c5f-44d5-9088-095421560ab5}</Project>
       <Name>HyoutaLibGUI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HyoutaPluginBase\HyoutaPluginBase.csproj">
+      <Project>{6E153CE7-05B9-4EBA-8DE8-AD842214F60B}</Project>
+      <Name>HyoutaPluginBase</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HyoutaTools.csproj">
       <Project>{d7037d44-d605-4a9c-9167-e15c525fe782}</Project>
       <Name>HyoutaTools</Name>

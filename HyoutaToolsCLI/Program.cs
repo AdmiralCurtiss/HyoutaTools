@@ -11,19 +11,20 @@ namespace HyoutaToolsCLI {
 
 			var tool = HyoutaTools.Initialization.ParseToolFromCommandLineArgs( args );
 			if ( tool != null ) {
-				return tool.Execute( tool.Arguments );
+				return tool.Program.Execute( tool.Arguments );
 			} else {
 				PrintUsage( HyoutaTools.Initialization.GetRegisteredTools(), args.Length > 0 ? args[0] : null );
 				return -1;
 			}
 		}
 
-		private static void PrintUsage( IEnumerable<KeyValuePair<HyoutaTools.ProgramName, HyoutaTools.ProgramNames.ExecuteProgramDelegate>> tools, string part = null ) {
+		private static void PrintUsage( IEnumerable<HyoutaTools.IProgram> tools, string part = null ) {
 			bool programFound = false;
 			if ( part != null ) { part = part.ToLowerInvariant(); }
-			foreach ( var p in tools.OrderBy( x => x.Key ) ) {
-				if ( part == null || p.Key.Name.ToLowerInvariant().Contains( part ) || p.Key.Shortcut.ToLowerInvariant().Contains( part ) ) {
-					Console.WriteLine( String.Format( " {1,-12} {0}", p.Key.Name, p.Key.Shortcut ) );
+			foreach ( var p in tools.OrderBy( x => x.Identifiers().First() ) ) {
+				if ( part == null || p.Identifiers().Any( x => x.ToLowerInvariant().Contains( part ) ) ) {
+					List<string> ids = p.Identifiers();
+					Console.WriteLine( String.Format( " {1,-12} {0}", ids.First(), ids.Count > 1 ? ids[1] : "-" ) );
 					programFound = true;
 				}
 			}

@@ -376,6 +376,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="HyoutaPluginBase\HyoutaPluginBase.csproj">
+      <Project>{6e153ce7-05b9-4eba-8de8-ad842214f60b}</Project>
+      <Name>HyoutaPluginBase</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
