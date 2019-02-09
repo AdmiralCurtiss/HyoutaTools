@@ -42,13 +42,49 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			if ( n != null ) {
 				return n;
 			}
-			return node.GetChildByName( name + ".ext" );
+			INode o = node.GetChildByName( name + ".ext" );
+			if ( o != null ) {
+				return o;
+			}
+			INode p = node.GetChildByName( name + ".dec" );
+			if ( p != null ) {
+				return p;
+			}
+			INode q = node.GetChildByName( name + ".dec.ext" );
+			if ( q != null ) {
+				return q;
+			}
+			return null;
+		}
+		private static INode FindChildByIndex( this IContainer node, int index ) {
+			INode n = node.GetChildByIndex( index );
+			if ( n != null ) {
+				return n;
+			}
+			// if this is an extracted folder we may have deleted the other files for space, eg skits
+			return node.GetChildByName( index.ToString( "D4" ) );
 		}
 		private static IContainer ToFps4( this INode node ) {
 			if ( node.IsFile ) {
 				return new FPS4.FPS4( node.AsFile.DataStream );
 			}
 			return node.AsContainer;
+		}
+		private static INode TryDecompress( this INode node ) {
+			if ( node.IsFile ) {
+				IFile f = node.AsFile;
+				try {
+					f.DataStream.ReStart();
+					if ( f.DataStream.PeekUInt32() == 0x435A4C54 ) {
+						byte[] data = new byte[f.DataStream.Length];
+						f.DataStream.Read( data, 0, data.Length );
+						return new FileFromStream( new Streams.DuplicatableByteArrayStream( tlzc.TLZC.Decompress( data ) ) );
+					}
+				} finally {
+					f.DataStream.End();
+				}
+			}
+			return node;
 		}
 
 		public static Stream TryCreateStreamFromPath( string path ) {
@@ -152,10 +188,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "BATTLEBOOKDATA.BIN" )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetSkitMetadata( string basepath, GameLocale locale, GameVersion version ) {
-			return TryCreateStreamFromPath( Path.Combine( basepath, "chat.svo.ext", "CHAT.DAT.dec" ) );
+			return TryGetContainerFromDisk( basepath )?.FindChildByName( "chat.svo" )?.ToFps4()?.FindChildByName( "CHAT.DAT" )?.TryDecompress()?.AsFile?.DataStream;
 		}
-		public static Stream TryGetSkitText( string basepath, string skit, GameLocale locale, GameVersion version ) {
-			return TryCreateStreamFromPath( Path.Combine( basepath, "chat.svo.ext", skit + ( version == GameVersion.PC ? "J" : locale.ToString().ToUpperInvariant() ) + ".DAT.dec.ext", "0003" ) );
+		public static Stream TryGetSkitText( string basepath, string skitname, GameLocale locale, GameVersion version ) {
+			var chatsvo = TryGetContainerFromDisk( basepath )?.FindChildByName( "chat.svo" )?.ToFps4();
+			var skit = chatsvo?.FindChildByName( skitname + ( version == GameVersion.PC ? "J" : locale.ToString().ToUpperInvariant() ) + ".DAT" )?.TryDecompress();
+			return skit?.ToFps4()?.FindChildByIndex( 3 )?.AsFile?.DataStream;
 		}
 		public static Stream TryGetSearchPoints( string basepath, GameLocale locale, GameVersion version ) {
 			return TryCreateStreamFromPath( Path.Combine( basepath, "npc.svo.ext", "FIELD.DAT.dec.ext", "0005.dec" ) );
