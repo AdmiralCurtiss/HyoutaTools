@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace HyoutaTools.FileContainer {
 	public class DirectoryOnDisk : ContainerBase {
+		private string Path;
 		private System.IO.FileSystemInfo[] Children;
 
 		public DirectoryOnDisk( string path ) {
-			Children = new System.IO.DirectoryInfo( path ).GetFileSystemInfos();
+			var di = new System.IO.DirectoryInfo( path );
+			Path = di.FullName;
+			Children = di.GetFileSystemInfos();
 		}
 
 		private static INode CreateNode( System.IO.FileSystemInfo f ) {
@@ -37,6 +40,10 @@ namespace HyoutaTools.FileContainer {
 		}
 
 		public override void Dispose() {
+		}
+
+		public override string ToString() {
+			return Path;
 		}
 	}
 }

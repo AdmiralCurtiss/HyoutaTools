@@ -21,5 +21,9 @@ namespace HyoutaTools.FileContainer {
 		public void Dispose() {
 			DataStream.Dispose();
 		}
+
+		public override string ToString() {
+			return DataStream.ToString();
+		}
 	}
 }

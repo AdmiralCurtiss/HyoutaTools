@@ -10,5 +10,9 @@ namespace HyoutaTools.FileContainer {
 
 		public abstract DuplicatableStream DataStream { get; }
 		public abstract void Dispose();
+
+		public override string ToString() {
+			return DataStream.ToString();
+		}
 	}
 }
