@@ -86,16 +86,26 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				IFile f = node.AsFile;
 				try {
 					f.DataStream.ReStart();
-					if ( f.DataStream.PeekUInt32() == 0x435A4C54 ) {
-						byte[] data = new byte[f.DataStream.Length];
-						f.DataStream.Read( data, 0, data.Length );
-						return new FileFromStream( new Streams.DuplicatableByteArrayStream( tlzc.TLZC.Decompress( data ) ) );
+					foreach ( IDecompressor d in DecompressorManager.Instance.GetDecompressors() ) {
+						if ( d.CanDecompress( f.DataStream ) == CanDecompressAnswer.Yes ) {
+							return new FileFromStream( d.Decompress( f.DataStream ).ToDuplicatableStream() );
+						}
 					}
 				} finally {
 					f.DataStream.End();
 				}
 			}
 			return node;
+		}
+		private static Streams.DuplicatableStream ToDuplicatableStream( this Stream stream ) {
+			if ( stream is Streams.DuplicatableStream ) {
+				return (Streams.DuplicatableStream)stream;
+			}
+
+			stream.Position = 0;
+			byte[] data = new byte[stream.Length];
+			stream.Read( data, 0, data.Length );
+			return new Streams.DuplicatableByteArrayStream( data );
 		}
 
 		public static Stream TryGetItemDat( string basepath, GameLocale locale, GameVersion version ) {
@@ -181,7 +191,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public static Stream TryGetSearchPoints( string basepath, GameLocale locale, GameVersion version ) {
 			var svo = TryGetContainerFromDisk( basepath )?.FindChildByName( "npc.svo" )?.ToFps4();
 			var field = svo?.FindChildByName( "FIELD.DAT" )?.TryDecompress()?.ToFps4();
-			return field?.FindChildByIndex( 5 )?.AsFile?.DataStream;
+			return field?.FindChildByIndex( 5 )?.TryDecompress()?.AsFile?.DataStream;
 		}
 		public static Stream TryGetScenarioFile( string basepath, int fileIndex, GameLocale locale, GameVersion version ) {
 			var basefolder = TryGetContainerFromDisk( basepath );
