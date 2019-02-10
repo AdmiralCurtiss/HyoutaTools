@@ -19,7 +19,10 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 
 		public static bool Extract( string txmpath, string txvpath, string outdir ) {
 			TXM txm = new TXM( txmpath );
-			TXV txv = new TXV( txm, txvpath, false );
+			TXV txv;
+			using ( Stream stream = new System.IO.FileStream( txvpath, FileMode.Open ) ) {
+				txv = new TXV( txm, stream, AutodetectVesperiaPC( stream ) );
+			}
 			Directory.CreateDirectory( outdir );
 
 			int counter = 0;
@@ -34,6 +37,28 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			}
 
 			return true;
+		}
+
+		public static bool AutodetectVesperiaPC( Stream stream ) {
+			try {
+				while ( true ) {
+					uint sz = stream.ReadUInt32().FromEndian( Util.Endianness.BigEndian );
+					if ( stream.Position + sz <= stream.Length ) {
+						if ( stream.ReadAscii( 4 ) != "DDS " ) {
+							return false;
+						}
+						stream.Position = stream.Position + ( sz - 4 );
+
+						if ( stream.Position == stream.Length ) {
+							return true;
+						}
+					} else {
+						return false;
+					}
+				}
+			} finally {
+				stream.Position = 0;
+			}
 		}
 	}
 }
