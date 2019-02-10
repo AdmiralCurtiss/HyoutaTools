@@ -208,6 +208,7 @@
     <Compile Include="Tales\DestinyRemake\TblBin\Execute.cs" />
     <Compile Include="Tales\DestinyRemake\TblBin\TBL.cs" />
     <Compile Include="Tales\DestinyRemake\ToDrUtil.cs" />
+    <Compile Include="Tales\tlzc\TlzcDecompressor.cs" />
     <Compile Include="Tales\Vesperia\BTLBDAT\BattleBookEntry.cs" />
     <Compile Include="Tales\Vesperia\BTLBDAT\BTLBDAT.cs" />
     <Compile Include="Tales\Vesperia\COOKDAT\COOKDAT.cs" />

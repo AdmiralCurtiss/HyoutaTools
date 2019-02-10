@@ -47,6 +47,7 @@ namespace HyoutaTools {
 			KnownTools.AddRange( ProgramNames.BuiltInTools );
 
 			DecompressorManager.Instance.UnregisterAllDecompressors();
+			DecompressorManager.Instance.RegisterDecompressor( new Tales.tlzc.TlzcDecompressor() );
 
 			LoadPlugins();
 		}
