@@ -45,6 +45,9 @@ namespace HyoutaTools {
 		public static void Initialize() {
 			KnownTools.Clear();
 			KnownTools.AddRange( ProgramNames.BuiltInTools );
+
+			DecompressorManager.Instance.UnregisterAllDecompressors();
+
 			LoadPlugins();
 		}
 
@@ -105,6 +108,24 @@ namespace HyoutaTools {
 												RegisterToolInstance( pr );
 											} else {
 												Console.WriteLine( "Cannot register class " + type.FullName + " from " + p.FullName + ": No identifiers provided." );
+											}
+										}
+									}
+								} catch ( Exception ex ) {
+									Console.WriteLine( "Failed to load class " + type.FullName + " from " + p.FullName + ": " + ex.ToString() );
+								}
+
+								try {
+									if ( type.IsClass && !type.IsAbstract && typeof( IDecompressor ).IsAssignableFrom( type ) ) {
+										var decompressor = type.GetConstructor( Type.EmptyTypes )?.Invoke( null );
+										if ( decompressor != null ) {
+											var d = (IDecompressor)decompressor;
+											if ( !string.IsNullOrEmpty( d.GetId() ) ) {
+												if ( !DecompressorManager.Instance.RegisterDecompressor( d ) ) {
+													Console.WriteLine( "Cannot register decompressor " + type.FullName + " from " + p.FullName + ": Decompressor with same ID already exists." );
+												}
+											} else {
+												Console.WriteLine( "Cannot register decompressor " + type.FullName + " from " + p.FullName + ": No identifier provided." );
 											}
 										}
 									}

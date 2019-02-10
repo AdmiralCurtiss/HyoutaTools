@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HyoutaPluginBase {
+namespace HyoutaTools {
 	public interface IDecompressor {
+		// identifier that can be used to select a specific decompressor
+		string GetId();
+
 		// ask the decompressor whether it can decompress a given file
 		// answer should be fast and depend on magic bytes in the header or similar
 		// stream should appear unchanged from the outside, so reset the position to where you found it
