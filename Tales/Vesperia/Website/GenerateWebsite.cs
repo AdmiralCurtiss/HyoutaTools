@@ -54,7 +54,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			if ( q != null ) {
 				return q;
 			}
-			List<string> names = node.GetChildNames();
+			IEnumerable<string> names = node.GetChildNames();
 			string probablyName = names.Where( x => x.StartsWith( name + "." ) ).FirstOrDefault();
 			if ( probablyName != null ) {
 				return node.GetChildByName( probablyName );

@@ -342,7 +342,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			return null;
 		}
 
-		public override List<string> GetChildNames() {
+		public override IEnumerable<string> GetChildNames() {
 			var l = new List<string>( Files.Count - 1 );
 			for ( int i = 0; i < Files.Count - 1; ++i ) {
 				FileInfo fi = Files[i];

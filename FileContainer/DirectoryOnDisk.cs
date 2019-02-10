@@ -39,7 +39,7 @@ namespace HyoutaTools.FileContainer {
 			return null;
 		}
 
-		public override List<string> GetChildNames() {
+		public override IEnumerable<string> GetChildNames() {
 			var l = new List<string>( Children.Length );
 			foreach ( var ch in Children ) {
 				l.Add( ch.Name );
