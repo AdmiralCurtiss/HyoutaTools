@@ -11,27 +11,27 @@ using System.Threading.Tasks;
 
 namespace HyoutaTools.Tales.Vesperia.Texture {
 	public class TXV {
-		public TXV( TXM txm, String filename ) {
+		public TXV( TXM txm, String filename, bool vesperiaPcTextureFormat ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
-				if ( !LoadFile( txm, stream ) ) {
+				if ( !LoadFile( txm, stream, vesperiaPcTextureFormat ) ) {
 					throw new Exception( "Loading TXV failed!" );
 				}
 			}
 		}
 
-		public TXV( TXM txm, Stream stream ) {
-			if ( !LoadFile( txm, stream ) ) {
+		public TXV( TXM txm, Stream stream, bool vesperiaPcTextureFormat ) {
+			if ( !LoadFile( txm, stream, vesperiaPcTextureFormat ) ) {
 				throw new Exception( "Loading TXV failed!" );
 			}
 		}
 
 		public List<TXVSingle> textures;
 
-		private bool LoadFile( TXM txm, Stream stream ) {
+		private bool LoadFile( TXM txm, Stream stream, bool vesperiaPcTextureFormat ) {
 			textures = new List<TXVSingle>();
 
 			foreach ( TXMSingle ts in txm.TXMSingles ) {
-				textures.Add( new TXVSingle( stream, ts ) );
+				textures.Add( new TXVSingle( stream, ts, vesperiaPcTextureFormat ) );
 			}
 
 			return true;
@@ -41,13 +41,17 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 	public class TXVSingle {
 		public TXMSingle TXM;
 		public Stream Data;
+		public bool VesperiaPC;
 
-		public TXVSingle( Stream stream, TXMSingle txm ) {
-			uint bytecount = txm.GetByteCount();
+		public TXVSingle( Stream stream, TXMSingle txm, bool vesperiaPcTextureFormat ) {
+			uint bytecount = vesperiaPcTextureFormat ? stream.ReadUInt32().FromEndian( Util.Endianness.BigEndian ) : txm.GetByteCount();
 			TXM = txm;
 			Data = new MemoryStream( (int)bytecount );
+			VesperiaPC = vesperiaPcTextureFormat;
 
-			stream.Position = txm.TxvLocation;
+			if ( !vesperiaPcTextureFormat ) {
+				stream.Position = txm.TxvLocation;
+			}
 			Util.CopyStream( stream, Data, bytecount );
 			Data.Position = 0;
 		}
@@ -108,6 +112,13 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 
 		public List<(string name, Stream data)> GetDiskWritableStreams() {
 			List<(string name, Stream data)> list = new List<(string name, Stream data)>();
+
+			if ( VesperiaPC ) {
+				Stream output = new MemoryStream( (int)Data.Length );
+				Util.CopyStream( Data, output, Data.Length );
+				list.Add( (TXM.Name + ".dds", output) );
+				return list;
+			}
 
 			for ( uint depth = 0; depth < TXM.Depth; ++depth ) {
 				Data.Position = 0;

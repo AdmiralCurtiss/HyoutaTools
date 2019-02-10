@@ -19,7 +19,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 
 		public static bool Extract( string txmpath, string txvpath, string outdir ) {
 			TXM txm = new TXM( txmpath );
-			TXV txv = new TXV( txm, txvpath );
+			TXV txv = new TXV( txm, txvpath, false );
 			Directory.CreateDirectory( outdir );
 
 			int counter = 0;
