@@ -250,7 +250,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			return 1;
 		}
 
-		// TODO: Clean up code duplication between Extract(), GetChildByIndex(), GetChildByName()!
+		// TODO: Clean up code duplication between Extract(), GetChildByIndex(), GetChildByName(), GetChildNames()!
 
 		public void Extract( string dirname, bool noMetadataParsing = false ) {
 			System.IO.Directory.CreateDirectory( dirname );
@@ -340,6 +340,33 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 
 			return null;
+		}
+
+		public override List<string> GetChildNames() {
+			var l = new List<string>( Files.Count - 1 );
+			for ( int i = 0; i < Files.Count - 1; ++i ) {
+				FileInfo fi = Files[i];
+				if ( fi.ShouldSkip ) {
+					continue;
+				}
+				if ( fi.Location == null ) {
+					continue;
+				}
+				uint? maybeFilesize = fi.GuessFileSize( ShouldGuessFilesizeFromNextFile ? Files : null );
+				if ( maybeFilesize == null ) {
+					continue;
+				}
+
+				(string path, string filename) = fi.GuessFilePathName();
+				if ( path != null ) {
+					path = path + '/' + filename;
+				} else {
+					path = filename;
+				}
+
+				l.Add( path );
+			}
+			return l;
 		}
 
 		public static void Pack(

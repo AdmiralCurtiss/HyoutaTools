@@ -185,5 +185,9 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 		public override INode GetChildByName( string name ) {
 			return null;
 		}
+
+		public override List<string> GetChildNames() {
+			return new List<string>();
+		}
 	}
 }

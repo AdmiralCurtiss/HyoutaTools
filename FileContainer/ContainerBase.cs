@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace HyoutaTools.FileContainer {
 	public abstract class ContainerBase : IContainer {
@@ -10,5 +11,6 @@ namespace HyoutaTools.FileContainer {
 		public abstract void Dispose();
 		public abstract INode GetChildByIndex( long index );
 		public abstract INode GetChildByName( string name );
+		public abstract List<string> GetChildNames();
 	}
 }
