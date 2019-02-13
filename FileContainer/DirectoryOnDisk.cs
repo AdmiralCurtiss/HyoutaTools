@@ -12,7 +12,7 @@ namespace HyoutaTools.FileContainer {
 		public DirectoryOnDisk( string path ) {
 			var di = new System.IO.DirectoryInfo( path );
 			Path = di.FullName;
-			Children = di.GetFileSystemInfos();
+			Children = di.GetFileSystemInfos().OrderBy( x => x.Name ).ToArray();
 		}
 
 		private static INode CreateNode( System.IO.FileSystemInfo f ) {
