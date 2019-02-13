@@ -26,7 +26,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			foreach ( var filename in GenerateWebsite.GetBattleScenarioFileNames( gameDataPath, locale, version ) ) {
 				if ( filename.StartsWith( "BTL_" ) ) {
 					var bin = LoadBattleTextFile( gameDataPath, filename, locale, version, endian, encoding, bits );
-					BattleTextFiles.Add( filename, bin );
+					BattleTextFiles.Add( filename.Split( new char[] { '.' } ).First(), bin );
 				}
 			}
 
