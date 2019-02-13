@@ -197,7 +197,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var basefolder = TryGetContainerFromDisk( basepath );
 			INode scenariodat;
 			if ( version == GameVersion.X360_EU || version == GameVersion.PC ) {
-				scenariodat = basefolder?.FindChildByName( "language" )?.AsContainer?.GetChildByName( "scenario_" + ( version == GameVersion.X360_EU ? locale.ToString().ToLowerInvariant() : locale.ToString().ToUpperInvariant() ) + ".dat" );
+				scenariodat = basefolder?.FindChildByName( "language" )?.AsContainer?.FindChildByName( "scenario_" + ( version == GameVersion.X360_EU ? locale.ToString().ToLowerInvariant() : locale.ToString().ToUpperInvariant() ) + ".dat" );
 			} else {
 				scenariodat = basefolder?.FindChildByName( "scenario.dat" );
 			}
