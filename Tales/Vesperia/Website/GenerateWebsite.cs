@@ -78,8 +78,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		private static IContainer ToScenarioDat( this INode node ) {
 			if ( node.IsFile ) {
 				return new Scenario.ScenarioDat( node.AsFile.DataStream );
+			} else {
+				return new ContainerIndexAsStringWrapper( node.AsContainer );
 			}
-			return node.AsContainer;
 		}
 		private static INode TryDecompress( this INode node ) {
 			if ( node.IsFile ) {
