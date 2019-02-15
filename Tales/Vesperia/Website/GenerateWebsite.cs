@@ -19,6 +19,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public Util.GameTextEncoding Encoding;
 		public Util.Bitness Bits = Util.Bitness.B32;
 		public string WebsiteOutputPath;
+		public Bitmap WorldMapImageOverride = null;
 
 		public WebsiteGenerator Generator = null;
 		public GenerateWebsiteInputOutputData CompareSite = null;
@@ -219,6 +220,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return TryGetContainerFromDisk( basepath )?.FindChildByName( "map.svo" )?.ToFps4()?.FindChildByName( "MAPLIST.DAT" )?.AsFile?.DataStream;
 		}
 		public static int Generate( List<string> args ) {
+			var worldmap = IntegerScaled( new Bitmap( @"c:\Dropbox\ToV\U_WORLDNAVI00.png" ), 5, 4 );
+
 			List<GenerateWebsiteInputOutputData> gens = new List<GenerateWebsiteInputOutputData>();
 			gens.Add( new GenerateWebsiteInputOutputData() {
 				GameDataPath = @"c:\Dropbox\ToV\360_EU\",
@@ -228,6 +231,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				ImportJpInGameDictLocale = GameLocale.US,
 				Endian = Util.Endianness.BigEndian,
 				Encoding = Util.GameTextEncoding.UTF8,
+				WorldMapImageOverride = worldmap,
 				WebsiteOutputPath = @"c:\Dropbox\ToV\website_out_360_EU_UK\",
 			} );
 			gens.Add( new GenerateWebsiteInputOutputData() {
@@ -239,6 +243,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				Language = WebsiteLanguage.BothWithEnLinks,
 				Endian = Util.Endianness.BigEndian,
 				Encoding = Util.GameTextEncoding.ShiftJIS,
+				WorldMapImageOverride = worldmap,
 				WebsiteOutputPath = @"c:\Dropbox\ToV\website_out_PS3_with_patch\",
 				CompareSite = gens.Where( x => x.Version == GameVersion.X360_EU && x.Locale == GameLocale.UK ).First(),
 			} );
@@ -250,7 +255,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		public static void Generate( List<GenerateWebsiteInputOutputData> gens ) {
 			foreach ( var g in gens ) {
-				WebsiteGenerator site = LoadWebsiteGenerator( g.GameDataPath, g.Version, g.VersionPostfix, g.Locale, g.Language, g.Endian, g.Encoding, g.Bits );
+				WebsiteGenerator site = LoadWebsiteGenerator( g.GameDataPath, g.Version, g.VersionPostfix, g.Locale, g.Language, g.Endian, g.Encoding, g.Bits, g.WorldMapImageOverride );
 
 				if ( g.GamePatchPath != null ) {
 					// patch original PS3 data with fantranslation
@@ -319,7 +324,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
-		public static WebsiteGenerator LoadWebsiteGenerator( string gameDataPath, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits ) {
+		public static WebsiteGenerator LoadWebsiteGenerator( string gameDataPath, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits, Bitmap worldmapOverride ) {
 			WebsiteGenerator site = new WebsiteGenerator();
 			site.Locale = locale;
 			site.Version = version;
@@ -344,11 +349,15 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				site.BattleVoicesEnd = new T8BTVA.T8BTVA( TryGetBattleVoicesEnd( gameDataPath, site.Locale, site.Version ), endian );
 			}
 			if ( !site.Version.Is360() ) { // 360 version stores search points differently, haven't decoded that
-				//var txm = new Texture.TXM( gameDataPath + "UI.svo.ext/WORLDNAVI.TXM" );
-				//var txv = new Texture.TXV( txm, gameDataPath + "UI.svo.ext/WORLDNAVI.TXV" );
-				//var tex = txv.textures.Where( x => x.TXM.Name == "U_WORLDNAVI00" ).First();
-				//site.WorldMapImage = tex.GetBitmaps().First();
-				site.WorldMapImage = IntegerScaled( new Bitmap( gameDataPath + "UI.svo.ext/WORLDNAVI.TXM.ext/U_WORLDNAVI00.png" ), 5, 4 );
+				if ( worldmapOverride != null ) {
+					site.WorldMapImage = worldmapOverride;
+				} else {
+					var ui = TryGetContainerFromDisk( gameDataPath ).FindChildByName( "UI.svo" ).ToFps4();
+					var txm = new Texture.TXM( ui.FindChildByName( "WORLDNAVI.TXM" ).AsFile.DataStream );
+					var txv = new Texture.TXV( txm, ui.FindChildByName( "WORLDNAVI.TXV" ).AsFile.DataStream, site.Version == GameVersion.PC );
+					var tex = txv.textures.Where( x => x.TXM.Name == "U_WORLDNAVI00" ).First();
+					site.WorldMapImage = IntegerScaled( tex.GetBitmaps().First(), 5, 4 );
+				}
 				site.SearchPoints = new TOVSEAF.TOVSEAF( TryGetSearchPoints( gameDataPath, site.Locale, site.Version ), endian );
 			}
 			site.Skits = new TO8CHLI.TO8CHLI( TryGetSkitMetadata( gameDataPath, site.Locale, site.Version ), endian, bits );
