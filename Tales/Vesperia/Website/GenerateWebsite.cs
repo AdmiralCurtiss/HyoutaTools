@@ -75,6 +75,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 			return node.AsContainer;
 		}
+		private static IContainer ToIndexedFps4( this INode node ) {
+			if ( node.IsFile ) {
+				return new FPS4.FPS4( node.AsFile.DataStream );
+			} else {
+				return new ContainerIndexAsStringWrapper( node.AsContainer, "{0:D4}" );
+			}
+		}
 		private static IContainer ToScenarioDat( this INode node ) {
 			if ( node.IsFile ) {
 				return new Scenario.ScenarioDat( node.AsFile.DataStream );
@@ -121,7 +128,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 		public static IContainer TryOpenBtlPack( string basepath, GameLocale locale, GameVersion version ) {
 			string btlPackName = version == GameVersion.X360_EU ? "BTL_PACK_" + locale.ToString().ToUpperInvariant() + ".DAT" : "BTL_PACK.DAT";
-			return TryGetContainerFromDisk( basepath )?.FindChildByName( "btl.svo" )?.ToFps4()?.FindChildByName( btlPackName )?.ToFps4();
+			return TryGetContainerFromDisk( basepath )?.FindChildByName( "btl.svo" )?.ToFps4()?.FindChildByName( btlPackName )?.ToIndexedFps4();
 		}
 		public static Stream TryGetArtes( string basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 4 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
@@ -157,7 +164,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 23 )?.ToFps4()?.FindChildByName( mapname )?.AsFile?.DataStream;
 		}
 		public static List<string> GetBattleScenarioFileNames( string basepath, GameLocale locale, GameVersion version ) {
-			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 3 )?.ToFps4()?.GetChildNames().Where( x => x.StartsWith( "BTL_" ) ).ToList();
+			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 3 )?.ToFps4()?.GetChildNames().Where( x => x.StartsWith( "BTL_" ) ).Select( x => x.Split( new char[] { '.' } ).First() ).ToList();
 		}
 		public static Stream TryGetBattleScenarioFile( string basepath, string epname, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 3 )?.ToFps4()?.FindChildByName( epname )?.TryDecompress()?.AsFile?.DataStream;
