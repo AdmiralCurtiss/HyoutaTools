@@ -121,7 +121,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 		public static Stream TryGetStringDic( string basepath, GameLocale locale, GameVersion version ) {
 			if ( version == GameVersion.X360_EU || version == GameVersion.PC ) {
-				return TryGetContainerFromDisk( basepath )?.FindChildByName( "language" )?.AsContainer?.FindChildByName( "string_dic_" + locale.ToString().ToLowerInvariant() + ".so" )?.AsFile?.DataStream;
+				return TryGetContainerFromDisk( basepath )?.FindChildByName( "language" )?.AsContainer?.FindChildByName( "string_dic_" + ( version == GameVersion.X360_EU ? locale.ToString().ToLowerInvariant() : locale.ToString().ToUpperInvariant() ) + ".so" )?.AsFile?.DataStream;
 			} else {
 				return TryGetContainerFromDisk( basepath )?.FindChildByName( "string.svo" )?.ToFps4()?.FindChildByName( "STRING_DIC.SO" )?.AsFile?.DataStream;
 			}
