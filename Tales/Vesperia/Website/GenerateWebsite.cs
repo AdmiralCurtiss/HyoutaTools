@@ -420,12 +420,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 
 			if ( version.HasPS3Content() ) {
-				site.NpcList = new TOVNPC.TOVNPCL( gameDataPath + @"npc.svo.ext\NPC.DAT.dec.ext\0000.dec", endian, bits );
+				var npcsvo = TryGetContainerFromDisk( gameDataPath ).FindChildByName( "npc.svo" ).ToFps4();
+				site.NpcList = new TOVNPC.TOVNPCL( npcsvo.FindChildByName( "NPC.DAT" ).TryDecompress().ToIndexedFps4().GetChildByIndex( 0 ).TryDecompress().AsFile.DataStream, endian, bits );
 				site.NpcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
 				foreach ( var f in site.NpcList.NpcFileList ) {
-					string filename = gameDataPath + @"npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
-					if ( File.Exists( filename ) ) {
-						var d = new TOVNPC.TOVNPCT( filename, endian, bits );
+					var s = npcsvo.FindChildByName( f.Filename.ToUpperInvariant() ).TryDecompress().ToIndexedFps4().GetChildByIndex( 1 )?.TryDecompress()?.AsFile?.DataStream;
+					if ( s != null ) {
+						var d = new TOVNPC.TOVNPCT( s, endian, bits );
 						site.NpcDefs.Add( f.Map, d );
 					}
 				}
