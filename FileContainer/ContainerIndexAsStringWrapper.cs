@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 namespace HyoutaTools.FileContainer {
 	public class ContainerIndexAsStringWrapper : ContainerBase {
 		private IContainer Container;
+		private string Format;
 
-		public ContainerIndexAsStringWrapper( IContainer container ) {
+		public ContainerIndexAsStringWrapper( IContainer container, string format = "{0}" ) {
 			Container = container;
+			Format = format;
 		}
 
 		public override void Dispose() {
@@ -17,7 +19,7 @@ namespace HyoutaTools.FileContainer {
 		}
 
 		public override INode GetChildByIndex( long index ) {
-			string name = index.ToString();
+			string name = string.Format( Format, index );
 			INode n = GetChildByName( name );
 			if ( n != null ) {
 				return n;
