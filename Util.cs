@@ -702,11 +702,19 @@ namespace HyoutaTools {
 			}
 			throw new Exception( "Reading nullterminated string not implemented for encoding " + encoding.ToString() );
 		}
-		public static string ReadSizedString( this Stream s, int count, GameTextEncoding encoding ) {
+		public static string ReadSizedString( this Stream s, long count, GameTextEncoding encoding ) {
 			switch ( encoding ) {
-				case GameTextEncoding.ASCII: return ReadAscii( s, count );
+				case GameTextEncoding.ASCII: return ReadSizedString( s, count, Encoding.ASCII );
+				case GameTextEncoding.ShiftJIS: return ReadSizedString( s, count, ShiftJISEncoding );
+				case GameTextEncoding.UTF8: return ReadSizedString( s, count, Encoding.UTF8 );
+				case GameTextEncoding.UTF16: return ReadSizedString( s, count, Encoding.Unicode );
 			}
 			throw new Exception( "Reading sized string not implemented for encoding " + encoding.ToString() );
+		}
+		public static string ReadSizedString( this Stream s, long count, Encoding encoding ) {
+			byte[] data = new byte[count];
+			s.Read( data, 0, (int)count ); // FIXME: actual long size here, if we somehow ever find a >2GB string
+			return encoding.GetString( data );
 		}
 		public static void WriteNulltermString( this Stream s, string str, GameTextEncoding encoding ) {
 			switch ( encoding ) {
@@ -731,14 +739,8 @@ namespace HyoutaTools {
 			}
 			return sb.ToString();
 		}
-		public static string ReadAscii( this Stream s, int count ) {
-			StringBuilder sb = new StringBuilder( count );
-			int b;
-			for ( int i = 0; i < count; ++i ) {
-				b = s.ReadByte();
-				sb.Append( (char)( b ) );
-			}
-			return sb.ToString();
+		public static string ReadAscii( this Stream s, long count ) {
+			return ReadSizedString( s, count, Encoding.ASCII );
 		}
 		public static void WriteAscii( this Stream s, string str, int count = 0, bool trim = false ) {
 			WriteString( s, Encoding.ASCII, str, count, trim );
