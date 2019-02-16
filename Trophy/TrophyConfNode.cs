@@ -202,8 +202,7 @@ namespace HyoutaTools.Trophy {
 			return sb.ToString();
 		}
 
-		public static TrophyConfNode ReadTropSfmWithTropConf( String Filename, String FilenameTropConf ) {
-			String XMLFile = System.IO.File.ReadAllText( Filename, Encoding.UTF8 );
+		public static TrophyConfNode ReadTropSfmWithTropConfFromString( String XMLFile, String TropConf ) {
 			String Signature;
 			try {
 				Signature = XMLFile.Substring( XMLFile.IndexOf( "<!--Sce-Np-Trophy-Signature: " ) + "<!--Sce-Np-Trophy-Signature: ".Length );
@@ -214,7 +213,6 @@ namespace HyoutaTools.Trophy {
 
 			String SignatureTropConf;
 			try {
-				String TropConf = System.IO.File.ReadAllText( FilenameTropConf, Encoding.UTF8 );
 				SignatureTropConf = TropConf.Substring( TropConf.IndexOf( "<!--Sce-Np-Trophy-Signature: " ) + "<!--Sce-Np-Trophy-Signature: ".Length );
 				SignatureTropConf = SignatureTropConf.Substring( 0, SignatureTropConf.IndexOf( "-->" ) );
 			} catch ( Exception ) {
@@ -222,10 +220,20 @@ namespace HyoutaTools.Trophy {
 			}
 
 			XmlDocument doc = new XmlDocument();
-			doc.Load( Filename );
+			doc.LoadXml( XMLFile );
 
 			XmlElement root = doc.DocumentElement;
 			return new TrophyConfNode( root, Signature, SignatureTropConf, null );
+		}
+
+		public static TrophyConfNode ReadTropSfmWithTropConf( String Filename, String FilenameTropConf ) {
+			return ReadTropSfmWithTropConfFromString( System.IO.File.ReadAllText( Filename, Encoding.UTF8 ), System.IO.File.ReadAllText( FilenameTropConf, Encoding.UTF8 ) );
+		}
+
+		public static TrophyConfNode ReadTropSfmWithTropConf( System.IO.Stream trop, System.IO.Stream tropconf ) {
+			string t = trop.ReadSizedString( trop.Length - trop.Position, Util.GameTextEncoding.UTF8 );
+			string c = tropconf.ReadSizedString( tropconf.Length - tropconf.Position, Util.GameTextEncoding.UTF8 );
+			return ReadTropSfmWithTropConfFromString( t, c );
 		}
 
 		public static TrophyConfNode ReadTropSfmWithFolder( String Folder, String Filename ) {
