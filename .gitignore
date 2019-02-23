@@ -3,3 +3,4 @@ bin
 obj
 Ionic.Zlib.CF.dll
 *.csproj.user
+packages

@@ -7,6 +7,12 @@ using System.Text.RegularExpressions;
 
 namespace HyoutaTools {
 	public static class Util {
+		public static int ExtractBit( uint number, int bit ) {
+			return ( number & ( 1u << bit ) ) != 0 ? 1 : 0;
+		}
+		public static int ExtractBit( ulong number, int bit ) {
+			return ( number & ( (ulong)(1) << bit ) ) != 0 ? 1 : 0;
+		}
 
 		#region EndianUtils
 		// baffling thing seen in Gust textures, 0xXY <-> 0xYX
