@@ -28,6 +28,9 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
+			if ( magic != "TO8CHLI\0" ) {
+				throw new Exception( "Invalid magic." );
+			}
 			uint fileSize = stream.ReadUInt32().FromEndian( endian );
 			uint skitInfoCount = stream.ReadUInt32().FromEndian( endian );
 			uint skitInfoOffset = stream.ReadUInt32().FromEndian( endian );

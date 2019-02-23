@@ -25,6 +25,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMGP {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
+			if ( magic != "T8BTEMGP" ) {
+				throw new Exception( "Invalid magic." );
+			}
 			uint enemyGroupCount = stream.ReadUInt32().FromEndian( endian );
 			uint refStringStart = stream.ReadUInt32().FromEndian( endian );
 

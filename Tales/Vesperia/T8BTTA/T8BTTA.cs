@@ -26,6 +26,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
+			if ( magic != "T8BTTA  " ) {
+				throw new Exception( "Invalid magic." );
+			}
 			uint strategySetCount = stream.ReadUInt32().FromEndian( endian );
 			uint strategyOptionCount = stream.ReadUInt32().FromEndian( endian );
 			uint refStringStart = stream.ReadUInt32().FromEndian( endian );

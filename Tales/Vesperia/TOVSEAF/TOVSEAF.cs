@@ -28,6 +28,9 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
+			if ( magic != "TOVSEAF\0" ) {
+				throw new Exception( "Invalid magic." );
+			}
 			uint fileSize = stream.ReadUInt32().FromEndian( endian );
 			uint definitionsStart = stream.ReadUInt32().FromEndian( endian );
 			uint definitionsCount = stream.ReadUInt32().FromEndian( endian ); // 64 bytes per entry

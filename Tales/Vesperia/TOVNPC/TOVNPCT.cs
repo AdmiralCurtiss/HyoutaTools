@@ -25,6 +25,9 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
+			if ( magic != "TOVNPCT\0" ) {
+				throw new Exception( "Invalid magic." );
+			}
 			uint fileSize = stream.ReadUInt32().FromEndian( endian );
 			uint unknownDataStart = stream.ReadUInt32().FromEndian( endian );
 			uint unknownDataCount = stream.ReadUInt32().FromEndian( endian );

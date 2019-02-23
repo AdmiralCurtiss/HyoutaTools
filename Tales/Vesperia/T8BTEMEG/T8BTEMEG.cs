@@ -25,6 +25,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMEG {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
+			if ( magic != "T8BTEMEG" ) {
+				throw new Exception( "Invalid magic." );
+			}
 			uint encounterGroupCount = stream.ReadUInt32().FromEndian( endian );
 			uint refStringStart = stream.ReadUInt32().FromEndian( endian );
 

@@ -24,6 +24,9 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
+			if ( magic != "SYNPDAT\0" ) {
+				throw new Exception( "Invalid magic." );
+			}
 			uint entrySize = stream.ReadUInt32().FromEndian( endian );
 			uint synopsisCount = stream.ReadUInt32().FromEndian( endian );
 			uint unknown = stream.ReadUInt32().FromEndian( endian );

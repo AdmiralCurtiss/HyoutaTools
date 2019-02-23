@@ -28,6 +28,9 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
+			if ( magic != "TO8CHRD\0" ) {
+				throw new Exception( "Invalid magic." );
+			}
 			uint filesize = stream.ReadUInt32().FromEndian( endian );
 			uint modelDefStart = stream.ReadUInt32().FromEndian( endian );
 			uint modelDefCount = stream.ReadUInt32().FromEndian( endian );

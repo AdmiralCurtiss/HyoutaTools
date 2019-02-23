@@ -27,6 +27,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
+			if ( magic != "T8BTXTMM" ) {
+				throw new Exception( "Invalid magic." );
+			}
 			uint unknown1 = stream.ReadUInt32().FromEndian( endian );
 			uint bytesToEnd = stream.ReadUInt32().FromEndian( endian );
 			uint unknown2 = stream.ReadUInt32().FromEndian( endian );

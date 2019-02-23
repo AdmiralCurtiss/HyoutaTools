@@ -23,6 +23,9 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 
 		private bool LoadFile( Stream stream, Util.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
+			if ( magic != "T8BTVA  " ) {
+				throw new Exception( "Invalid magic." );
+			}
 			uint blockCount = stream.ReadUInt32().FromEndian( endian );
 			uint refStringStart = stream.ReadUInt32().FromEndian( endian );
 
