@@ -552,7 +552,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		private static void WriteFilesToFileStream( string[] files, FileStream f, uint Alignment ) {
 			for ( int i = 0; i < files.Length; ++i ) {
-				using ( var fs = new System.IO.FileStream( files[i], FileMode.Open, FileAccess.Read ) ) {
+				using ( var fs = new System.IO.FileStream( files[i], FileMode.Open, FileAccess.Read, FileShare.Read ) ) {
 					Console.WriteLine( "Packing #" + i.ToString( "D4" ) + ": " + files[i] );
 					Util.CopyStream( fs, f, (int)fs.Length );
 					while ( f.Length % Alignment != 0 ) { f.WriteByte( 0 ); }
