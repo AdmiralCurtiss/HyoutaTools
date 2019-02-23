@@ -8,8 +8,8 @@ using HyoutaTools.FileContainer;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateWebsiteInputOutputData {
-		public string GameDataPath;
-		public string GamePatchPath = null;
+		public IContainer GameDataContainer;
+		public IContainer GamePatchContainer = null;
 		public GameVersion Version;
 		public string VersionPostfix = "";
 		public GameLocale Locale;
@@ -26,18 +26,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 	}
 
 	public static class GenerateWebsite {
-		public static IContainer TryGetContainerFromDisk( string path ) {
-			if ( File.Exists( path ) ) {
-				return new FPS4.FPS4( path );
-			}
-			if ( Directory.Exists( path ) ) {
-				return new DirectoryOnDisk( path );
-			}
-			if ( Directory.Exists( path + ".ext" ) ) {
-				return new DirectoryOnDisk( path + ".ext" );
-			}
-			return null;
-		}
 		private static INode FindChildByName( this IContainer node, string name ) {
 			INode n = node.GetChildByName( name );
 			if ( n != null ) {
@@ -61,14 +49,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				return node.GetChildByName( probablyName );
 			}
 			return null;
-		}
-		private static INode FindChildByIndex( this IContainer node, int index ) {
-			INode n = node.GetChildByIndex( index );
-			if ( n != null ) {
-				return n;
-			}
-			// if this is an extracted folder we may have deleted the other files for space, eg skits
-			return node.FindChildByName( index.ToString( "D4" ) );
 		}
 		private static IContainer ToFps4( this INode node ) {
 			if ( node.IsFile ) {
@@ -117,93 +97,92 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return new Streams.DuplicatableByteArrayStream( data );
 		}
 
-		public static Stream TryGetItemDat( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetContainerFromDisk( basepath )?.FindChildByName( "item.svo" )?.ToFps4()?.FindChildByName( "ITEM.DAT" )?.AsFile?.DataStream;
+		public static Stream TryGetItemDat( IContainer basepath, GameLocale locale, GameVersion version ) {
+			return basepath?.FindChildByName( "item.svo" )?.ToFps4()?.FindChildByName( "ITEM.DAT" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetStringDic( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetStringDic( IContainer basepath, GameLocale locale, GameVersion version ) {
 			if ( version == GameVersion.X360_EU || version == GameVersion.PC ) {
-				return TryGetContainerFromDisk( basepath )?.FindChildByName( "language" )?.AsContainer?.FindChildByName( "string_dic_" + ( version == GameVersion.X360_EU ? locale.ToString().ToLowerInvariant() : locale.ToString().ToUpperInvariant() ) + ".so" )?.AsFile?.DataStream;
+				return basepath?.FindChildByName( "language" )?.AsContainer?.FindChildByName( "string_dic_" + ( version == GameVersion.X360_EU ? locale.ToString().ToLowerInvariant() : locale.ToString().ToUpperInvariant() ) + ".so" )?.AsFile?.DataStream;
 			} else {
-				return TryGetContainerFromDisk( basepath )?.FindChildByName( "string.svo" )?.ToFps4()?.FindChildByName( "STRING_DIC.SO" )?.AsFile?.DataStream;
+				return basepath?.FindChildByName( "string.svo" )?.ToFps4()?.FindChildByName( "STRING_DIC.SO" )?.AsFile?.DataStream;
 			}
 		}
-		public static IContainer TryOpenBtlPack( string basepath, GameLocale locale, GameVersion version ) {
+		public static IContainer TryOpenBtlPack( IContainer basepath, GameLocale locale, GameVersion version ) {
 			string btlPackName = version == GameVersion.X360_EU ? "BTL_PACK_" + locale.ToString().ToUpperInvariant() + ".DAT" : "BTL_PACK.DAT";
-			return TryGetContainerFromDisk( basepath )?.FindChildByName( "btl.svo" )?.ToFps4()?.FindChildByName( btlPackName )?.ToIndexedFps4();
+			return basepath?.FindChildByName( "btl.svo" )?.ToFps4()?.FindChildByName( btlPackName )?.ToIndexedFps4();
 		}
-		public static Stream TryGetArtes( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetArtes( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 4 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetSkills( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetSkills( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 10 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetEnemies( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetEnemies( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 5 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetEnemyGroups( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetEnemyGroups( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 6 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetEncounterGroups( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetEncounterGroups( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 7 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetGradeShop( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetGradeShop( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 16 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetStrategy( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetStrategy( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 11 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetBattleVoicesEnd( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetBattleVoicesEnd( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 19 )?.ToFps4()?.FindChildByName( "END.0000" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetNecropolisFloors( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetNecropolisFloors( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 21 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetNecropolisTreasures( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetNecropolisTreasures( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 22 )?.ToFps4()?.FindChildByName( "ALL.0000" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetNecropolisMap( string basepath, string mapname, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetNecropolisMap( IContainer basepath, string mapname, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 23 )?.ToFps4()?.FindChildByName( mapname )?.AsFile?.DataStream;
 		}
-		public static List<string> GetBattleScenarioFileNames( string basepath, GameLocale locale, GameVersion version ) {
+		public static List<string> GetBattleScenarioFileNames( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 3 )?.ToFps4()?.GetChildNames().Where( x => x.StartsWith( "BTL_" ) ).Select( x => x.Split( new char[] { '.' } ).First() ).ToList();
 		}
-		public static Stream TryGetBattleScenarioFile( string basepath, string epname, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetBattleScenarioFile( IContainer basepath, string epname, GameLocale locale, GameVersion version ) {
 			return TryOpenBtlPack( basepath, locale, version )?.GetChildByIndex( 3 )?.ToFps4()?.FindChildByName( epname )?.TryDecompress()?.AsFile?.DataStream;
 		}
-		public static Stream TryGetRecipes( string basepath, GameLocale locale, GameVersion version ) {
+		public static Stream TryGetRecipes( IContainer basepath, GameLocale locale, GameVersion version ) {
 			if ( version.Is360() ) {
-				return TryGetContainerFromDisk( basepath )?.FindChildByName( "cook.svo" )?.ToFps4()?.FindChildByName( "COOKDATA.BIN" )?.AsFile?.DataStream;
+				return basepath?.FindChildByName( "cook.svo" )?.ToFps4()?.FindChildByName( "COOKDATA.BIN" )?.AsFile?.DataStream;
 			} else {
-				return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "COOKDATA.BIN" )?.AsFile?.DataStream;
+				return basepath?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "COOKDATA.BIN" )?.AsFile?.DataStream;
 			}
 		}
-		public static Stream TryGetLocations( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "WORLDDATA.BIN" )?.AsFile?.DataStream;
+		public static Stream TryGetLocations( IContainer basepath, GameLocale locale, GameVersion version ) {
+			return basepath?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "WORLDDATA.BIN" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetSynopsis( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "SYNOPSISDATA.BIN" )?.AsFile?.DataStream;
+		public static Stream TryGetSynopsis( IContainer basepath, GameLocale locale, GameVersion version ) {
+			return basepath?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "SYNOPSISDATA.BIN" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetTitles( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "FAMEDATA.BIN" )?.AsFile?.DataStream;
+		public static Stream TryGetTitles( IContainer basepath, GameLocale locale, GameVersion version ) {
+			return basepath?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "FAMEDATA.BIN" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetBattleBook( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetContainerFromDisk( basepath )?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "BATTLEBOOKDATA.BIN" )?.AsFile?.DataStream;
+		public static Stream TryGetBattleBook( IContainer basepath, GameLocale locale, GameVersion version ) {
+			return basepath?.FindChildByName( "menu.svo" )?.ToFps4()?.FindChildByName( "BATTLEBOOKDATA.BIN" )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetSkitMetadata( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetContainerFromDisk( basepath )?.FindChildByName( "chat.svo" )?.ToFps4()?.FindChildByName( "CHAT.DAT" )?.TryDecompress()?.AsFile?.DataStream;
+		public static Stream TryGetSkitMetadata( IContainer basepath, GameLocale locale, GameVersion version ) {
+			return basepath?.FindChildByName( "chat.svo" )?.ToFps4()?.FindChildByName( "CHAT.DAT" )?.TryDecompress()?.AsFile?.DataStream;
 		}
-		public static Stream TryGetSkitText( string basepath, string skitname, GameLocale locale, GameVersion version ) {
-			var chatsvo = TryGetContainerFromDisk( basepath )?.FindChildByName( "chat.svo" )?.ToFps4();
+		public static Stream TryGetSkitText( IContainer basepath, string skitname, GameLocale locale, GameVersion version ) {
+			var chatsvo = basepath?.FindChildByName( "chat.svo" )?.ToFps4();
 			var skit = chatsvo?.FindChildByName( skitname + ( version == GameVersion.PC ? "J" : locale.ToString().ToUpperInvariant() ) + ".DAT" )?.TryDecompress();
-			return skit?.ToFps4()?.FindChildByIndex( 3 )?.AsFile?.DataStream;
+			return skit?.ToIndexedFps4()?.GetChildByIndex( 3 )?.AsFile?.DataStream;
 		}
-		public static Stream TryGetSearchPoints( string basepath, GameLocale locale, GameVersion version ) {
-			var svo = TryGetContainerFromDisk( basepath )?.FindChildByName( "npc.svo" )?.ToFps4();
-			var field = svo?.FindChildByName( "FIELD.DAT" )?.TryDecompress()?.ToFps4();
-			return field?.FindChildByIndex( 5 )?.TryDecompress()?.AsFile?.DataStream;
+		public static Stream TryGetSearchPoints( IContainer basepath, GameLocale locale, GameVersion version ) {
+			var svo = basepath?.FindChildByName( "npc.svo" )?.ToFps4();
+			var field = svo?.FindChildByName( "FIELD.DAT" )?.TryDecompress()?.ToIndexedFps4();
+			return field?.GetChildByIndex( 5 )?.TryDecompress()?.AsFile?.DataStream;
 		}
-		public static Stream TryGetScenarioFile( string basepath, int fileIndex, GameLocale locale, GameVersion version ) {
-			var basefolder = TryGetContainerFromDisk( basepath );
+		public static Stream TryGetScenarioFile( IContainer basefolder, int fileIndex, GameLocale locale, GameVersion version ) {
 			INode scenariodat;
 			if ( version == GameVersion.X360_EU || version == GameVersion.PC ) {
 				scenariodat = basefolder?.FindChildByName( "language" )?.AsContainer?.FindChildByName( "scenario_" + ( version == GameVersion.X360_EU ? locale.ToString().ToLowerInvariant() : locale.ToString().ToUpperInvariant() ) + ".dat" );
@@ -216,15 +195,26 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 			return scenariodat?.ToScenarioDat()?.FindChildByName( fileIndex.ToString( "D1" ) )?.TryDecompress()?.AsFile?.DataStream;
 		}
-		public static Stream TryGetMaplist( string basepath, GameLocale locale, GameVersion version ) {
-			return TryGetContainerFromDisk( basepath )?.FindChildByName( "map.svo" )?.ToFps4()?.FindChildByName( "MAPLIST.DAT" )?.AsFile?.DataStream;
+		public static Stream TryGetMaplist( IContainer basepath, GameLocale locale, GameVersion version ) {
+			return basepath?.FindChildByName( "map.svo" )?.ToFps4()?.FindChildByName( "MAPLIST.DAT" )?.AsFile?.DataStream;
+		}
+		private static IContainer ToTrophyTrp( this INode node ) {
+			if ( node.IsFile ) {
+				return new Trophy.TrophyTrp( node.AsFile.DataStream );
+			} else {
+				return node.AsContainer;
+			}
+		}
+		public static Trophy.TrophyConfNode GetTrophy( IContainer trophyDataPath ) {
+			var trp = trophyDataPath.FindChildByName( "TROPHY.TRP" ).ToTrophyTrp();
+			return Trophy.TrophyConfNode.ReadTropSfmWithTropConf( trp.FindChildByName( "TROP.SFM" ).AsFile.DataStream, trp.FindChildByName( "TROPCONF.SFM" ).AsFile.DataStream );
 		}
 		public static int Generate( List<string> args ) {
 			var worldmap = IntegerScaled( new Bitmap( @"c:\Dropbox\ToV\U_WORLDNAVI00.png" ), 5, 4 );
 
 			List<GenerateWebsiteInputOutputData> gens = new List<GenerateWebsiteInputOutputData>();
 			gens.Add( new GenerateWebsiteInputOutputData() {
-				GameDataPath = @"c:\Dropbox\ToV\360_EU\",
+				GameDataContainer = new DirectoryOnDisk( @"c:\Dropbox\ToV\360_EU\" ),
 				Version = GameVersion.X360_EU,
 				Locale = GameLocale.UK,
 				Language = WebsiteLanguage.BothWithEnLinks,
@@ -235,8 +225,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				WebsiteOutputPath = @"c:\Dropbox\ToV\website_out_360_EU_UK\",
 			} );
 			gens.Add( new GenerateWebsiteInputOutputData() {
-				GameDataPath = @"c:\Dropbox\ToV\PS3\orig\",
-				GamePatchPath = @"c:\Dropbox\ToV\PS3\mod\",
+				GameDataContainer = new DirectoryOnDisk( @"c:\Dropbox\ToV\PS3\orig\" ),
+				GamePatchContainer = new DirectoryOnDisk( @"c:\Dropbox\ToV\PS3\mod\" ),
 				Version = GameVersion.PS3,
 				VersionPostfix = "p",
 				Locale = GameLocale.J,
@@ -255,13 +245,15 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 
 		public static void Generate( List<GenerateWebsiteInputOutputData> gens ) {
 			foreach ( var g in gens ) {
-				WebsiteGenerator site = LoadWebsiteGenerator( g.GameDataPath, g.Version, g.VersionPostfix, g.Locale, g.Language, g.Endian, g.Encoding, g.Bits, g.WorldMapImageOverride );
+				WebsiteGenerator site = LoadWebsiteGenerator( g.GameDataContainer, g.Version, g.VersionPostfix, g.Locale, g.Language, g.Endian, g.Encoding, g.Bits, g.WorldMapImageOverride );
 
-				if ( g.GamePatchPath != null ) {
+				if ( g.GamePatchContainer != null ) {
+					IContainer patchDataContainer = FindGameDataDirectory( g.GamePatchContainer, g.Version );
+
 					// patch original PS3 data with fantranslation
 					{
 						// STRING_DIC
-						var stringDicTranslated = new TSS.TSSFile( TryGetStringDic( g.GamePatchPath, g.Locale, g.Version ), g.Encoding, g.Endian );
+						var stringDicTranslated = new TSS.TSSFile( TryGetStringDic( patchDataContainer, g.Locale, g.Version ), g.Encoding, g.Endian );
 						Util.Assert( site.StringDic.Entries.Length == stringDicTranslated.Entries.Length );
 						for ( int i = 0; i < site.StringDic.Entries.Length; ++i ) {
 							Util.Assert( site.StringDic.Entries[i].inGameStringId == stringDicTranslated.Entries[i].inGameStringId );
@@ -271,7 +263,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					foreach ( var kvp in site.ScenarioFiles ) {
 						// scenario.dat
 						if ( kvp.Value.EntryList.Count > 0 && kvp.Value.Metadata.ScenarioDatIndex >= 0 ) {
-							Stream streamMod = TryGetScenarioFile( g.GamePatchPath, kvp.Value.Metadata.ScenarioDatIndex, g.Locale, g.Version );
+							Stream streamMod = TryGetScenarioFile( patchDataContainer, kvp.Value.Metadata.ScenarioDatIndex, g.Locale, g.Version );
 							if ( streamMod != null ) {
 								var scenarioMod = new ScenarioFile.ScenarioFile( streamMod, g.Encoding, g.Endian, g.Bits );
 								Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
@@ -285,7 +277,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					foreach ( var kvp in site.BattleTextFiles ) {
 						// btl.svo/BATTLE_PACK
 						if ( kvp.Value.EntryList.Count > 0 ) {
-							var scenarioMod = WebsiteGenerator.LoadBattleTextFile( g.GamePatchPath, kvp.Key, g.Locale, g.Version, g.Endian, g.Encoding, g.Bits );
+							var scenarioMod = WebsiteGenerator.LoadBattleTextFile( patchDataContainer, kvp.Key, g.Locale, g.Version, g.Endian, g.Encoding, g.Bits );
 							Util.Assert( kvp.Value.EntryList.Count == scenarioMod.EntryList.Count );
 							for ( int i = 0; i < kvp.Value.EntryList.Count; ++i ) {
 								kvp.Value.EntryList[i].EnName = scenarioMod.EntryList[i].JpName;
@@ -296,7 +288,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 					foreach ( var kvp in site.SkitText ) {
 						// chat.svo
 						var chatFile = kvp.Value;
-						Stream streamMod = TryGetSkitText( g.GamePatchPath, kvp.Key, g.Locale, g.Version );
+						Stream streamMod = TryGetSkitText( patchDataContainer, kvp.Key, g.Locale, g.Version );
 						var chatFileMod = new TO8CHTX.ChatFile( streamMod, g.Endian, g.Encoding, g.Bits, 2 );
 						Util.Assert( chatFile.Lines.Length == chatFileMod.Lines.Length );
 						for ( int j = 0; j < chatFile.Lines.Length; ++j ) {
@@ -304,14 +296,18 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 							chatFile.Lines[j].SNameEnglishNotUsedByGame = chatFileMod.Lines[j].SName;
 						}
 					}
-					site.TrophyEn = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( g.GamePatchPath + @"TROPHY.TRP.ext\TROP.SFM", g.GamePatchPath + @"TROPHY.TRP.ext\TROPCONF.SFM" );
+
+					IContainer patchTrophyContainer = FindTrophyDataDirectory( g.GamePatchContainer, g.Version );
+					if ( patchTrophyContainer != null ) {
+						site.TrophyEn = GetTrophy( patchTrophyContainer );
+					}
 				}
 
 				site.InGameIdDict = site.StringDic.GenerateInGameIdDictionary();
 
 				if ( g.ImportJpInGameDictLocale != null ) {
 					// copy over Japanese stuff into StringDic from other locale
-					var StringDicUs = new TSS.TSSFile( TryGetStringDic( g.GameDataPath, g.ImportJpInGameDictLocale.Value, g.Version ), g.Encoding, g.Endian );
+					var StringDicUs = new TSS.TSSFile( TryGetStringDic( FindGameDataDirectory( g.GameDataContainer, g.Version ), g.ImportJpInGameDictLocale.Value, g.Version ), g.Encoding, g.Endian );
 					var IdDictUs = StringDicUs.GenerateInGameIdDictionary();
 					foreach ( var kvp in IdDictUs ) {
 						site.InGameIdDict[kvp.Key].StringJpn = kvp.Value.StringJpn;
@@ -324,7 +320,59 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
-		public static WebsiteGenerator LoadWebsiteGenerator( string gameDataPath, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits, Bitmap worldmapOverride ) {
+		private static IContainer FindGameDataDirectory( IContainer topLevelGameDataContainer, GameVersion version ) {
+			return FindDirectoryWithFile( topLevelGameDataContainer, version, "menu.svo", "USRDIR" );
+		}
+		private static IContainer FindTrophyDataDirectory( IContainer topLevelGameDataContainer, GameVersion version ) {
+			return FindDirectoryWithFile( topLevelGameDataContainer, version, "TROPHY.TRP", "TROPDIR" );
+		}
+		private static IContainer FindDirectoryWithFile( IContainer topLevelGameDataContainer, GameVersion version, string markerFile, string downstreamHint ) {
+			// if the container contains the markerFile we probably have the right one
+			if ( topLevelGameDataContainer.FindChildByName( markerFile ) != null ) {
+				return topLevelGameDataContainer;
+			}
+
+			if ( version == GameVersion.PS3 ) {
+				// could be up one or two levels in the directory structure
+				var usrdir = topLevelGameDataContainer.GetChildByName( downstreamHint )?.AsContainer;
+				if ( usrdir != null ) {
+					return FindDirectoryWithFile( usrdir, version, markerFile, downstreamHint );
+				}
+				var ps3game = topLevelGameDataContainer.GetChildByName( "PS3_GAME" )?.AsContainer;
+				if ( ps3game != null ) {
+					return FindDirectoryWithFile( ps3game, version, markerFile, downstreamHint );
+				}
+			}
+
+			if ( version == GameVersion.PC ) {
+				// could be one level up
+				var data64 = topLevelGameDataContainer.GetChildByName( "Data64" )?.AsContainer;
+				if ( data64 != null ) {
+					return FindDirectoryWithFile( data64, version, markerFile, downstreamHint );
+				}
+			}
+
+			if ( topLevelGameDataContainer.GetChildNames().Count() == 1 ) {
+				return FindDirectoryWithFile( topLevelGameDataContainer.GetChildByName( topLevelGameDataContainer.GetChildNames().First() )?.AsContainer, version, markerFile, downstreamHint );
+			}
+
+			return null;
+		}
+
+		public static WebsiteGenerator LoadWebsiteGenerator( IContainer topLevelGameDataContainer, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits, Bitmap worldmapOverride ) {
+			IContainer gameDataPath = FindGameDataDirectory( topLevelGameDataContainer, version );
+			if ( gameDataPath == null ) {
+				throw new Exception( "Cannot find game data directory from container " + topLevelGameDataContainer.ToString() + "." );
+			}
+
+			IContainer trophyDataPath = null;
+			if ( version == GameVersion.PS3 ) {
+				trophyDataPath = FindTrophyDataDirectory( topLevelGameDataContainer, version );
+				if ( trophyDataPath == null ) {
+					Console.WriteLine( "Cannot find trophy file from container " + topLevelGameDataContainer.ToString() + "." );
+				}
+			}
+
 			WebsiteGenerator site = new WebsiteGenerator();
 			site.Locale = locale;
 			site.Version = version;
@@ -352,7 +400,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				if ( worldmapOverride != null ) {
 					site.WorldMapImage = worldmapOverride;
 				} else {
-					var ui = TryGetContainerFromDisk( gameDataPath ).FindChildByName( "UI.svo" ).ToFps4();
+					var ui = gameDataPath.FindChildByName( "UI.svo" ).ToFps4();
 					var txm = new Texture.TXM( ui.FindChildByName( "WORLDNAVI.TXM" ).AsFile.DataStream );
 					var txv = new Texture.TXV( txm, ui.FindChildByName( "WORLDNAVI.TXV" ).AsFile.DataStream, site.Version == GameVersion.PC );
 					var tex = txv.textures.Where( x => x.TXM.Name == "U_WORLDNAVI00" ).First();
@@ -415,12 +463,12 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 			}
 
-			if ( version == GameVersion.PS3 ) {
-				site.TrophyJp = HyoutaTools.Trophy.TrophyConfNode.ReadTropSfmWithTropConf( gameDataPath + @"TROPHY.TRP.ext\TROP.SFM", gameDataPath + @"TROPHY.TRP.ext\TROPCONF.SFM" );
+			if ( version == GameVersion.PS3 && trophyDataPath != null ) {
+				site.TrophyJp = GetTrophy( trophyDataPath );
 			}
 
 			if ( version.HasPS3Content() ) {
-				var npcsvo = TryGetContainerFromDisk( gameDataPath ).FindChildByName( "npc.svo" ).ToFps4();
+				var npcsvo = gameDataPath.FindChildByName( "npc.svo" ).ToFps4();
 				site.NpcList = new TOVNPC.TOVNPCL( npcsvo.FindChildByName( "NPC.DAT" ).TryDecompress().ToIndexedFps4().GetChildByIndex( 0 ).TryDecompress().AsFile.DataStream, endian, bits );
 				site.NpcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
 				foreach ( var f in site.NpcList.NpcFileList ) {
