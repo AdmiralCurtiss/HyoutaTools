@@ -420,8 +420,25 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			Directory.CreateDirectory( Path.Combine( outpath, "skill-icons" ) );
 			Directory.CreateDirectory( Path.Combine( outpath, "synopsis" ) );
 			Directory.CreateDirectory( Path.Combine( outpath, "text-icons" ) );
-			Directory.CreateDirectory( Path.Combine( outpath, "trophies" ) );
 			Directory.CreateDirectory( Path.Combine( outpath, "worldmap" ) );
+
+			if ( version == GameVersion.PS3 ) {
+				IContainer trophyDataPath = FindTrophyDataDirectory( topLevelGameDataContainer, version );
+				if ( trophyDataPath != null ) {
+					Directory.CreateDirectory( Path.Combine( outpath, "trophies" ) );
+					var trp = trophyDataPath.FindChildByName( "TROPHY.TRP" ).ToTrophyTrp();
+					foreach ( var img in trp.GetChildNames() ) {
+						if ( img.EndsWith( ".PNG" ) ) {
+							var stream = trp.GetChildByName( img ).AsFile.DataStream;
+							using ( var fs = new FileStream( Path.Combine( outpath, "trophies", img ), FileMode.Create ) ) {
+								stream.ReStart();
+								Util.CopyStream( stream, fs, stream.Length );
+								stream.End();
+							}
+						}
+					}
+				}
+			}
 
 			var ui = gameDataPath.FindChildByName( "UI.svo" ).ToFps4();
 			var menu = ui.GetTxmTxv( version, "MENU" );
@@ -706,8 +723,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				searchPoints.GenerateMap( worldMapImage ).Save( Path.Combine( outpath, "etc", versionDir, "SearchPoint.png" ) );
 				bat.AppendLine( string.Format( @"imagemagick etc\{0}\SearchPoint.png -filter Hermite -resize 1280x1024 etc\{0}\SearchPoint.jpg", versionDir ) );
 			}
-
-			// TODO: trophies
 
 			File.WriteAllText( Path.Combine( outpath, "_postprocessing.bat" ), bat.ToString() );
 		}
