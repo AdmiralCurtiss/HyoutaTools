@@ -301,6 +301,7 @@
     <Compile Include="Tales\Vesperia\xma\FixHeader.cs" />
     <Compile Include="Tales\Xillia\TldatPack\Program.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherARGB8888.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\ColorFetcherDXT.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherRGB565.cs" />
     <Compile Include="Textures\ColorFetchingIterators\IColorFetchingIterator.cs" />
     <Compile Include="Textures\ColorPositionFetcher.cs" />

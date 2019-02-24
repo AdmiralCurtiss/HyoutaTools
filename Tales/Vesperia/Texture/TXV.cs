@@ -84,7 +84,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 					case TextureFormat.DXT5a:
 					case TextureFormat.DXT5b: {
 							plane.Position = 0;
-							DDSHeader header = DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1 : Textures.TextureFormat.DXT5 );
+							DDSHeader header = DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1a : Textures.TextureFormat.DXT5 );
 							list.Add( new DDS( header, plane ).ConvertToBitmap() );
 						}
 						break;
@@ -130,7 +130,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 					case TextureFormat.DXT5b: {
 							plane.Position = 0;
 							Stream stream = new MemoryStream( (int)( plane.Length + 0x80 ) );
-							stream.Write( Textures.DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1 : Textures.TextureFormat.DXT5 ).ToBytes() );
+							stream.Write( Textures.DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1a : Textures.TextureFormat.DXT5 ).ToBytes() );
 							Util.CopyStream( plane, stream, plane.Length );
 							string name = TXM.Name + ( TXM.Depth > 1 ? ( "_Plane" + depth ) : "" ) + ".dds";
 							list.Add( (name, stream) );

@@ -9,9 +9,12 @@ namespace HyoutaTools.Textures {
 	public enum TextureFormat {
 		ABGR,
 		RGBA,
-		DXT1 = 0x31545844,
-		DXT5 = 0x35545844,
+		DXT1c, // no alpha
+		DXT1a, // with 1 bit alpha
+		DXT3,
+		DXT5,
 	}
+
 	public class DDSHeader {
 		public uint Magic = 0x20534444;
 		public uint Size = 0x7C;
@@ -21,7 +24,17 @@ namespace HyoutaTools.Textures {
 		public uint PitchOrLinearSize;
 		public uint Depth;
 		public uint MipMapCount;
-		public uint[] Reserved1; // 11 elements
+		public uint Reserved1a;
+		public uint Reserved1b;
+		public uint Reserved1c;
+		public uint Reserved1d;
+		public uint Reserved1e;
+		public uint Reserved1f;
+		public uint Reserved1g;
+		public uint Reserved1h;
+		public uint Reserved1i;
+		public uint Reserved1j;
+		public uint Reserved1k;
 		public DDSPixelFormat PixelFormat = new DDSPixelFormat();
 		public uint Caps;
 		public uint Caps2;
@@ -30,7 +43,39 @@ namespace HyoutaTools.Textures {
 		public uint Reserved2;
 
 		public static DDSHeader FromStream( Stream stream ) {
-			throw new NotImplementedException(); // TODO
+			DDSHeader header = new DDSHeader();
+			header.Magic = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			if ( header.Magic != 0x20534444 ) {
+				throw new Exception( "Invalid magic." );
+			}
+			header.Size = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			if ( header.Size != 0x7C ) {
+				throw new Exception( "Invalid size." );
+			}
+			header.Flags = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Height = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Width = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.PitchOrLinearSize = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Depth = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.MipMapCount = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1a = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1b = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1c = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1d = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1e = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1f = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1g = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1h = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1i = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1j = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved1k = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.PixelFormat = DDSPixelFormat.FromStream( stream );
+			header.Caps = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Caps2 = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Caps3 = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Caps4 = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			header.Reserved2 = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			return header;
 		}
 
 		public static DDSHeader Generate( uint width, uint height, uint mipmaps, TextureFormat format ) {
@@ -45,7 +90,7 @@ namespace HyoutaTools.Textures {
 				header.MipMapCount = mipmaps;
 			}
 			header.PixelFormat.Flags = DDSFlags.DDPF_FOURCC;
-			header.PixelFormat.FourCC = format;
+			header.PixelFormat.FourCC = ToDDSFourCC( format ).Value;
 
 			return header;
 		}
@@ -65,7 +110,7 @@ namespace HyoutaTools.Textures {
 
 			BitConverter.GetBytes( header.PixelFormat.Size ).CopyTo( data, 0x4C );
 			BitConverter.GetBytes( header.PixelFormat.Flags ).CopyTo( data, 0x50 );
-			BitConverter.GetBytes( (uint)header.PixelFormat.FourCC ).CopyTo( data, 0x54 );
+			BitConverter.GetBytes( header.PixelFormat.FourCC ).CopyTo( data, 0x54 );
 			BitConverter.GetBytes( header.PixelFormat.RGBBitCount ).CopyTo( data, 0x58 );
 			BitConverter.GetBytes( header.PixelFormat.RBitMask ).CopyTo( data, 0x5C );
 			BitConverter.GetBytes( header.PixelFormat.GBitMask ).CopyTo( data, 0x60 );
@@ -79,24 +124,47 @@ namespace HyoutaTools.Textures {
 		}
 
 		public static bool IsDDSTextureFormat( TextureFormat format ) {
+			return ToDDSFourCC( format ) != null;
+		}
+		public static uint? ToDDSFourCC( TextureFormat format ) {
 			switch ( format ) {
-				case TextureFormat.DXT1:
+				case TextureFormat.DXT1a:
+				case TextureFormat.DXT1c:
+					return 0x31545844;
+				case TextureFormat.DXT3:
+					return 0x33545844;
 				case TextureFormat.DXT5:
-					return true;
+					return 0x35545844;
 				default:
-					return false;
+					return null;
 			}
 		}
 	}
 	public class DDSPixelFormat {
 		public uint Size = 0x20;
 		public uint Flags;
-		public TextureFormat FourCC;
+		public uint FourCC;
 		public uint RGBBitCount;
 		public uint RBitMask;
 		public uint GBitMask;
 		public uint BBitMask;
 		public uint ABitMask;
+
+		public static DDSPixelFormat FromStream( Stream stream ) {
+			DDSPixelFormat format = new DDSPixelFormat();
+			format.Size = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			if ( format.Size != 0x20 ) {
+				throw new Exception( "Invalid size of pixel format." );
+			}
+			format.Flags = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			format.FourCC = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			format.RGBBitCount = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			format.RBitMask = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			format.GBitMask = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			format.BBitMask = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			format.ABitMask = stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+			return format;
+		}
 	};
 	public static class DDSFlags {
 		public static uint DDSD_CAPS = 0x1;
@@ -140,7 +208,17 @@ namespace HyoutaTools.Textures {
 		}
 
 		public Bitmap ConvertToBitmap() {
-			throw new NotImplementedException(); // TODO
+			var po = new PixelOrderIterators.TiledPixelOrderIterator( (int)Header.Width, (int)Header.Height, 4, 4 );
+			ColorFetchingIterators.IColorFetchingIterator cf;
+			Data.Position = 0;
+			switch ( Header.PixelFormat.FourCC ) {
+				case 0x31545844: cf = new ColorFetchingIterators.ColorFetcherDXT( Data, Header.Width, Header.Height, ColorFetchingIterators.DxtFormat.COMPRESSED_RGBA_S3TC_DXT1_EXT ); break;
+				case 0x33545844: cf = new ColorFetchingIterators.ColorFetcherDXT( Data, Header.Width, Header.Height, ColorFetchingIterators.DxtFormat.COMPRESSED_RGBA_S3TC_DXT3_EXT ); break;
+				case 0x35545844: cf = new ColorFetchingIterators.ColorFetcherDXT( Data, Header.Width, Header.Height, ColorFetchingIterators.DxtFormat.COMPRESSED_RGBA_S3TC_DXT5_EXT ); break;
+				default: throw new Exception( "Not implemented." );
+			}
+
+			return cf.ConvertToBitmap( po, Header.Width, Header.Height );
 		}
 	}
 }

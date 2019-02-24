@@ -41,7 +41,7 @@ namespace HyoutaTools.Gust.g1t {
 			switch ( format ) {
 				case 0x00: Format = Textures.TextureFormat.ABGR; BitPerPixel = 32; break;
 				case 0x01: Format = Textures.TextureFormat.RGBA; BitPerPixel = 32; break;
-				case 0x06: Format = Textures.TextureFormat.DXT1; BitPerPixel = 4; break;
+				case 0x06: Format = Textures.TextureFormat.DXT1a; BitPerPixel = 4; break;
 				case 0x08: Format = Textures.TextureFormat.DXT5; BitPerPixel = 8; break;
 				default: throw new Exception( String.Format( "g1t: Unknown Format ({0:X2})", format ) );
 			}
