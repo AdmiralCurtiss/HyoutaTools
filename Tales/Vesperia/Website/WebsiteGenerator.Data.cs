@@ -27,7 +27,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public T8BTTA.T8BTTA Strategy;
 		public ShopData.ShopData Shops;
 		public TO8CHLI.TO8CHLI Skits;
-		public System.Drawing.Bitmap WorldMapImage;
 		public TOVSEAF.TOVSEAF SearchPoints;
 		public T8BTVA.T8BTVA BattleVoicesEnd;
 		public Trophy.TrophyConfNode TrophyJp;
