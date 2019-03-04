@@ -133,7 +133,7 @@ namespace HyoutaTools.Streams {
 		}
 
 		public override string ToString() {
-			return "Partial stream [" + PartialStart + ", " + PartialEnd + "] of " + BaseStreamInternal.ToString();
+			return "Partial stream [0x" + PartialStart.ToString( "X" ) + ", 0x" + PartialEnd.ToString( "X" ) + "] (0x" + PartialLength.ToString( "X" ) + " bytes) of " + BaseStreamInternal.ToString();
 		}
 	}
 }
