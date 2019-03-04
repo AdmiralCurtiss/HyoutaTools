@@ -54,6 +54,15 @@ namespace HyoutaTools.Tales.Vesperia {
 		public static Util.GameTextEncoding GetEncoding( this GameVersion version ) {
 			return version == GameVersion.X360_EU || version == GameVersion.PC ? Util.GameTextEncoding.UTF8 : Util.GameTextEncoding.ShiftJIS;
 		}
+		public static GameLocale[] GetValidLocales( this GameVersion version ) {
+			switch ( version ) {
+				case GameVersion.X360_US: return new GameLocale[] { GameLocale.US };
+				case GameVersion.X360_EU: return new GameLocale[] { GameLocale.UK, GameLocale.FR, GameLocale.DE };
+				case GameVersion.PS3: return new GameLocale[] { GameLocale.J };
+				case GameVersion.PC: return new GameLocale[] { GameLocale.ENG, GameLocale.FRA, GameLocale.DEU, GameLocale.ITA, GameLocale.ESP, GameLocale.ESN, GameLocale.BRA, GameLocale.RUS, GameLocale.KOR, GameLocale.ZHT };
+				default: throw new Exception( "Invalid version." );
+			}
+		}
 
 		public static string RemoveTags( string s, Dictionary<uint, TSS.TSSEntry> inGameIdDict, bool useJapaneseNames = false, bool outputAsHtml = false, bool removeKanjiWithFurigana = false ) {
 			s = s.Replace( "\x04(YUR)",   inGameIdDict[33902112].GetString( useJapaneseNames ? 0 : 1 ) );

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyoutaTools.FileContainer;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -31,19 +32,43 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 		}
 
 		public static int Parse( List<string> args ) {
-			if ( args.Count < 1 ) {
-				Console.WriteLine( "Usage: SaveDataParser SAVE" );
+			if ( args.Count < 2 ) {
+				Console.WriteLine( "Usage: SaveDataParser savefile gamedatapath" );
 				Console.WriteLine( "Save must be decrypted." );
+				Console.WriteLine( "Game data path should point to a directory or other container with the game files, which is needed to parse things like item, title, and enemy data correctly." );
 				return -1;
 			}
 
-			Util.Endianness endian = Util.Endianness.BigEndian;
-			var stringDic = new TSS.TSSFile( @"c:\Dropbox\ToV\PS3\mod\string.svo.ext\STRING_DIC.SO", Util.GameTextEncoding.ShiftJIS, Util.Endianness.BigEndian );
+			IContainer gameContainer = Website.GenerateWebsite.ContainerFromPath( args[1] );
+			if ( gameContainer == null ) {
+				Console.WriteLine( "Invalid game data path given." );
+				return -1;
+			}
+
+			GameVersion? maybeVersion = Website.GenerateWebsite.GuessGameVersionFromContainer( gameContainer );
+			if ( !maybeVersion.HasValue ) {
+				Console.WriteLine( "Failed to determine game version from given data path." );
+				return -1;
+			}
+
+			GameVersion version = maybeVersion.Value;
+			IContainer gameDir = Website.GenerateWebsite.FindGameDataDirectory( gameContainer, version );
+			if ( gameDir == null ) {
+				Console.WriteLine( "Failed to find correct file container -- is your game dump incomplete?" );
+				return -1;
+			}
+
+			GameLocale locale = VesperiaUtil.GetValidLocales( version ).First();
+			Util.Endianness endian = VesperiaUtil.GetEndian( version );
+			Util.GameTextEncoding encoding = VesperiaUtil.GetEncoding( version );
+			Util.Bitness bits = VesperiaUtil.GetBitness( version );
+
+			var stringDic = new TSS.TSSFile( Website.GenerateWebsite.TryGetStringDic( gameDir, locale, version ), encoding, endian );
 			var inGameDic = stringDic.GenerateInGameIdDictionary();
-			var itemData = new ItemDat.ItemDat( @"c:\Dropbox\ToV\PS3\orig\item.svo.ext\ITEM.DAT", endian );
+			var itemData = new ItemDat.ItemDat( Website.GenerateWebsite.TryGetItemDat( gameDir, locale, version ), Util.Endianness.BigEndian );
 			var itemDataSorted = itemData.GetSortedByInGameSorting();
-			var titles = new FAMEDAT.FAMEDAT( @"c:\Dropbox\ToV\PS3\orig\menu.svo.ext\FAMEDATA.BIN", endian );
-			var enemies = new T8BTEMST.T8BTEMST( @"c:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000", endian, Util.Bitness.B32 );
+			var titles = new FAMEDAT.FAMEDAT( Website.GenerateWebsite.TryGetTitles( gameDir, locale, version ), endian );
+			var enemies = new T8BTEMST.T8BTEMST( Website.GenerateWebsite.TryGetEnemies( gameDir, locale, version ), endian, bits );
 
 			using ( Streams.DuplicatableFileStream file = new Streams.DuplicatableFileStream( args[0] ) ) {
 				Streams.DuplicatableStream saveMenuStream = new Streams.PartialStream( file, 0, 0x228 ); // short header, used for save menu on non-PS3 versions to display basic info about save
