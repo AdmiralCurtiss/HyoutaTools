@@ -15,12 +15,13 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public GameLocale Locale;
 		public WebsiteLanguage Language;
 		public GameLocale? ImportJpInGameDictLocale = null;
-		public Util.Endianness Endian;
-		public Util.GameTextEncoding Encoding;
-		public Util.Bitness Bits = Util.Bitness.B32;
 		public string WebsiteOutputPath;
 		public Bitmap WorldMapImageOverride = null;
 		public bool ExtractImages = false;
+
+		public Util.Endianness Endian { get { return Version.GetEndian(); } }
+		public Util.GameTextEncoding Encoding { get { return Version.GetEncoding(); } }
+		public Util.Bitness Bits { get { return Version.GetBitness(); } }
 
 		public WebsiteGenerator Generator = null;
 		public GenerateWebsiteInputOutputData CompareSite = null;
@@ -220,8 +221,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				Locale = GameLocale.UK,
 				Language = WebsiteLanguage.BothWithEnLinks,
 				ImportJpInGameDictLocale = GameLocale.US,
-				Endian = Util.Endianness.BigEndian,
-				Encoding = Util.GameTextEncoding.UTF8,
 				WorldMapImageOverride = worldmap,
 				WebsiteOutputPath = @"c:\Dropbox\ToV\website_out_360_EU_UK\",
 			} );
@@ -232,8 +231,6 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				VersionPostfix = "p",
 				Locale = GameLocale.J,
 				Language = WebsiteLanguage.BothWithEnLinks,
-				Endian = Util.Endianness.BigEndian,
-				Encoding = Util.GameTextEncoding.ShiftJIS,
 				ExtractImages = true,
 				WorldMapImageOverride = worldmap,
 				WebsiteOutputPath = @"c:\Dropbox\ToV\website_out_PS3_with_patch\",
