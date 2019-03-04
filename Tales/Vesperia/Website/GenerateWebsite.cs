@@ -211,6 +211,14 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			var trp = trophyDataPath.FindChildByName( "TROPHY.TRP" ).ToTrophyTrp();
 			return Trophy.TrophyConfNode.ReadTropSfmWithTropConf( trp.FindChildByName( "TROP.SFM" ).AsFile.DataStream, trp.FindChildByName( "TROPCONF.SFM" ).AsFile.DataStream );
 		}
+
+		public static IContainer ContainerFromPath( string path ) {
+			if ( Directory.Exists( path ) ) {
+				return new DirectoryOnDisk( path );
+			}
+			throw new Exception( "Can't determine container type of " + path );
+		}
+
 		public static int Generate( List<string> args ) {
 			var worldmap = IntegerScaled( new Bitmap( @"c:\Dropbox\ToV\U_WORLDNAVI00.png" ), 5, 4 );
 
@@ -724,19 +732,37 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			File.WriteAllText( Path.Combine( outpath, "_postprocessing.bat" ), bat.ToString() );
 		}
 
-		private static IContainer FindGameDataDirectory( IContainer topLevelGameDataContainer, GameVersion version ) {
+		public static GameVersion? GuessGameVersionFromContainer( IContainer topLevelGameDataContainer ) {
+			IContainer gameDataDir = FindGameDataDirectory( topLevelGameDataContainer, null );
+			if ( gameDataDir != null ) {
+				if ( gameDataDir.GetChildNames().Contains( "default.xex" ) ) {
+					if ( gameDataDir.GetChildNames().Contains( "language" ) ) {
+						return GameVersion.X360_EU;
+					}
+					return GameVersion.X360_US;
+				}
+				if ( gameDataDir.GetChildNames().Contains( "EBOOT.BIN" ) ) {
+					return GameVersion.PS3;
+				}
+				if ( gameDataDir.GetChildNames().Contains( "chat_swf" ) ) {
+					return GameVersion.PC;
+				}
+			}
+			return null;
+		}
+		public static IContainer FindGameDataDirectory( IContainer topLevelGameDataContainer, GameVersion? version ) {
 			return FindDirectoryWithFile( topLevelGameDataContainer, version, "menu.svo", "USRDIR" );
 		}
-		private static IContainer FindTrophyDataDirectory( IContainer topLevelGameDataContainer, GameVersion version ) {
+		private static IContainer FindTrophyDataDirectory( IContainer topLevelGameDataContainer, GameVersion? version ) {
 			return FindDirectoryWithFile( topLevelGameDataContainer, version, "TROPHY.TRP", "TROPDIR" );
 		}
-		private static IContainer FindDirectoryWithFile( IContainer topLevelGameDataContainer, GameVersion version, string markerFile, string downstreamHint ) {
+		private static IContainer FindDirectoryWithFile( IContainer topLevelGameDataContainer, GameVersion? version, string markerFile, string downstreamHint ) {
 			// if the container contains the markerFile we probably have the right one
 			if ( topLevelGameDataContainer.FindChildByName( markerFile ) != null ) {
 				return topLevelGameDataContainer;
 			}
 
-			if ( version == GameVersion.PS3 ) {
+			if ( version == null || version == GameVersion.PS3 ) {
 				// could be up one or two levels in the directory structure
 				var usrdir = topLevelGameDataContainer.GetChildByName( downstreamHint )?.AsContainer;
 				if ( usrdir != null ) {
@@ -748,7 +774,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				}
 			}
 
-			if ( version == GameVersion.PC ) {
+			if ( version == null || version == GameVersion.PC ) {
 				// could be one level up
 				var data64 = topLevelGameDataContainer.GetChildByName( "Data64" )?.AsContainer;
 				if ( data64 != null ) {
@@ -757,7 +783,10 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 
 			if ( topLevelGameDataContainer.GetChildNames().Count() == 1 ) {
-				return FindDirectoryWithFile( topLevelGameDataContainer.GetChildByName( topLevelGameDataContainer.GetChildNames().First() )?.AsContainer, version, markerFile, downstreamHint );
+				var c = topLevelGameDataContainer.GetChildByName( topLevelGameDataContainer.GetChildNames().First() )?.AsContainer;
+				if ( c != null ) {
+					return FindDirectoryWithFile( c, version, markerFile, downstreamHint );
+				}
 			}
 
 			return null;
