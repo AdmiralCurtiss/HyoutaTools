@@ -7,6 +7,24 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
+	public class SaveDataBlock {
+		public string BlockName;
+		public Streams.DuplicatableStream BlockStream;
+
+		public SaveDataBlock( Streams.DuplicatableStream saveDataStream, uint headerPosition, uint dataStart, uint refStringStart, Util.Endianness endian ) {
+			saveDataStream.Position = headerPosition;
+			uint refStringPos = saveDataStream.ReadUInt32().FromEndian( endian );
+			uint offset = saveDataStream.ReadUInt32().FromEndian( endian );
+			uint size = saveDataStream.ReadUInt32().FromEndian( endian );
+			BlockStream = new Streams.PartialStream( saveDataStream, dataStart + offset, size );
+			BlockName = saveDataStream.ReadAsciiNulltermFromLocationAndReset( refStringStart + refStringPos );
+		}
+
+		public override string ToString() {
+			return BlockStream.Length + " bytes; " + BlockName;
+		}
+	}
+
 	public class SaveDataParser {
 		private static void PrintSavePoint( byte[] flags, int index, string where ) {
 			Console.WriteLine( "Save Point 0x" + index.ToString( "X2" ) + " " + ( flags[index] > 0 ? "[ ok ]" : "[MISS]" ) + ": " + where );
@@ -27,21 +45,31 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			var titles = new FAMEDAT.FAMEDAT( @"c:\Dropbox\ToV\PS3\orig\menu.svo.ext\FAMEDATA.BIN", endian );
 			var enemies = new T8BTEMST.T8BTEMST( @"c:\Dropbox\ToV\PS3\orig\btl.svo.ext\BTL_PACK.DAT.ext\0005.ext\ALL.0000", endian, Util.Bitness.B32 );
 
-			using ( Stream file = new FileStream( args[0], FileMode.Open, FileAccess.Read ) ) {
-				file.DiscardBytes( 0x228 ); // short header, used for save menu on 360 version to display basic info about save
-				string magic = file.ReadAscii( 8 );
+			using ( Streams.DuplicatableFileStream file = new Streams.DuplicatableFileStream( args[0] ) ) {
+				Streams.DuplicatableStream saveMenuStream = new Streams.PartialStream( file, 0, 0x228 ); // short header, used for save menu on non-PS3 versions to display basic info about save
+				Streams.DuplicatableStream saveDataStream = new Streams.PartialStream( file, 0x228, file.Length - 0x228 ); // actual save file
+				string magic = saveDataStream.ReadAscii( 8 );
 				if ( magic != "TO8SAVE\0" ) {
 					throw new Exception( "Invalid magic byte sequence for ToV save: " + magic );
 				}
-				uint saveFileSize = file.ReadUInt32().FromEndian( endian );
-				if ( saveFileSize != 0xCCAA0 ) {
-					throw new Exception( "Unexpected filesize for ToV save: " + saveFileSize );
+				uint saveFileSize = saveDataStream.ReadUInt32().FromEndian( endian );
+				saveDataStream.DiscardBytes( 0x14 ); // seemingly unused
+				uint sectionMetadataBlockStart = saveDataStream.ReadUInt32().FromEndian( endian );
+				uint sectionCount = saveDataStream.ReadUInt32().FromEndian( endian );
+				uint dataStart = saveDataStream.ReadUInt32().FromEndian( endian );
+				uint refStringStart = saveDataStream.ReadUInt32().FromEndian( endian );
+
+				List<SaveDataBlock> blocks = new List<SaveDataBlock>();
+				for ( uint i = 0; i < sectionCount; ++i ) {
+					blocks.Add( new SaveDataBlock( saveDataStream, sectionMetadataBlockStart + i * 0x20, dataStart, refStringStart, endian ) );
 				}
-				file.DiscardBytes( 0x3AC8 - 0x234 ); // no idea what all this is
 
 				// save point flags, one byte each, 0x00 not visted 0x01 visited
-				byte[] savePointFlags = file.ReadUInt8Array( 0x59 );
+				SaveDataBlock savePointFlagBlock = blocks.Where( x => x.BlockName == "SavePoint" ).First();
 				{
+					savePointFlagBlock.BlockStream.ReStart();
+					byte[] savePointFlags = savePointFlagBlock.BlockStream.ReadUInt8Array( 0x59 );
+					savePointFlagBlock.BlockStream.End();
 					PrintSavePoint( savePointFlags, 0x00, "Fiertia Deck (Docked at Atherum)" );
 					PrintSavePoint( savePointFlags, 0x01, "Atherum" );
 					PrintSavePoint( savePointFlags, 0x02, "Fiertia Hold" ); // same flag for both opportunities?
@@ -133,100 +161,104 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					PrintSavePoint( savePointFlags, 0x58, "Necropolis of Nostalgia F Bottom" );
 				}
 
-				file.DiscardBytes( 0xA3F48 - 0x3B21 ); // no idea what all this is
-				file.ReadUInt32().FromEndian( endian ); // ?
-				file.ReadUInt32().FromEndian( endian ); // ?
-				file.ReadUInt32Array( 9, endian );
-				file.ReadUInt32().FromEndian( endian ); // play time in frames, assuming 60 frames = 1 second
-				file.ReadUInt32().FromEndian( endian ); // gald
-				file.DiscardBytes( 4 ); // ?
-				uint[] itemCounts = file.ReadUInt32Array( 3072, endian );
-				uint[] itemBookBitfields = file.ReadUInt32Array( 3072 / 32, endian );
-				file.DiscardBytes( 4 ); // ?
-				file.ReadUInt32Array( 4, endian ); // control modes for the four active party slots
-				file.ReadUInt32Array( 3, endian ); // strategies assigned to dpad directions
-				file.DiscardBytes( 0x40 ); // ??
+				SaveDataBlock partyDataBlock = blocks.Where( x => x.BlockName == "PARTY_DATA" ).First();
+				partyDataBlock.BlockStream.ReStart();
+				partyDataBlock.BlockStream.ReadUInt32().FromEndian( endian ); // ?
+				partyDataBlock.BlockStream.ReadUInt32().FromEndian( endian ); // ?
+				partyDataBlock.BlockStream.ReadUInt32Array( 9, endian );
+				partyDataBlock.BlockStream.ReadUInt32().FromEndian( endian ); // play time in frames, assuming 60 frames = 1 second
+				partyDataBlock.BlockStream.ReadUInt32().FromEndian( endian ); // gald
+				partyDataBlock.BlockStream.DiscardBytes( 4 ); // ?
+				uint[] itemCounts = partyDataBlock.BlockStream.ReadUInt32Array( 3072, endian );
+				uint[] itemBookBitfields = partyDataBlock.BlockStream.ReadUInt32Array( 3072 / 32, endian );
+				partyDataBlock.BlockStream.DiscardBytes( 4 ); // ?
+				partyDataBlock.BlockStream.ReadUInt32Array( 4, endian ); // control modes for the four active party slots
+				partyDataBlock.BlockStream.ReadUInt32Array( 3, endian ); // strategies assigned to dpad directions
+				partyDataBlock.BlockStream.DiscardBytes( 0x40 ); // ??
 				for ( int i = 0; i < 8; ++i ) {
 					// custom strategy names
 					// game seems to read these till null byte so this could totally be abused to buffer overflow...
-					file.ReadAscii( 0x40 );
+					partyDataBlock.BlockStream.ReadAscii( 0x40 );
 				}
 
-				file.DiscardBytes( 0xA84D0 - 0xA7360 ); // ?
-				uint[] monsterBookBitfieldsScanned = file.ReadUInt32Array( 0x48 / 4, endian );
-				file.DiscardBytes( 0xA8680 - 0xA8518 ); // ?
-				uint[] monsterBookBitfieldsSeen = file.ReadUInt32Array( 0x48 / 4, endian );
-				file.DiscardBytes( 0xA8928 - 0xA86C8 ); // ?
+				partyDataBlock.BlockStream.DiscardBytes( 0xA84D0 - 0xA7360 ); // ?
+				uint[] monsterBookBitfieldsScanned = partyDataBlock.BlockStream.ReadUInt32Array( 0x48 / 4, endian );
+				partyDataBlock.BlockStream.DiscardBytes( 0xA8680 - 0xA8518 ); // ?
+				uint[] monsterBookBitfieldsSeen = partyDataBlock.BlockStream.ReadUInt32Array( 0x48 / 4, endian );
+				partyDataBlock.BlockStream.DiscardBytes( 0xA8928 - 0xA86C8 ); // ?
+				partyDataBlock.BlockStream.End();
 
 				// 9 character blocks, each 0x4010 bytes
 				for ( int character = 0; character < 9; ++character ) {
-					file.ReadUInt32().FromEndian( endian ); // ?
-					file.ReadAscii( 0x40 ); // custom character name
-					file.ReadUInt32().FromEndian( endian ); // character ID
-					file.ReadUInt32().FromEndian( endian ); // level
-					file.ReadUInt32().FromEndian( endian ); // current HP
-					file.ReadUInt32().FromEndian( endian ); // current TP
-					file.ReadUInt32().FromEndian( endian ); // max HP
-					file.ReadUInt32().FromEndian( endian ); // max TP
-					file.ReadUInt32().FromEndian( endian ); // ?
-					file.ReadUInt32().FromEndian( endian ); // EXP
-					file.ReadUInt32().FromEndian( endian ); // ?
-					file.ReadUInt32().FromEndian( endian ); // ?
-					file.ReadUInt32().FromEndian( endian ); // base attack
-					file.ReadUInt32().FromEndian( endian ); // base magic attack
-					file.ReadUInt32().FromEndian( endian ); // base def
-					file.ReadUInt32().FromEndian( endian ); // base mdef
-					file.ReadUInt32().FromEndian( endian ); // ?
-					file.ReadUInt32().FromEndian( endian ); // base agility
-					file.ReadUInt32().FromEndian( endian ); // luck
-					file.ReadUInt32().FromEndian( endian ); // ?
-					file.ReadUInt32().FromEndian( endian ); // ?
-					file.ReadUInt32().FromEndian( endian ); // base attack attribute fire
-					file.ReadUInt32().FromEndian( endian ); // base attack attribute earth
-					file.ReadUInt32().FromEndian( endian ); // base attack attribute wind
-					file.ReadUInt32().FromEndian( endian ); // base attack attribute water
-					file.ReadUInt32().FromEndian( endian ); // base attack attribute light
-					file.ReadUInt32().FromEndian( endian ); // base attack attribute dark
-					file.ReadUInt32().FromEndian( endian ); // base attack attribute physical...?
-					file.ReadUInt32().FromEndian( endian ); // base damage multiplier fire
-					file.ReadUInt32().FromEndian( endian ); // base damage multiplier earth
-					file.ReadUInt32().FromEndian( endian ); // base damage multiplier wind
-					file.ReadUInt32().FromEndian( endian ); // base damage multiplier water
-					file.ReadUInt32().FromEndian( endian ); // base damage multiplier light
-					file.ReadUInt32().FromEndian( endian ); // base damage multiplier dark
-					file.ReadUInt32().FromEndian( endian ); // base damage multiplier physical?
-					file.DiscardBytes( 0xA8A60 - 0xA89F0 ); // ?
-					file.ReadUInt32().FromEndian( endian ); // modified attack (base + from equipment)
-					file.ReadUInt32().FromEndian( endian ); // mod def
-					file.ReadUInt32().FromEndian( endian ); // mod matk
-					file.ReadUInt32().FromEndian( endian ); // mod mdef
-					file.ReadUInt32().FromEndian( endian ); // ?
-					file.ReadUInt32().FromEndian( endian ); // mod agility
-					file.ReadUInt32().FromEndian( endian ); // mod luck
-					file.ReadUInt32().FromEndian( endian ); // ?
-					file.ReadUInt32().FromEndian( endian ); // ?
-					file.ReadUInt32().FromEndian( endian ); // mod attack attribute fire
-					file.ReadUInt32().FromEndian( endian ); // mod attack attribute earth
-					file.ReadUInt32().FromEndian( endian ); // mod attack attribute wind
-					file.ReadUInt32().FromEndian( endian ); // mod attack attribute water
-					file.ReadUInt32().FromEndian( endian ); // mod attack attribute light
-					file.ReadUInt32().FromEndian( endian ); // mod attack attribute dark
-					file.ReadUInt32().FromEndian( endian ); // mod attack attribute physical...?
-					file.ReadUInt32().FromEndian( endian ); // mod damage multiplier fire
-					file.ReadUInt32().FromEndian( endian ); // mod damage multiplier earth
-					file.ReadUInt32().FromEndian( endian ); // mod damage multiplier wind
-					file.ReadUInt32().FromEndian( endian ); // mod damage multiplier water
-					file.ReadUInt32().FromEndian( endian ); // mod damage multiplier light
-					file.ReadUInt32().FromEndian( endian ); // mod damage multiplier dark
-					file.ReadUInt32().FromEndian( endian ); // mod damage multiplier physical?
-					file.DiscardBytes( 0xA8E04 - 0xA8ABC ); // ?
-					file.ReadUInt32().FromEndian( endian ); // enemy kill counter (?)
-					file.DiscardBytes( 0xAAE28 - 0xA8E08 ); // ?
+					SaveDataBlock characterDataBlock = blocks.Where( x => x.BlockName == "PC_STATUS" + ( character + 1 ).ToString( "D1" ) ).First();
+					var characterDataStream = characterDataBlock.BlockStream;
+					characterDataStream.ReadUInt32().FromEndian( endian ); // ?
+					characterDataStream.ReadAscii( 0x40 ); // custom character name
+					characterDataStream.ReadUInt32().FromEndian( endian ); // character ID
+					characterDataStream.ReadUInt32().FromEndian( endian ); // level
+					characterDataStream.ReadUInt32().FromEndian( endian ); // current HP
+					characterDataStream.ReadUInt32().FromEndian( endian ); // current TP
+					characterDataStream.ReadUInt32().FromEndian( endian ); // max HP
+					characterDataStream.ReadUInt32().FromEndian( endian ); // max TP
+					characterDataStream.ReadUInt32().FromEndian( endian ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // EXP
+					characterDataStream.ReadUInt32().FromEndian( endian ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base attack
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base magic attack
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base def
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base mdef
+					characterDataStream.ReadUInt32().FromEndian( endian ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base agility
+					characterDataStream.ReadUInt32().FromEndian( endian ); // luck
+					characterDataStream.ReadUInt32().FromEndian( endian ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base attack attribute fire
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base attack attribute earth
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base attack attribute wind
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base attack attribute water
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base attack attribute light
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base attack attribute dark
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base attack attribute physical...?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base damage multiplier fire
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base damage multiplier earth
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base damage multiplier wind
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base damage multiplier water
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base damage multiplier light
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base damage multiplier dark
+					characterDataStream.ReadUInt32().FromEndian( endian ); // base damage multiplier physical?
+					characterDataStream.DiscardBytes( 0xA8A60 - 0xA89F0 ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // modified attack (base + from equipment)
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod def
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod matk
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod mdef
+					characterDataStream.ReadUInt32().FromEndian( endian ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod agility
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod luck
+					characterDataStream.ReadUInt32().FromEndian( endian ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod attack attribute fire
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod attack attribute earth
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod attack attribute wind
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod attack attribute water
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod attack attribute light
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod attack attribute dark
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod attack attribute physical...?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod damage multiplier fire
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod damage multiplier earth
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod damage multiplier wind
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod damage multiplier water
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod damage multiplier light
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod damage multiplier dark
+					characterDataStream.ReadUInt32().FromEndian( endian ); // mod damage multiplier physical?
+					characterDataStream.DiscardBytes( 0xA8E04 - 0xA8ABC ); // ?
+					characterDataStream.ReadUInt32().FromEndian( endian ); // enemy kill counter (?)
+					characterDataStream.DiscardBytes( 0xAAE28 - 0xA8E08 ); // ?
 
 					// skill equipment is stored around here
 
-					file.DiscardBytes( 0xAC5B8 - 0xAAE28 ); // ?
-					uint[] titlesUnlockedBitfield = file.ReadUInt32Array( 15, endian );
+					characterDataStream.DiscardBytes( 0xAC5B8 - 0xAAE28 ); // ?
+					uint[] titlesUnlockedBitfield = characterDataStream.ReadUInt32Array( 15, endian );
 
 					foreach ( var title in titles.TitleList ) {
 						bool haveTitle = ( ( titlesUnlockedBitfield[title.ID / 32] >> (int)( title.ID % 32 ) ) & 1 ) > 0;
@@ -236,7 +268,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					}
 					Console.WriteLine( "===" );
 
-					file.DiscardBytes( 0xAC938 - 0xAC5F4 ); // ?
+					characterDataStream.DiscardBytes( 0xAC938 - 0xAC5F4 ); // ?
 				}
 
 
