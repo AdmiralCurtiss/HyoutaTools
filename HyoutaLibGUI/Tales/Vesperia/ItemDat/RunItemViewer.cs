@@ -11,7 +11,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 	class RunItemViewer {
 		public static int Execute( List<string> args ) {
 			if ( args.Count < 7 ) {
-				Console.WriteLine( "Usage: [360/PS3] ITEM.DAT STRING_DIC.SO T8BTSK T8BTEMST COOKDAT WRLDDAT" );
+				Console.WriteLine( "Usage: [360/PS3] ITEM.DAT STRING_DIC.SO T8BTSK T8BTEMST COOKDAT WRLDDAT ITEMSORT.DAT" );
 				return -1;
 			}
 
@@ -30,7 +30,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 				return -1;
 			}
 
-			HyoutaTools.Tales.Vesperia.ItemDat.ItemDat items = new HyoutaTools.Tales.Vesperia.ItemDat.ItemDat( args[1], Util.Endianness.BigEndian );
+			HyoutaTools.Tales.Vesperia.ItemDat.ItemDat items = new HyoutaTools.Tales.Vesperia.ItemDat.ItemDat( args[1], args[7], Util.Endianness.BigEndian );
 
 			TSSFile TSS;
 			try {

@@ -43,7 +43,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 
 			TSS.TSSFile stringDic = new TSS.TSSFile( Website.GenerateWebsite.TryGetStringDic( gameDir, locale, version ), encoding, endian );
 			Dictionary<uint, TSS.TSSEntry> inGameDic = stringDic.GenerateInGameIdDictionary();
-			ItemDat.ItemDat itemData = new ItemDat.ItemDat( Website.GenerateWebsite.TryGetItemDat( gameDir, locale, version ), Util.Endianness.BigEndian );
+			ItemDat.ItemDat itemData = new ItemDat.ItemDat( Website.GenerateWebsite.TryGetItemDat( gameDir, locale, version ), Website.GenerateWebsite.TryGetItemSortDat( gameDir, locale, version ), Util.Endianness.BigEndian );
 			List<ItemDat.ItemDatSingle> itemDataSorted = itemData.GetSortedByInGameSorting();
 			FAMEDAT.FAMEDAT titles = new FAMEDAT.FAMEDAT( Website.GenerateWebsite.TryGetTitles( gameDir, locale, version ), endian );
 			T8BTEMST.T8BTEMST enemies = new T8BTEMST.T8BTEMST( Website.GenerateWebsite.TryGetEnemies( gameDir, locale, version ), endian, bits );

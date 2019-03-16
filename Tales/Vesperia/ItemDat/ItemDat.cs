@@ -8,31 +8,27 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		public List<ItemDatSingle> items;
 		public Dictionary<uint, ItemDatSingle> itemIdDict;
 
-		public ItemDat( string filename, Util.Endianness endian ) {
-			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open, System.IO.FileAccess.Read ) ) {
-				if ( !LoadFile( stream, endian ) ) {
+		public ItemDat( string filenameItemDat, string filenameItemSort, Util.Endianness endian ) {
+			using ( System.IO.Stream streamItemDat = new System.IO.FileStream( filenameItemDat, System.IO.FileMode.Open, System.IO.FileAccess.Read ) )
+			using ( System.IO.Stream streamItemSort = new System.IO.FileStream( filenameItemSort, System.IO.FileMode.Open, System.IO.FileAccess.Read ) ) {
+				if ( !LoadFile( streamItemDat, streamItemSort, endian ) ) {
 					throw new Exception( "Loading ItemDat failed!" );
 				}
 			}
 		}
 
-		public ItemDat( System.IO.Stream stream, Util.Endianness endian ) {
-			if ( !LoadFile( stream, endian ) ) {
+		public ItemDat( System.IO.Stream itemDatStream, System.IO.Stream itemSortStream, Util.Endianness endian ) {
+			if ( !LoadFile( itemDatStream, itemSortStream, endian ) ) {
 				throw new Exception( "Loading ItemDat failed!" );
 			}
 		}
 
-		private bool LoadFile( System.IO.Stream stream, Util.Endianness endian ) {
-			if ( ( stream.Length % 0x2E4 ) != 0 ) {
-				Console.WriteLine( "ItemDat: Not a valid size, must be divisible by 0x2E4." );
-				return false;
-			}
+		private bool LoadFile( System.IO.Stream itemDatStream, System.IO.Stream itemSortStream, Util.Endianness endian ) {
+			uint itemCount = itemSortStream.ReadUInt32().FromEndian( endian );
+			items = new List<ItemDatSingle>( (int)itemCount );
 
-			int itemCount = (int)( stream.Length / 0x2E4 );
-			items = new List<ItemDatSingle>( itemCount );
-
-			for ( int i = 0; i < itemCount; ++i ) {
-				items.Add( new ItemDatSingle( stream, endian ) );
+			for ( uint i = 0; i < itemCount; ++i ) {
+				items.Add( new ItemDatSingle( itemDatStream, endian ) );
 			}
 
 			itemIdDict = new Dictionary<uint, ItemDatSingle>();

@@ -102,6 +102,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public static Stream TryGetItemDat( IContainer basepath, GameLocale locale, GameVersion version ) {
 			return basepath?.FindChildByName( "item.svo" )?.ToFps4()?.FindChildByName( "ITEM.DAT" )?.AsFile?.DataStream;
 		}
+		public static Stream TryGetItemSortDat( IContainer basepath, GameLocale locale, GameVersion version ) {
+			return basepath?.FindChildByName( "item.svo" )?.ToFps4()?.FindChildByName( "ITEMSORT.DAT" )?.AsFile?.DataStream;
+		}
 		public static Stream TryGetStringDic( IContainer basepath, GameLocale locale, GameVersion version ) {
 			if ( version == GameVersion.X360_EU || version == GameVersion.PC ) {
 				return basepath?.FindChildByName( "language" )?.AsContainer?.FindChildByName( "string_dic_" + ( version == GameVersion.X360_EU ? locale.ToString().ToLowerInvariant() : locale.ToString().ToUpperInvariant() ) + ".so" )?.AsFile?.DataStream;
@@ -812,7 +815,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.VersionPostfix = versionPostfix;
 			site.Language = websiteLanguage;
 
-			site.Items = new ItemDat.ItemDat( TryGetItemDat( gameDataPath, site.Locale, site.Version ), Util.Endianness.BigEndian );
+			site.Items = new ItemDat.ItemDat( TryGetItemDat( gameDataPath, site.Locale, site.Version ), TryGetItemSortDat( gameDataPath, site.Locale, site.Version ), Util.Endianness.BigEndian );
 			site.StringDic = new TSS.TSSFile( TryGetStringDic( gameDataPath, site.Locale, site.Version ), encoding, endian );
 			site.Artes = new T8BTMA.T8BTMA( TryGetArtes( gameDataPath, site.Locale, site.Version ), endian, bits );
 			site.Skills = new T8BTSK.T8BTSK( TryGetSkills( gameDataPath, site.Locale, site.Version ), endian, bits );
