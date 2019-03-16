@@ -190,8 +190,9 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		public UInt32 DescriptionPointer;
 
 		public UInt32[] Data;
+		public uint[] SortOrderPerCategory;
 
-		public ItemDatSingle( System.IO.Stream stream, Util.Endianness endian ) { // 0x2E4
+		public ItemDatSingle( System.IO.Stream stream, System.IO.Stream sortStream, Util.Endianness endian ) { // 0x2E4
 			long pos = stream.Position;
 			stream.Position = pos + 0x04;
 			NamePointer = stream.ReadUInt32().FromEndian( endian );
@@ -204,6 +205,11 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			Data = new UInt32[0x2E4 / 4];
 			for ( int i = 0; i < 0x2E4 / 4; ++i ) {
 				Data[i] = stream.ReadUInt32().FromEndian( endian );
+			}
+
+			SortOrderPerCategory = new uint[11];
+			for ( int i = 0; i < 11; ++i ) {
+				SortOrderPerCategory[i] = sortStream.ReadUInt32().FromEndian( endian );
 			}
 
 			return;

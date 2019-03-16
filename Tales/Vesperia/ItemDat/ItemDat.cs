@@ -28,7 +28,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			items = new List<ItemDatSingle>( (int)itemCount );
 
 			for ( uint i = 0; i < itemCount; ++i ) {
-				items.Add( new ItemDatSingle( itemDatStream, endian ) );
+				items.Add( new ItemDatSingle( itemDatStream, itemSortStream, endian ) );
 			}
 
 			itemIdDict = new Dictionary<uint, ItemDatSingle>();
