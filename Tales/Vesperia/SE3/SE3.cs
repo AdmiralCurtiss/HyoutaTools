@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace HyoutaTools.Tales.Vesperia.SE3 {
 	public class SE3 {
-		public SE3( string filename, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+		public SE3( string filename, Util.Endianness? endian, Util.GameTextEncoding encoding ) {
 			if ( !LoadFile( new System.IO.FileStream( filename, FileMode.Open ), endian, encoding ) ) {
 				throw new Exception( "Loading SE3 failed!" );
 			}
 		}
 
-		public SE3( Stream stream, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+		public SE3( Stream stream, Util.Endianness? endian, Util.GameTextEncoding encoding ) {
 			if ( !LoadFile( stream, endian, encoding ) ) {
 				throw new Exception( "Loading SE3 failed!" );
 			}
@@ -24,10 +24,25 @@ namespace HyoutaTools.Tales.Vesperia.SE3 {
 		private List<string> Filenames;
 		private Stream Data;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian, Util.GameTextEncoding encoding ) {
-			string magic = stream.ReadAscii( 4 );
-			if ( magic != "SE3 " ) {
-				return false;
+		private bool LoadFile( Stream stream, Util.Endianness? endianParam, Util.GameTextEncoding encoding ) {
+			Util.Endianness endian;
+			if ( endianParam == null ) {
+				uint magic = stream.ReadUInt32().FromEndian( Util.Endianness.BigEndian );
+				if ( magic == 0x53453320 ) {
+					endian = Util.Endianness.BigEndian;
+				} else if (magic == 0x20334553 ) {
+					endian = Util.Endianness.LittleEndian;
+				} else {
+					Console.WriteLine( "Invalid magic: " + magic );
+					return false;
+				}
+			} else {
+				endian = endianParam.Value;
+				uint magic = stream.ReadUInt32().FromEndian( endian );
+				if ( magic != 0x53453320 ) {
+					Console.WriteLine( "Invalid magic: " + magic );
+					return false;
+				}
 			}
 
 			stream.DiscardBytes( 8 ); // unknown

@@ -15,7 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.SE3 {
 			string infile = args[0];
 			string outfile = args.Count >= 2 ? args[1] : infile + ".nub";
 
-			new SE3( infile, Util.Endianness.BigEndian, Util.GameTextEncoding.ASCII ).ExtractToNub( outfile );
+			new SE3( infile, null, Util.GameTextEncoding.ASCII ).ExtractToNub( outfile );
 
 			return 0;
 		}
