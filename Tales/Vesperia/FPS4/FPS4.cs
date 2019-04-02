@@ -390,8 +390,18 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			uint FirstFileStart,
 			uint Alignment,
 			string headerName = null,
-			string metadata = null
+			string metadata = null,
+			uint? alignmentFirstFile = null,
+			uint fileLocationMultiplier = 1
 		) {
+			uint alignmentFirstFileInternal = alignmentFirstFile ?? Alignment;
+			if ( ( Alignment % fileLocationMultiplier ) != 0 ) {
+				throw new Exception( "Invalid multiplier." );
+			}
+			if ( ( alignmentFirstFileInternal % fileLocationMultiplier ) != 0 ) {
+				throw new Exception( "Invalid multiplier." );
+			}
+
 			uint FileCount = (uint)files.Length + 1;
 			uint HeaderSize = 0x1C;
 
@@ -513,23 +523,23 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							// keep FirstFileStart from loaded file, this is a hack
 							// will break if file metadata (names, count, etc.) changes!
 						} else {
-							FirstFileStart = ( (uint)( f.Position ) ).Align( Alignment );
+							FirstFileStart = ( (uint)( f.Position ) ).Align( alignmentFirstFileInternal );
 						}
 					}
 					f.Position = 0xC;
 					f.WriteUInt32( FirstFileStart.ToEndian( Endian ) );
 
 					// file entries
-					uint ptr = FirstFileStart;
+					ulong ptr = FirstFileStart;
 					for ( int i = 0; i < files.Length; ++i ) {
 						f.Position = 0x1C + ( i * EntrySize );
 						var fi = new System.IO.FileInfo( files[i] );
-						if ( ContentBitmask.ContainsStartPointers ) { f.WriteUInt32( ptr.ToEndian( Endian ) ); }
+						if ( ContentBitmask.ContainsStartPointers ) { f.WriteUInt32( ( (uint)( ptr / fileLocationMultiplier ) ).ToEndian( Endian ) ); }
 						if ( ContentBitmask.ContainsSectorSizes ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
-						ptr += (uint)fi.Length.Align( (int)Alignment );
+						ptr += (ulong)fi.Length.Align( (int)Alignment );
 					}
 					f.Position = 0x1C + ( files.Length * EntrySize );
-					f.WriteUInt32( ptr.ToEndian( Endian ) );
+					f.WriteUInt32( ( (uint)( ptr / fileLocationMultiplier ) ).ToEndian( Endian ) );
 
 					f.Position = pos;
 				}

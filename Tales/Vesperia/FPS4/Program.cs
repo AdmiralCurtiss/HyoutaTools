@@ -81,6 +81,13 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Console.WriteLine( " -o filename.svo        Default: none" );
 			Console.WriteLine( "   Read header data from another FPS4 file and use it in the new one." );
 			Console.WriteLine( "   Do NOT use this when filenames change or files are added/removed." );
+			Console.WriteLine( " --firstalign value     Default: same as file alignment" );
+			Console.WriteLine( "   Align first file within the container to a different offset than the rest." );
+			Console.WriteLine( " --multiplier value     Default: 1" );
+			Console.WriteLine( "   Apply a multiplier to the file offsets." );
+			Console.WriteLine( "   This is necessary when packing over 4 GB of data." );
+			Console.WriteLine( "   This should ideally be a power of two." );
+			Console.WriteLine( "   The file alignment must divide by this multiplier." );
 		}
 		public static int Pack( List<string> args ) {
 			if ( args.Count < 2 ) {
@@ -94,18 +101,23 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			ushort? bitmask = null;
 			uint? alignment = null;
+			uint? alignmentFirstFile = null;
 			bool orderByExtension = false;
 			bool includeSubdirs = false;
 			bool littleEndian = false;
 			string originalFps4 = null;
 			string metadata = null;
 			string comment = null;
+			uint multiplier = 1;
 
 			try {
 				for ( int i = 0; i < args.Count; ++i ) {
 					switch ( args[i] ) {
 						case "-a":
 							alignment = Util.ParseDecOrHex( args[++i] );
+							break;
+						case "--firstalign":
+							alignmentFirstFile = Util.ParseDecOrHex( args[++i] );
 							break;
 						case "-b":
 							bitmask = (ushort)Util.ParseDecOrHex( args[++i] );
@@ -130,6 +142,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							break;
 						case "-o":
 							originalFps4 = args[++i];
+							break;
+						case "--multiplier":
+							multiplier = Util.ParseDecOrHex( args[++i] );
 							break;
 						default:
 							if ( dir == null ) { dir = args[i]; } else if ( outName == null ) { outName = args[i]; } else { PrintPackUsage(); return -1; }
@@ -180,7 +195,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				fps4.FirstFileStart,
 				fps4.Alignment,
 				headerName: outHeaderName,
-				metadata: metadata
+				metadata: metadata,
+				alignmentFirstFile: alignmentFirstFile,
+				fileLocationMultiplier: multiplier
 			);
 
 			return 0;
