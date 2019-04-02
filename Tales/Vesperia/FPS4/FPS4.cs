@@ -281,7 +281,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					throw new Exception( "FPS4 extraction failure: Doesn't contain filesize information!" );
 				}
 
-				uint fileloc = fi.Location.Value * FileLocationMultiplier;
+				long fileloc = (long)(fi.Location.Value) * FileLocationMultiplier;
 				uint filesize = maybeFilesize.Value;
 				(string path, string filename) = fi.GuessFilePathName();
 
@@ -315,7 +315,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					return null;
 				}
 
-				uint fileloc = fi.Location.Value * FileLocationMultiplier;
+				long fileloc = (long)(fi.Location.Value) * FileLocationMultiplier;
 				uint filesize = maybeFilesize.Value;
 				return new FileFromStream( new PartialStream( contentFile, fileloc, filesize ) );
 			}
