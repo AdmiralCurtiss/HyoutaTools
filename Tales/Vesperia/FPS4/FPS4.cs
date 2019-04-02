@@ -122,6 +122,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				return (path.Substring( 0, finaldir ), path.Substring( finaldir + 1 ) + "." + indexStringWithType);
 			}
 		}
+
+		public override string ToString() {
+			return FileName + " at 0x" + Location?.ToString( "X8" ) + ", " + FileSize + " bytes";
+		}
 	}
 
 	public class FPS4 : ContainerBase {
@@ -162,6 +166,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public List<FileInfo> Files;
 
 		private bool LoadFile( DuplicatableStream headerStream, DuplicatableStream contentStream ) {
+			bool separateContentFile = headerStream != contentStream;
 			DuplicatableStream infile = headerStream.Duplicate();
 			contentFile = contentStream.Duplicate();
 
@@ -206,8 +211,12 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				Files.Add( new FileInfo( infile, i, ContentBitmask, Endian, Util.GameTextEncoding.ASCII ) );
 			}
 
-			FileLocationMultiplier = CalculateFileLocationMultiplier();
+			FileLocationMultiplier = separateContentFile ? 1 : CalculateFileLocationMultiplier();
 			ShouldGuessFilesizeFromNextFile = !ContentBitmask.ContainsFileSizes && !ContentBitmask.ContainsSectorSizes && CalculateIsLinear();
+
+			if ( FileLocationMultiplier != 1 ) {
+				Console.WriteLine( "Guessed FPS4 file location multiplier of " + FileLocationMultiplier + "; extraction may be incorrect if this is a wrong guess." );
+			}
 
 			infile.Dispose();
 			return true;
@@ -231,6 +240,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			return false;
 		}
 
+		// This is used for the potentially >4GB containers in the Vesperia rerelease.
 		public uint CalculateFileLocationMultiplier() {
 			if ( ContentBitmask.ContainsStartPointers ) {
 				uint smallestFileLoc = uint.MaxValue;
