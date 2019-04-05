@@ -43,6 +43,8 @@ namespace HyoutaTools.Gust.g1t {
 				case 0x01: Format = Textures.TextureFormat.RGBA; BitPerPixel = 32; break;
 				case 0x06: Format = Textures.TextureFormat.DXT1a; BitPerPixel = 4; break;
 				case 0x08: Format = Textures.TextureFormat.DXT5; BitPerPixel = 8; break;
+				case 0x12: Format = Textures.TextureFormat.DXT5; BitPerPixel = 8; break; // swizzled from vita
+				case 0x5B: Format = Textures.TextureFormat.DXT5; BitPerPixel = 8; break; // unsure what the difference to 0x08 is
 				default: throw new Exception( String.Format( "g1t: Unknown Format ({0:X2})", format ) );
 			}
 
