@@ -87,7 +87,6 @@
     <Compile Include="DanganRonpa\Pak\Program.cs" />
     <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
     <Compile Include="DecompressorManager.cs" />
-    <Compile Include="ExternalProgramExecution.cs" />
     <Compile Include="FileContainer\ContainerBase.cs" />
     <Compile Include="FileContainer\ContainerIndexAsStringWrapper.cs" />
     <Compile Include="FileContainer\DirectoryOnDisk.cs" />
