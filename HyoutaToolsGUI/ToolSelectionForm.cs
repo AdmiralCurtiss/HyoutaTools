@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace HyoutaToolsGUI {
 	public partial class ToolSelectionForm : Form {
 		private class ToolInList {
-			public HyoutaTools.IProgram Program;
+			public HyoutaPluginBase.IProgram Program;
 			public override string ToString() { return Program.Identifiers().First(); }
 		}
 

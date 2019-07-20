@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaPluginBase;
+using HyoutaPluginBase.FileContainer;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
 	public class SaveData {
@@ -26,11 +28,11 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 		public SaveDataBlockPCStatus[] CharacterData = new SaveDataBlockPCStatus[9];
 		public SaveDataBlockFieldGadget FieldGadget;
 
-		public SaveData( Streams.DuplicatableStream stream, Util.Endianness endian ) {
+		public SaveData( HyoutaPluginBase.DuplicatableStream stream, Util.Endianness endian ) {
 			MenuBlock = new SaveMenuBlock( new Streams.PartialStream( stream, 0, 0x228 ) );
 
 			// actual save file
-			using ( Streams.DuplicatableStream saveDataStream = new Streams.PartialStream( stream, 0x228, stream.Length - 0x228 ) ) {
+			using ( DuplicatableStream saveDataStream = new Streams.PartialStream( stream, 0x228, stream.Length - 0x228 ) ) {
 				string magic = saveDataStream.ReadAscii( 8 );
 				if ( magic != "TO8SAVE\0" ) {
 					throw new Exception( "Invalid magic byte sequence for ToV save: " + magic );
@@ -103,7 +105,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			ExportSingle( FieldGadget?.Stream, Path.Combine( path, "FieldGadget" ) );
 		}
 
-		private static void ExportSingle( Streams.DuplicatableStream stream, string path ) {
+		private static void ExportSingle( HyoutaPluginBase.DuplicatableStream stream, string path ) {
 			if ( stream != null ) {
 				using ( var s = stream.Duplicate() )
 				using ( var f = new FileStream( path, FileMode.Create ) ) {

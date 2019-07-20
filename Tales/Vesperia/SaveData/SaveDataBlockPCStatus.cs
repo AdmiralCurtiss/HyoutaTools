@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HyoutaTools.Streams;
+using HyoutaPluginBase;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
 	// 0x3F38 bytes in 360, 0x4010 bytes in PS3

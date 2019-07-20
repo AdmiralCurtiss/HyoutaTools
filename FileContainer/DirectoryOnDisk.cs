@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaPluginBase.FileContainer;
 
 namespace HyoutaTools.FileContainer {
 	public class DirectoryOnDisk : ContainerBase {

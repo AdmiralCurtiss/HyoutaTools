@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaPluginBase;
+using HyoutaPluginBase.FileContainer;
 
 namespace HyoutaTools.Streams {
 	public class PartialStream : DuplicatableStream {

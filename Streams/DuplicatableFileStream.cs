@@ -6,6 +6,7 @@ using System.Runtime.Remoting;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using HyoutaPluginBase;
 
 namespace HyoutaTools.Streams {
 	public class DuplicatableFileStream : DuplicatableStream {

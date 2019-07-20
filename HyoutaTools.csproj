@@ -94,9 +94,6 @@
     <Compile Include="FileContainer\FileBase.cs" />
     <Compile Include="FileContainer\FileFromStream.cs" />
     <Compile Include="FileContainer\FileOnDisk.cs" />
-    <Compile Include="FileContainer\IContainer.cs" />
-    <Compile Include="FileContainer\IFile.cs" />
-    <Compile Include="FileContainer\INode.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\DATA.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\FileSectionFactory.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\MES.cs" />
@@ -197,7 +194,6 @@
     <Compile Include="Sting\BlazeUnionScriptFileSection.cs" />
     <Compile Include="Streams\DuplicatableByteArrayStream.cs" />
     <Compile Include="Streams\DuplicatableFileStream.cs" />
-    <Compile Include="Streams\DuplicatableStream.cs" />
     <Compile Include="Streams\PartialStream.cs" />
     <Compile Include="Tales\Abyss\FPS2\Program.cs" />
     <Compile Include="Tales\Abyss\FPS3\Program.cs" />
@@ -402,7 +398,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="HyoutaPluginBase\HyoutaPluginBase.csproj">
+    <ProjectReference Include="HyoutaUtils\HyoutaPluginBase\HyoutaPluginBase.csproj">
       <Project>{6e153ce7-05b9-4eba-8de8-ad842214f60b}</Project>
       <Name>HyoutaPluginBase</Name>
     </ProjectReference>

@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using HyoutaTools.FileContainer;
 using HyoutaTools.Streams;
+using HyoutaPluginBase;
+using HyoutaPluginBase.FileContainer;
 
 namespace HyoutaTools.Trophy {
 	public class TrophyTrpFile {
@@ -57,7 +59,7 @@ namespace HyoutaTools.Trophy {
 		private uint Unknown15;
 		private uint Unknown16;
 
-		public TrophyTrp( Streams.DuplicatableStream stream, Util.Endianness endian = Util.Endianness.BigEndian ) {
+		public TrophyTrp( HyoutaPluginBase.DuplicatableStream stream, Util.Endianness endian = Util.Endianness.BigEndian ) {
 			Stream = stream.Duplicate();
 			Endian = endian;
 			try {

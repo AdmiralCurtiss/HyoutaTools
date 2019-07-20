@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaPluginBase;
 
 namespace HyoutaTools.Streams {
 	// note: this class assumes it gains ownership of the passed Data array; do not modify it after passing!

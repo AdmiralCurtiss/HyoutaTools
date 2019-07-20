@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using System.Drawing;
 using HyoutaTools.FileContainer;
+using HyoutaPluginBase;
+using HyoutaPluginBase.FileContainer;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateWebsiteInputOutputData {
@@ -88,9 +90,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 			return node;
 		}
-		private static Streams.DuplicatableStream ToDuplicatableStream( this Stream stream ) {
-			if ( stream is Streams.DuplicatableStream ) {
-				return (Streams.DuplicatableStream)stream;
+		private static HyoutaPluginBase.DuplicatableStream ToDuplicatableStream( this Stream stream ) {
+			if ( stream is HyoutaPluginBase.DuplicatableStream ) {
+				return (HyoutaPluginBase.DuplicatableStream)stream;
 			}
 
 			stream.Position = 0;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaPluginBase;
 
 namespace HyoutaToolsCLI {
 	public class Program {
@@ -18,7 +19,7 @@ namespace HyoutaToolsCLI {
 			}
 		}
 
-		private static void PrintUsage( IEnumerable<HyoutaTools.IProgram> tools, string part = null ) {
+		private static void PrintUsage( IEnumerable<HyoutaPluginBase.IProgram> tools, string part = null ) {
 			bool programFound = false;
 			if ( part != null ) { part = part.ToLowerInvariant(); }
 			foreach ( var p in tools.OrderBy( x => x.Identifiers().First() ) ) {

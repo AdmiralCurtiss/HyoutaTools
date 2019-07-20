@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HyoutaPluginBase.FileContainer;
 
 namespace HyoutaTools.FileContainer {
 	public abstract class ContainerBase : IContainer {

@@ -57,7 +57,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HyoutaPluginBase\HyoutaPluginBase.csproj">
+    <ProjectReference Include="..\HyoutaUtils\HyoutaPluginBase\HyoutaPluginBase.csproj">
       <Project>{6e153ce7-05b9-4eba-8de8-ad842214f60b}</Project>
       <Name>HyoutaPluginBase</Name>
     </ProjectReference>

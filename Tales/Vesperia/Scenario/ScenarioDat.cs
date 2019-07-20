@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using HyoutaTools.FileContainer;
 using HyoutaTools.Streams;
+using HyoutaPluginBase;
+using HyoutaPluginBase.FileContainer;
 
 namespace HyoutaTools.Tales.Vesperia.Scenario {
 	public class ScenarioDatEntry : IFile {
@@ -53,7 +55,7 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 			Unknown = 0x20;
 			Entries = new List<ScenarioDatEntry>();
 		}
-		public ScenarioDat( Streams.DuplicatableStream data ) {
+		public ScenarioDat( HyoutaPluginBase.DuplicatableStream data ) {
 			Magic = data.ReadAscii( 8 );
 			Filesize = data.ReadUInt32().SwapEndian();
 			Unknown = data.ReadUInt32().SwapEndian();

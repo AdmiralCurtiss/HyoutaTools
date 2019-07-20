@@ -1,5 +1,7 @@
 ﻿using System;
 using HyoutaTools.Streams;
+using HyoutaPluginBase;
+using HyoutaPluginBase.FileContainer;
 
 namespace HyoutaTools.FileContainer {
 	public abstract class FileBase : IFile {

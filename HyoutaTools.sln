@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaToolsGUI", "HyoutaToo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaLibGUI", "HyoutaLibGUI\HyoutaLibGUI.csproj", "{32CFC5D9-8C5F-44D5-9088-095421560AB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaPluginBase", "HyoutaPluginBase\HyoutaPluginBase.csproj", "{6E153CE7-05B9-4EBA-8DE8-AD842214F60B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaPluginBase", "HyoutaUtils\HyoutaPluginBase\HyoutaPluginBase.csproj", "{6E153CE7-05B9-4EBA-8DE8-AD842214F60B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaToolsTests", "HyoutaToolsTests\HyoutaToolsTests.csproj", "{74156DE4-FBD8-4BE6-B9E3-71AB56B856A6}"
 EndProject

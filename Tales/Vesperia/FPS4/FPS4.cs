@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using HyoutaTools.Streams;
 using HyoutaTools.FileContainer;
+using HyoutaPluginBase;
+using HyoutaPluginBase.FileContainer;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public struct ContentInfo {

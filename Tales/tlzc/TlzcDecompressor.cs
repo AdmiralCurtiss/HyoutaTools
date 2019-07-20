@@ -4,17 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaPluginBase;
 
 namespace HyoutaTools.Tales.tlzc {
 	public class TlzcDecompressor : IDecompressor {
-		public CanDecompressAnswer CanDecompress( Stream stream ) {
+		public CanDecompressAnswer CanDecompress( DuplicatableStream stream ) {
 			long pos = stream.Position;
 			CanDecompressAnswer answer = stream.ReadAscii( 4 ) == "TLZC" ? CanDecompressAnswer.Yes : CanDecompressAnswer.No;
 			stream.Position = pos;
 			return answer;
 		}
 
-		public Stream Decompress( Stream input ) {
+		public DuplicatableStream Decompress( DuplicatableStream input ) {
 			byte[] data = new byte[input.Length];
 			input.Read( data, 0, data.Length );
 			return new Streams.DuplicatableByteArrayStream( TLZC.Decompress( data ) );
