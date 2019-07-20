@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
 
 namespace HyoutaTools.FinalFantasyCrystalChronicles.FileSections {
 	public abstract class IFileSection {
@@ -22,7 +23,7 @@ namespace HyoutaTools.FinalFantasyCrystalChronicles.FileSections {
 
 		protected IFileSection( System.IO.Stream stream ) {
 			_SectionIdentifier = stream.ReadUInt32();
-			_SectionSize = stream.ReadUInt32().FromEndian( Util.Endianness.BigEndian );
+			_SectionSize = stream.ReadUInt32().FromEndian( EndianUtils.Endianness.BigEndian );
 		}
 	}
 }

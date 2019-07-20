@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.DestinyRemake.MglkExtract {
 	class MGLK {
@@ -41,7 +42,7 @@ namespace HyoutaTools.Tales.DestinyRemake.MglkExtract {
 		public void ExtractScenarioFileOnly( string ScenarioFilePath ) {
 			// let's be honest here all we care about is the scenario file, just extract that
 			byte[] ScenarioFile = new byte[PointerToEndOfFile - PointerToScenarioFile];
-			Util.CopyByteArrayPart( Mglk, (int)PointerToScenarioFile, ScenarioFile, 0, ScenarioFile.Length );
+			ArrayUtils.CopyByteArrayPart( Mglk, (int)PointerToScenarioFile, ScenarioFile, 0, ScenarioFile.Length );
 			System.IO.File.WriteAllBytes( ScenarioFilePath, ScenarioFile );
 		}
 	}

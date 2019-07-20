@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTEMEG {
 	public class EncounterGroup {
@@ -11,7 +12,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMEG {
 		public string RefString;
 		public uint[] EnemyGroupIDs;
 
-		public EncounterGroup( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public EncounterGroup( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			uint entryLength = stream.ReadUInt32().FromEndian( endian );
 			ID = stream.ReadUInt32().FromEndian( endian );
 			StringDicID = stream.ReadUInt32().FromEndian( endian );

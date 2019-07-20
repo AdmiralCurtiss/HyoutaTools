@@ -142,6 +142,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HyoutaUtils\HyoutaUtils\HyoutaUtils.csproj">
+      <Project>{771553c8-0c50-411f-ab7f-e47553c81587}</Project>
+      <Name>HyoutaUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HyoutaTools.csproj">
       <Project>{d7037d44-d605-4a9c-9167-e15c525fe782}</Project>
       <Name>HyoutaTools</Name>

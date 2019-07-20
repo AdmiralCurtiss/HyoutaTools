@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
+using NumberUtils = HyoutaUtils.NumberUtils;
 
 namespace HyoutaTools.LastRanker {
 	public class RTDPfile {
@@ -84,7 +86,7 @@ namespace HyoutaTools.LastRanker {
 			//Xorbyte = 0x00;
 
 			// 0x20 Header + 0x28 per file
-			RequiredBytesForHeader = Util.Align( Filecount * 0x28u + 0x20u, 0x20u );
+			RequiredBytesForHeader = NumberUtils.Align( Filecount * 0x28u + 0x20u, 0x20u );
 
 			TotalFilesize = RequiredBytesForHeader;
 			foreach ( string Path in Filepaths ) {
@@ -115,7 +117,7 @@ namespace HyoutaTools.LastRanker {
 				Filestream.Write( BitConverter.GetBytes( size ), 0, 4 );
 				Filestream.Write( BitConverter.GetBytes( ptr ), 0, 4 );
 
-				ptr = Util.Align( ptr + size, 0x20u );
+				ptr = NumberUtils.Align( ptr + size, 0x20u );
 			}
 			while ( Filestream.Length < RequiredBytesForHeader ) { Filestream.WriteByte( 0x00 ); }
 

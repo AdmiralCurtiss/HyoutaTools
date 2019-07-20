@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
 
 namespace HyoutaTools.Pokemon.Gen3 {
     public class HallOfFame {
@@ -121,7 +122,7 @@ namespace HyoutaTools.Pokemon.Gen3 {
                     }
 
                     file.Position = secpos;
-                    Util.CopyStream( file, buffer, 0xF80 );
+                    StreamUtils.CopyStream( file, buffer, 0xF80 );
                 }
 
                 // Deserialize
@@ -152,7 +153,7 @@ namespace HyoutaTools.Pokemon.Gen3 {
                     file.WriteAlign( secpos + 0x1000, 0x00 );
 
                     file.Position = secpos;
-                    Util.CopyStream( buffer, file, 0xF80 );
+                    StreamUtils.CopyStream( buffer, file, 0xF80 );
                     file.Position = secpos + 0xFF4;
                     file.WriteUInt16( checksums[i] );
                     file.Position = secpos + 0xFF8;

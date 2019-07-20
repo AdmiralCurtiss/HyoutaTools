@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.LastRanker {
 	public class StringFile {
@@ -33,7 +34,7 @@ namespace HyoutaTools.LastRanker {
 			while ( pos < StringBlockSize + 4 ) {
 				bscrString s = new bscrString();
 				int nullLoc;
-				s.String = Util.GetTextUTF8( File, pos, out nullLoc );
+				s.String = TextUtils.GetTextUTF8( File, pos, out nullLoc );
 				s.Position = (uint)pos;
 
 				Strings.Add( s );
@@ -55,7 +56,7 @@ namespace HyoutaTools.LastRanker {
 			StringBlockSize = (uint)( NewFile.Count - 4 );
 
 			byte[] sbb = BitConverter.GetBytes( StringBlockSize );
-			Util.CopyByteArrayPart( sbb, 0, NewFile, 0, 4 );
+			ArrayUtils.CopyByteArrayPart( sbb, 0, NewFile, 0, 4 );
 
 			System.IO.File.WriteAllBytes( Path, NewFile.ToArray() );
 		}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 	public enum SkitConditionType : ushort {
@@ -51,7 +52,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			}
 		}
 
-		public SkitCondition( System.IO.Stream stream, Util.Endianness endian ) {
+		public SkitCondition( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			Type = (SkitConditionType)stream.ReadUInt16().FromEndian( endian );
 			MathOp = stream.ReadUInt16().FromEndian( endian );
 			Value1 = (int)stream.ReadUInt32().FromEndian( endian );

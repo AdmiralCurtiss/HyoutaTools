@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.DanganRonpa.umdimagedat {
 	class umdimagedat {
@@ -30,7 +31,7 @@ namespace HyoutaTools.DanganRonpa.umdimagedat {
 			}
 
 			byte[] header = new byte[EbootHeaderSize];
-			Util.CopyByteArrayPart( Eboot, 0, header, 0, EbootHeaderSize );
+			ArrayUtils.CopyByteArrayPart( Eboot, 0, header, 0, EbootHeaderSize );
 
 			byte[] headermd5 = System.Security.Cryptography.MD5.Create().ComputeHash( header );
 			byte[] md5 = System.Security.Cryptography.MD5.Create().ComputeHash( Eboot );
@@ -241,7 +242,7 @@ namespace HyoutaTools.DanganRonpa.umdimagedat {
 					OffsetEnd = File.Length;
 				}
 
-				String filename = Util.GetTextAscii( Eboot, FilenameOffset );
+				String filename = TextUtils.GetTextAscii( Eboot, FilenameOffset );
 
 				System.IO.FileStream stream = System.IO.File.Create( dir.FullName + "/" + i.ToString( "D4" ) + ( nofilenames ? "" : "_" + filename ) );
 				stream.Write( File, OffsetStart, ( OffsetEnd - OffsetStart ) );

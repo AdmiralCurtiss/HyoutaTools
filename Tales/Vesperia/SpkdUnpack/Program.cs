@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using EndianUtils = HyoutaUtils.EndianUtils;
 
 namespace HyoutaTools.Tales.Vesperia.SpkdUnpack {
 	class Program {
@@ -14,18 +15,18 @@ namespace HyoutaTools.Tales.Vesperia.SpkdUnpack {
 
 			byte[] spkd = File.ReadAllBytes( args[0] );
 
-			uint FileAmount = Util.SwapEndian( BitConverter.ToUInt32( spkd, 4 ) );
-			uint BlockSize = Util.SwapEndian( BitConverter.ToUInt32( spkd, 12 ) );
+			uint FileAmount = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, 4 ) );
+			uint BlockSize = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, 12 ) );
 			FileData[] FileInfos = new FileData[FileAmount + 1];
 
 			for ( int i = 0; i < FileAmount; i++ ) {
 				FileInfos[i] = new FileData();
 				FileInfos[i].Name = ASCIIEncoding.GetEncoding( 0 ).GetString( spkd, ( i + 1 ) * (int)BlockSize, 16 );
 				FileInfos[i].Name = FileInfos[i].Name.Substring( 0, FileInfos[i].Name.IndexOf( '\0' ) );
-				FileInfos[i].Unknown = Util.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 16 ) );
-				FileInfos[i].FileStart1 = Util.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 20 ) );
-				FileInfos[i].FileStart2 = Util.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 24 ) );
-				FileInfos[i].Something = Util.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 28 ) );
+				FileInfos[i].Unknown = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 16 ) );
+				FileInfos[i].FileStart1 = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 20 ) );
+				FileInfos[i].FileStart2 = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 24 ) );
+				FileInfos[i].Something = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 28 ) );
 			}
 			FileInfos[FileAmount] = new FileData();
 			FileInfos[FileAmount].FileStart1 = (UInt32)spkd.Length;

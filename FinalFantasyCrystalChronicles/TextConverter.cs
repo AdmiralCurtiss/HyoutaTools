@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
 
 namespace HyoutaTools.FinalFantasyCrystalChronicles {
 	public static class TextConverter {
@@ -15,13 +16,13 @@ namespace HyoutaTools.FinalFantasyCrystalChronicles {
 				if ( ( b >= 0 && b <= 0x80 ) || ( b >= 0xA0 && b <= 0xDF ) ) {
 					// is a single byte
 						buffer[0] = (byte)b;
-						sb.Append( Util.ShiftJISEncoding.GetString( buffer, 0, 1 ) );
+						sb.Append( TextUtils.ShiftJISEncoding.GetString( buffer, 0, 1 ) );
 				} else {
 					if ( b != 0xFF ) {
 						// is two bytes
 						buffer[0] = (byte)b;
 						buffer[1] = (byte)s.ReadByte();
-						sb.Append( Util.ShiftJISEncoding.GetString( buffer ) );
+						sb.Append( TextUtils.ShiftJISEncoding.GetString( buffer ) );
 					} else {
 						// is a FFCC command
 						b = s.ReadByte();

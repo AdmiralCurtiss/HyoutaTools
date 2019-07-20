@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HyoutaTools.Tales.Vesperia.ItemDat;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 	public class MapTile {
@@ -19,7 +20,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 		public uint MoveLeftAllowed;
 		public uint MoveRightAllowed;
 
-		public MapTile( System.IO.Stream stream, Util.Endianness endian ) {
+		public MapTile( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			RoomType = stream.ReadUInt32().FromEndian( endian );
 			FloorExitDiff = (int)stream.ReadUInt32().FromEndian( endian );
 			EnemyGroup = stream.ReadUInt32().FromEndian( endian );

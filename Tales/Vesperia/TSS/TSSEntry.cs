@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EndianUtils = HyoutaUtils.EndianUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TSS {
 	public class TSSEntry {
@@ -64,7 +65,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public byte[] SerializeScript() {
 			List<byte> bytes = new List<byte>( Entry.Length );
 			foreach ( uint e in Entry ) {
-				bytes.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( e ) ) );
+				bytes.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( e ) ) );
 			}
 			return bytes.ToArray();
 		}

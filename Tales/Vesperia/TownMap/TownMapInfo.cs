@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
+using EndianUtils = HyoutaUtils.EndianUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TownMap {
 	public class TownMapInfo {
@@ -15,12 +17,12 @@ namespace HyoutaTools.Tales.Vesperia.TownMap {
 		public int InfoLocation;
 
 		public TownMapInfo( byte[] File, int TilesLocationJPN, int TilesLocationENG, int InfoLocation ) {
-			Filename = Util.GetTextAscii( File, InfoLocation );
+			Filename = TextUtils.GetTextAscii( File, InfoLocation );
 
 			this.InfoLocation = InfoLocation;
 
-			TileAmountJPN = Util.SwapEndian( BitConverter.ToInt32( File, InfoLocation + 0xA4 ) );
-			TileAmountENG = Util.SwapEndian( BitConverter.ToInt32( File, InfoLocation + 0xA8 ) );
+			TileAmountJPN = EndianUtils.SwapEndian( BitConverter.ToInt32( File, InfoLocation + 0xA4 ) );
+			TileAmountENG = EndianUtils.SwapEndian( BitConverter.ToInt32( File, InfoLocation + 0xA8 ) );
 
 			TownMapTilesJPN = new TownMapTile[TileAmountJPN];
 			TownMapTilesENG = new TownMapTile[TileAmountENG];

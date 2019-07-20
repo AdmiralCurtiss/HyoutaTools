@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using HyoutaTools;
 using HyoutaTools.Tales.Vesperia.Credits;
 using HyoutaTools.Tales.Vesperia.TSS;
+using NumberUtils = HyoutaUtils.NumberUtils;
 
 namespace HyoutaLibGUI.Tales.Vesperia.Credits {
 	public partial class CreditsForm : Form {
@@ -82,7 +83,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.Credits {
 						break;
 					case 3:
 					case 4:
-						textboxes[i].Text = Util.UIntToFloat( item.Data[i] ).ToString();
+						textboxes[i].Text = NumberUtils.UIntToFloat( item.Data[i] ).ToString();
 						break;
 				}
 			}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 	public class Unknown0x80byteArea {
@@ -11,7 +12,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 		float UnknownFloat1;
 		float UnknownFloat2;
 
-		public Unknown0x80byteArea( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public Unknown0x80byteArea( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian ) {
 			UnknownUInt = stream.ReadUInt32().FromEndian( endian );
 			stream.DiscardBytes( 4 );
 			UnknownByte1 = (byte)stream.ReadByte();

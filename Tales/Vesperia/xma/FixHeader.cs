@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.xma {
 	public class FixHeader {
@@ -55,7 +56,7 @@ namespace HyoutaTools.Tales.Vesperia.xma {
 					dest.WriteUInt32( (uint)dataLength );
 
 					source.Position = 0x100;
-					Util.CopyStream( source, dest, dataLength );
+					StreamUtils.CopyStream( source, dest, dataLength );
 				}
 			}
 

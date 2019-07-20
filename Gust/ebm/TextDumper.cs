@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Gust.ebm {
 	public class TextDumper {
@@ -21,12 +22,12 @@ namespace HyoutaTools.Gust.ebm {
 
 			bool debug = args.Contains( "--debug" );
 			bool oneLine = args.Contains( "--oneLine" );
-			Util.GameTextEncoding encoding = Util.GameTextEncoding.ShiftJIS;
+			TextUtils.GameTextEncoding encoding = TextUtils.GameTextEncoding.ShiftJIS;
 
 			Dictionary<int, string> names;
 			switch ( game.ToLowerInvariant() ) {
-				case "at3": names = GenerateAt3Dict(); encoding = Util.GameTextEncoding.ShiftJIS; break;
-				case "ans": names = GenerateAnSDict(); encoding = Util.GameTextEncoding.UTF8; break;
+				case "at3": names = GenerateAt3Dict(); encoding = TextUtils.GameTextEncoding.ShiftJIS; break;
+				case "ans": names = GenerateAnSDict(); encoding = TextUtils.GameTextEncoding.UTF8; break;
 				default: names = new Dictionary<int, string>(); break;
 			}
 

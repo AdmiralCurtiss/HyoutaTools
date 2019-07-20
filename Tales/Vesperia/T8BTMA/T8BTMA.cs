@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 	public class T8BTMA {
-		public T8BTMA( string filename, Util.Endianness endian, Util.Bitness bits ) {
+		public T8BTMA( string filename, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian, bits ) ) {
 					throw new Exception( "Loading T8BTMA failed!" );
@@ -13,7 +14,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 			}
 		}
 
-		public T8BTMA( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+		public T8BTMA( System.IO.Stream stream, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			if ( !LoadFile( stream, endian, bits ) ) {
 				throw new Exception( "Loading T8BTMA failed!" );
 			}
@@ -22,7 +23,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 		public List<Arte> ArteList;
 		public Dictionary<uint, Arte> ArteIdDict;
 
-		private bool LoadFile( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+		private bool LoadFile( System.IO.Stream stream, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
 			if ( magic != "T8BTMA  " ) {
 				return false;
@@ -62,7 +63,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 				command.ExecuteNonQuery();
 
 				if ( a.Type == Arte.ArteType.Generic ) {
-					string UpdateStatus = "UPDATE Text SET status = 4, updated = 1, updatedby = \"[HyoutaTools]\", updatedtimestamp = " + Util.DateTimeToUnixTime( DateTime.UtcNow ) + " WHERE IdentifyString LIKE \"%[" + a.NameStringDicId + " / 0x" + a.NameStringDicId.ToString( "X6" ) + "]\"";
+					string UpdateStatus = "UPDATE Text SET status = 4, updated = 1, updatedby = \"[HyoutaTools]\", updatedtimestamp = " + TimeUtils.DateTimeToUnixTime( DateTime.UtcNow ) + " WHERE IdentifyString LIKE \"%[" + a.NameStringDicId + " / 0x" + a.NameStringDicId.ToString( "X6" ) + "]\"";
 					Console.WriteLine( UpdateStatus );
 					command.CommandText = UpdateStatus;
 					command.ExecuteNonQuery();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.GraceNote.Sting.BlazeUnionScript {
 	public class Exporter {
@@ -70,9 +71,9 @@ namespace HyoutaTools.GraceNote.Sting.BlazeUnionScript {
 					}
 					data.Add( 0x02 );
 					data.Add( 0x00 );
-					data.AddRange( Util.HexStringToByteArray( sb.ToString().Trim() ).Reverse() );
+					data.AddRange( HexUtils.HumanReadableHexStringToByteArray( sb.ToString().Trim() ).Reverse() );
 				} else {
-					data.AddRange( Util.ShiftJISEncoding.GetBytes( c.ToString() ) );
+					data.AddRange( TextUtils.ShiftJISEncoding.GetBytes( c.ToString() ) );
 				}
 			}
 			return data.ToArray();

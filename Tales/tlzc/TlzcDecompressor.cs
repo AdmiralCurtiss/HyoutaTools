@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HyoutaPluginBase;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.tlzc {
 	public class TlzcDecompressor : IDecompressor {

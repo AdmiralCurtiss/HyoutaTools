@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Sting {
 	public class BlazeUnionScriptFileSection {
@@ -52,12 +53,12 @@ namespace HyoutaTools.Sting {
 				} else if ( ( b > 0x04 && b <= 0x80 ) || ( b >= 0xA0 && b <= 0xDF ) ) {
 					// is a single byte
 					buffer[0] = (byte)b;
-					sb.Append( Util.ShiftJISEncoding.GetString( buffer, 0, 1 ) );
+					sb.Append( TextUtils.ShiftJISEncoding.GetString( buffer, 0, 1 ) );
 				} else {
 					// is two bytes
 					buffer[0] = (byte)b;
 					buffer[1] = (byte)s.ReadByte();
-					sb.Append( Util.ShiftJISEncoding.GetString( buffer ) );
+					sb.Append( TextUtils.ShiftJISEncoding.GetString( buffer ) );
 				}
 				b = s.ReadByte();
 			}

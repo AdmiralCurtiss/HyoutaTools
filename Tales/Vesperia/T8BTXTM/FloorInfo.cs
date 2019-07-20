@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 	public class FloorInfo {
@@ -10,7 +11,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 		public string RefString1;
 		public string RefString2;
 
-		public FloorInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public FloorInfo( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			uint atLeastBytes = ( 0x10 + 2 * ( bits.NumberOfBytes() ) );
 			EntrySize = stream.ReadUInt32().FromEndian( endian );
 			if ( EntrySize < atLeastBytes ) {

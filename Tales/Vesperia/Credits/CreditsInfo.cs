@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
+using EndianUtils = HyoutaUtils.EndianUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Credits {
 	public class CreditsInfo {
@@ -16,8 +18,8 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 
 		private void Initialize( byte[] file ) {
 			this.File = file;
-			CreditInfoStartOffset = Util.SwapEndian( BitConverter.ToUInt32( file, 0x24 ) );
-			CreditInfoCount = Util.SwapEndian( BitConverter.ToUInt32( file, (int)CreditInfoStartOffset ) );
+			CreditInfoStartOffset = EndianUtils.SwapEndian( BitConverter.ToUInt32( file, 0x24 ) );
+			CreditInfoCount = EndianUtils.SwapEndian( BitConverter.ToUInt32( file, (int)CreditInfoStartOffset ) );
 			CreditInfoCount = 2995; // PS3 // not accurate in file...?
 			//CreditInfoCount = 0x1ACE8 / 40; // 360
 
@@ -29,7 +31,7 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 		}
 
 		public string GetInFileString( int pointer ) {
-			return Util.GetTextUTF8( File, pointer );
+			return TextUtils.GetTextUTF8( File, pointer );
 		}
 	}
 }

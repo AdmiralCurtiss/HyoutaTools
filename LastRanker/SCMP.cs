@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
+using NumberUtils = HyoutaUtils.NumberUtils;
 
 namespace HyoutaTools.LastRanker {
 	public class SCMP {
@@ -77,7 +79,7 @@ namespace HyoutaTools.LastRanker {
 			string[] Filepaths = System.IO.Directory.GetFiles( Dir );
 
 			ushort Filecount = (ushort)Filepaths.Length;
-			uint RequiredBytesForHeader = Util.Align( Filecount * 4u + 4u, 0x50u ); // pretty sure this is not right but should work
+			uint RequiredBytesForHeader = NumberUtils.Align( Filecount * 4u + 4u, 0x50u ); // pretty sure this is not right but should work
 			var Filestream = new System.IO.FileStream( Outfile, System.IO.FileMode.Create );
 
 			// header
@@ -94,7 +96,7 @@ namespace HyoutaTools.LastRanker {
 			// files
 			foreach ( string Path in Filepaths ) {
 				var File = new System.IO.FileStream( Path, System.IO.FileMode.Open );
-				Util.CopyStream( File, Filestream, (int)File.Length );
+				StreamUtils.CopyStream( File, Filestream, (int)File.Length );
 				File.Close();
 				while ( Filestream.Length % 0x10 != 0 ) { Filestream.WriteByte( 0x00 ); }
 			}

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HyoutaPluginBase.FileContainer;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
 	public class SaveDataParser {
@@ -38,13 +39,13 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			}
 
 			GameLocale locale = VesperiaUtil.GetValidLocales( version ).First();
-			Util.Endianness endian = VesperiaUtil.GetEndian( version );
-			Util.GameTextEncoding encoding = VesperiaUtil.GetEncoding( version );
-			Util.Bitness bits = VesperiaUtil.GetBitness( version );
+			EndianUtils.Endianness endian = VesperiaUtil.GetEndian( version );
+			TextUtils.GameTextEncoding encoding = VesperiaUtil.GetEncoding( version );
+			BitUtils.Bitness bits = VesperiaUtil.GetBitness( version );
 
 			TSS.TSSFile stringDic = new TSS.TSSFile( Website.GenerateWebsite.TryGetStringDic( gameDir, locale, version ), encoding, endian );
 			Dictionary<uint, TSS.TSSEntry> inGameDic = stringDic.GenerateInGameIdDictionary();
-			ItemDat.ItemDat itemData = new ItemDat.ItemDat( Website.GenerateWebsite.TryGetItemDat( gameDir, locale, version ), Website.GenerateWebsite.TryGetItemSortDat( gameDir, locale, version ), Util.Endianness.BigEndian );
+			ItemDat.ItemDat itemData = new ItemDat.ItemDat( Website.GenerateWebsite.TryGetItemDat( gameDir, locale, version ), Website.GenerateWebsite.TryGetItemSortDat( gameDir, locale, version ), EndianUtils.Endianness.BigEndian );
 			List<ItemDat.ItemDatSingle> itemDataSorted = itemData.GetSortedByInGameSorting();
 			FAMEDAT.FAMEDAT titles = new FAMEDAT.FAMEDAT( Website.GenerateWebsite.TryGetTitles( gameDir, locale, version ), endian );
 			T8BTEMST.T8BTEMST enemies = new T8BTEMST.T8BTEMST( Website.GenerateWebsite.TryGetEnemies( gameDir, locale, version ), endian, bits );

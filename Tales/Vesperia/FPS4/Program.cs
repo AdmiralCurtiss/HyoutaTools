@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public class Program {
@@ -89,6 +91,60 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Console.WriteLine( "   This should ideally be a power of two." );
 			Console.WriteLine( "   The file alignment must divide by this multiplier." );
 		}
+
+		// from http://stackoverflow.com/a/25471811
+		private static string UnEscape( string s ) {
+			StringBuilder sb = new StringBuilder();
+			Regex r = new Regex( "\\\\[abfnrtv?\"'\\\\]|\\\\[0-3]?[0-7]{1,2}|\\\\u[0-9a-fA-F]{4}|\\\\U[0-9a-fA-F]{8}|." );
+			MatchCollection mc = r.Matches( s, 0 );
+
+			foreach ( Match m in mc ) {
+				if ( m.Length == 1 ) {
+					sb.Append( m.Value );
+				} else {
+					if ( m.Value[1] >= '0' && m.Value[1] <= '7' ) {
+						int i = Convert.ToInt32( m.Value.Substring( 1 ), 8 );
+						sb.Append( (char)i );
+					} else if ( m.Value[1] == 'u' ) {
+						int i = Convert.ToInt32( m.Value.Substring( 2 ), 16 );
+						sb.Append( (char)i );
+					} else if ( m.Value[1] == 'U' ) {
+						int i = Convert.ToInt32( m.Value.Substring( 2 ), 16 );
+						sb.Append( Char.ConvertFromUtf32( i ) );
+					} else {
+						switch ( m.Value[1] ) {
+							case 'a':
+								sb.Append( '\a' );
+								break;
+							case 'b':
+								sb.Append( '\b' );
+								break;
+							case 'f':
+								sb.Append( '\f' );
+								break;
+							case 'n':
+								sb.Append( '\n' );
+								break;
+							case 'r':
+								sb.Append( '\r' );
+								break;
+							case 't':
+								sb.Append( '\t' );
+								break;
+							case 'v':
+								sb.Append( '\v' );
+								break;
+							default:
+								sb.Append( m.Value[1] );
+								break;
+						}
+					}
+				}
+			}
+
+			return sb.ToString();
+		}
+
 		public static int Pack( List<string> args ) {
 			if ( args.Count < 2 ) {
 				PrintPackUsage();
@@ -114,13 +170,13 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				for ( int i = 0; i < args.Count; ++i ) {
 					switch ( args[i] ) {
 						case "-a":
-							alignment = Util.ParseDecOrHex( args[++i] );
+							alignment = HexUtils.ParseDecOrHex( args[++i] );
 							break;
 						case "--firstalign":
-							alignmentFirstFile = Util.ParseDecOrHex( args[++i] );
+							alignmentFirstFile = HexUtils.ParseDecOrHex( args[++i] );
 							break;
 						case "-b":
-							bitmask = (ushort)Util.ParseDecOrHex( args[++i] );
+							bitmask = (ushort)HexUtils.ParseDecOrHex( args[++i] );
 							break;
 						case "-l":
 							littleEndian = true;
@@ -129,7 +185,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							metadata = args[++i];
 							break;
 						case "-c":
-							comment = args[++i].UnEscape();
+							comment = UnEscape( args[++i] );
 							break;
 						case "-e":
 							orderByExtension = true;
@@ -144,7 +200,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							originalFps4 = args[++i];
 							break;
 						case "--multiplier":
-							multiplier = Util.ParseDecOrHex( args[++i] );
+							multiplier = HexUtils.ParseDecOrHex( args[++i] );
 							break;
 						default:
 							if ( dir == null ) { dir = args[i]; } else if ( outName == null ) { outName = args[i]; } else { PrintPackUsage(); return -1; }
@@ -170,7 +226,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			if ( bitmask != null ) { fps4.ContentBitmask = new ContentInfo( (ushort)bitmask ); }
 			if ( alignment != null ) { fps4.Alignment = (uint)alignment; }
-			if ( littleEndian ) { fps4.Endian = Util.Endianness.LittleEndian; }
+			if ( littleEndian ) { fps4.Endian = EndianUtils.Endianness.LittleEndian; }
 			if ( comment != null ) { fps4.ArchiveName = comment; }
 
 			string[] files;

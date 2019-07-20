@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HyoutaTools.Streams;
 using HyoutaPluginBase;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
 	// 0x49D8 bytes in all versions
@@ -16,7 +17,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			Stream = blockStream.Duplicate();
 		}
 
-		public void PrintData( Util.Endianness endian, Dictionary<uint, TSS.TSSEntry> inGameDic, List<ItemDat.ItemDatSingle> itemDataSorted, T8BTEMST.T8BTEMST enemies ) {
+		public void PrintData( EndianUtils.Endianness endian, Dictionary<uint, TSS.TSSEntry> inGameDic, List<ItemDat.ItemDatSingle> itemDataSorted, T8BTEMST.T8BTEMST enemies ) {
 			using ( DuplicatableStream stream = Stream.Duplicate() ) {
 				stream.ReadUInt32().FromEndian( endian ); // ?
 				stream.ReadUInt32().FromEndian( endian ); // ?

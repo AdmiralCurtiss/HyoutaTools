@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HyoutaTools.Streams;
 using HyoutaPluginBase;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
 	// 0x400 bytes in all versions of the game

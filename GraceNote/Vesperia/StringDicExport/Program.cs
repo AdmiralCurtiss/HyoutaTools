@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HyoutaTools.Tales.Vesperia.TSS;
+using HyoutaUtils;
 
 namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 	class Program {
@@ -28,7 +29,7 @@ namespace HyoutaTools.GraceNote.Vesperia.StringDicExport {
 			Console.WriteLine( "Opening STRING_DIC.SO..." );
 			TSSFile TSS;
 			try {
-				TSS = new TSSFile( "STRING_DIC.SO", Util.GameTextEncoding.ShiftJIS, Util.Endianness.BigEndian );
+				TSS = new TSSFile( "STRING_DIC.SO", TextUtils.GameTextEncoding.ShiftJIS, EndianUtils.Endianness.BigEndian );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
 				return -1;

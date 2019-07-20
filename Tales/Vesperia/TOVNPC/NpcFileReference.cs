@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 	public class NpcFileReference {
@@ -9,7 +10,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 		public string Filename;
 		public uint Filesize;
 
-		public NpcFileReference( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public NpcFileReference( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			ulong refStringLocation1 = stream.ReadUInt( bits, endian );
 			ulong refStringLocation2 = stream.ReadUInt( bits, endian );
 			Filesize = stream.ReadUInt32().FromEndian( endian );

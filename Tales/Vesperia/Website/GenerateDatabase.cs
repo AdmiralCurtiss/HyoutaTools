@@ -5,6 +5,7 @@ using System.Text;
 using System.Data;
 using HyoutaTools.Tales.Vesperia.ScenarioFile;
 using System.Text.RegularExpressions;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateDatabase {
@@ -55,6 +56,20 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			} finally {
 				DB.Close();
 			}
+		}
+
+		// https://stackoverflow.com/questions/188892/glob-pattern-matching-in-net
+		/// <summary>
+		/// Compares the string against a given pattern.
+		/// </summary>
+		/// <param name="str">The string.</param>
+		/// <param name="pattern">The pattern to match, where "*" means any sequence of characters, and "?" means any single character.</param>
+		/// <returns><c>true</c> if the string matches the given pattern; otherwise <c>false</c>.</returns>
+		private static bool Like( string str, string pattern ) {
+			return new Regex(
+				"^" + Regex.Escape( pattern ).Replace( @"\*", ".*" ).Replace( @"\?", "." ) + "$",
+				RegexOptions.IgnoreCase | RegexOptions.Singleline
+			).IsMatch( str );
 		}
 
 		private void ExportScenarioDat() {
@@ -146,7 +161,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 											foreach ( var lineCmp in entry360.JpText.Split( '\f' ) ) {
 												string cmpclean = CleanStringForSearch( lineCmp, true, false );
 												cmpclean = CleanCleanedStringForVersionComparision( cmpclean );
-												if ( textJpCleanCmp.Like( cmpclean ) ) {
+												if ( Like( textJpCleanCmp, cmpclean ) ) {
 													changeStatus = ChangeStatus.SameLine;
 													break;
 												}
@@ -305,7 +320,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 									foreach ( var lineCmp in skitCmp.Lines ) {
 										string cmpclean = CleanStringForSearch( lineCmp.SJPN, true, false );
 										cmpclean = CleanCleanedStringForVersionComparision( cmpclean );
-										if ( textJpCleanCmp.Like( cmpclean ) ) {
+										if ( Like( textJpCleanCmp, cmpclean ) ) {
 											changeStatus = ChangeStatus.SameLine;
 											break;
 										}

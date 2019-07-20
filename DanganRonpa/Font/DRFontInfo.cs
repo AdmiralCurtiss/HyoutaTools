@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.DanganRonpa.Font {
 	public class DRFontChar {
@@ -123,7 +124,7 @@ namespace HyoutaTools.DanganRonpa.Font {
 				byte[] chbytes = BitConverter.GetBytes( ch.Character );
 				char character = Encoding.Unicode.GetChars( chbytes )[0];
 
-				string c = Util.XmlEscape( character.ToString() );
+				string c = TextUtils.XmlEscape( character.ToString() );
 
 				string n =
 					"			<Glyph char=\"" + c + "\" " +

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 	public class T8BTXTMM {
 		// map definitions
-		public T8BTXTMM( String filename, Util.Endianness endian ) {
+		public T8BTXTMM( String filename, EndianUtils.Endianness endian ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading T8BTXTMM failed!" );
@@ -15,7 +16,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 			}
 		}
 
-		public T8BTXTMM( Stream stream, Util.Endianness endian ) {
+		public T8BTXTMM( Stream stream, EndianUtils.Endianness endian ) {
 			if ( !LoadFile( stream, endian ) ) {
 				throw new Exception( "Loading T8BTXTMM failed!" );
 			}
@@ -25,7 +26,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 		public uint HorizontalTiles;
 		public uint VerticalTiles;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian ) {
+		private bool LoadFile( Stream stream, EndianUtils.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
 			if ( magic != "T8BTXTMM" ) {
 				throw new Exception( "Invalid magic." );

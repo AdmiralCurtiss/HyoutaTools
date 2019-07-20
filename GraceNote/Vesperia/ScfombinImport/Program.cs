@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
+using HyoutaUtils;
 
 namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 	class ScenarioString {
@@ -77,8 +78,8 @@ namespace HyoutaTools.GraceNote.Vesperia.ScfombinImport {
 						break;
 					}
 
-					ScenarioString Name = new ScenarioString( Pointer, Util.GetTextShiftJis( File, Pointer1 + PointerDifference ), Util.GetTextShiftJis( File, Pointer3 + PointerDifference ) );
-					ScenarioString Text = new ScenarioString( Pointer + 4, Util.GetTextShiftJis( File, Pointer2 + PointerDifference ), Util.GetTextShiftJis( File, Pointer4 + PointerDifference ) );
+					ScenarioString Name = new ScenarioString( Pointer, TextUtils.GetTextShiftJis( File, Pointer1 + PointerDifference ), TextUtils.GetTextShiftJis( File, Pointer3 + PointerDifference ) );
+					ScenarioString Text = new ScenarioString( Pointer + 4, TextUtils.GetTextShiftJis( File, Pointer2 + PointerDifference ), TextUtils.GetTextShiftJis( File, Pointer4 + PointerDifference ) );
 
 					AllStrings.Add( Name );
 					AllStrings.Add( Text );

@@ -5,13 +5,14 @@ using System.Text;
 using System.Data.SQLite;
 using System.Text.RegularExpressions;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TSS {
 	public class TSSFile {
 		public TSSHeader Header;
 		public TSSEntry[] Entries;
 
-		public TSSFile( string filename, Util.GameTextEncoding encoding, Util.Endianness endian ) {
+		public TSSFile( string filename, TextUtils.GameTextEncoding encoding, EndianUtils.Endianness endian ) {
 			using ( Stream stream = new FileStream( filename, FileMode.Open, FileAccess.Read ) ) {
 				if ( !LoadFile( stream, encoding, endian ) ) {
 					throw new Exception( "Loading TSSFile failed!" );
@@ -19,13 +20,13 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			}
 		}
 
-		public TSSFile( Stream stream, Util.GameTextEncoding encoding, Util.Endianness endian ) {
+		public TSSFile( Stream stream, TextUtils.GameTextEncoding encoding, EndianUtils.Endianness endian ) {
 			if ( !LoadFile( stream, encoding, endian ) ) {
 				throw new Exception( "Loading TSSFile failed!" );
 			}
 		}
 
-		private bool LoadFile( Stream File, Util.GameTextEncoding encoding, Util.Endianness endian ) {
+		private bool LoadFile( Stream File, TextUtils.GameTextEncoding encoding, EndianUtils.Endianness endian ) {
 			long pos = File.Position;
 
 			// set header
@@ -258,7 +259,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 
 				if ( e.StringJpn != null ) {
 					e.SetJPNPointer( ptr );
-					uint StringLength = (uint)Util.StringToBytesShiftJis( e.StringJpn ).Length;
+					uint StringLength = (uint)TextUtils.StringToBytesShiftJis( e.StringJpn ).Length;
 					CurrentPointer += StringLength + 1;
 					if ( e.StringEng != null ) {
 						e.SetENGPointer( ptr + StringLength );
@@ -266,7 +267,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 				}
 				if ( e.StringEng != null && e.StringEng != "" ) {
 					e.SetENGPointer( CurrentPointer - Header.TextStart );
-					CurrentPointer += (uint)Util.StringToBytesShiftJis( e.StringEng ).Length + 1;
+					CurrentPointer += (uint)TextUtils.StringToBytesShiftJis( e.StringEng ).Length + 1;
 				}
 			}
 
@@ -287,11 +288,11 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			}
 			foreach ( TSSEntry e in Entries ) {
 				if ( e.StringJpn != null ) {
-					Serialized.AddRange( Util.StringToBytesShiftJis( e.StringJpn ) );
+					Serialized.AddRange( TextUtils.StringToBytesShiftJis( e.StringJpn ) );
 					Serialized.Add( 0x00 );
 				}
 				if ( e.StringEng != null && e.StringEng != "" ) {
-					Serialized.AddRange( Util.StringToBytesShiftJis( e.StringEng ) );
+					Serialized.AddRange( TextUtils.StringToBytesShiftJis( e.StringEng ) );
 					Serialized.Add( 0x00 );
 				}
 			}
@@ -329,12 +330,12 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 			if ( updateDatabaseWithInGameStringId ) {
 				string npcListFilename = @"d:\Dropbox\ToV\PS3\orig\npc.svo.ext\NPC.DAT.dec.ext\0000.dec";
 				if ( System.IO.File.Exists( npcListFilename ) ) {
-					var npcListPS3 = new TOVNPC.TOVNPCL( npcListFilename, Util.Endianness.BigEndian, Util.Bitness.B32 );
+					var npcListPS3 = new TOVNPC.TOVNPCL( npcListFilename, EndianUtils.Endianness.BigEndian, BitUtils.Bitness.B32 );
 					Dictionary<string, TOVNPC.TOVNPCT> npcDefs = new Dictionary<string, TOVNPC.TOVNPCT>();
 					foreach ( var f in npcListPS3.NpcFileList ) {
 						string filename = @"d:\Dropbox\ToV\PS3\orig\npc.svo.ext\" + f.Filename + @".dec.ext\0001.dec";
 						if ( System.IO.File.Exists( filename ) ) {
-							var d = new TOVNPC.TOVNPCT( filename, Util.Endianness.BigEndian, Util.Bitness.B32 );
+							var d = new TOVNPC.TOVNPCT( filename, EndianUtils.Endianness.BigEndian, BitUtils.Bitness.B32 );
 							npcDefs.Add( f.Map, d );
 						}
 					}

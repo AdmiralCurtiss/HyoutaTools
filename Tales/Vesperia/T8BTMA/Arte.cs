@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 	public class Arte {
@@ -54,7 +55,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTMA {
 		public uint TPUsage;
 		public uint UsableInMenu;
 
-		public Arte( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public Arte( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			uint Size = stream.PeekUInt32().FromEndian( endian );
 			if ( ( Size % 4 ) != 0 ) {
 				throw new Exception( "Arte data size not divisble by 4." );

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 	public class TOVNPCT {
 		// NPC dialogue definition files, I think?
-		public TOVNPCT( String filename, Util.Endianness endian, Util.Bitness bits ) {
+		public TOVNPCT( String filename, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian, bits ) ) {
 					throw new Exception( "Loading TOVNPCT failed!" );
@@ -15,7 +16,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 			}
 		}
 
-		public TOVNPCT( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+		public TOVNPCT( Stream stream, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			if ( !LoadFile( stream, endian, bits ) ) {
 				throw new Exception( "Loading TOVNPCT failed!" );
 			}
@@ -23,7 +24,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 
 		public List<NpcDialogueDefinition> NpcDefList;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+		private bool LoadFile( Stream stream, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
 			if ( magic != "TOVNPCT\0" ) {
 				throw new Exception( "Invalid magic." );

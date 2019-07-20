@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using HyoutaUtils;
 
 namespace HyoutaTools.LastRanker {
 	class PTMD {
@@ -52,9 +53,9 @@ namespace HyoutaTools.LastRanker {
 			PalettePointer = BitConverter.ToUInt32( File, 0x0C );
 
 			ImageBytes = new byte[PalettePointer - 0x10];
-			Util.CopyByteArrayPart( File, 0x10, ImageBytes, 0, ImageBytes.Length );
+			ArrayUtils.CopyByteArrayPart( File, 0x10, ImageBytes, 0, ImageBytes.Length );
 			PaletteBytes = new byte[File.Length - PalettePointer];
-			Util.CopyByteArrayPart( File, (int)PalettePointer, PaletteBytes, 0, PaletteBytes.Length );
+			ArrayUtils.CopyByteArrayPart( File, (int)PalettePointer, PaletteBytes, 0, PaletteBytes.Length );
 
 			//*
 			Console.Write( "PTMD: Header: " );

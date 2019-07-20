@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Other.AutoExtract {
 	class FileStruct {
@@ -333,7 +334,7 @@ namespace HyoutaTools.Other.AutoExtract {
 							for ( int i = 0; i < file.Length - 3; ++i ) {
 								if ( file[i] == 'P' && file[i + 1] == 'T' && file[i + 2] == 'M' && file[i + 3] == 'D' ) {
 									byte[] temp = new byte[file.Length - i];
-									Util.CopyByteArrayPart( file, i, temp, 0, temp.Length );
+									ArrayUtils.CopyByteArrayPart( file, i, temp, 0, temp.Length );
 									try {
 										new LastRanker.PTMD( temp ).SaveAsPNG( f + "." + i.ToString( "X8" ) + ".png" );
 									} catch ( Exception ex ) { Console.WriteLine( ex.ToString() ); }

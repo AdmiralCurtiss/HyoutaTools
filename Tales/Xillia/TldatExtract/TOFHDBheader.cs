@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Xillia.TldatExtract {
 	public class TOFHDBhash {
@@ -18,7 +19,7 @@ namespace HyoutaTools.Tales.Xillia.TldatExtract {
 	}
 
 	public class TOFHDBheader {
-		public Util.Endianness Endian = Util.Endianness.BigEndian;
+		public EndianUtils.Endianness Endian = EndianUtils.Endianness.BigEndian;
 
 		public UInt64 CreationTime;
 		public UInt32 FileHashArrayOffset;
@@ -53,9 +54,9 @@ namespace HyoutaTools.Tales.Xillia.TldatExtract {
 
 			// This should always be 0x20, so we can use it to detect endianness
 			if ( FileHashArrayOffset <= 0xFFFF ) {
-				Endian = Util.Endianness.LittleEndian;
+				Endian = EndianUtils.Endianness.LittleEndian;
 			} else {
-				Endian = Util.Endianness.BigEndian;
+				Endian = EndianUtils.Endianness.BigEndian;
 				CreationTime = CreationTime.SwapEndian();
 				FileHashArrayOffset = FileHashArrayOffset.SwapEndian();
 			}

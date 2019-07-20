@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Gust.g1t {
 	public class g1tTexture {
@@ -14,7 +15,7 @@ namespace HyoutaTools.Gust.g1t {
 
 		uint BitPerPixel;
 
-		public g1tTexture( Stream stream, Util.Endianness endian ) {
+		public g1tTexture( Stream stream, EndianUtils.Endianness endian ) {
 			Mipmaps = (byte)stream.ReadByte();
 			byte format = (byte)stream.ReadByte();
 			byte dimensions = (byte)stream.ReadByte();
@@ -24,7 +25,7 @@ namespace HyoutaTools.Gust.g1t {
 			byte unknown7 = (byte)stream.ReadByte();
 			byte unknown8 = (byte)stream.ReadByte();
 
-			if ( endian == Util.Endianness.LittleEndian ) {
+			if ( endian == EndianUtils.Endianness.LittleEndian ) {
 				Mipmaps = Mipmaps.SwapEndian4Bits();
 				dimensions = dimensions.SwapEndian4Bits();
 				unknown4 = unknown4.SwapEndian4Bits();
@@ -94,13 +95,13 @@ namespace HyoutaTools.Gust.g1t {
 		}
 
 		public List<g1tTexture> Textures;
-		public Util.Endianness Endian = Util.Endianness.BigEndian;
+		public EndianUtils.Endianness Endian = EndianUtils.Endianness.BigEndian;
 
 		private bool LoadFile( Stream stream ) {
 			string magic = stream.ReadAscii( 4 );
 			switch ( magic ) {
-				case "G1TG": Endian = Util.Endianness.BigEndian; break;
-				case "GT1G": Endian = Util.Endianness.LittleEndian; break;
+				case "G1TG": Endian = EndianUtils.Endianness.BigEndian; break;
+				case "GT1G": Endian = EndianUtils.Endianness.LittleEndian; break;
 				default: throw new Exception( "Not a g1t file!" );
 			}
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HyoutaTools.Tales.Vesperia.ItemDat;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.ShopData {
 	public class ShopItem {
@@ -11,7 +12,7 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 		public uint ShopID;
 		public uint ItemID;
 
-		public ShopItem( System.IO.Stream stream, Util.Endianness endian ) {
+		public ShopItem( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			Data = new uint[56 / 4];
 			for ( int i = 0; i < Data.Length; ++i ) {
 				Data[i] = stream.ReadUInt32().FromEndian( endian );

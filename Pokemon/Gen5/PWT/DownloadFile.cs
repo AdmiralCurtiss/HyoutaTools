@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Pokemon.Gen5.PWT {
 	class DownloadFile {
@@ -34,11 +35,11 @@ namespace HyoutaTools.Pokemon.Gen5.PWT {
 
 			for ( int i = 0; i < 12; ++i ) {
 				Tournaments[i].RecalculateChecksum();
-				Util.CopyByteArrayPart( Tournaments[i].Data, 0, data, i * 4628, 4628 );
+				ArrayUtils.CopyByteArrayPart( Tournaments[i].Data, 0, data, i * 4628, 4628 );
 			}
 
 			ushort checksum = Checksums.Ccitt.Update( Checksums.Ccitt.Init(), data, 55536 );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( checksum ), 0, data, 55536, 2 );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( checksum ), 0, data, 55536, 2 );
 			data[55538] = 0x00; data[55539] = 0x00;
 
 			return data;

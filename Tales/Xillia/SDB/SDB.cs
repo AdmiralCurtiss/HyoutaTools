@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
+using EndianUtils = HyoutaUtils.EndianUtils;
 
 namespace HyoutaTools.Tales.Xillia.SDB {
 	class SDBEntry {
@@ -16,7 +18,7 @@ namespace HyoutaTools.Tales.Xillia.SDB {
 		public uint Type;
 		public List<uint> OtherData;
 		public List<SDBEntry> TextList;
-		public Util.Endianness Endian;
+		public EndianUtils.Endianness Endian;
 
 		public SDB( String filename ) {
 			using ( System.IO.Stream stream = new System.IO.FileStream( filename, System.IO.FileMode.Open ) ) {
@@ -36,9 +38,9 @@ namespace HyoutaTools.Tales.Xillia.SDB {
 			// not entirely sure if this is actually type information?
 			Type = stream.ReadUInt32();
 			if ( Type <= 0xFFFF ) {
-				Endian = Util.Endianness.LittleEndian;
+				Endian = EndianUtils.Endianness.LittleEndian;
 			} else {
-				Endian = Util.Endianness.BigEndian;
+				Endian = EndianUtils.Endianness.BigEndian;
 				Type = Type.SwapEndian();
 			}
 
@@ -88,7 +90,7 @@ namespace HyoutaTools.Tales.Xillia.SDB {
 
 			bool ToZ = Type != 0x08;
 			if ( ToZ ) {
-				stream.WriteUInt32( Util.ToEndian( 0x0Cu, Endian ) );
+				stream.WriteUInt32( EndianUtils.ToEndian( 0x0Cu, Endian ) );
 			}
 
 			stream.WriteUInt32( ( (uint)TextList.Count ).ToEndian( Endian ) );

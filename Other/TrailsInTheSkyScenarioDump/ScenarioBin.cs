@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Other.TrailsInTheSkyScenarioDump {
 
@@ -115,8 +116,8 @@ namespace HyoutaTools.Other.TrailsInTheSkyScenarioDump {
 		}
 
 		private void Load( byte[] File ) {
-			Location = Util.GetTextShiftJis( File, 0 );
-			Id = Util.GetTextShiftJis( File, 0x0A );
+			Location = TextUtils.GetTextShiftJis( File, 0 );
+			Id = TextUtils.GetTextShiftJis( File, 0x0A );
 
 			e1loc = BitConverter.ToUInt16( File, 0x42 );
 			e1cnt = BitConverter.ToUInt16( File, 0x44 );

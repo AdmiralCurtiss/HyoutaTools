@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Abyss.SB7 {
 	public class SB7 {
@@ -31,7 +32,7 @@ namespace HyoutaTools.Tales.Abyss.SB7 {
 
 			Texts = new List<string>();
 			for ( uint i = 0x5C + SomethingCounter; i < EndOfTextStartList; i += 4 ) {
-				Texts.Add( Util.GetTextShiftJis( File, (int)( PointerToText + BitConverter.ToUInt32( File, (int)i ) ) ) );
+				Texts.Add( TextUtils.GetTextShiftJis( File, (int)( PointerToText + BitConverter.ToUInt32( File, (int)i ) ) ) );
 			}
 
 			return;

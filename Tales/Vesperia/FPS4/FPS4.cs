@@ -7,6 +7,7 @@ using HyoutaTools.Streams;
 using HyoutaTools.FileContainer;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public struct ContentInfo {
@@ -42,7 +43,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		public bool ShouldSkip => ( Location != null && Location == 0xFFFFFFFF ) || ( Unknown0x0080 != null && Unknown0x0080 > 0 );
 
-		public FileInfo( Stream stream, uint fileIndex, ContentInfo bitmask, Util.Endianness endian, Util.GameTextEncoding encoding ) {
+		public FileInfo( Stream stream, uint fileIndex, ContentInfo bitmask, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding ) {
 			FileIndex = fileIndex;
 			if ( bitmask.ContainsStartPointers ) {
 				Location = stream.ReadUInt32().FromEndian( endian );
@@ -163,7 +164,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public uint Alignment;
 		public uint FileLocationMultiplier;
 		public bool ShouldGuessFilesizeFromNextFile;
-		public Util.Endianness Endian = Util.Endianness.BigEndian;
+		public EndianUtils.Endianness Endian = EndianUtils.Endianness.BigEndian;
 
 		public List<FileInfo> Files;
 
@@ -179,15 +180,15 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				return false;
 			}
 
-			Endian = Util.Endianness.BigEndian;
+			Endian = EndianUtils.Endianness.BigEndian;
 			FileCount = infile.ReadUInt32().FromEndian( Endian );
 			HeaderSize = infile.ReadUInt32().FromEndian( Endian );
 
 			// if header seems huge then we probably have assumed the wrong endianness
 			if ( HeaderSize > 0xFFFF ) {
-				Endian = Util.Endianness.LittleEndian;
-				FileCount = FileCount.ToEndian( Util.Endianness.BigEndian ).FromEndian( Endian );
-				HeaderSize = HeaderSize.ToEndian( Util.Endianness.BigEndian ).FromEndian( Endian );
+				Endian = EndianUtils.Endianness.LittleEndian;
+				FileCount = FileCount.ToEndian( EndianUtils.Endianness.BigEndian ).FromEndian( Endian );
+				HeaderSize = HeaderSize.ToEndian( EndianUtils.Endianness.BigEndian ).FromEndian( Endian );
 			}
 
 			FirstFileStart = infile.ReadUInt32().FromEndian( Endian );
@@ -210,7 +211,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Files = new List<FileInfo>( (int)FileCount );
 			for ( uint i = 0; i < FileCount; ++i ) {
 				infile.Position = HeaderSize + ( i * EntrySize );
-				Files.Add( new FileInfo( infile, i, ContentBitmask, Endian, Util.GameTextEncoding.ASCII ) );
+				Files.Add( new FileInfo( infile, i, ContentBitmask, Endian, TextUtils.GameTextEncoding.ASCII ) );
 			}
 
 			FileLocationMultiplier = separateContentFile ? 1 : CalculateFileLocationMultiplier();
@@ -298,7 +299,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				Console.WriteLine( "Extracting #" + i.ToString( "D4" ) + ": " + path );
 
 				contentFile.Seek( fileloc, SeekOrigin.Begin );
-				Util.CopyStream( contentFile, outfile, (int)filesize );
+				StreamUtils.CopyStream( contentFile, outfile, (int)filesize );
 				outfile.Close();
 			}
 		}
@@ -385,7 +386,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			string[] files,
 			string outFilename,
 			ContentInfo ContentBitmask,
-			Util.Endianness Endian,
+			EndianUtils.Endianness Endian,
 			uint Unknown2,
 			Stream infile,
 			string ArchiveName,
@@ -438,7 +439,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					if ( ContentBitmask.ContainsFileSizes ) { f.WriteUInt32( ( (uint)( fi.Length ) ).ToEndian( Endian ) ); }
 					if ( ContentBitmask.ContainsFilenames ) {
 						string filename = fi.Name.Truncate( 0x1F );
-						byte[] fnbytes = Util.ShiftJISEncoding.GetBytes( filename );
+						byte[] fnbytes = TextUtils.ShiftJISEncoding.GetBytes( filename );
 						f.Write( fnbytes, 0, fnbytes.Length );
 						for ( int j = fnbytes.Length; j < 0x20; ++j ) {
 							f.WriteByte( 0 );
@@ -446,7 +447,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					}
 					if ( ContentBitmask.ContainsFiletypes ) {
 						string extension = fi.Extension.TrimStart( '.' ).Truncate( 4 );
-						byte[] extbytes = Util.ShiftJISEncoding.GetBytes( extension );
+						byte[] extbytes = TextUtils.ShiftJISEncoding.GetBytes( extension );
 						f.Write( extbytes, 0, extbytes.Length );
 						for ( int j = extbytes.Length; j < 4; ++j ) {
 							f.WriteByte( 0 );
@@ -490,10 +491,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						// write meta + nullterm
 						if ( metadata.Contains( 'p' ) ) {
 							string relativePath = GetRelativePath( f.Name, fi.FullName );
-							f.Write( Util.ShiftJISEncoding.GetBytes( relativePath ) );
+							f.Write( TextUtils.ShiftJISEncoding.GetBytes( relativePath ) );
 						}
 						if ( metadata.Contains( 'n' ) ) {
-							f.Write( Util.ShiftJISEncoding.GetBytes( "name=" + Path.GetFileNameWithoutExtension( fi.FullName ) ) );
+							f.Write( TextUtils.ShiftJISEncoding.GetBytes( "name=" + Path.GetFileNameWithoutExtension( fi.FullName ) ) );
 						}
 						f.WriteByte( 0 );
 					}
@@ -508,7 +509,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					f.Position = ArchiveNameLocation;
 
 					// and actually write it
-					byte[] archiveNameBytes = Util.ShiftJISEncoding.GetBytes( ArchiveName );
+					byte[] archiveNameBytes = TextUtils.ShiftJISEncoding.GetBytes( ArchiveName );
 					f.Write( archiveNameBytes, 0, archiveNameBytes.Length );
 					f.WriteByte( 0 );
 				}
@@ -576,7 +577,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			for ( int i = 0; i < files.Length; ++i ) {
 				using ( var fs = new System.IO.FileStream( files[i], FileMode.Open, FileAccess.Read, FileShare.Read ) ) {
 					Console.WriteLine( "Packing #" + i.ToString( "D4" ) + ": " + files[i] );
-					Util.CopyStream( fs, f, (int)fs.Length );
+					StreamUtils.CopyStream( fs, f, (int)fs.Length );
 					while ( f.Length % Alignment != 0 ) { f.WriteByte( 0 ); }
 				}
 			}

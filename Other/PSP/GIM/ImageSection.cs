@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Other.PSP.GIM {
 	enum ImageFormat : short {
@@ -113,7 +114,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 				uint size = nextpoffs - poffs;
 				ImagesRawBytes[i] = new byte[size];
 
-				Util.CopyByteArrayPart( File, Offset + (int)poffs + 0x10, ImagesRawBytes[i], 0, (int)size );
+				ArrayUtils.CopyByteArrayPart( File, Offset + (int)poffs + 0x10, ImagesRawBytes[i], 0, (int)size );
 			}
 
 

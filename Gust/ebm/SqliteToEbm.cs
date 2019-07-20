@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Gust.ebm {
 	public class SqliteToEbm {
@@ -34,7 +35,7 @@ namespace HyoutaTools.Gust.ebm {
 			}
 
 			using ( Stream s = new FileStream( outfile, FileMode.Create ) ) {
-				ebm.WriteFile( s, Util.GameTextEncoding.UTF8 );
+				ebm.WriteFile( s, TextUtils.GameTextEncoding.UTF8 );
 				s.Close();
 			}
 

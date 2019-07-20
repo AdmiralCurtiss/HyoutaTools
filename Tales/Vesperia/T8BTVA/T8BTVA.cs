@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 	public class T8BTVA {
-		public T8BTVA( String filename, Util.Endianness endian ) {
+		public T8BTVA( String filename, EndianUtils.Endianness endian ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading T8BTVA failed!" );
@@ -13,7 +14,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 			}
 		}
 
-		public T8BTVA( Stream stream, Util.Endianness endian ) {
+		public T8BTVA( Stream stream, EndianUtils.Endianness endian ) {
 			if ( !LoadFile( stream, endian ) ) {
 				throw new Exception( "Loading T8BTVA failed!" );
 			}
@@ -21,7 +22,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 
 		public List<T8BTVABlock> Blocks;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian ) {
+		private bool LoadFile( Stream stream, EndianUtils.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
 			if ( magic != "T8BTVA  " ) {
 				throw new Exception( "Invalid magic." );
@@ -49,7 +50,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 
 		public List<T8BTVAEntry> Entries;
 
-		public T8BTVABlock( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public T8BTVABlock( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian ) {
 			uint size = stream.PeekUInt32().FromEndian( endian );
 			if ( size % 4 != 0 ) { throw new Exception( "T8BTVABlock size must be divisible by 4!" ); }
 			if ( size / 4 < 14 ) { throw new Exception( "T8BTVABlock must contain at least 14 ints!" ); }
@@ -93,7 +94,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTVA {
 		public uint CharacterBitmask;
 		public uint KillCharacterBitmask;
 
-		public T8BTVAEntry( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, uint byteCount ) {
+		public T8BTVAEntry( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, uint byteCount ) {
 			if ( ( byteCount % 4 ) != 0 ) {
 				throw new Exception( "T8BTVAEntry byte count must be divisible by 4" );
 			}

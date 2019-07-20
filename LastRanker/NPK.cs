@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
+using NumberUtils = HyoutaUtils.NumberUtils;
 
 namespace HyoutaTools.LastRanker {
 	class NPK {
@@ -48,7 +50,7 @@ namespace HyoutaTools.LastRanker {
 
 			int FileCount = BitConverter.ToUInt16( File, 0 );
 			for ( int i = 0; i < FileCount + 1; ++i ) {
-				uint ptr = Util.ToUInt24( File, i * 3 + 2 );
+				uint ptr = NumberUtils.ToUInt24( File, i * 3 + 2 );
 				FilePointers.Add( ptr );
 			}
 
@@ -76,16 +78,16 @@ namespace HyoutaTools.LastRanker {
 			string[] Filepaths = System.IO.Directory.GetFiles( Dir );
 
 			ushort Filecount = (ushort)Filepaths.Length;
-			uint RequiredBytesForHeader = Util.Align( Filecount * 3u + 5u, 0x10u ); // 3 bytes per filesize + 3 bytes for an extra pointer to first file + 2 bytes for filecount
+			uint RequiredBytesForHeader = NumberUtils.Align( Filecount * 3u + 5u, 0x10u ); // 3 bytes per filesize + 3 bytes for an extra pointer to first file + 2 bytes for filecount
 			var Filestream = new System.IO.FileStream( Outfile, System.IO.FileMode.Create );
 
 			// header
 			Filestream.Write( BitConverter.GetBytes( Filecount ), 0, 2 );
-			Filestream.Write( Util.GetBytesForUInt24( RequiredBytesForHeader ), 0, 3 );
+			Filestream.Write( NumberUtils.GetBytesForUInt24( RequiredBytesForHeader ), 0, 3 );
 			uint TotalFilesize = RequiredBytesForHeader;
 			foreach ( string Path in Filepaths ) {
 				TotalFilesize += (uint)( new System.IO.FileInfo( Path ).Length );
-				Filestream.Write( Util.GetBytesForUInt24( TotalFilesize ), 0, 3 );
+				Filestream.Write( NumberUtils.GetBytesForUInt24( TotalFilesize ), 0, 3 );
 				TotalFilesize = TotalFilesize.Align( 0x10u );
 			}
 			while ( Filestream.Length < RequiredBytesForHeader ) { Filestream.WriteByte( 0x00 ); }
@@ -93,7 +95,7 @@ namespace HyoutaTools.LastRanker {
 			// files
 			foreach ( string Path in Filepaths ) {
 				var File = new System.IO.FileStream( Path, System.IO.FileMode.Open );
-				Util.CopyStream( File, Filestream, (int)File.Length );
+				StreamUtils.CopyStream( File, Filestream, (int)File.Length );
 				File.Close();
 				while ( Filestream.Length % 0x10 != 0 ) { Filestream.WriteByte( 0x00 ); }
 			}

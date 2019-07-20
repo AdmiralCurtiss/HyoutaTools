@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HyoutaTools.Streams;
 using HyoutaPluginBase;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
 	// 0x3F38 bytes in 360, 0x4010 bytes in PS3
@@ -17,7 +18,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			Stream = blockStream.Duplicate();
 		}
 
-		public void PrintData( Util.Endianness endian, GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameDic, FAMEDAT.FAMEDAT titles ) {
+		public void PrintData( EndianUtils.Endianness endian, GameVersion version, Dictionary<uint, TSS.TSSEntry> inGameDic, FAMEDAT.FAMEDAT titles ) {
 			using ( var characterDataStream = Stream.Duplicate() ) {
 				characterDataStream.ReadUInt32().FromEndian( endian ); // ?
 				characterDataStream.ReadAscii( 0x40 ); // custom character name

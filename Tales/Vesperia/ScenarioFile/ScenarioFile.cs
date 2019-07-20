@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 	public class ScenarioFile {
 		public ScenarioFile() { }
 
-		public ScenarioFile( String filename, Util.GameTextEncoding encoding, Util.Endianness endian, Util.Bitness bits ) {
+		public ScenarioFile( String filename, TextUtils.GameTextEncoding encoding, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, FileAccess.Read, FileShare.Read ) ) {
 				if ( !LoadFile( stream, encoding, endian, bits ) ) {
 					throw new Exception( "Loading ScenarioFile failed!" );
@@ -16,7 +17,7 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 			}
 		}
 
-		public ScenarioFile( Stream stream, Util.GameTextEncoding encoding, Util.Endianness endian, Util.Bitness bits ) {
+		public ScenarioFile( Stream stream, TextUtils.GameTextEncoding encoding, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			if ( !LoadFile( stream, encoding, endian, bits ) ) {
 				throw new Exception( "Loading ScenarioFile failed!" );
 			}
@@ -25,7 +26,7 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 		public List<ScenarioFileEntry> EntryList;
 		public Website.ScenarioData Metadata;
 
-		private bool LoadFile( Stream stream, Util.GameTextEncoding encoding, Util.Endianness endian, Util.Bitness bits ) {
+		private bool LoadFile( Stream stream, TextUtils.GameTextEncoding encoding, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			uint magic = stream.ReadUInt32().SwapEndian();
 			uint headerSize = stream.ReadUInt32().FromEndian( endian );
 			stream.ReadUInt32().FromEndian( endian );
@@ -41,7 +42,7 @@ namespace HyoutaTools.Tales.Vesperia.ScenarioFile {
 			return true;
 		}
 
-		private static List<ScenarioFileEntry> FindText( Stream stream, uint textStart, Util.GameTextEncoding encoding, Util.Endianness endian, Util.Bitness bits ) {
+		private static List<ScenarioFileEntry> FindText( Stream stream, uint textStart, TextUtils.GameTextEncoding encoding, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			var list = new List<ScenarioFileEntry>();
 
 			uint toMatch = ( 0x040C0000 + 2 * 4 + 4 * bits.NumberOfBytes() );

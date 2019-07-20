@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.ShopData {
 	public class ShopData {
-		public ShopData( String filename, uint shopStart, uint shopCount, uint itemStart, uint itemCount, Util.Endianness endian, Util.Bitness bits ) {
+		public ShopData( String filename, uint shopStart, uint shopCount, uint itemStart, uint itemCount, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, shopStart, shopCount, itemStart, itemCount, endian, bits ) ) {
 					throw new Exception( "Loading ShopData failed!" );
@@ -14,7 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 			}
 		}
 
-		public ShopData( Stream stream, uint shopStart, uint shopCount, uint itemStart, uint itemCount, Util.Endianness endian, Util.Bitness bits ) {
+		public ShopData( Stream stream, uint shopStart, uint shopCount, uint itemStart, uint itemCount, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			if ( !LoadFile( stream, shopStart, shopCount, itemStart, itemCount, endian, bits ) ) {
 				throw new Exception( "Loading ShopData failed!" );
 			}
@@ -24,7 +25,7 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 		public List<ShopItem> ShopItems;
 		public Dictionary<uint, ShopDefinition> ShopDictionary;
 
-		private bool LoadFile( Stream stream, uint shopStart, uint shopCount, uint itemStart, uint itemCount, Util.Endianness endian, Util.Bitness bits ) {
+		private bool LoadFile( Stream stream, uint shopStart, uint shopCount, uint itemStart, uint itemCount, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			ShopDefinitions = new List<ShopDefinition>( (int)shopCount );
 			ShopItems = new List<ShopItem>( (int)itemCount );
 

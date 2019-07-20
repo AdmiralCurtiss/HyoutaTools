@@ -7,6 +7,7 @@ using System.Drawing;
 using HyoutaTools.FileContainer;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateWebsiteInputOutputData {
@@ -21,9 +22,9 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public Bitmap WorldMapImageOverride = null;
 		public bool ExtractImages = false;
 
-		public Util.Endianness Endian { get { return Version.GetEndian(); } }
-		public Util.GameTextEncoding Encoding { get { return Version.GetEncoding(); } }
-		public Util.Bitness Bits { get { return Version.GetBitness(); } }
+		public EndianUtils.Endianness Endian { get { return Version.GetEndian(); } }
+		public TextUtils.GameTextEncoding Encoding { get { return Version.GetEncoding(); } }
+		public BitUtils.Bitness Bits { get { return Version.GetBitness(); } }
 
 		public WebsiteGenerator Generator = null;
 		public GenerateWebsiteInputOutputData CompareSite = null;
@@ -404,7 +405,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return n;
 		}
 
-		public static void GenerateWebsiteImages( IContainer topLevelGameDataContainer, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits, string outpath, Bitmap worldmapOverride ) {
+		public static void GenerateWebsiteImages( IContainer topLevelGameDataContainer, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding, BitUtils.Bitness bits, string outpath, Bitmap worldmapOverride ) {
 			IContainer gameDataPath = FindGameDataDirectory( topLevelGameDataContainer, version );
 			if ( gameDataPath == null ) {
 				throw new Exception( "Cannot find game data directory from container " + topLevelGameDataContainer.ToString() + "." );
@@ -442,7 +443,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 							var stream = trp.GetChildByName( img ).AsFile.DataStream;
 							using ( var fs = new FileStream( Path.Combine( outpath, "trophies", img ), FileMode.Create ) ) {
 								stream.ReStart();
-								Util.CopyStream( stream, fs, stream.Length );
+								StreamUtils.CopyStream( stream, fs, stream.Length );
 								stream.End();
 							}
 						}
@@ -797,7 +798,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return null;
 		}
 
-		public static WebsiteGenerator LoadWebsiteGenerator( IContainer topLevelGameDataContainer, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits ) {
+		public static WebsiteGenerator LoadWebsiteGenerator( IContainer topLevelGameDataContainer, GameVersion version, string versionPostfix, GameLocale locale, WebsiteLanguage websiteLanguage, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding, BitUtils.Bitness bits ) {
 			IContainer gameDataPath = FindGameDataDirectory( topLevelGameDataContainer, version );
 			if ( gameDataPath == null ) {
 				throw new Exception( "Cannot find game data directory from container " + topLevelGameDataContainer.ToString() + "." );
@@ -817,7 +818,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			site.VersionPostfix = versionPostfix;
 			site.Language = websiteLanguage;
 
-			site.Items = new ItemDat.ItemDat( TryGetItemDat( gameDataPath, site.Locale, site.Version ), TryGetItemSortDat( gameDataPath, site.Locale, site.Version ), Util.Endianness.BigEndian );
+			site.Items = new ItemDat.ItemDat( TryGetItemDat( gameDataPath, site.Locale, site.Version ), TryGetItemSortDat( gameDataPath, site.Locale, site.Version ), EndianUtils.Endianness.BigEndian );
 			site.StringDic = new TSS.TSSFile( TryGetStringDic( gameDataPath, site.Locale, site.Version ), encoding, endian );
 			site.Artes = new T8BTMA.T8BTMA( TryGetArtes( gameDataPath, site.Locale, site.Version ), endian, bits );
 			site.Skills = new T8BTSK.T8BTSK( TryGetSkills( gameDataPath, site.Locale, site.Version ), endian, bits );
@@ -846,7 +847,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 				Stream stream = TryGetSkitText( gameDataPath, name, site.Locale, site.Version );
 				if ( stream != null ) {
 					bool forceShiftJis = forceShiftJisSkits.Contains( name );
-					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( stream, endian, forceShiftJis ? Util.GameTextEncoding.ShiftJIS : encoding, bits, version == GameVersion.PC ? 11 : 2 );
+					TO8CHTX.ChatFile chatFile = new TO8CHTX.ChatFile( stream, endian, forceShiftJis ? TextUtils.GameTextEncoding.ShiftJIS : encoding, bits, version == GameVersion.PC ? 11 : 2 );
 					site.SkitText.Add( name, chatFile );
 				} else {
 					Console.WriteLine( "Couldn't find chat file " + name + "! (" + version + ", " + locale + ")" );

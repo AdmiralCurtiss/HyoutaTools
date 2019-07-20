@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.MapList {
 	class Program {
@@ -22,7 +23,7 @@ namespace HyoutaTools.Tales.Vesperia.MapList {
 				using ( var ta = conn.BeginTransaction() ) {
 					SqliteUtil.Update( ta, "CREATE TABLE descriptions( filename TEXT PRIMARY KEY, shortdesc TEXT, desc TEXT )" );
 					int i = 0;
-					foreach ( MapName m in new MapList( maplistFilename, Util.Endianness.BigEndian, Util.Bitness.B32 ).MapNames ) {
+					foreach ( MapName m in new MapList( maplistFilename, EndianUtils.Endianness.BigEndian, BitUtils.Bitness.B32 ).MapNames ) {
 						Console.WriteLine( i + " = " + m.ToString() );
 						List<string> p = new List<string>();
 						p.Add( "VScenario" + i );

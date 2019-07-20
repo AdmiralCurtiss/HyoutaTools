@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Texture {
 	public class TXV {
@@ -44,7 +45,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 		public bool VesperiaPC;
 
 		public TXVSingle( Stream stream, TXMSingle txm, bool vesperiaPcTextureFormat ) {
-			uint bytecount = vesperiaPcTextureFormat ? stream.ReadUInt32().FromEndian( Util.Endianness.BigEndian ) : txm.GetByteCount();
+			uint bytecount = vesperiaPcTextureFormat ? stream.ReadUInt32().FromEndian( EndianUtils.Endianness.BigEndian ) : txm.GetByteCount();
 			TXM = txm;
 			Data = new MemoryStream( (int)bytecount );
 			VesperiaPC = vesperiaPcTextureFormat;
@@ -52,7 +53,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			if ( !vesperiaPcTextureFormat ) {
 				stream.Position = txm.TxvLocation;
 			}
-			Util.CopyStream( stream, Data, bytecount );
+			StreamUtils.CopyStream( stream, Data, bytecount );
 			Data.Position = 0;
 		}
 
@@ -115,7 +116,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 
 			if ( VesperiaPC ) {
 				Stream output = new MemoryStream( (int)Data.Length );
-				Util.CopyStream( Data, output, Data.Length );
+				StreamUtils.CopyStream( Data, output, Data.Length );
 				list.Add( (TXM.Name + ".dds", output) );
 				return list;
 			}
@@ -131,7 +132,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 							plane.Position = 0;
 							Stream stream = new MemoryStream( (int)( plane.Length + 0x80 ) );
 							stream.Write( Textures.DDSHeader.Generate( TXM.Width, TXM.Height, TXM.Mipmaps, ( TXM.Format == TextureFormat.DXT1a || TXM.Format == TextureFormat.DXT1b ) ? Textures.TextureFormat.DXT1a : Textures.TextureFormat.DXT5 ).ToBytes() );
-							Util.CopyStream( plane, stream, plane.Length );
+							StreamUtils.CopyStream( plane, stream, plane.Length );
 							string name = TXM.Name + ( TXM.Depth > 1 ? ( "_Plane" + depth ) : "" ) + ".dds";
 							list.Add( (name, stream) );
 						}

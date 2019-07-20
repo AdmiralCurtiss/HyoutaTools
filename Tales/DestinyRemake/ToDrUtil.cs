@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.DestinyRemake {
 	public static class ToDrUtil {
@@ -44,7 +45,7 @@ namespace HyoutaTools.Tales.DestinyRemake {
 					shiftJisChar[1] = tbl[i];
 					shiftJisChar[0] = tbl[i + 1];
 
-					char[] chars = Util.ShiftJISEncoding.GetChars( shiftJisChar, 0, 2 );
+					char[] chars = TextUtils.ShiftJISEncoding.GetChars( shiftJisChar, 0, 2 );
 					PseudoShiftJisMap.Add( TodChar, chars[0] );
 
 					if ( TodChar == 0x99A0 ) { TodChar += 2; }

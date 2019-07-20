@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 	public class StrategySet {
@@ -15,7 +16,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 		public float[] UnknownFloats2;
 
 		public string RefString;
-		public StrategySet( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public StrategySet( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			uint entrySize = stream.ReadUInt32().FromEndian( endian );
 			ID = stream.ReadUInt32().FromEndian( endian );
 			ulong refStringLocation = stream.ReadUInt( bits, endian );

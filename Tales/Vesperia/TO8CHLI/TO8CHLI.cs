@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 	public class TO8CHLI {
-		public TO8CHLI( String filename, Util.Endianness endian, Util.Bitness bits ) {
+		public TO8CHLI( String filename, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian, bits ) ) {
 					throw new Exception( "Loading TO8CHLI failed!" );
@@ -14,7 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			}
 		}
 
-		public TO8CHLI( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+		public TO8CHLI( Stream stream, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			if ( !LoadFile( stream, endian, bits ) ) {
 				throw new Exception( "Loading TO8CHLI failed!" );
 			}
@@ -26,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 		public List<UnknownSkitData4> UnknownSkitData4List;
 		public List<UnknownSkitData5> UnknownSkitData5List;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+		private bool LoadFile( Stream stream, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			string magic = stream.ReadAscii( 8 );
 			if ( magic != "TO8CHLI\0" ) {
 				throw new Exception( "Invalid magic." );

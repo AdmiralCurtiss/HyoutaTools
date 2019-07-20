@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
+using NumberUtils = HyoutaUtils.NumberUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Texture {
 	public class TXM {
@@ -207,10 +209,10 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			}
 			if ( Format == TextureFormat.DXT1a || Format == TextureFormat.DXT1b || Format == TextureFormat.DXT5a || Format == TextureFormat.DXT5b ) {
 				// this feels stupid??
-				sum = Util.Align( sum, 0x80u );
+				sum = NumberUtils.Align( sum, 0x80u );
 			}
 			inputStream.DiscardBytes( planesBeforeCurrent * sum );
-			Util.CopyStream( inputStream, s, sum );
+			StreamUtils.CopyStream( inputStream, s, sum );
 			inputStream.DiscardBytes( planesAfterCurrent * sum );
 			return s;
 		}
@@ -222,7 +224,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				uint planesBeforeCurrent = depthlevel;
 				uint planesAfterCurrent = Depth - depthlevel - 1;
 				inputStream.DiscardBytes( planesBeforeCurrent * bytecount );
-				Util.CopyStream( inputStream, s, bytecount );
+				StreamUtils.CopyStream( inputStream, s, bytecount );
 				inputStream.DiscardBytes( planesAfterCurrent * bytecount );
 			}
 			return s;
@@ -237,7 +239,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			sum += countRequestedPlane * depthlevel;
 
 			Stream s = new MemoryStream( (int)countRequestedPlane );
-			Util.CopyStream( inputStream, s, countRequestedPlane );
+			StreamUtils.CopyStream( inputStream, s, countRequestedPlane );
 			return s;
 		}
 	}
@@ -271,7 +273,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 
 			// special handling for last group if depth not divisible by 4
 			uint nonDivisiblePlanesAtEnd = Depth % 4;
-			uint groupCount = Util.Align( Depth, 4u ) / 4;
+			uint groupCount = NumberUtils.Align( Depth, 4u ) / 4;
 			if ( nonDivisiblePlanesAtEnd != 0 && group == ( groupCount - 1u ) ) {
 				texInGroupAfter = ( nonDivisiblePlanesAtEnd - texInGroupBefore ) - 1u;
 			}
@@ -297,7 +299,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			MemoryStream s = new MemoryStream( (int)bytecount );
 			for ( uint i = 0; i < bytecount; i += bytesPerTexLine ) {
 				inputStream.DiscardBytes( texInGroupBefore * bytesPerTexLine );
-				Util.CopyStream( inputStream, s, bytesPerTexLine );
+				StreamUtils.CopyStream( inputStream, s, bytesPerTexLine );
 				inputStream.DiscardBytes( texInGroupAfter * bytesPerTexLine );
 			}
 			return s;

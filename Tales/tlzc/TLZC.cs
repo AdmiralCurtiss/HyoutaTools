@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.IO.Compression;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.tlzc {
 	class TLZC {
@@ -63,7 +64,7 @@ namespace HyoutaTools.Tales.tlzc {
 				byte[] retval = result.ToArray();
 
 				// fill in compressed size
-				Util.CopyByteArrayPart( BitConverter.GetBytes( (int)retval.Length ), 0, retval, 8, 4 );
+				ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( (int)retval.Length ), 0, retval, 8, 4 );
 
 				return retval;
 			}
@@ -77,11 +78,11 @@ namespace HyoutaTools.Tales.tlzc {
 				bool assume_zlib = true;
 				if ( assume_zlib ) {
 					using ( Stream decompressionStream = new Ionic.Zlib.ZlibStream( new MemoryStream( buffer, offset, inSize - offset ), Ionic.Zlib.CompressionMode.Decompress ) ) {
-						Util.CopyStream( decompressionStream, result, outSize );
+						StreamUtils.CopyStream( decompressionStream, result, outSize );
 					}
 				} else {
 					using ( DeflateStream decompressionStream = new DeflateStream( new MemoryStream( buffer, offset, inSize - offset ), CompressionMode.Decompress ) ) {
-						Util.CopyStream( decompressionStream, result, outSize );
+						StreamUtils.CopyStream( decompressionStream, result, outSize );
 					}
 				}
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
+using StreamUtils = HyoutaUtils.StreamUtils;
 
 namespace HyoutaTools.Pokemon.Gen3 {
     public class Save {
@@ -152,7 +154,7 @@ namespace HyoutaTools.Pokemon.Gen3 {
                             // copy save to outfile
                             Console.WriteLine( "Writing selected save to outfile..." );
                             file.Position = 0xE000 * saveToRead;
-                            Util.CopyStream( file, outfile, 0xE000 );
+                            StreamUtils.CopyStream( file, outfile, 0xE000 );
 
                             // read hall of fame
                             Console.WriteLine( "Reading Hall of Fame..." );
@@ -189,23 +191,23 @@ namespace HyoutaTools.Pokemon.Gen3 {
                                 HallOfFame.WriteHallOfFameDataToSave( hof, outfile, 0xE000, 1 );
                             } else {
                                 Console.WriteLine( "Couldn't read Hall of Fame, writing empty sector..." );
-                                Util.WriteAlign( outfile, 0xF000, 0xFF );
+                                StreamUtils.WriteAlign( outfile, 0xF000, 0xFF );
                             }
 
                             // and just copy the battle recording sector as-is
                             Console.WriteLine( "Copying battle recording sector directly..." );
                             file.Position = 0x1F000;
                             outfile.Position = 0xF000;
-                            Util.CopyStream( file, outfile, 0x1000 );
+                            StreamUtils.CopyStream( file, outfile, 0x1000 );
 
                             Console.WriteLine( "Done!" );
                         } else if ( mode == Mode.Expand ) {
                             // copy save twice
                             Console.WriteLine( "Copying save into both slots..." );
                             file.Position = 0x0;
-                            Util.CopyStream( file, outfile, 0xE000 );
+                            StreamUtils.CopyStream( file, outfile, 0xE000 );
                             file.Position = 0x0;
-                            Util.CopyStream( file, outfile, 0xE000 );
+                            StreamUtils.CopyStream( file, outfile, 0xE000 );
 
                             // expand hall of fame to two sectors
                             Console.WriteLine( "Copying and expanding Hall of Fame..." );
@@ -214,17 +216,17 @@ namespace HyoutaTools.Pokemon.Gen3 {
                                 HallOfFame.WriteHallOfFameDataToSave( hof, outfile, 0x1C000, 2 );
                             } else {
                                 Console.WriteLine( "Couldn't read Hall of Fame, writing empty sectors..." );
-                                Util.WriteAlign( outfile, 0x1E000, 0xFF );
+                                StreamUtils.WriteAlign( outfile, 0x1E000, 0xFF );
                             }
 
                             // write empty trainer hill sector
                             Console.WriteLine( "Writing empty Trainer Hill sector..." );
-                            Util.WriteAlign( outfile, 0x1F000, 0xFF );
+                            StreamUtils.WriteAlign( outfile, 0x1F000, 0xFF );
 
                             // copy battle recording
                             Console.WriteLine( "Copying battle recording sector directly..." );
                             file.Position = 0xF000;
-                            Util.CopyStream( file, outfile, 0x1000 );
+                            StreamUtils.CopyStream( file, outfile, 0x1000 );
 
                             Console.WriteLine( "Done!" );
                         } else {

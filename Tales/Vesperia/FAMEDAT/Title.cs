@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 	public class Title {
@@ -13,7 +14,7 @@ namespace HyoutaTools.Tales.Vesperia.FAMEDAT {
 
 		public string CostumeString;
 
-		public Title( System.IO.Stream stream, Util.Endianness endian ) {
+		public Title( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			ID = stream.ReadUInt32().FromEndian( endian );
 			NameStringDicID = stream.ReadUInt32().FromEndian( endian );
 			DescStringDicID = stream.ReadUInt32().FromEndian( endian );

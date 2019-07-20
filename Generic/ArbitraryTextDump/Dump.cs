@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Generic.ArbitraryTextDump {
 	public class Dump {
@@ -16,7 +17,7 @@ namespace HyoutaTools.Generic.ArbitraryTextDump {
 				if ( i >= File.Length ) break;
 
 				string s;
-				s = Util.GetTextShiftJis( File, i );
+				s = TextUtils.GetTextShiftJis( File, i );
 				s = s.Replace( '\x01', ' ' );
 				s = s.Replace( '\x02', ' ' );
 				s = s.Replace( '\x03', ' ' );

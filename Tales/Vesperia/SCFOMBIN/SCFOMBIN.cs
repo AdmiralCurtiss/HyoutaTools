@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using HyoutaTools.Tales.Vesperia.ScenarioFile;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.SCFOMBIN {
 	public class SCFOMBIN {
 		public SCFOMBIN() { }
 
-		public SCFOMBIN( String filename, Util.Endianness endian, Util.GameTextEncoding encoding, uint textPointerLocationDiff = 0x1888 ) {
+		public SCFOMBIN( String filename, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding, uint textPointerLocationDiff = 0x1888 ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
 				if ( !LoadFile( stream, endian, encoding, textPointerLocationDiff ) ) {
 					throw new Exception( "Loading SCFOMBIN failed!" );
@@ -17,7 +18,7 @@ namespace HyoutaTools.Tales.Vesperia.SCFOMBIN {
 			}
 		}
 
-		public SCFOMBIN( Stream stream, Util.Endianness endian, Util.GameTextEncoding encoding, uint textPointerLocationDiff = 0x1888 ) {
+		public SCFOMBIN( Stream stream, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding, uint textPointerLocationDiff = 0x1888 ) {
 			if ( !LoadFile( stream, endian, encoding, textPointerLocationDiff ) ) {
 				throw new Exception( "Loading SCFOMBIN failed!" );
 			}
@@ -25,7 +26,7 @@ namespace HyoutaTools.Tales.Vesperia.SCFOMBIN {
 
 		public List<ScenarioFileEntry> EntryList;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian, Util.GameTextEncoding encoding, uint textPointerLocationDiff ) {
+		private bool LoadFile( Stream stream, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding, uint textPointerLocationDiff ) {
 			string magic = stream.ReadAscii( 8 );
 			uint alwaysSame = stream.ReadUInt32().FromEndian( endian );
 			uint filesize = stream.ReadUInt32().FromEndian( endian );

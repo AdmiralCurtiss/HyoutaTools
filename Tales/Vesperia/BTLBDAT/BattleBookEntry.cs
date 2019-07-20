@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.BTLBDAT {
 	public class BattleBookEntry {
@@ -9,7 +10,7 @@ namespace HyoutaTools.Tales.Vesperia.BTLBDAT {
 		public uint NameStringDicId;
 		public uint TextStringDicId;
 
-		public BattleBookEntry( System.IO.Stream stream, Util.Endianness endian ) {
+		public BattleBookEntry( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			UnlockReferenceMaybe = stream.ReadUInt32().FromEndian( endian );
 			NameStringDicId = stream.ReadUInt32().FromEndian( endian );
 			TextStringDicId = stream.ReadUInt32().FromEndian( endian );

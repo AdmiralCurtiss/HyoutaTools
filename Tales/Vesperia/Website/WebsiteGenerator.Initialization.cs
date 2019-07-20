@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HyoutaPluginBase.FileContainer;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public partial class WebsiteGenerator {
-		public static SCFOMBIN.SCFOMBIN LoadBattleTextFile( IContainer gameDataPath, string filename, GameLocale locale, GameVersion version, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits ) {
+		public static SCFOMBIN.SCFOMBIN LoadBattleTextFile( IContainer gameDataPath, string filename, GameLocale locale, GameVersion version, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding, BitUtils.Bitness bits ) {
 			if ( !version.Is360() ) {
 				uint ptrDiff = 0x1888;
 				if ( filename.StartsWith( "BTL_XTM" ) ) { ptrDiff = 0x1B4C; }
@@ -21,7 +22,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			}
 		}
 
-		public static Dictionary<string, SCFOMBIN.SCFOMBIN> LoadBattleText( IContainer gameDataPath, GameLocale locale, GameVersion version, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits ) {
+		public static Dictionary<string, SCFOMBIN.SCFOMBIN> LoadBattleText( IContainer gameDataPath, GameLocale locale, GameVersion version, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding, BitUtils.Bitness bits ) {
 			var BattleTextFiles = new Dictionary<string, SCFOMBIN.SCFOMBIN>();
 
 			foreach ( var filename in GenerateWebsite.GetBattleScenarioFileNames( gameDataPath, locale, version ) ) {
@@ -132,7 +133,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			return settings;
 		}
 
-		public List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, MapList.MapList maplist, IContainer gameDataPath, Util.GameTextEncoding encoding, Util.Endianness endian, Util.Bitness bits ) {
+		public List<List<ScenarioData>> CreateScenarioIndexGroups( ScenarioType type, MapList.MapList maplist, IContainer gameDataPath, TextUtils.GameTextEncoding encoding, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			SortedDictionary<int, ScenarioWebsiteName> websiteNames = ScenarioWebsiteName.GenerateWebsiteNames( this.Version );
 			Util.Assert( maplist.MapNames.Count == websiteNames.Count );
 

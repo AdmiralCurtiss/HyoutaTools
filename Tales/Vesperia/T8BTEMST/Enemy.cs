@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HyoutaTools.Tales.Vesperia.ItemDat;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 	public enum Element {
@@ -72,7 +73,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTEMST {
 		// 16 is zero except on the new giganto monsters and spiral draco
 		// 76 is on PS3 only, StringDicID for the dummy description
 
-		public Enemy( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public Enemy( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			long pos = stream.Position;
 
 			uint entryLength = stream.ReadUInt32().FromEndian( endian ); // 0

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.LastRanker {
 	public class bscrFunc {
@@ -52,7 +53,7 @@ namespace HyoutaTools.LastRanker {
 			Strings = new List<bscrString>();
 
 			UnknownMaybeType = BitConverter.ToUInt16( File, 0x04 );
-			Filename = Util.GetTextUTF8( File, 0x06 );
+			Filename = TextUtils.GetTextUTF8( File, 0x06 );
 			Filesize = BitConverter.ToUInt32( File, 0x24 );
 			FunctionCount = BitConverter.ToUInt32( File, 0x28 );
 			StartOfFunctionSection = BitConverter.ToUInt32( File, 0x2C );
@@ -66,7 +67,7 @@ namespace HyoutaTools.LastRanker {
 				bscrFunc f = new bscrFunc();
 				f.Size = BitConverter.ToUInt16( File, pos );
 				f.Unknown = BitConverter.ToUInt16( File, pos + 2 );
-				f.Name = Util.GetTextUTF8( File, pos + 4 );
+				f.Name = TextUtils.GetTextUTF8( File, pos + 4 );
 				f.Params = new uint[( f.Size - 0x24 ) / 4];
 				for ( int i = 0; i < f.Params.Length; ++i ) {
 					f.Params[i] = BitConverter.ToUInt32( File, pos + 0x24 + i * 4 );
@@ -80,7 +81,7 @@ namespace HyoutaTools.LastRanker {
 			for ( uint i = 0; i < TextCount; ++i ) {
 				bscrString s = new bscrString();
 				int nullLoc;
-				s.String = Util.GetTextUTF8( File, pos, out nullLoc );
+				s.String = TextUtils.GetTextUTF8( File, pos, out nullLoc );
 				s.Position = (uint)pos;
 
 				Strings.Add( s );
@@ -166,16 +167,16 @@ namespace HyoutaTools.LastRanker {
 
 			// header
 			File[0] = (byte)'b'; File[1] = (byte)'s'; File[2] = (byte)'c'; File[3] = (byte)'r';
-			Util.CopyByteArrayPart( BitConverter.GetBytes( UnknownMaybeType ), 0, File, 0x04, 2 );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( UnknownMaybeType ), 0, File, 0x04, 2 );
 			byte[] FilenameBytes = Encoding.UTF8.GetBytes( Filename );
-			Util.CopyByteArrayPart( FilenameBytes, 0, File, 0x06, FilenameBytes.Length );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( Filesize ), 0, File, 0x24, 4 );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( FunctionCount ), 0, File, 0x28, 4 );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( StartOfFunctionSection ), 0, File, 0x2C, 4 );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( TextCount ), 0, File, 0x30, 4 );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( StartOfTextSection ), 0, File, 0x34, 4 );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( ScriptSize ), 0, File, 0x38, 4 );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( StartOfScriptSection ), 0, File, 0x3C, 4 );
+			ArrayUtils.CopyByteArrayPart( FilenameBytes, 0, File, 0x06, FilenameBytes.Length );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( Filesize ), 0, File, 0x24, 4 );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( FunctionCount ), 0, File, 0x28, 4 );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( StartOfFunctionSection ), 0, File, 0x2C, 4 );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( TextCount ), 0, File, 0x30, 4 );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( StartOfTextSection ), 0, File, 0x34, 4 );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( ScriptSize ), 0, File, 0x38, 4 );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( StartOfScriptSection ), 0, File, 0x3C, 4 );
 
 			System.IO.File.WriteAllBytes( Path, File.ToArray() );
 		}

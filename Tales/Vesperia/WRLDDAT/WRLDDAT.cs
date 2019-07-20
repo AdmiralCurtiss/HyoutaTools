@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 	public class WRLDDAT {
-		public WRLDDAT( String filename, Util.Endianness endian ) {
+		public WRLDDAT( String filename, EndianUtils.Endianness endian ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading WRLDDAT failed!" );
@@ -14,7 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 			}
 		}
 
-		public WRLDDAT( Stream stream, Util.Endianness endian ) {
+		public WRLDDAT( Stream stream, EndianUtils.Endianness endian ) {
 			if ( !LoadFile( stream, endian ) ) {
 				throw new Exception( "Loading WRLDDAT failed!" );
 			}
@@ -23,7 +24,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 		public List<Location> LocationList;
 		public Dictionary<uint, Location> LocationIdDict;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian ) {
+		private bool LoadFile( Stream stream, EndianUtils.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
 			if ( magic != "WRLDDAT\0" ) {
 				throw new Exception( "Invalid magic." );

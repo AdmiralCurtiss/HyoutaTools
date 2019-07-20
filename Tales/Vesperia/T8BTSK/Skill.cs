@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 	public class Skill {
@@ -26,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTSK {
 
 		public string RefString;
 
-		public Skill( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public Skill( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			uint entrySize = stream.ReadUInt32().FromEndian( endian );
 			if ( entrySize != ( 0x3C + bits.NumberOfBytes() ) ) {
 				throw new Exception( "Unknown Skill size." );

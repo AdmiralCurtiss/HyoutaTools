@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.LastRanker {
 	class CZAA {
@@ -64,8 +65,8 @@ namespace HyoutaTools.LastRanker {
 			byte[] NewFile = new byte[comp.Length + 0x10];
 
 			NewFile[0] = (byte)'C'; NewFile[1] = (byte)'Z'; NewFile[2] = (byte)'A'; NewFile[3] = (byte)'A';
-			Util.CopyByteArrayPart( BitConverter.GetBytes( (uint)File.Length ), 0, NewFile, 4, 4 );
-			Util.CopyByteArrayPart( comp, 0, NewFile, 0x10, comp.Length );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( (uint)File.Length ), 0, NewFile, 4, 4 );
+			ArrayUtils.CopyByteArrayPart( comp, 0, NewFile, 0x10, comp.Length );
 
 			return NewFile;
 		}

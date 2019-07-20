@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 	public class OtherModelAddition {
@@ -9,7 +10,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 		byte Unknown1;
 		byte Unknown2;
 
-		public OtherModelAddition( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public OtherModelAddition( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian ) {
 			Str = stream.ReadAsciiNulltermFromLocationAndReset( stream.ReadUInt32().FromEndian( endian ) + refStringStart );
 			Unknown1 = (byte)stream.ReadByte();
 			Unknown2 = (byte)stream.ReadByte();

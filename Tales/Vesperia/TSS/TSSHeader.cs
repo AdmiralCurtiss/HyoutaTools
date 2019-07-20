@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
+using EndianUtils = HyoutaUtils.EndianUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TSS {
 	public class TSSHeader {
@@ -15,7 +17,7 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public UInt32 TextLength;
 		public UInt32 SectorSize;
 
-		public TSSHeader( Stream Header, Util.Endianness endian ) {
+		public TSSHeader( Stream Header, EndianUtils.Endianness endian ) {
 			Magic = Header.ReadUInt32().SwapEndian();
 			CodeStart = Header.ReadUInt32().FromEndian( endian );
 			CodeLength = Header.ReadUInt32().FromEndian( endian );
@@ -29,14 +31,14 @@ namespace HyoutaTools.Tales.Vesperia.TSS {
 		public byte[] Serialize() {
 			List<byte> Serialized = new List<byte>( 0x20 );
 
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Magic ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( CodeStart ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( CodeLength ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( TextStart ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( EntryCodeStart ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( EntryPointerEnd ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( TextLength ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( SectorSize ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( Magic ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( CodeStart ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( CodeLength ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( TextStart ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( EntryCodeStart ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( EntryPointerEnd ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( TextLength ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( SectorSize ) ) );
 
 			return Serialized.ToArray();
 		}

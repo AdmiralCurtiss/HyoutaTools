@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HyoutaTools.Tales.Vesperia.ItemDat;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 	public class Recipe {
@@ -47,7 +48,7 @@ namespace HyoutaTools.Tales.Vesperia.COOKDAT {
 			}
 		}
 
-		public Recipe( System.IO.Stream stream, Util.Endianness endian ) {
+		public Recipe( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			Data = new uint[0xCC / 4]; // + 0x20
 
 			for ( int i = 0; i < Data.Length; ++i ) {

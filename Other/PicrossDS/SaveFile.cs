@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Other.PicrossDS {
 	public class SaveFile {
@@ -159,7 +160,7 @@ namespace HyoutaTools.Other.PicrossDS {
 			}
 
 			for ( int i = 0; i < 4; ++i ) {
-				Util.CopyByteArrayPart( BitConverter.GetBytes( checksum[i] ), 0, File, 0x39E00 + i * 4, 4 );
+				ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( checksum[i] ), 0, File, 0x39E00 + i * 4, 4 );
 			}
 		}
 

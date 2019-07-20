@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Gust.ebm {
 	public class EbmToSqlite {
@@ -14,7 +15,7 @@ namespace HyoutaTools.Gust.ebm {
 
 			string infile = args[0];
 			string outfile = args[1];
-			var ebm = new ebm( infile, Util.GameTextEncoding.UTF8 );
+			var ebm = new ebm( infile, TextUtils.GameTextEncoding.UTF8 );
 
 			if ( System.IO.File.Exists( outfile ) ) {
 				System.IO.File.Delete( outfile );

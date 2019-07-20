@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
+using HyoutaUtils;
 
 namespace HyoutaTools.GraceNote {
 	public class GraceNoteDatabaseEntry {
@@ -234,7 +235,7 @@ namespace HyoutaTools.GraceNote {
 					PointerRefParam.Value = e.PointerRef;
 					IdentifyStringParam.Value = e.IdentifyString;
 					IdentifyPointerRefParam.Value = e.IdentifyPointerRef;
-					UpdatedTimestampParam.Value = Util.DateTimeToUnixTime( DateTime.Now );
+					UpdatedTimestampParam.Value = TimeUtils.DateTimeToUnixTime( DateTime.Now );
 					CommandInsertEntry.ExecuteNonQuery();
 
 					ENID++;

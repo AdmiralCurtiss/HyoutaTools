@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EndianUtils = HyoutaUtils.EndianUtils;
+using NumberUtils = HyoutaUtils.NumberUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Credits {
 	public enum CreditsData {
@@ -26,7 +28,7 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 			this.Offset = offset;
 			this.Data = new UInt32[Size / 4];
 			for ( int i = 0; i < Size / 4; ++i ) {
-				Data[i] = Util.SwapEndian( BitConverter.ToUInt32( file, offset + i * 0x04 ) );
+				Data[i] = EndianUtils.SwapEndian( BitConverter.ToUInt32( file, offset + i * 0x04 ) );
 			}
 
 			return;
@@ -36,8 +38,8 @@ namespace HyoutaTools.Tales.Vesperia.Credits {
 			return
 					Offset.ToString( "X6" ) + ": [" + Data[0] + "] "
 					+ ( Data[0] == 2 ? " --- Image: " + Credits.GetInFileString( (int)Data[2] + 0xD60 ) + " --- " : "" )
-					+ ( Data[0] == 3 ? " --- Free Space: " + Util.UIntToFloat( Data[4] ).ToString() + " --- " : "" )
-					+ ( Data[0] == 5 ? " --- Text Size?: " + Util.UIntToFloat( Data[4] ).ToString() + " --- " : "" )
+					+ ( Data[0] == 3 ? " --- Free Space: " + NumberUtils.UIntToFloat( Data[4] ).ToString() + " --- " : "" )
+					+ ( Data[0] == 5 ? " --- Text Size?: " + NumberUtils.UIntToFloat( Data[4] ).ToString() + " --- " : "" )
 					+ ( TSS != null ? this.GetEntry( Data[(int)CreditsData.EntryNumber] ).StringJpn : "" )
 			;
 		}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 	public class Location {
@@ -15,7 +16,7 @@ namespace HyoutaTools.Tales.Vesperia.WRLDDAT {
 		public uint[] ShopsOrEnemyGroups;
 		public uint Unused2;
 
-		public Location( System.IO.Stream stream, Util.Endianness endian ) {
+		public Location( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			uint[] Data = new uint[0x74 / 4]; // + 0x20*4 strings, + 4*4 StringDicIDs
 
 			for ( int i = 0; i < Data.Length; ++i ) {

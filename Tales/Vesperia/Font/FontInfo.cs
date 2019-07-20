@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
+using EndianUtils = HyoutaUtils.EndianUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Font {
 	public class FontInfo {
@@ -13,7 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			CharacterLengths = new int[0x220];
 
 			for ( int i = 0; i < 0x220; i++ ) {
-				CharacterLengths[i] = Util.SwapEndian( BitConverter.ToInt32( File, Offset + i * 4 ) );
+				CharacterLengths[i] = EndianUtils.SwapEndian( BitConverter.ToInt32( File, Offset + i * 4 ) );
 			}
 
 			BuildCharacterMap();
@@ -23,7 +25,7 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 			byte[] File = System.IO.File.ReadAllBytes( Filename );
 
 			for ( int i = 0; i < CharacterLengths.Length; i++ ) {
-				int c = Util.SwapEndian( CharacterLengths[i] );
+				int c = EndianUtils.SwapEndian( CharacterLengths[i] );
 				byte[] b = BitConverter.GetBytes( c );
 				b.CopyTo( File, Offset + i * 4 );
 			}
@@ -39,7 +41,7 @@ namespace HyoutaTools.Tales.Vesperia.Font {
 				int CharacterX = ( kvp.Value % 16 );
 				int CharacterY = ( kvp.Value % ( 16 * 16 ) ) / 16;
 
-				string c = Util.XmlEscape( kvp.Key.ToString() );
+				string c = TextUtils.XmlEscape( kvp.Key.ToString() );
 
 				string n =
 					"			<Glyph char=\"" + c + "\" " +

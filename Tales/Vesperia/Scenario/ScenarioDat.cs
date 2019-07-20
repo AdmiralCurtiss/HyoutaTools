@@ -7,6 +7,7 @@ using HyoutaTools.FileContainer;
 using HyoutaTools.Streams;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Scenario {
 	public class ScenarioDatEntry : IFile {
@@ -80,7 +81,7 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 				if ( e.HasData ) {
 					using ( var fs = new System.IO.FileStream( System.IO.Path.Combine( outPath, i.ToString() ), FileMode.Create ) ) {
 						e.DataStream.ReStart();
-						Util.CopyStream( e.DataStream, fs, (int)e.DataStream.Length );
+						StreamUtils.CopyStream( e.DataStream, fs, (int)e.DataStream.Length );
 						e.DataStream.End();
 					}
 				}
@@ -135,7 +136,7 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 
 					Entries[i].Offset = (uint)f.Position - FilesOffset;
 					Entries[i].DataStream.Position = 0;
-					Util.CopyStream( Entries[i].DataStream, f, (int)Entries[i].DataStream.Length );
+					StreamUtils.CopyStream( Entries[i].DataStream, f, (int)Entries[i].DataStream.Length );
 					while ( f.Length % align != 0 ) { f.WriteByte( 0 ); }
 				}
 			}

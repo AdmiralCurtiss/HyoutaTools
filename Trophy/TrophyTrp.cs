@@ -7,6 +7,7 @@ using HyoutaTools.FileContainer;
 using HyoutaTools.Streams;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
+using HyoutaUtils;
 
 namespace HyoutaTools.Trophy {
 	public class TrophyTrpFile {
@@ -22,7 +23,7 @@ namespace HyoutaTools.Trophy {
 		public uint Unknown7 { get; private set; }
 		public uint Unknown8 { get; private set; }
 
-		public TrophyTrpFile( DuplicatableStream stream, Util.Endianness endian ) {
+		public TrophyTrpFile( DuplicatableStream stream, EndianUtils.Endianness endian ) {
 			Filename = stream.ReadAscii( 0x20 ).TrimNull();
 			Unknown1 = stream.ReadUInt32().FromEndian( endian );
 			Start = stream.ReadUInt32().FromEndian( endian );
@@ -37,7 +38,7 @@ namespace HyoutaTools.Trophy {
 
 	public class TrophyTrp : ContainerBase {
 		private DuplicatableStream Stream;
-		private Util.Endianness Endian;
+		private EndianUtils.Endianness Endian;
 
 		private uint Magic;
 		private uint Unknown2;
@@ -59,12 +60,12 @@ namespace HyoutaTools.Trophy {
 		private uint Unknown15;
 		private uint Unknown16;
 
-		public TrophyTrp( HyoutaPluginBase.DuplicatableStream stream, Util.Endianness endian = Util.Endianness.BigEndian ) {
+		public TrophyTrp( HyoutaPluginBase.DuplicatableStream stream, EndianUtils.Endianness endian = EndianUtils.Endianness.BigEndian ) {
 			Stream = stream.Duplicate();
 			Endian = endian;
 			try {
 				Stream.ReStart();
-				Magic = Stream.ReadUInt32().FromEndian( Util.Endianness.LittleEndian );
+				Magic = Stream.ReadUInt32().FromEndian( EndianUtils.Endianness.LittleEndian );
 				if ( Magic != 0x004DA2DC ) {
 					throw new Exception( "invalid magic" );
 				}

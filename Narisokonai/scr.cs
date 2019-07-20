@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Narisokonai {
 	public class scrElement {
@@ -32,20 +33,20 @@ namespace HyoutaTools.Narisokonai {
 					switch ( NextType ) {
 						case scrElementType.Code:
 							Code = new byte[Current - Start];
-							Util.CopyByteArrayPart( File, (int)Start, Code, 0, Code.Length );
+							ArrayUtils.CopyByteArrayPart( File, (int)Start, Code, 0, Code.Length );
 							newElement.Code = Code;
-							newElement.Text = Util.ShiftJISEncoding.GetString( File, (int)Start, (int)( Current - Start ) ); // just checking something...
+							newElement.Text = TextUtils.ShiftJISEncoding.GetString( File, (int)Start, (int)( Current - Start ) ); // just checking something...
 							NextType = scrElementType.Text;
 							break;
 						case scrElementType.Text:
-							newElement.Text = Util.ShiftJISEncoding.GetString( File, (int)Start, (int)( Current - Start ) );
+							newElement.Text = TextUtils.ShiftJISEncoding.GetString( File, (int)Start, (int)( Current - Start ) );
 							NextType = scrElementType.Code;
 							// original byte array must equal back-converted text, otherwise we just read a code section as text
-							byte[] check = Util.StringToBytesShiftJis( newElement.Text );
-							if ( (int)( Current - Start ) != check.Length || !Util.IsByteArrayPartEqual( check, 0, File, (int)Start, check.Length ) ) {
+							byte[] check = TextUtils.StringToBytesShiftJis( newElement.Text );
+							if ( (int)( Current - Start ) != check.Length || !ArrayUtils.IsByteArrayPartEqual( check, 0, File, (int)Start, check.Length ) ) {
 								// well guess this is not actually text!
 								Code = new byte[Current - Start];
-								Util.CopyByteArrayPart( File, (int)Start, Code, 0, Code.Length );
+								ArrayUtils.CopyByteArrayPart( File, (int)Start, Code, 0, Code.Length );
 								newElement.Code = Code;
 								newElement.Type = scrElementType.Code;
 								NextType = scrElementType.Text;
@@ -103,11 +104,11 @@ namespace HyoutaTools.Narisokonai {
 		public List<scrSection> Sections;
 
 		private bool LoadFile( byte[] File ) {
-			uint PointerCount = Util.ToUInt24( File, 0 );
+			uint PointerCount = NumberUtils.ToUInt24( File, 0 );
 			List<uint> Pointers = new List<uint>( (int)PointerCount );
 
 			for ( int i = 0; i < PointerCount; ++i ) {
-				Pointers.Add( Util.ToUInt24( File, 0x03 + i * 0x03 ) );
+				Pointers.Add( NumberUtils.ToUInt24( File, 0x03 + i * 0x03 ) );
 			}
 
 			// create sections we fill in later, so we can remember the original order
@@ -177,7 +178,7 @@ namespace HyoutaTools.Narisokonai {
 							b.AddRange( e.Code );
 							break;
 						case HyoutaTools.Narisokonai.scrElement.scrElementType.Text:
-							b.AddRange( Util.StringToBytesShiftJis( e.Text ) );
+							b.AddRange( TextUtils.StringToBytesShiftJis( e.Text ) );
 							break;
 					}
 					b.Add( 0xFE );
@@ -199,13 +200,13 @@ namespace HyoutaTools.Narisokonai {
 			uint ptrCount = 0;
 			foreach ( scrSection s in Sections ) {
 				if ( s.PointerIndex == -1 || s.Elements == null ) continue;
-				Header.AddRange( Util.GetBytesForUInt24( s.Location ) );
+				Header.AddRange( NumberUtils.GetBytesForUInt24( s.Location ) );
 				++ptrCount;
 			}
 
 			// and combine all this
 			List<byte> File = new List<byte>( 3 + Header.Count + b.Count );
-			File.AddRange( Util.GetBytesForUInt24( ptrCount ) );
+			File.AddRange( NumberUtils.GetBytesForUInt24( ptrCount ) );
 			File.AddRange( Header );
 			File.AddRange( b );
 

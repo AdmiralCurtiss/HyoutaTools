@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
 	public class SaveData {
@@ -28,7 +29,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 		public SaveDataBlockPCStatus[] CharacterData = new SaveDataBlockPCStatus[9];
 		public SaveDataBlockFieldGadget FieldGadget;
 
-		public SaveData( HyoutaPluginBase.DuplicatableStream stream, Util.Endianness endian ) {
+		public SaveData( HyoutaPluginBase.DuplicatableStream stream, EndianUtils.Endianness endian ) {
 			MenuBlock = new SaveMenuBlock( new Streams.PartialStream( stream, 0, 0x228 ) );
 
 			// actual save file
@@ -109,7 +110,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			if ( stream != null ) {
 				using ( var s = stream.Duplicate() )
 				using ( var f = new FileStream( path, FileMode.Create ) ) {
-					Util.CopyStream( s, f, s.Length );
+					StreamUtils.CopyStream( s, f, s.Length );
 				}
 			}
 		}

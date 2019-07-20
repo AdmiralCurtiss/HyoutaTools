@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 	public class StrategyOption {
@@ -15,7 +16,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTTA {
 		public uint ID;
 
 		public string RefString;
-		public StrategyOption( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public StrategyOption( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			uint entrySize = stream.ReadUInt32().FromEndian( endian );
 			Category = stream.ReadUInt32().FromEndian( endian );
 			InGameID = stream.ReadUInt32().FromEndian( endian );

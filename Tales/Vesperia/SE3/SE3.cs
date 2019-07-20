@@ -4,16 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.SE3 {
 	public class SE3 {
-		public SE3( string filename, Util.Endianness? endian, Util.GameTextEncoding encoding ) {
+		public SE3( string filename, EndianUtils.Endianness? endian, TextUtils.GameTextEncoding encoding ) {
 			if ( !LoadFile( new System.IO.FileStream( filename, FileMode.Open ), endian, encoding ) ) {
 				throw new Exception( "Loading SE3 failed!" );
 			}
 		}
 
-		public SE3( Stream stream, Util.Endianness? endian, Util.GameTextEncoding encoding ) {
+		public SE3( Stream stream, EndianUtils.Endianness? endian, TextUtils.GameTextEncoding encoding ) {
 			if ( !LoadFile( stream, endian, encoding ) ) {
 				throw new Exception( "Loading SE3 failed!" );
 			}
@@ -24,14 +25,14 @@ namespace HyoutaTools.Tales.Vesperia.SE3 {
 		private List<string> Filenames;
 		private Stream Data;
 
-		private bool LoadFile( Stream stream, Util.Endianness? endianParam, Util.GameTextEncoding encoding ) {
-			Util.Endianness endian;
+		private bool LoadFile( Stream stream, EndianUtils.Endianness? endianParam, TextUtils.GameTextEncoding encoding ) {
+			EndianUtils.Endianness endian;
 			if ( endianParam == null ) {
-				uint magic = stream.ReadUInt32().FromEndian( Util.Endianness.BigEndian );
+				uint magic = stream.ReadUInt32().FromEndian( EndianUtils.Endianness.BigEndian );
 				if ( magic == 0x53453320 ) {
-					endian = Util.Endianness.BigEndian;
+					endian = EndianUtils.Endianness.BigEndian;
 				} else if (magic == 0x20334553 ) {
-					endian = Util.Endianness.LittleEndian;
+					endian = EndianUtils.Endianness.LittleEndian;
 				} else {
 					Console.WriteLine( "Invalid magic: " + magic );
 					return false;
@@ -64,7 +65,7 @@ namespace HyoutaTools.Tales.Vesperia.SE3 {
 		public void ExtractToNub( string targetName ) {
 			Data.Position = DataBegin;
 			using ( Stream fs = new FileStream( targetName, FileMode.Create ) ) {
-				Util.CopyStream( Data, fs, Data.Length - DataBegin );
+				StreamUtils.CopyStream( Data, fs, Data.Length - DataBegin );
 			}
 		}
 	}

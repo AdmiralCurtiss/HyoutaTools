@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Gust.ebm {
 	public class ebmEntry {
@@ -22,7 +23,7 @@ namespace HyoutaTools.Gust.ebm {
 
 		public ebmEntry() { }
 
-		public ebmEntry( Stream stream, Util.GameTextEncoding encoding ) {
+		public ebmEntry( Stream stream, TextUtils.GameTextEncoding encoding ) {
 			Ident = stream.ReadUInt32();
 			Unknown2 = stream.ReadUInt32();
 			Unknown3 = stream.ReadUInt32();
@@ -38,7 +39,7 @@ namespace HyoutaTools.Gust.ebm {
 			stream.Position = pos + TextLength;
 		}
 
-		public void Write( Stream stream, Util.GameTextEncoding encoding ) {
+		public void Write( Stream stream, TextUtils.GameTextEncoding encoding ) {
 			stream.WriteUInt32( Ident );
 			stream.WriteUInt32( Unknown2 );
 			stream.WriteUInt32( Unknown3 );
@@ -71,7 +72,7 @@ namespace HyoutaTools.Gust.ebm {
 			EntryList = new List<ebmEntry>();
 		}
 
-		public ebm( String filename, Util.GameTextEncoding encoding ) {
+		public ebm( String filename, TextUtils.GameTextEncoding encoding ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
 				if ( !LoadFile( stream, encoding ) ) {
 					throw new Exception( "Loading ebm failed!" );
@@ -79,7 +80,7 @@ namespace HyoutaTools.Gust.ebm {
 			}
 		}
 
-		public ebm( Stream stream, Util.GameTextEncoding encoding ) {
+		public ebm( Stream stream, TextUtils.GameTextEncoding encoding ) {
 			if ( !LoadFile( stream, encoding ) ) {
 				throw new Exception( "Loading ebm failed!" );
 			}
@@ -87,7 +88,7 @@ namespace HyoutaTools.Gust.ebm {
 
 		public List<ebmEntry> EntryList;
 
-		private bool LoadFile( Stream stream, Util.GameTextEncoding encoding ) {
+		private bool LoadFile( Stream stream, TextUtils.GameTextEncoding encoding ) {
 			uint entryCount = stream.ReadUInt32();
 
 			EntryList = new List<ebmEntry>( (int)entryCount );
@@ -99,7 +100,7 @@ namespace HyoutaTools.Gust.ebm {
 			return true;
 		}
 
-		public void WriteFile( Stream stream, Util.GameTextEncoding encoding ) {
+		public void WriteFile( Stream stream, TextUtils.GameTextEncoding encoding ) {
 			stream.WriteUInt32( (uint)EntryList.Count );
 			foreach ( ebmEntry e in EntryList ) {
 				e.Write( stream, encoding );

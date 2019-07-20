@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 	public class CharacterModelDefinition {
@@ -27,7 +28,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 		public Unknown0x20byteAreaB[] Unknown0x20Area;
 		public Unknown0x80byteArea[] Unknown0x80Area;
 
-		public CharacterModelDefinition( System.IO.Stream stream, uint refStringStart, Util.Endianness endian ) {
+		public CharacterModelDefinition( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian ) {
 			Strings = new string[100];
 
 			for ( uint i = 0; i < 100; ++i ) {

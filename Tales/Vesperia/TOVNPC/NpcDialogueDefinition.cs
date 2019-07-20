@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 	public class NpcDialogueDefinition {
@@ -34,7 +35,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVNPC {
 		public string RefString1;
 		public string RefString2;
 
-		public NpcDialogueDefinition( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public NpcDialogueDefinition( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			Unknown1 = stream.ReadUInt32().FromEndian( endian );
 			Unknown2 = stream.ReadUInt32().FromEndian( endian );
 			StringDicId = stream.ReadUInt32().FromEndian( endian );

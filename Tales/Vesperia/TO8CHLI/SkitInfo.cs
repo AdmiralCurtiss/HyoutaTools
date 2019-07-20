@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 	public class SkitInfo : IComparable<SkitInfo> {
@@ -42,7 +43,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHLI {
 			}
 		}
 
-		public SkitInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public SkitInfo( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			// first 16 bytes are always null in the existing files
 			stream.DiscardBytes( 0x10 );
 

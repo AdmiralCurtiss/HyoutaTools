@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HyoutaTools.Tales.Vesperia.TO8CHTX;
+using HyoutaUtils;
 
 namespace HyoutaTools.GraceNote.Vesperia.TO8CHTXImport {
 	class Program {
@@ -16,7 +17,7 @@ namespace HyoutaTools.GraceNote.Vesperia.TO8CHTXImport {
 			String NewDB = args[1];
 			String GracesDB = args[2];
 
-			ChatFile c = new ChatFile( Filename, Util.Endianness.BigEndian, Util.GameTextEncoding.ShiftJIS, Util.Bitness.B32, 2 );
+			ChatFile c = new ChatFile( Filename, EndianUtils.Endianness.BigEndian, TextUtils.GameTextEncoding.ShiftJIS, BitUtils.Bitness.B32, 2 );
 
 			GraceNoteUtil.GenerateEmptyDatabase( NewDB );
 

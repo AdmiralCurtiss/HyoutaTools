@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using HyoutaTools.Trophy.Viewer;
+using HyoutaUtils;
 
 namespace HyoutaTools.Trophy {
 	public class TrophyConfNode {
@@ -231,8 +232,8 @@ namespace HyoutaTools.Trophy {
 		}
 
 		public static TrophyConfNode ReadTropSfmWithTropConf( System.IO.Stream trop, System.IO.Stream tropconf ) {
-			string t = trop.ReadSizedString( trop.Length - trop.Position, Util.GameTextEncoding.UTF8 );
-			string c = tropconf.ReadSizedString( tropconf.Length - tropconf.Position, Util.GameTextEncoding.UTF8 );
+			string t = trop.ReadSizedString( trop.Length - trop.Position, TextUtils.GameTextEncoding.UTF8 );
+			string c = tropconf.ReadSizedString( tropconf.Length - tropconf.Position, TextUtils.GameTextEncoding.UTF8 );
 			return ReadTropSfmWithTropConfFromString( t, c );
 		}
 

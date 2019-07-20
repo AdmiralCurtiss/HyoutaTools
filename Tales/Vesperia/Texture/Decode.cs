@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Texture {
 	public class Decode {
@@ -30,7 +31,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				foreach ( var tex in ts.GetDiskWritableStreams() ) {
 					using ( var fs = new FileStream( Path.Combine( outdir, counter.ToString( "D4" ) + "_" + tex.name ), FileMode.Create ) ) {
 						tex.data.Position = 0;
-						Util.CopyStream( tex.data, fs, tex.data.Length );
+						StreamUtils.CopyStream( tex.data, fs, tex.data.Length );
 					}
 					++counter;
 				}
@@ -42,7 +43,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 		public static bool AutodetectVesperiaPC( Stream stream ) {
 			try {
 				while ( true ) {
-					uint sz = stream.ReadUInt32().FromEndian( Util.Endianness.BigEndian );
+					uint sz = stream.ReadUInt32().FromEndian( EndianUtils.Endianness.BigEndian );
 					if ( stream.Position + sz <= stream.Length ) {
 						if ( stream.ReadAscii( 4 ) != "DDS " ) {
 							return false;

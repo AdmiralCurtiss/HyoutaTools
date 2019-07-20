@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
+using NumberUtils = HyoutaUtils.NumberUtils;
 
 namespace HyoutaTools.Tales.Abyss.PKF {
 	public class Split {
@@ -21,11 +23,11 @@ namespace HyoutaTools.Tales.Abyss.PKF {
 					uint DecompressedSize = BitConverter.ToUInt32( File, (int)location + 5 );
 
 					byte[] SplitFile = new byte[CompressedSize + 9];
-					Util.CopyByteArrayPart( File, (int)location, SplitFile, 0, (int)CompressedSize + 9 );
+					ArrayUtils.CopyByteArrayPart( File, (int)location, SplitFile, 0, (int)CompressedSize + 9 );
 
 					System.IO.File.WriteAllBytes( Directory + "/" + location.ToString( "X8" ) + ".c", SplitFile );
 
-					location = Util.Align( location + CompressedSize + 9, 0x800u );
+					location = NumberUtils.Align( location + CompressedSize + 9, 0x800u );
 					if ( location >= File.Length ) break;
 				}
 			} catch ( Exception ) {

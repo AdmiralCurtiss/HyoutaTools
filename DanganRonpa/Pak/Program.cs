@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.DanganRonpa.Pak {
 	class Program {
@@ -24,7 +25,7 @@ namespace HyoutaTools.DanganRonpa.Pak {
 			for ( int i = 0; i < count; ++i ) {
 				FileStream newFile = new FileStream( System.IO.Path.Combine( destination, i.ToString( "D4" ) ), FileMode.Create );
 				file.Position = FileOffsets[i];
-				Util.CopyStream( file, newFile, FileOffsets[i + 1] - FileOffsets[i] );
+				StreamUtils.CopyStream( file, newFile, FileOffsets[i + 1] - FileOffsets[i] );
 				newFile.Close();
 			}
 
@@ -79,7 +80,7 @@ namespace HyoutaTools.DanganRonpa.Pak {
 
 			for ( int i = 0; i < files.Count; ++i ) {
 				FileStream f = new System.IO.FileStream( files[i], FileMode.Open );
-				Util.CopyStream( f, newFile, (int)f.Length );
+				StreamUtils.CopyStream( f, newFile, (int)f.Length );
 				f.Close();
 			}
 

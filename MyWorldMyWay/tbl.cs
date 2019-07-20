@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using HyoutaTools;
+using HyoutaUtils;
 
 namespace HyoutaTools.MyWorldMyWay {
 	class Tbl {

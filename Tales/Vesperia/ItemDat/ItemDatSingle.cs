@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.ItemDat {
 	public enum ItemData {
@@ -192,7 +193,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 		public UInt32[] Data;
 		public uint[] SortOrderPerCategory;
 
-		public ItemDatSingle( System.IO.Stream stream, System.IO.Stream sortStream, Util.Endianness endian ) { // 0x2E4
+		public ItemDatSingle( System.IO.Stream stream, System.IO.Stream sortStream, EndianUtils.Endianness endian ) { // 0x2E4
 			long pos = stream.Position;
 			stream.Position = pos + 0x04;
 			NamePointer = stream.ReadUInt32().FromEndian( endian );

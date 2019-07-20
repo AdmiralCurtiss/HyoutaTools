@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EndianUtils = HyoutaUtils.EndianUtils;
 
 namespace HyoutaTools.Trophy.Viewer {
 	public class TropUsr {
@@ -16,8 +17,8 @@ namespace HyoutaTools.Trophy.Viewer {
 		public TropUsr( byte[] File ) {
 			this.File = File;
 
-			TrophyAmount = Util.SwapEndian( BitConverter.ToUInt32( File, 0xDC ) );
-			UserInfoStart = Util.SwapEndian( BitConverter.ToUInt32( File, 0x144 ) );
+			TrophyAmount = EndianUtils.SwapEndian( BitConverter.ToUInt32( File, 0xDC ) );
+			UserInfoStart = EndianUtils.SwapEndian( BitConverter.ToUInt32( File, 0x144 ) );
 			UserInfoSize = 0x70;
 
 			TrophyInfos = new Dictionary<uint, TropUsrSingleTrophy>( (int)TrophyAmount );

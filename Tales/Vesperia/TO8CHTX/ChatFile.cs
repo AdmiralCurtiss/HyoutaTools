@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Data.SQLite;
 using System.IO;
+using HyoutaUtils;
+using EndianUtils = HyoutaUtils.EndianUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 	public struct ChatFileHeader {
@@ -38,17 +40,17 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public ChatFileHeader Header;
 		public ChatFileLine[] Lines;
 
-		public ChatFile( string filename, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits, int languageCount ) {
+		public ChatFile( string filename, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding, BitUtils.Bitness bits, int languageCount ) {
 			using ( Stream stream = new FileStream( filename, FileMode.Open, FileAccess.Read ) ) {
 				LoadFile( stream, endian, encoding, bits, languageCount );
 			}
 		}
 
-		public ChatFile( Stream file, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits, int languageCount ) {
+		public ChatFile( Stream file, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding, BitUtils.Bitness bits, int languageCount ) {
 			LoadFile( file, endian, encoding, bits, languageCount );
 		}
 
-		private void LoadFile( Stream TO8CHTX, Util.Endianness endian, Util.GameTextEncoding encoding, Util.Bitness bits, int languageCount ) {
+		private void LoadFile( Stream TO8CHTX, EndianUtils.Endianness endian, TextUtils.GameTextEncoding encoding, BitUtils.Bitness bits, int languageCount ) {
 			Header = new ChatFileHeader();
 
 			ulong pos = (ulong)TO8CHTX.Position;
@@ -118,26 +120,26 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 		public byte[] Serialize() {
 			List<byte> Serialized = new List<byte>( (int)Header.Filesize );
 
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Identify ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Filesize ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Lines ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Unknown ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.TextStart ) ) );
-			Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Header.Empty ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( Header.Identify ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( Header.Filesize ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( Header.Lines ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( Header.Unknown ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( Header.TextStart ) ) );
+			Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( Header.Empty ) ) );
 
 			foreach ( ChatFileLine Line in Lines ) {
-				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( (uint)Line.NamePointer ) ) );
-				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( (uint)Line.ENG ) ) );
-				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( (uint)Line.ENG ) ) );
-				Serialized.AddRange( System.BitConverter.GetBytes( Util.SwapEndian( Line.Unknown ) ) );
+				Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( (uint)Line.NamePointer ) ) );
+				Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( (uint)Line.ENG ) ) );
+				Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( (uint)Line.ENG ) ) );
+				Serialized.AddRange( System.BitConverter.GetBytes( EndianUtils.SwapEndian( Line.Unknown ) ) );
 			}
 
 			byte ByteNull = 0x00;
 
 			foreach ( ChatFileLine Line in Lines ) {
-				Serialized.AddRange( Util.StringToBytesShiftJis( Line.SName ) );
+				Serialized.AddRange( TextUtils.StringToBytesShiftJis( Line.SName ) );
 				Serialized.Add( ByteNull );
-				Serialized.AddRange( Util.StringToBytesShiftJis( Line.SENG ) );
+				Serialized.AddRange( TextUtils.StringToBytesShiftJis( Line.SENG ) );
 				Serialized.Add( ByteNull );
 			}
 
@@ -148,11 +150,11 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHTX {
 			uint Size = Header.TextStart;
 			for ( int i = 0; i < Lines.Length; i++ ) {
 				Lines[i].NamePointer = Size - Header.TextStart;
-				Size += (uint)Util.StringToBytesShiftJis( Lines[i].SName ).Length;
+				Size += (uint)TextUtils.StringToBytesShiftJis( Lines[i].SName ).Length;
 				Size++;
 				Lines[i].JPN = Size - Header.TextStart;
 				Lines[i].ENG = Size - Header.TextStart;
-				Size += (uint)Util.StringToBytesShiftJis( Lines[i].SENG ).Length;
+				Size += (uint)TextUtils.StringToBytesShiftJis( Lines[i].SENG ).Length;
 				Size++;
 			}
 

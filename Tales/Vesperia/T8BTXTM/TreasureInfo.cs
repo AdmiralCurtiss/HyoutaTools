@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 	public class TreasureInfo {
@@ -22,7 +23,7 @@ namespace HyoutaTools.Tales.Vesperia.T8BTXTM {
 
 		public string RefString;
 
-		public TreasureInfo( System.IO.Stream stream, uint refStringStart, Util.Endianness endian, Util.Bitness bits ) {
+		public TreasureInfo( System.IO.Stream stream, uint refStringStart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			EntrySize = stream.ReadUInt32().FromEndian( endian );
 			ID = stream.ReadUInt32().FromEndian( endian );
 			IDAgain = stream.ReadUInt32().FromEndian( endian );

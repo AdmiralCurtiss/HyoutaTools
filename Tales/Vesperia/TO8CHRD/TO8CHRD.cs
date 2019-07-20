@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 	public class TO8CHRD {
-		public TO8CHRD( String filename, Util.Endianness endian ) {
+		public TO8CHRD( String filename, EndianUtils.Endianness endian ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading TO8CHRD failed!" );
@@ -14,7 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 			}
 		}
 
-		public TO8CHRD( Stream stream, Util.Endianness endian ) {
+		public TO8CHRD( Stream stream, EndianUtils.Endianness endian ) {
 			if ( !LoadFile( stream, endian ) ) {
 				throw new Exception( "Loading TO8CHRD failed!" );
 			}
@@ -26,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.TO8CHRD {
 		public List<Unknown0x20byteAreaB> U20BList;
 		public List<Unknown0x80byteArea> U80List;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian ) {
+		private bool LoadFile( Stream stream, EndianUtils.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
 			if ( magic != "TO8CHRD\0" ) {
 				throw new Exception( "Invalid magic." );

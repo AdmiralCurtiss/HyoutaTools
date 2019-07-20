@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
+using HyoutaUtils;
 
 namespace HyoutaTools.DanganRonpa.Lin {
 	public class ScriptEntry {
@@ -624,7 +625,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 									case "WaitFrame": e.Type = 0x3B; break;
 									case "SDR2-WaitPlayerInput": e.Type = 0x4B; break;
 									case "SDR2-WaitFrame": e.Type = 0x4C; break;
-									default: e.Type = Util.ParseDecOrHexToByte( typestr ); break;
+									default: e.Type = HexUtils.ParseDecOrHexToByte( typestr ); break;
 								}
 
 								byte[] args = new byte[bytestrs.Length - 1];
@@ -632,7 +633,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 									if ( bytestrs[i].Contains( '[' ) && bytestrs[i].Contains( ']' ) ) {
 										args[i - 1] = ( DanganUtil.NameToCharacterId( bytestrs[i].Replace( "[", "" ).Replace( "]", "" ) ) );
 									} else {
-										args[i - 1] = ( Util.ParseDecOrHexToByte( bytestrs[i] ) );
+										args[i - 1] = ( HexUtils.ParseDecOrHexToByte( bytestrs[i] ) );
 									}
 								}
 								e.Arguments = args;
@@ -645,7 +646,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 									case "WaitFrame": e.Type = 0x3B; break;
 									case "SDR2-WaitPlayerInput": e.Type = 0x4B; break;
 									case "SDR2-WaitFrame": e.Type = 0x4C; break;
-									default: e.Type = Util.ParseDecOrHexToByte( cmd ); break;
+									default: e.Type = HexUtils.ParseDecOrHexToByte( cmd ); break;
 								}
 								e.Arguments = new byte[0];
 							}
@@ -742,7 +743,7 @@ namespace HyoutaTools.DanganRonpa.Lin {
 				SQLiteParameter CodeTextParam = new SQLiteParameter();
 				SQLiteParameter CopyIdParam = new SQLiteParameter();
 
-				Command.CommandText = "UPDATE Text SET english = ?, UpdatedBy = 'HyoutaTools', UpdatedTimestamp = " + Util.DateTimeToUnixTime(DateTime.UtcNow) + " WHERE ID = ?";
+				Command.CommandText = "UPDATE Text SET english = ?, UpdatedBy = 'HyoutaTools', UpdatedTimestamp = " + TimeUtils.DateTimeToUnixTime(DateTime.UtcNow) + " WHERE ID = ?";
 				Command.Parameters.Add( CodeTextParam );
 				Command.Parameters.Add( EnglishIDParam );
 				CopyCommand.CommandText = "INSERT INTO History(ID, english, comment, status, UpdatedBy, UpdatedTimestamp) SELECT ID, english, comment, status, UpdatedBy, UpdatedTimestamp FROM Text WHERE ID = ?";

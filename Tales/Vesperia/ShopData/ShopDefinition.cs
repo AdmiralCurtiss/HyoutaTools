@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.ShopData {
 	public class ShopDefinition {
@@ -12,7 +13,7 @@ namespace HyoutaTools.Tales.Vesperia.ShopData {
 
 		public ShopItem[] ShopItems;
 
-		public ShopDefinition( System.IO.Stream stream, Util.Endianness endian, Util.Bitness bits ) {
+		public ShopDefinition( System.IO.Stream stream, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			InGameID = stream.ReadUInt32().FromEndian( endian );
 			StringDicID = stream.ReadUInt32().FromEndian( endian );
 			stream.ReadUInt32().FromEndian( endian ); // second instance of string dic id?

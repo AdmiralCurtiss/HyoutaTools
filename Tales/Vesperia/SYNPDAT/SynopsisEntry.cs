@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 	public class SynopsisEntry {
@@ -14,7 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.SYNPDAT {
 		public string RefString1;
 		public string RefString2;
 
-		public SynopsisEntry( System.IO.Stream stream, Util.Endianness endian ) {
+		public SynopsisEntry( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			ID = stream.ReadUInt32().FromEndian( endian );
 			StoryIdMin = stream.ReadUInt32().FromEndian( endian );
 			StoryIdMax = stream.ReadUInt32().FromEndian( endian );

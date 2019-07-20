@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Other.PicrossDS {
 	public class OriginalPuzzle : ClassicPuzzle {
@@ -13,7 +14,7 @@ namespace HyoutaTools.Other.PicrossDS {
 			: base( File, Offset ) {
 			Picture = new byte[0x708];
 			if ( File.Length >= Offset + 0x7C8 ) {
-				Util.CopyByteArrayPart( File, (int)Offset + 0xC0, Picture, 0, 0x708 );
+				ArrayUtils.CopyByteArrayPart( File, (int)Offset + 0xC0, Picture, 0, 0x708 );
 			}
 		}
 

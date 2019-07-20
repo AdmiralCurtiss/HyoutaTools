@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia {
 	public enum GameVersion {
@@ -45,14 +46,14 @@ namespace HyoutaTools.Tales.Vesperia {
 			return lang == WebsiteLanguage.En || lang == WebsiteLanguage.BothWithEnLinks;
 		}
 
-		public static Util.Endianness GetEndian( this GameVersion version ) {
-			return version == GameVersion.PC ? Util.Endianness.LittleEndian : Util.Endianness.BigEndian;
+		public static EndianUtils.Endianness GetEndian( this GameVersion version ) {
+			return version == GameVersion.PC ? EndianUtils.Endianness.LittleEndian : EndianUtils.Endianness.BigEndian;
 		}
-		public static Util.Bitness GetBitness( this GameVersion version ) {
-			return version == GameVersion.PC ? Util.Bitness.B64 : Util.Bitness.B32;
+		public static BitUtils.Bitness GetBitness( this GameVersion version ) {
+			return version == GameVersion.PC ? BitUtils.Bitness.B64 : BitUtils.Bitness.B32;
 		}
-		public static Util.GameTextEncoding GetEncoding( this GameVersion version ) {
-			return version == GameVersion.X360_EU || version == GameVersion.PC ? Util.GameTextEncoding.UTF8 : Util.GameTextEncoding.ShiftJIS;
+		public static TextUtils.GameTextEncoding GetEncoding( this GameVersion version ) {
+			return version == GameVersion.X360_EU || version == GameVersion.PC ? TextUtils.GameTextEncoding.UTF8 : TextUtils.GameTextEncoding.ShiftJIS;
 		}
 		public static GameLocale[] GetValidLocales( this GameVersion version ) {
 			switch ( version ) {

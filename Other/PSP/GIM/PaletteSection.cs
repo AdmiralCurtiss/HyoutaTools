@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Other.PSP.GIM {
 	class PaletteSection : ISection {
@@ -89,7 +90,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 				int size = ColorDepth * GetBytePerColor();
 				PalettesRawBytes[i] = new byte[size];
 
-				Util.CopyByteArrayPart( File, Offset + (int)poffs + 0x10, PalettesRawBytes[i], 0, size );
+				ArrayUtils.CopyByteArrayPart( File, Offset + (int)poffs + 0x10, PalettesRawBytes[i], 0, size );
 			}
 
 

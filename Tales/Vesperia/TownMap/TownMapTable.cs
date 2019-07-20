@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EndianUtils = HyoutaUtils.EndianUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TownMap {
 	public class TownMapTable {
@@ -29,15 +30,15 @@ namespace HyoutaTools.Tales.Vesperia.TownMap {
 		}
 
 		private void Initialize( byte[] File ) {
-			PointerOffset = Util.SwapEndian( BitConverter.ToInt32( File, 0x0C ) );
+			PointerOffset = EndianUtils.SwapEndian( BitConverter.ToInt32( File, 0x0C ) );
 
-			LocationTileTableJPN = PointerOffset + Util.SwapEndian( BitConverter.ToInt32( File, 0x156DC ) );
-			LocationTileTableENG = PointerOffset + Util.SwapEndian( BitConverter.ToInt32( File, 0x15710 ) );
+			LocationTileTableJPN = PointerOffset + EndianUtils.SwapEndian( BitConverter.ToInt32( File, 0x156DC ) );
+			LocationTileTableENG = PointerOffset + EndianUtils.SwapEndian( BitConverter.ToInt32( File, 0x15710 ) );
 
-			LocationOffsetTableJPN = PointerOffset + Util.SwapEndian( BitConverter.ToInt32( File, 0x156E4 ) );
-			LocationOffsetTableENG = 0x04 + PointerOffset + Util.SwapEndian( BitConverter.ToInt32( File, 0x15718 ) ); // increment by 4 so we don't have to check if we're on JPN or ENG later, those two originally point to the exact same location
+			LocationOffsetTableJPN = PointerOffset + EndianUtils.SwapEndian( BitConverter.ToInt32( File, 0x156E4 ) );
+			LocationOffsetTableENG = 0x04 + PointerOffset + EndianUtils.SwapEndian( BitConverter.ToInt32( File, 0x15718 ) ); // increment by 4 so we don't have to check if we're on JPN or ENG later, those two originally point to the exact same location
 
-			LocationInfoTable = PointerOffset + Util.SwapEndian( BitConverter.ToInt32( File, 0x156BC ) );
+			LocationInfoTable = PointerOffset + EndianUtils.SwapEndian( BitConverter.ToInt32( File, 0x156BC ) );
 
 			// 0x188 / 8 -> 0x31, not sure where in file it's set but whatever
 			InfoAmount = 0x31;
@@ -46,10 +47,10 @@ namespace HyoutaTools.Tales.Vesperia.TownMap {
 
 			for ( int i = 0; i < InfoAmount; i++ ) {
 				int OffsetLocation = LocationOffsetTableJPN + ( i * 0x08 );
-				int TilesToSkip = Util.SwapEndian( BitConverter.ToInt32( File, OffsetLocation ) );
+				int TilesToSkip = EndianUtils.SwapEndian( BitConverter.ToInt32( File, OffsetLocation ) );
 				int TilesLocationJPN = LocationTileTableJPN + ( TilesToSkip * 0x20 );
 				OffsetLocation = LocationOffsetTableENG + ( i * 0x08 );
-				TilesToSkip = Util.SwapEndian( BitConverter.ToInt32( File, OffsetLocation ) );
+				TilesToSkip = EndianUtils.SwapEndian( BitConverter.ToInt32( File, OffsetLocation ) );
 				int TilesLocationENG = LocationTileTableENG + ( TilesToSkip * 0x20 );
 
 				int InfoLocation = LocationInfoTable + ( i * 0xAC );

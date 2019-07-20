@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using HyoutaTools.Tales.Xillia.TldatExtract;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Xillia.TldatPack {
 	class Program {
@@ -24,7 +25,7 @@ namespace HyoutaTools.Tales.Xillia.TldatPack {
 			foreach ( string dir in Directory.EnumerateDirectories( ExtractFolder ) ) {
 				foreach ( string file in Directory.EnumerateFiles( dir ) ) {
 					string filenumstr = Path.GetFileNameWithoutExtension( file );
-					uint num = Util.ParseDecOrHex( filenumstr );
+					uint num = HexUtils.ParseDecOrHex( filenumstr );
 					filenameMap.Add( num, file );
 				}
 			}

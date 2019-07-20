@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.HalfMinuteHeroSecond {
 	public class S2ARHeaderFileInfo {
@@ -32,7 +33,7 @@ namespace HyoutaTools.HalfMinuteHeroSecond {
 					filename = System.IO.Path.Combine( destination, i.ToString( "D4" ) + Util.GuessFileExtension( file ) );
 				}
 				FileStream newFile = new FileStream( filename, FileMode.Create );
-				Util.CopyStream( file, newFile, (int)FileInfos[i].Filesize );
+				StreamUtils.CopyStream( file, newFile, (int)FileInfos[i].Filesize );
 				newFile.Close();
 			}
 

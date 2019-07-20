@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.MapList {
 	public class MapName {
@@ -10,7 +11,7 @@ namespace HyoutaTools.Tales.Vesperia.MapList {
 		public string Name3;
 		public short Unknown6a;
 
-		public MapName( System.IO.Stream stream, uint textstart, Util.Endianness endian, Util.Bitness bits ) {
+		public MapName( System.IO.Stream stream, uint textstart, EndianUtils.Endianness endian, BitUtils.Bitness bits ) {
 			ulong p1 = stream.ReadUInt( bits, endian );
 			ulong p2 = stream.ReadUInt( bits, endian );
 			ulong p3 = stream.ReadUInt( bits, endian );

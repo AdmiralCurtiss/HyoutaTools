@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Other.PSP.GIM {
 	class FileInfoSection : ISection {
@@ -22,7 +23,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 
 			uint size = PartSize - 0x10;
 			FileInfo = new byte[size];
-			Util.CopyByteArrayPart( File, Offset + 0x10, FileInfo, 0, (int)size );
+			ArrayUtils.CopyByteArrayPart( File, Offset + 0x10, FileInfo, 0, (int)size );
 		}
 
 		public uint GetPartSize() {

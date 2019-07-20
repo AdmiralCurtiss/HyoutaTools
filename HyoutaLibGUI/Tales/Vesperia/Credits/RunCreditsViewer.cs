@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using HyoutaTools;
 using HyoutaTools.Tales.Vesperia.TSS;
+using HyoutaUtils;
 
 namespace HyoutaLibGUI.Tales.Vesperia.Credits {
 	public class RunCreditsViewer {
@@ -17,7 +18,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.Credits {
 			Console.WriteLine( "Opening STRING_DIC.SO..." );
 			TSSFile TSS;
 			try {
-				TSS = new TSSFile( args[1], Util.GameTextEncoding.ShiftJIS, Util.Endianness.BigEndian );
+				TSS = new TSSFile( args[1], TextUtils.GameTextEncoding.ShiftJIS, EndianUtils.Endianness.BigEndian );
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.WriteLine( "Could not open STRING_DIC.SO, exiting." );
 				return -1;

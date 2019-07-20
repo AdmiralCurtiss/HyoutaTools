@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.DestinyRemake.TblBin {
 	class TblBinFileReference {
@@ -40,7 +41,7 @@ namespace HyoutaTools.Tales.DestinyRemake.TblBin {
 			foreach ( TblBinFileReference r in Refs ) {
 				FileStream fs = new FileStream( System.IO.Path.Combine( Outfolder, count.ToString( "D6" ) ), FileMode.Create );
 				Bin.Position = r.Start;
-				Util.CopyStream( Bin, fs, (int)( r.End - r.Start ) );
+				StreamUtils.CopyStream( Bin, fs, (int)( r.End - r.Start ) );
 				fs.Close();
 				++count;
 			}

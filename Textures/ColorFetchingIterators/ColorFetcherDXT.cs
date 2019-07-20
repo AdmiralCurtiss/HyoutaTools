@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
 
 namespace HyoutaTools.Textures.ColorFetchingIterators {
 	// see https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_compression_s3tc.txt
@@ -85,24 +86,24 @@ namespace HyoutaTools.Textures.ColorFetchingIterators {
 				int r1 = (int)( ( _r1 << 3 ) | ( _r1 >> 2 ) );
 
 				for ( int j = 0; j < 16; ++j ) {
-					int code = Util.ExtractBit( bits, j * 2 ) + Util.ExtractBit( bits, j * 2 + 1 ) * 2;
+					int code = BitUtils.ExtractBit( bits, j * 2 ) + BitUtils.ExtractBit( bits, j * 2 + 1 ) * 2;
 
 					int a;
 					if ( Format == DxtFormat.COMPRESSED_RGBA_S3TC_DXT3_EXT ) {
 						int alpha =
-							Util.ExtractBit( alpha_dxt3, j * 4 ) +
-							Util.ExtractBit( alpha_dxt3, j * 4 + 1 ) * 2 +
-							Util.ExtractBit( alpha_dxt3, j * 4 + 2 ) * 4 +
-							Util.ExtractBit( alpha_dxt3, j * 4 + 3 ) * 8;
+							BitUtils.ExtractBit( alpha_dxt3, j * 4 ) +
+							BitUtils.ExtractBit( alpha_dxt3, j * 4 + 1 ) * 2 +
+							BitUtils.ExtractBit( alpha_dxt3, j * 4 + 2 ) * 4 +
+							BitUtils.ExtractBit( alpha_dxt3, j * 4 + 3 ) * 8;
 
 						// same idea as the color bits here, instead of leaving the low bits empty shove the high bits in
 						// to interpolate better over the whole range
 						a = alpha << 4 | alpha;
 					} else if ( Format == DxtFormat.COMPRESSED_RGBA_S3TC_DXT5_EXT ) {
 						int acode =
-							Util.ExtractBit( alphabits_dxt5, j * 3 ) +
-							Util.ExtractBit( alphabits_dxt5, j * 3 + 1 ) * 2 +
-							Util.ExtractBit( alphabits_dxt5, j * 3 + 2 ) * 4;
+							BitUtils.ExtractBit( alphabits_dxt5, j * 3 ) +
+							BitUtils.ExtractBit( alphabits_dxt5, j * 3 + 1 ) * 2 +
+							BitUtils.ExtractBit( alphabits_dxt5, j * 3 + 2 ) * 4;
 
 						if ( alpha0_dxt5 > alpha1_dxt5 ) {
 							switch ( acode ) {

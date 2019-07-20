@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.ItemDat {
 	public class ItemDat {
 		public List<ItemDatSingle> items;
 		public Dictionary<uint, ItemDatSingle> itemIdDict;
 
-		public ItemDat( string filenameItemDat, string filenameItemSort, Util.Endianness endian ) {
+		public ItemDat( string filenameItemDat, string filenameItemSort, EndianUtils.Endianness endian ) {
 			using ( System.IO.Stream streamItemDat = new System.IO.FileStream( filenameItemDat, System.IO.FileMode.Open, System.IO.FileAccess.Read ) )
 			using ( System.IO.Stream streamItemSort = new System.IO.FileStream( filenameItemSort, System.IO.FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( streamItemDat, streamItemSort, endian ) ) {
@@ -17,13 +18,13 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 			}
 		}
 
-		public ItemDat( System.IO.Stream itemDatStream, System.IO.Stream itemSortStream, Util.Endianness endian ) {
+		public ItemDat( System.IO.Stream itemDatStream, System.IO.Stream itemSortStream, EndianUtils.Endianness endian ) {
 			if ( !LoadFile( itemDatStream, itemSortStream, endian ) ) {
 				throw new Exception( "Loading ItemDat failed!" );
 			}
 		}
 
-		private bool LoadFile( System.IO.Stream itemDatStream, System.IO.Stream itemSortStream, Util.Endianness endian ) {
+		private bool LoadFile( System.IO.Stream itemDatStream, System.IO.Stream itemSortStream, EndianUtils.Endianness endian ) {
 			uint itemCount = itemSortStream.ReadUInt32().FromEndian( endian );
 			items = new List<ItemDatSingle>( (int)itemCount );
 

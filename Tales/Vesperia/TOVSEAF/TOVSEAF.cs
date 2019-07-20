@@ -4,11 +4,12 @@ using System.IO;
 using HyoutaTools.Tales.Vesperia.ItemDat;
 using HyoutaTools.Tales.Vesperia.TSS;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 	public class TOVSEAF {
 		// Search Point definition file
-		public TOVSEAF( String filename, Util.Endianness endian ) {
+		public TOVSEAF( String filename, EndianUtils.Endianness endian ) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open, System.IO.FileAccess.Read ) ) {
 				if ( !LoadFile( stream, endian ) ) {
 					throw new Exception( "Loading TOVSEAF failed!" );
@@ -16,7 +17,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			}
 		}
 
-		public TOVSEAF( Stream stream, Util.Endianness endian ) {
+		public TOVSEAF( Stream stream, EndianUtils.Endianness endian ) {
 			if ( !LoadFile( stream, endian ) ) {
 				throw new Exception( "Loading TOVSEAF failed!" );
 			}
@@ -26,7 +27,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 		public List<SearchPointContent> SearchPointContents;
 		public List<SearchPointItem> SearchPointItems;
 
-		private bool LoadFile( Stream stream, Util.Endianness endian ) {
+		private bool LoadFile( Stream stream, EndianUtils.Endianness endian ) {
 			string magic = stream.ReadAscii( 8 );
 			if ( magic != "TOVSEAF\0" ) {
 				throw new Exception( "Invalid magic." );
@@ -168,7 +169,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 		public uint SearchPointContentIndex;
 		public uint SearchPointContentCount; // usually 5, rarely 3
 
-		public SearchPointDefinition( System.IO.Stream stream, Util.Endianness endian ) {
+		public SearchPointDefinition( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			Index = stream.ReadUInt32().FromEndian( endian );
 			ScenarioBegin = stream.ReadUInt32().FromEndian( endian );
 			ScenarioEnd = stream.ReadUInt32().FromEndian( endian );
@@ -254,7 +255,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 		public uint SearchPointItemCount;
 		public uint Padding;
 
-		public SearchPointContent( System.IO.Stream stream, Util.Endianness endian ) {
+		public SearchPointContent( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			Percentage = stream.ReadUInt32().FromEndian( endian );
 			SearchPointItemIndex = stream.ReadUInt32().FromEndian( endian );
 			SearchPointItemCount = stream.ReadUInt32().FromEndian( endian );
@@ -277,7 +278,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 		public uint Item;
 		public uint Count;
 
-		public SearchPointItem( System.IO.Stream stream, Util.Endianness endian ) {
+		public SearchPointItem( System.IO.Stream stream, EndianUtils.Endianness endian ) {
 			Item = stream.ReadUInt32().FromEndian( endian );
 			Count = stream.ReadUInt32().FromEndian( endian );
 		}

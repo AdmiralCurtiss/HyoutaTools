@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using HyoutaUtils;
 
 namespace HyoutaTools.Other.LuxPain {
 	static class LuxPainUtil {
@@ -40,7 +41,7 @@ namespace HyoutaTools.Other.LuxPain {
 					if ( File[i] < 0x80 || File[i] >= 0xF0 ) {
 						tmp = string.Format( "<{0:x2}{1:x2}>", File[i], File[i + 1] );
 					} else {
-						tmp = Util.ShiftJISEncoding.GetString( File, i, 2 );
+						tmp = TextUtils.ShiftJISEncoding.GetString( File, i, 2 );
 					}
 					Text.Append( tmp );
 					i += 2;
@@ -88,12 +89,12 @@ namespace HyoutaTools.Other.LuxPain {
 					String s = tmp.Substring( 1, cnt - 1 );
 					tmp = tmp.Substring( cnt + 1 );
 
-					byte[] b = Util.HexStringToByteArray( FormatForEditing( s ) );
+					byte[] b = HexUtils.HumanReadableHexStringToByteArray( FormatForEditing( s ) );
 					bytes.AddRange( b );
 				} else {
 					String s = tmp.Substring( 0, 1 );
 					tmp = tmp.Substring( 1 );
-					byte[] b = Util.ShiftJISEncoding.GetBytes( s );
+					byte[] b = TextUtils.ShiftJISEncoding.GetBytes( s );
 					bytes.AddRange( b );
 				}
 			}

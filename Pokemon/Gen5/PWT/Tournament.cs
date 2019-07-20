@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils;
 
 namespace HyoutaTools.Pokemon.Gen5.PWT {
 	public class Tournament {
@@ -37,9 +38,9 @@ namespace HyoutaTools.Pokemon.Gen5.PWT {
 		public byte Language { get { return Data[0x07]; } set { Data[0x07] = value; } }
 		public ushort ID { get { return BitConverter.ToUInt16( Data, 0x08 ); } }
 
-		public string Name { get { return Util.GetTextUnicode( Data, 0x0A, 0x4A ); } }
-		public string Description { get { return Util.GetTextUnicode( Data, 0x54, 0x96 ); } }
-		public string Rules { get { return Util.GetTextUnicode( Data, 0xEA, 0xDE ); } }
+		public string Name { get { return TextUtils.GetTextUnicode( Data, 0x0A, 0x4A ); } }
+		public string Description { get { return TextUtils.GetTextUnicode( Data, 0x54, 0x96 ); } }
+		public string Rules { get { return TextUtils.GetTextUnicode( Data, 0xEA, 0xDE ); } }
 
 		public byte PokemonCountMin { get { return Data[0x1C8]; } }
 		public byte PokemonCountMax { get { return Data[0x1C9]; } }
@@ -58,14 +59,14 @@ namespace HyoutaTools.Pokemon.Gen5.PWT {
 
 		private bool Load( byte[] data, int offset ) {
 			Data = new byte[4628];
-			Util.CopyByteArrayPart( data, offset, this.Data, 0, this.Data.Length );
+			ArrayUtils.CopyByteArrayPart( data, offset, this.Data, 0, this.Data.Length );
 
 			return true;
 		}
 
 		public void RecalculateChecksum() {
 			ushort checksum = Checksums.Ccitt.Update( Checksums.Ccitt.Init(), Data, 4624 );
-			Util.CopyByteArrayPart( BitConverter.GetBytes( checksum ), 0, Data, 4624, 2 );
+			ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( checksum ), 0, Data, 4624, 2 );
 		}
 	}
 }

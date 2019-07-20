@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils;
 
 namespace HyoutaTools.Textures.ColorFetchingIterators {
 	public class ColorFetcherRGB565 : IColorFetchingIterator {
