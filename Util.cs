@@ -692,6 +692,10 @@ namespace HyoutaTools {
 			}
 		}
 
+		public static string ReadNulltermStringFromLocationAndReset( this Stream s, ulong location, GameTextEncoding encoding ) {
+			return ReadNulltermStringFromLocationAndReset( s, (long)location, encoding );
+		}
+
 		public static string ReadNulltermStringFromLocationAndReset( this Stream s, long location, GameTextEncoding encoding ) {
 			long pos = s.Position;
 			s.Position = location;
