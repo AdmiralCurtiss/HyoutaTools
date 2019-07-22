@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HyoutaPluginBase;
 using HyoutaUtils;
+using HyoutaUtils.Streams;
 
 namespace HyoutaTools.Tales.tlzc {
 	public class TlzcDecompressor : IDecompressor {
@@ -19,7 +20,7 @@ namespace HyoutaTools.Tales.tlzc {
 		public DuplicatableStream Decompress( DuplicatableStream input ) {
 			byte[] data = new byte[input.Length];
 			input.Read( data, 0, data.Length );
-			return new Streams.DuplicatableByteArrayStream( TLZC.Decompress( data ) );
+			return new DuplicatableByteArrayStream( TLZC.Decompress( data ) );
 		}
 
 		public string GetId() {

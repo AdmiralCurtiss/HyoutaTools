@@ -8,6 +8,7 @@ using HyoutaTools.FileContainer;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
 using HyoutaUtils;
+using HyoutaUtils.Streams;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateWebsiteInputOutputData {
@@ -99,7 +100,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			stream.Position = 0;
 			byte[] data = new byte[stream.Length];
 			stream.Read( data, 0, data.Length );
-			return new Streams.DuplicatableByteArrayStream( data );
+			return new DuplicatableByteArrayStream( data );
 		}
 
 		public static Stream TryGetItemDat( IContainer basepath, GameLocale locale, GameVersion version ) {

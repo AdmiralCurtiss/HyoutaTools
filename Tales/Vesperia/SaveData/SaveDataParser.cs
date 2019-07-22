@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HyoutaPluginBase.FileContainer;
 using HyoutaUtils;
+using HyoutaUtils.Streams;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
 	public class SaveDataParser {
@@ -50,7 +51,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 			FAMEDAT.FAMEDAT titles = new FAMEDAT.FAMEDAT( Website.GenerateWebsite.TryGetTitles( gameDir, locale, version ), endian );
 			T8BTEMST.T8BTEMST enemies = new T8BTEMST.T8BTEMST( Website.GenerateWebsite.TryGetEnemies( gameDir, locale, version ), endian, bits );
 
-			using ( Streams.DuplicatableFileStream file = new Streams.DuplicatableFileStream( args[0] ) ) {
+			using ( DuplicatableFileStream file = new DuplicatableFileStream( args[0] ) ) {
 				var savedata = new SaveData( file, endian );
 				savedata.SavePoint.PrintData();
 				savedata.PartyData.PrintData( endian, inGameDic, itemDataSorted, enemies );

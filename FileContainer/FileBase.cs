@@ -1,5 +1,4 @@
 ﻿using System;
-using HyoutaTools.Streams;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
 

@@ -191,9 +191,6 @@
     <Compile Include="SqliteUtil.cs" />
     <Compile Include="Sting\BlazeUnionScriptFile.cs" />
     <Compile Include="Sting\BlazeUnionScriptFileSection.cs" />
-    <Compile Include="Streams\DuplicatableByteArrayStream.cs" />
-    <Compile Include="Streams\DuplicatableFileStream.cs" />
-    <Compile Include="Streams\PartialStream.cs" />
     <Compile Include="Tales\Abyss\FPS2\Program.cs" />
     <Compile Include="Tales\Abyss\FPS3\Program.cs" />
     <Compile Include="Tales\Abyss\PKF\Split.cs" />

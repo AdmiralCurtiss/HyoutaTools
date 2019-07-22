@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
 using HyoutaUtils;
+using HyoutaUtils.Streams;
 
 namespace HyoutaTools.Tales.Vesperia.SaveData {
 	public class SaveData {
@@ -30,10 +31,10 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 		public SaveDataBlockFieldGadget FieldGadget;
 
 		public SaveData( HyoutaPluginBase.DuplicatableStream stream, EndianUtils.Endianness endian ) {
-			MenuBlock = new SaveMenuBlock( new Streams.PartialStream( stream, 0, 0x228 ) );
+			MenuBlock = new SaveMenuBlock( new PartialStream( stream, 0, 0x228 ) );
 
 			// actual save file
-			using ( DuplicatableStream saveDataStream = new Streams.PartialStream( stream, 0x228, stream.Length - 0x228 ) ) {
+			using ( DuplicatableStream saveDataStream = new PartialStream( stream, 0x228, stream.Length - 0x228 ) ) {
 				string magic = saveDataStream.ReadAscii( 8 );
 				if ( magic != "TO8SAVE\0" ) {
 					throw new Exception( "Invalid magic byte sequence for ToV save: " + magic );
@@ -51,7 +52,7 @@ namespace HyoutaTools.Tales.Vesperia.SaveData {
 					uint refStringPos = saveDataStream.ReadUInt32().FromEndian( endian );
 					uint offset = saveDataStream.ReadUInt32().FromEndian( endian );
 					uint size = saveDataStream.ReadUInt32().FromEndian( endian );
-					var blockStream = new Streams.PartialStream( saveDataStream, dataStart + offset, size );
+					var blockStream = new PartialStream( saveDataStream, dataStart + offset, size );
 					string blockName = saveDataStream.ReadAsciiNulltermFromLocationAndReset( refStringStart + refStringPos );
 
 					if ( blockName.StartsWith( "PC_STATUS" ) ) {

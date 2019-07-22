@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using HyoutaTools.FileContainer;
-using HyoutaTools.Streams;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
 using HyoutaUtils;
+using HyoutaUtils.Streams;
 
 namespace HyoutaTools.Tales.Vesperia.Scenario {
 	public class ScenarioDatEntry : IFile {

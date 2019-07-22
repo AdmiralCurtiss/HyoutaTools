@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils.Streams;
 
 namespace HyoutaTools.Tales.Vesperia.Scenario {
 	public class Program {
@@ -14,7 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.Scenario {
 			string inPath = args[0];
 			string outPath = args.Count > 1 ? args[1] : args[0] + ".ext";
 			
-			var scenario = new ScenarioDat( new Streams.DuplicatableFileStream( inPath ) );
+			var scenario = new ScenarioDat( new DuplicatableFileStream( inPath ) );
 			scenario.Extract( outPath );
 
 			return 0;

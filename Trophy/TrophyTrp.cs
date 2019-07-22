@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HyoutaTools.FileContainer;
-using HyoutaTools.Streams;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
 using HyoutaUtils;
+using HyoutaUtils.Streams;
 
 namespace HyoutaTools.Trophy {
 	public class TrophyTrpFile {
