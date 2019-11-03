@@ -315,6 +315,7 @@
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherDXT.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherGrey8Alpha8.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherIndexed4Bits.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\ColorFetcherIndexed8Bits.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherRGB565.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherRGB5A3.cs" />
     <Compile Include="Textures\ColorFetchingIterators\IColorFetchingIterator.cs" />
