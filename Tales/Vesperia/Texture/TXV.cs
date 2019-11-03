@@ -32,7 +32,11 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			textures = new List<TXVSingle>();
 
 			foreach ( TXMSingle ts in txm.TXMSingles ) {
-				textures.Add( new TXVSingle( stream, ts, vesperiaPcTextureFormat ) );
+				try {
+					textures.Add( new TXVSingle( stream, ts, vesperiaPcTextureFormat ) );
+				} catch ( Exception ex ) {
+					Console.WriteLine( "Error loading " + ts.ToString() + ": " + ex.ToString() );
+				}
 			}
 
 			return true;
@@ -139,15 +143,58 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 						break;
 					case TextureFormat.ARGBa:
 					case TextureFormat.ARGBb:
+					case TextureFormat.Indexed4Bits_Grey8Alpha8:
+					case TextureFormat.Indexed4Bits_RGB565:
+					case TextureFormat.Indexed4Bits_RGB5A3:
+					case TextureFormat.Indexed8Bits_Grey8Alpha8:
+					case TextureFormat.Indexed8Bits_RGB565:
+					case TextureFormat.Indexed8Bits_RGB5A3:
 						for ( uint mip = 0; mip < TXM.Mipmaps; ++mip ) {
 							var dims = TXM.GetDimensions( (int)mip );
 							IPixelOrderIterator pxit;
 							if ( TXM.Format == TextureFormat.ARGBa ) {
 								pxit = new ARGBaPixelOrderIterator( (int)dims.width, (int)dims.height );
+							} else if ( TXM.Format == TextureFormat.Indexed4Bits_Grey8Alpha8 || TXM.Format == TextureFormat.Indexed4Bits_RGB565 || TXM.Format == TextureFormat.Indexed4Bits_RGB5A3 ) {
+								pxit = new TiledPixelOrderIterator( (int)dims.width, (int)dims.height, 8, 8 );
+							} else if ( TXM.Format == TextureFormat.Indexed8Bits_Grey8Alpha8 || TXM.Format == TextureFormat.Indexed8Bits_RGB565 || TXM.Format == TextureFormat.Indexed8Bits_RGB5A3 ) {
+								pxit = new TiledPixelOrderIterator( (int)dims.width, (int)dims.height, 8, 4 );
 							} else {
 								pxit = new LinearPixelOrderIterator( (int)dims.width, (int)dims.height );
 							}
-							Stream stream = new ColorFetcherARGB8888( plane, dims.width, dims.height ).WriteSingleImageToPngStream( pxit, dims.width, dims.height );
+							IColorFetchingIterator colit;
+							if ( TXM.Format == TextureFormat.Indexed4Bits_Grey8Alpha8 || TXM.Format == TextureFormat.Indexed4Bits_RGB565 || TXM.Format == TextureFormat.Indexed4Bits_RGB5A3 || TXM.Format == TextureFormat.Indexed8Bits_Grey8Alpha8 || TXM.Format == TextureFormat.Indexed8Bits_RGB565 || TXM.Format == TextureFormat.Indexed8Bits_RGB5A3 ) {
+								Stream ms = new MemoryStream();
+								long tmp = plane.Position;
+								plane.Position = plane.Length - TXM.GetExtraPaletteBytes();
+								StreamUtils.CopyStream( plane, ms, TXM.GetExtraPaletteBytes() );
+								plane.Position = tmp;
+								ms.Position = 0;
+								IColorFetchingIterator colors;
+								if ( TXM.Format == TextureFormat.Indexed4Bits_Grey8Alpha8 ) {
+									colors = new ColorFetcherGrey8Alpha8( ms, 16, 1, EndianUtils.Endianness.BigEndian );
+									colit = new ColorFetcherIndexed4Bits( plane, NumberUtils.Align( (long)dims.width, 8 ), NumberUtils.Align( (long)dims.height, 8 ), colors );
+								} else if ( TXM.Format == TextureFormat.Indexed4Bits_RGB565 ) {
+									colors = new ColorFetcherRGB565( ms, 16, 1, EndianUtils.Endianness.BigEndian );
+									colit = new ColorFetcherIndexed4Bits( plane, NumberUtils.Align( (long)dims.width, 8 ), NumberUtils.Align( (long)dims.height, 8 ), colors );
+								} else if ( TXM.Format == TextureFormat.Indexed4Bits_RGB5A3 ) {
+									colors = new ColorFetcherRGB5A3( ms, 16, 1, EndianUtils.Endianness.BigEndian );
+									colit = new ColorFetcherIndexed4Bits( plane, NumberUtils.Align( (long)dims.width, 8 ), NumberUtils.Align( (long)dims.height, 8 ), colors );
+								} else if ( TXM.Format == TextureFormat.Indexed8Bits_Grey8Alpha8 ) {
+									colors = new ColorFetcherGrey8Alpha8( ms, 256, 1, EndianUtils.Endianness.BigEndian );
+									colit = new ColorFetcherIndexed8Bits( plane, NumberUtils.Align( (long)dims.width, 8 ), NumberUtils.Align( (long)dims.height, 4 ), colors );
+								} else if ( TXM.Format == TextureFormat.Indexed8Bits_RGB565 ) {
+									colors = new ColorFetcherRGB565( ms, 256, 1, EndianUtils.Endianness.BigEndian );
+									colit = new ColorFetcherIndexed8Bits( plane, NumberUtils.Align( (long)dims.width, 8 ), NumberUtils.Align( (long)dims.height, 4 ), colors );
+								} else if ( TXM.Format == TextureFormat.Indexed8Bits_RGB5A3 ) {
+									colors = new ColorFetcherRGB5A3( ms, 256, 1, EndianUtils.Endianness.BigEndian );
+									colit = new ColorFetcherIndexed8Bits( plane, NumberUtils.Align( (long)dims.width, 8 ), NumberUtils.Align( (long)dims.height, 4 ), colors );
+								} else {
+									throw new Exception( "Internal error." );
+								}
+							} else {
+								colit = new ColorFetcherARGB8888( plane, dims.width, dims.height );
+							}
+							Stream stream = colit.WriteSingleImageToPngStream( pxit, dims.width, dims.height );
 							string name = TXM.Name + ( TXM.Depth > 1 ? ( "_Plane" + depth ) : "" ) + ( TXM.Mipmaps > 1 ? ( "_Mip" + mip ) : "" ) + ".png";
 							list.Add( (name, stream) );
 						}

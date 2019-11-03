@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyoutaUtils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace HyoutaTools.Textures.PixelOrderIterators {
 		int TileHeight;
 
 		public TiledPixelOrderIterator( int width, int height, int tileWidth, int tileHeight ) {
-			Width = width;
-			Height = height;
+			Width = NumberUtils.Align( width, tileWidth );
+			Height = NumberUtils.Align( height, tileHeight );
 			TileWidth = tileWidth;
 			TileHeight = tileHeight;
 		}

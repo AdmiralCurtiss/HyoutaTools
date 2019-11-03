@@ -64,6 +64,12 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 	}
 
 	public enum TextureFormat : uint {
+		Indexed4Bits_Grey8Alpha8 = 0x00010008,
+		Indexed4Bits_RGB565 = 0x10010008,
+		Indexed4Bits_RGB5A3 = 0x20010008,
+		Indexed8Bits_Grey8Alpha8 = 0x00010009,
+		Indexed8Bits_RGB565 = 0x10010009,
+		Indexed8Bits_RGB5A3 = 0x20010009,
 		Unknown0x8101AAE4 = 0x8101AAE4u,
 		DXT1a = 0x8602AAE4u,
 		DXT1b = 0xA602AAE4u,
@@ -78,7 +84,8 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 		public uint Width;
 		public uint Height;
 		public uint Depth;
-		public uint Mipmaps;
+		public uint _Mipmaps;
+		public uint Mipmaps { get => Math.Max( 1, _Mipmaps ); }
 		public TextureFormat Format;
 		public uint NameOffset;
 		public uint TxvLocation;
@@ -87,6 +94,14 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 
 		public uint GetBitPerPixel() {
 			switch ( Format ) {
+				case TextureFormat.Indexed4Bits_Grey8Alpha8:
+				case TextureFormat.Indexed4Bits_RGB565:
+				case TextureFormat.Indexed4Bits_RGB5A3:
+					return 4;
+				case TextureFormat.Indexed8Bits_Grey8Alpha8:
+				case TextureFormat.Indexed8Bits_RGB565:
+				case TextureFormat.Indexed8Bits_RGB5A3:
+					return 8;
 				case TextureFormat.Unknown0x8101AAE4:
 					return 8;
 				case TextureFormat.DXT1a:
@@ -101,15 +116,30 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				case TextureFormat.DXT5b:
 					return 8;
 			}
-			throw new Exception( "Unknown format." );
+			throw new Exception( "Unknown format: 0x" + ( (uint)Format ).ToString( "X8" ) );
+		}
+
+		public uint GetExtraPaletteBytes() {
+			switch ( Format ) {
+				case TextureFormat.Indexed4Bits_Grey8Alpha8:
+				case TextureFormat.Indexed4Bits_RGB565:
+				case TextureFormat.Indexed4Bits_RGB5A3:
+					return 16 * 2;
+				case TextureFormat.Indexed8Bits_Grey8Alpha8:
+				case TextureFormat.Indexed8Bits_RGB565:
+				case TextureFormat.Indexed8Bits_RGB5A3:
+					return 256 * 2;
+				default:
+					return 0;
+			}
 		}
 
 		public uint GetByteCount() {
 			uint bpp = GetBitPerPixel();
 			uint sum = 0;
 
-			uint w = Width;
-			uint h = Height;
+			uint w = NumberUtils.Align( Width, GetWidthAlignment() );
+			uint h = NumberUtils.Align( Height, GetHeightAlignment() );
 			uint d = Depth;
 			for ( uint i = 0; i < Mipmaps; ++i ) {
 				uint mip = bpp * w * h * d;
@@ -118,7 +148,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				h = Math.Max( MinimumHeightPerMip(), h / 2 );
 				d = Math.Max( MinimumDepthPerMip(), d / 2 );
 			}
-			return sum / 8;
+			return sum / 8 + GetExtraPaletteBytes();
 		}
 
 		private uint MinimumWidthPerMip() {
@@ -141,12 +171,43 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			return 1;
 		}
 
+		private uint GetWidthAlignment() {
+			switch ( Format ) {
+				case TextureFormat.Indexed4Bits_Grey8Alpha8:
+				case TextureFormat.Indexed4Bits_RGB565:
+				case TextureFormat.Indexed4Bits_RGB5A3:
+				case TextureFormat.Indexed8Bits_Grey8Alpha8:
+				case TextureFormat.Indexed8Bits_RGB565:
+				case TextureFormat.Indexed8Bits_RGB5A3:
+					return 8;
+				default:
+					return 1;
+			}
+		}
+
+		private uint GetHeightAlignment() {
+			switch ( Format ) {
+				case TextureFormat.Indexed4Bits_Grey8Alpha8:
+				case TextureFormat.Indexed4Bits_RGB565:
+				case TextureFormat.Indexed4Bits_RGB5A3:
+					return 8;
+				case TextureFormat.Indexed8Bits_Grey8Alpha8:
+				case TextureFormat.Indexed8Bits_RGB565:
+				case TextureFormat.Indexed8Bits_RGB5A3:
+					return 4;
+				default:
+					return 1;
+			}
+		}
+
 		public uint GetByteCount( int mipmaplevel ) {
 			return GetByteCountSingleDepthPlane( mipmaplevel ) * Depth;
 		}
 
 		public uint GetByteCountSingleDepthPlane( int mipmaplevel ) {
-			return ( ( GetBitPerPixel() * Width * Height ) / ( 1u << ( mipmaplevel * 2 ) ) ) / 8;
+			uint w = NumberUtils.Align( Width, GetWidthAlignment() );
+			uint h = NumberUtils.Align( Height, GetHeightAlignment() );
+			return ( ( GetBitPerPixel() * w * h ) / ( 1u << ( mipmaplevel * 2 ) ) ) / 8;
 		}
 
 		public (uint width, uint height) GetDimensions( int mipmaplevel ) {
@@ -164,7 +225,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			Width = stream.ReadUInt32().SwapEndian();
 			Height = stream.ReadUInt32().SwapEndian();
 			Depth = 1;
-			Mipmaps = stream.ReadUInt32().SwapEndian();
+			_Mipmaps = stream.ReadUInt32().SwapEndian();
 			Format = (TextureFormat)stream.ReadUInt32().SwapEndian();
 			NameOffset = stream.ReadUInt32().SwapEndian();
 			Name = stream.ReadAsciiNulltermFromLocationAndReset( NameOffset + stream.Position - 4 );
@@ -186,7 +247,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			Width = stream.ReadUInt32().SwapEndian();
 			Height = Width;
 			Depth = 6;
-			Mipmaps = stream.ReadUInt32().SwapEndian();
+			_Mipmaps = stream.ReadUInt32().SwapEndian();
 			Format = (TextureFormat)stream.ReadUInt32().SwapEndian();
 			NameOffset = stream.ReadUInt32().SwapEndian();
 			Name = stream.ReadAsciiNulltermFromLocationAndReset( NameOffset + stream.Position - 4 );
@@ -249,7 +310,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			Width = stream.ReadUInt32().SwapEndian();
 			Height = stream.ReadUInt32().SwapEndian();
 			Depth = stream.ReadUInt32().SwapEndian();
-			Mipmaps = stream.ReadUInt32().SwapEndian();
+			_Mipmaps = stream.ReadUInt32().SwapEndian();
 			Format = (TextureFormat)stream.ReadUInt32().SwapEndian();
 			NameOffset = stream.ReadUInt32().SwapEndian();
 			Name = stream.ReadAsciiNulltermFromLocationAndReset( NameOffset + stream.Position - 4 );

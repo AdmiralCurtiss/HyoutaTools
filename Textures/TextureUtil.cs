@@ -13,7 +13,9 @@ namespace HyoutaTools.Textures {
 		public static Bitmap ConvertToBitmap( this IColorFetchingIterator colorFetchingIterator, IPixelOrderIterator pixelOrderIterator, uint width, uint height ) {
 			var bitmap = new System.Drawing.Bitmap( (int)width, (int)height );
 			foreach ( var cxy in new ColorPositionFetcher( colorFetchingIterator, pixelOrderIterator ) ) {
-				bitmap.SetPixel( cxy.X, cxy.Y, cxy.Color );
+				if ( cxy.X < width && cxy.Y < height ) {
+					bitmap.SetPixel( cxy.X, cxy.Y, cxy.Color );
+				}
 			}
 			return bitmap;
 		}
