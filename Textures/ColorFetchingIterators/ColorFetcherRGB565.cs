@@ -12,15 +12,17 @@ namespace HyoutaTools.Textures.ColorFetchingIterators {
 	public class ColorFetcherRGB565 : IColorFetchingIterator {
 		private Stream SourceStream;
 		private long PixelCount;
+		private EndianUtils.Endianness Endian;
 
-		public ColorFetcherRGB565( Stream stream, long width, long height ) {
+		public ColorFetcherRGB565( Stream stream, long width, long height, EndianUtils.Endianness endian ) {
 			SourceStream = stream;
 			PixelCount = width * height;
+			Endian = endian;
 		}
 
 		public IEnumerator<Color> GetEnumerator() {
 			for ( long i = 0; i < PixelCount; ++i ) {
-				yield return ColorFromRGB565( SourceStream.ReadUInt16() );
+				yield return ColorFromRGB565( SourceStream.ReadUInt16().FromEndian( Endian ) );
 			}
 		}
 
