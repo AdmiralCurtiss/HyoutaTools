@@ -1,3 +1,6 @@
 [submodule "HyoutaUtils"]
 	path = HyoutaUtils
 	url = https://github.com/AdmiralCurtiss/HyoutaUtils.git
+[submodule "utf_tab-sharp"]
+	path = utf_tab-sharp
+	url = https://github.com/AdmiralCurtiss/utf_tab-sharp.git
