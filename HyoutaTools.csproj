@@ -196,6 +196,7 @@
     <Compile Include="Tales\Abyss\PKF\Split.cs" />
     <Compile Include="Tales\Abyss\SB7\DumpText.cs" />
     <Compile Include="Tales\Abyss\SB7\SB7.cs" />
+    <Compile Include="Tales\CPK\CpkContainer.cs" />
     <Compile Include="Tales\DestinyRemake\MglkExtract\Execute.cs" />
     <Compile Include="Tales\DestinyRemake\MglkExtract\MGLK.cs" />
     <Compile Include="Tales\DestinyRemake\TblBin\Execute.cs" />
@@ -405,6 +406,10 @@
     <ProjectReference Include="HyoutaUtils\HyoutaPluginBase\HyoutaPluginBase.csproj">
       <Project>{6e153ce7-05b9-4eba-8de8-ad842214f60b}</Project>
       <Name>HyoutaPluginBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="utf_tab-sharp\utf_tab-sharp\utf_tab-sharp\utf_tab-sharp.csproj">
+      <Project>{213d12fe-9e77-44b3-9a63-3cd2a566c6dc}</Project>
+      <Name>utf_tab-sharp</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
