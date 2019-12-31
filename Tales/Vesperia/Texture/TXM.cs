@@ -23,12 +23,18 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			}
 		}
 
+		public TXM() {
+			Unknown1 = 0;
+			HeaderSize = 0;
+			Unknown3 = 0;
+			TXMRegulars = new List<TXMSingleRegular>();
+			TXMCubemaps = new List<TXMSingleCubemap>();
+			TXMVolumes = new List<TXMSingleVolume>();
+		}
+
 		public uint Unknown1;
 		public uint HeaderSize;
 		public uint Unknown3;
-		public uint RegularCount;
-		public uint CubemapCount;
-		public uint VolumeCount;
 
 		public List<TXMSingleRegular> TXMRegulars;
 		public List<TXMSingleCubemap> TXMCubemaps;
@@ -38,9 +44,9 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			Unknown1 = stream.ReadUInt32().SwapEndian();
 			HeaderSize = stream.ReadUInt32().SwapEndian();
 			Unknown3 = stream.ReadUInt32().SwapEndian();
-			RegularCount = stream.ReadUInt32().SwapEndian();
-			CubemapCount = stream.ReadUInt32().SwapEndian();
-			VolumeCount = stream.ReadUInt32().SwapEndian();
+			uint RegularCount = stream.ReadUInt32().SwapEndian();
+			uint CubemapCount = stream.ReadUInt32().SwapEndian();
+			uint VolumeCount = stream.ReadUInt32().SwapEndian();
 
 			TXMRegulars = new List<TXMSingleRegular>();
 			for ( uint i = 0; i < RegularCount; ++i ) {
