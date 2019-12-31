@@ -76,6 +76,7 @@
     <Compile Include="FinalFantasyCrystalChronicles\TextDumper.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\CFLD.cs" />
     <Compile Include="FinalFantasyCrystalChronicles\FileSections\IFileSection.cs" />
+    <Compile Include="GameCube\Dol.cs" />
     <Compile Include="Generic\AddDDSHeader\Program.cs" />
     <Compile Include="Generic\ArbitraryTextDump\Dump.cs" />
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
