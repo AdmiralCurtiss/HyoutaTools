@@ -18,11 +18,15 @@ namespace HyoutaTools.Tales.CPK {
 		public IContainer AsContainer => this;
 
 		private DuplicatableStream infile;
-		private const long CpkHeader_offset = 0x0;
+		public const long CpkHeader_offset = 0x0;
 		private byte[] toc_string_table = null;
-		private long toc_offset;
-		private long content_offset;
+		public long toc_offset { get; private set; }
+		public long content_offset { get; private set; }
 		private long toc_entries;
+
+		public DuplicatableStream DuplicateStream() {
+			return infile.Duplicate();
+		}
 
 		public CpkContainer(DuplicatableStream stream) {
 			infile = stream.Duplicate();
@@ -123,7 +127,7 @@ namespace HyoutaTools.Tales.CPK {
 			}
 		}
 
-		public INode GetChildByName(string name) {
+		public int? GetChildIndexFromName(string name) {
 			for (int i = 0; i < toc_entries; ++i) {
 				string file_name = utf_tab_sharp.UtfTab.query_utf_string(infile, toc_offset + 0x10, i, "FileName", toc_string_table);
 				string dir_name = utf_tab_sharp.UtfTab.query_utf_string(infile, toc_offset + 0x10, i, "DirName", toc_string_table);
@@ -136,10 +140,18 @@ namespace HyoutaTools.Tales.CPK {
 				}
 
 				if (full_name == name) {
-					return GetChildByIndex(i);
+					return i;
 				}
 			}
 
+			return null;
+		}
+
+		public INode GetChildByName(string name) {
+			int? idx = GetChildIndexFromName(name);
+			if (idx.HasValue) {
+				return GetChildByIndex(idx.Value);
+			}
 			return null;
 		}
 
@@ -154,6 +166,19 @@ namespace HyoutaTools.Tales.CPK {
 					yield return dir_name + "/" + file_name;
 				}
 			}
+		}
+
+		public utf_tab_sharp.utf_query_result QueryChildInfoByIndex(int index, string key) {
+			var query = new utf_tab_sharp.utf_query() { index = index, name = key };
+			return utf_tab_sharp.UtfTab.query_utf(infile, toc_offset + 0x10, query);
+		}
+
+		public utf_tab_sharp.utf_query_result QueryChildInfoByName(string name, string key) {
+			int? idx = GetChildIndexFromName(name);
+			if (idx.HasValue) {
+				return QueryChildInfoByIndex(idx.Value, key);
+			}
+			return null;
 		}
 
 		#region IDisposable Support
