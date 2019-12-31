@@ -35,5 +35,11 @@ namespace HyoutaTools.Textures.ColorFetchingIterators {
 			int g = color & 0xFF;
 			return Color.FromArgb( a, g, g, g );
 		}
+
+		public static ushort ColorToGrey8Alpha8( Color color ) {
+			int a = color.A;
+			int g = color.R;
+			return (ushort)( ( a << 8 ) | g );
+		}
 	}
 }
