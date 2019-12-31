@@ -1,3 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HyoutaTools.Tales.Vesperia.Website {
+	public partial class WebsiteGenerator {
+		private static readonly string StyleCss = @"
 body { background-color: #68504F; color: #EFD1AE; font-size: 16; }
 .itemname { color: #FFEBD2; font-size: 20; }
 .itemdesc { }
@@ -44,3 +53,6 @@ div.character-select { margin-bottom: 16px; }
 #footer { text-align: center; font-size: 20; margin-top: 24px; clear: both; }
 #search { text-align: center; margin-top: 8px; }
 form { margin: 0; }
+";
+	}
+}

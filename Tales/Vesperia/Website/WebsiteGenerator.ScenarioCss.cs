@@ -1,3 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HyoutaTools.Tales.Vesperia.Website {
+	public partial class WebsiteGenerator {
+		private static readonly string ScenarioCss = @"
 div.scenario-content {
     overflow: hidden;
 }
@@ -23,7 +32,7 @@ div.storyBox {
 }
 
 .storyText {
-    /* font-family: "Baskerville",serif; */
+    /* font-family: ""Baskerville"",serif; */
     position: relative;
     padding-bottom: 20px;
     color: #2f1f1b;
@@ -226,7 +235,7 @@ div.skitIconAndText {
 }
 
 .textJP {
-    /* font-family: "Kozuka Gothic Pr6N"; */
+    /* font-family: ""Kozuka Gothic Pr6N""; */
     font-size: 16px;
 }
 
@@ -256,3 +265,6 @@ span.textColorGreen { color: #05AA51; }
 span.textColorRed { color: #F5332F; }
 span.textColorWhite { color: #FFFAE7; }
 div.storyText span.textColorWhite { color: #AAAAAA; }
+";
+	}
+}

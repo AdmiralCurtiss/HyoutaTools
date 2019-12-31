@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{17CD1A18-64CD-4771-9D16-657D575F2D1F}</ProjectGuid>
+    <ProjectGuid>{16E42A9F-BBF7-4F84-9797-1B99FD114D88}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>HyoutaToolsGUI</RootNamespace>
     <AssemblyName>HyoutaToolsGUI</AssemblyName>
@@ -14,7 +14,7 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -46,14 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToolSelectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ToolSelectionForm.Designer.cs">
       <DependentUpon>ToolSelectionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -81,16 +81,24 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HyoutaLibGUI\HyoutaLibGUI.csproj">
-      <Project>{32cfc5d9-8c5f-44d5-9088-095421560ab5}</Project>
+      <Project>{cdf5d3ea-20b5-44c8-858a-50bbacaaa5b1}</Project>
       <Name>HyoutaLibGUI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HyoutaToolsCLI\HyoutaToolsCLI.csproj">
+      <Project>{c548724a-8c82-4035-9500-7c319281d934}</Project>
+      <Name>HyoutaToolsCLI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HyoutaToolsLib.csproj">
+      <Project>{4e99d787-3847-49af-978a-a76fd0162d8a}</Project>
+      <Name>HyoutaToolsLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HyoutaUtils\HyoutaPluginBase\HyoutaPluginBase.csproj">
-      <Project>{6E153CE7-05B9-4EBA-8DE8-AD842214F60B}</Project>
+      <Project>{6e153ce7-05b9-4eba-8de8-ad842214f60b}</Project>
       <Name>HyoutaPluginBase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HyoutaTools.csproj">
-      <Project>{d7037d44-d605-4a9c-9167-e15c525fe782}</Project>
-      <Name>HyoutaTools</Name>
+    <ProjectReference Include="..\HyoutaUtils\HyoutaUtils\HyoutaUtils.csproj">
+      <Project>{771553c8-0c50-411f-ab7f-e47553c81587}</Project>
+      <Name>HyoutaUtils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

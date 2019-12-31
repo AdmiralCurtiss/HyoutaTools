@@ -1,0 +1,374 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4E99D787-3847-49AF-978A-A76FD0162D8A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HyoutaToolsLib</RootNamespace>
+    <AssemblyName>HyoutaToolsLib</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ionic.Zlib.CF">
+      <HintPath>.\Ionic.Zlib.CF.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.112.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>packages\System.Data.SQLite.Core.1.0.112.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Checksum\ccitt.cs" />
+    <Compile Include="DanganRonpa\DanganUtil.cs" />
+    <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
+    <Compile Include="DanganRonpa\Lin\LIN.cs" />
+    <Compile Include="DanganRonpa\Nonstop\NonstopFile.cs" />
+    <Compile Include="DanganRonpa\Nonstop\NonstopSingle.cs" />
+    <Compile Include="DanganRonpa\PakText\PakText.cs" />
+    <Compile Include="DanganRonpa\Pak\Program.cs" />
+    <Compile Include="DanganRonpa\umdimagedat\umdimagedat.cs" />
+    <Compile Include="DecompressorManager.cs" />
+    <Compile Include="FileContainer\ContainerBase.cs" />
+    <Compile Include="FileContainer\ContainerIndexAsStringWrapper.cs" />
+    <Compile Include="FileContainer\ContainerPathSplitWrapper.cs" />
+    <Compile Include="FileContainer\DirectoryOnDisk.cs" />
+    <Compile Include="FileContainer\FileBase.cs" />
+    <Compile Include="FileContainer\FileFromStream.cs" />
+    <Compile Include="FileContainer\FileOnDisk.cs" />
+    <Compile Include="FinalFantasyCrystalChronicles\FileSections\DATA.cs" />
+    <Compile Include="FinalFantasyCrystalChronicles\FileSections\FileSectionFactory.cs" />
+    <Compile Include="FinalFantasyCrystalChronicles\FileSections\MES.cs" />
+    <Compile Include="FinalFantasyCrystalChronicles\FileSections\NAME.cs" />
+    <Compile Include="FinalFantasyCrystalChronicles\FileSections\TABL.cs" />
+    <Compile Include="FinalFantasyCrystalChronicles\TextConverter.cs" />
+    <Compile Include="FinalFantasyCrystalChronicles\TextDumper.cs" />
+    <Compile Include="FinalFantasyCrystalChronicles\FileSections\CFLD.cs" />
+    <Compile Include="FinalFantasyCrystalChronicles\FileSections\IFileSection.cs" />
+    <Compile Include="Generic\AddDDSHeader\Program.cs" />
+    <Compile Include="Generic\ArbitraryTextDump\Dump.cs" />
+    <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
+    <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
+    <Compile Include="Generic\ByteSwap\ByteSwap.cs" />
+    <Compile Include="Generic\DbTextReplace\Replacement.cs" />
+    <Compile Include="GraceNote\DanganRonpa\AutoFormatting\AutoFormat.cs" />
+    <Compile Include="GraceNote\DanganRonpa\LinExport\Exporter.cs" />
+    <Compile Include="GraceNote\DanganRonpa\LinImport\Importer.cs" />
+    <Compile Include="GraceNote\DanganRonpa\LinImport\Program.cs" />
+    <Compile Include="GraceNote\DanganRonpa\NonstopExistingDatabaseImport\Importer.cs" />
+    <Compile Include="GraceNote\DanganRonpa\PakTextExport\Program.cs" />
+    <Compile Include="GraceNote\DanganRonpa\PakTextImport\Program.cs" />
+    <Compile Include="GraceNote\FindIdenticalEntries\Finder.cs" />
+    <Compile Include="GraceNote\GraceNoteDatabaseEntry.cs" />
+    <Compile Include="GraceNote\DumpDatabase\Program.cs" />
+    <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
+    <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
+    <Compile Include="GraceNote\GraceNoteUtil.cs" />
+    <Compile Include="GraceNote\LastRanker\bscrExport.cs" />
+    <Compile Include="GraceNote\LastRanker\bscrImport.cs" />
+    <Compile Include="GraceNote\LastRanker\SscrExport.cs" />
+    <Compile Include="GraceNote\LastRanker\SscrImport.cs" />
+    <Compile Include="GraceNote\LastRanker\StringExport.cs" />
+    <Compile Include="GraceNote\LastRanker\StringImport.cs" />
+    <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
+    <Compile Include="GraceNote\Narisokonai\scrExport.cs" />
+    <Compile Include="GraceNote\Narisokonai\scrImport.cs" />
+    <Compile Include="GraceNote\Sting\BlazeUnionScript\Exporter.cs" />
+    <Compile Include="GraceNote\Sting\BlazeUnionScript\Importer.cs" />
+    <Compile Include="GraceNote\Trophy\TropSfmExport\Program.cs" />
+    <Compile Include="GraceNote\Trophy\TropSfmImport\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\StringDicImport\Importer.cs" />
+    <Compile Include="GraceNote\Vesperia\TO8CHTXExport\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\TO8CHTXImport\Program.cs" />
+    <Compile Include="Gust\ebm\ebm.cs" />
+    <Compile Include="Gust\ebm\TextDumper.cs" />
+    <Compile Include="Gust\ebm\EbmToSqlite.cs" />
+    <Compile Include="Gust\ebm\SqliteToEbm.cs" />
+    <Compile Include="Gust\g1t\DDSConverter.cs" />
+    <Compile Include="Gust\g1t\g1t.cs" />
+    <Compile Include="HalfMinuteHeroSecond\S2AR.cs" />
+    <Compile Include="Initialization.cs" />
+    <Compile Include="LastRanker\bscr.cs" />
+    <Compile Include="LastRanker\CZAA.cs" />
+    <Compile Include="LastRanker\NPK.cs" />
+    <Compile Include="LastRanker\PTMD.cs" />
+    <Compile Include="LastRanker\RTDP.cs" />
+    <Compile Include="LastRanker\SCMP.cs" />
+    <Compile Include="LastRanker\SSCR.cs" />
+    <Compile Include="LastRanker\StringFile.cs" />
+    <Compile Include="MyWorldMyWay\Tbl.cs" />
+    <Compile Include="Narisokonai\scr.cs" />
+    <Compile Include="Other\AceAttorneyInvestigationsScriptDump\Dumper.cs" />
+    <Compile Include="Other\AutoExtract\FileToFolderRename.cs" />
+    <Compile Include="Other\GZip\GZipHandler.cs" />
+    <Compile Include="Other\PicrossDS\ClassicPuzzle.cs" />
+    <Compile Include="Other\PicrossDS\OriginalPuzzle.cs" />
+    <Compile Include="Other\PicrossDS\SaveFile.cs" />
+    <Compile Include="Other\PSP\GIM\EndOfFileSection.cs" />
+    <Compile Include="Other\PSP\GIM\EndOfImageSection.cs" />
+    <Compile Include="Other\PSP\GIM\FileInfoSection.cs" />
+    <Compile Include="Other\PSP\GIM\GIM.cs" />
+    <Compile Include="Other\PSP\GIM\GimToPng\GimToPng.cs" />
+    <Compile Include="Other\PSP\GIM\HeaderSection.cs" />
+    <Compile Include="Other\PSP\GIM\HomogenizePalette\Program.cs" />
+    <Compile Include="Other\PSP\GIM\ImageSection.cs" />
+    <Compile Include="Other\PSP\GIM\LayerSplitter\Split.cs" />
+    <Compile Include="Other\PSP\GIM\PaletteSection.cs" />
+    <Compile Include="Other\PSP\GIM\ISection.cs" />
+    <Compile Include="Other\TrailsInTheSkyScenarioDump\ScenarioBin.cs" />
+    <Compile Include="Other\TrailsInTheSkyScenarioDump\DumpText.cs" />
+    <Compile Include="Pokemon\Gen3\Checksum.cs" />
+    <Compile Include="Pokemon\Gen3\HallOfFame.cs" />
+    <Compile Include="Pokemon\Gen3\Save.cs" />
+    <Compile Include="Pokemon\Gen3\String3.cs" />
+    <Compile Include="Pokemon\Gen4\String4.cs" />
+    <Compile Include="Pokemon\Gen5\PWT\DownloadFile.cs" />
+    <Compile Include="Pokemon\Gen5\PWT\Program.cs" />
+    <Compile Include="Pokemon\Gen5\PWT\Tournament.cs" />
+    <Compile Include="Pokemon\Gen5\PWT\Trainer.cs" />
+    <Compile Include="SqliteUtil.cs" />
+    <Compile Include="Sting\BlazeUnionScriptFile.cs" />
+    <Compile Include="Sting\BlazeUnionScriptFileSection.cs" />
+    <Compile Include="Tales\Abyss\FPS2\Program.cs" />
+    <Compile Include="Tales\Abyss\FPS3\Program.cs" />
+    <Compile Include="Tales\Abyss\PKF\Split.cs" />
+    <Compile Include="Tales\Abyss\SB7\DumpText.cs" />
+    <Compile Include="Tales\Abyss\SB7\SB7.cs" />
+    <Compile Include="Tales\CPK\CpkContainer.cs" />
+    <Compile Include="Tales\DestinyRemake\MglkExtract\Execute.cs" />
+    <Compile Include="Tales\DestinyRemake\MglkExtract\MGLK.cs" />
+    <Compile Include="Tales\DestinyRemake\TblBin\Execute.cs" />
+    <Compile Include="Tales\DestinyRemake\TblBin\TBL.cs" />
+    <Compile Include="Tales\DestinyRemake\ToDrUtil.cs" />
+    <Compile Include="Tales\tlzc\TlzcDecompressor.cs" />
+    <Compile Include="Tales\Vesperia\BTLBDAT\BattleBookEntry.cs" />
+    <Compile Include="Tales\Vesperia\BTLBDAT\BTLBDAT.cs" />
+    <Compile Include="Tales\Vesperia\COOKDAT\COOKDAT.cs" />
+    <Compile Include="Tales\Vesperia\COOKDAT\Recipe.cs" />
+    <Compile Include="Tales\Vesperia\Credits\CreditsInfo.cs" />
+    <Compile Include="Tales\Vesperia\Credits\CreditsInfoSingle.cs" />
+    <Compile Include="Tales\Vesperia\FAMEDAT\FAMEDAT.cs" />
+    <Compile Include="Tales\Vesperia\FAMEDAT\Title.cs" />
+    <Compile Include="Tales\Vesperia\Font\FontInfo.cs" />
+    <Compile Include="Tales\Vesperia\FPS4\FPS4.cs" />
+    <Compile Include="Tales\Vesperia\FPS4\Program.cs" />
+    <Compile Include="Tales\Vesperia\ItemDat\ItemDat.cs" />
+    <Compile Include="Tales\Vesperia\ItemDat\ItemDatSingle.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveData.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockCamp.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockCustomData.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockFieldArea.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockFieldCamera.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockFieldCar.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockFieldGadget.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockFieldSave.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockMG2Poker.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockPartyData.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockPCStatus.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockSavePoint.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockScenario.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockSnowBoard.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockSoundTheater.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockStandbyEnemy.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockTerasureSave.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataBlockTreasureSaveData.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveDataParser.cs" />
+    <Compile Include="Tales\Vesperia\SaveData\SaveMenuBlock.cs" />
+    <Compile Include="Tales\Vesperia\ScenarioFile\ScenarioFile.cs" />
+    <Compile Include="Tales\Vesperia\ScenarioFile\ScenarioFileEntry.cs" />
+    <Compile Include="Tales\Vesperia\Scenario\Program.cs" />
+    <Compile Include="Tales\Vesperia\Scenario\ScenarioDat.cs" />
+    <Compile Include="Tales\Vesperia\SCFOMBIN\SCFOMBIN.cs" />
+    <Compile Include="Tales\Vesperia\SE3\Program.cs" />
+    <Compile Include="Tales\Vesperia\SE3\SE3.cs" />
+    <Compile Include="Tales\Vesperia\ShopData\ShopDefinition.cs" />
+    <Compile Include="Tales\Vesperia\ShopData\ShopData.cs" />
+    <Compile Include="Tales\Vesperia\ShopData\ShopItem.cs" />
+    <Compile Include="Tales\Vesperia\SYNPDAT\SynopsisEntry.cs" />
+    <Compile Include="Tales\Vesperia\SYNPDAT\SYNPDAT.cs" />
+    <Compile Include="Tales\Vesperia\T8BTEMEG\EncounterGroup.cs" />
+    <Compile Include="Tales\Vesperia\T8BTEMEG\T8BTEMEG.cs" />
+    <Compile Include="Tales\Vesperia\T8BTEMGP\EnemyGroup.cs" />
+    <Compile Include="Tales\Vesperia\T8BTEMGP\T8BTEMGP.cs" />
+    <Compile Include="Tales\Vesperia\T8BTEMST\Enemy.cs" />
+    <Compile Include="Tales\Vesperia\T8BTEMST\T8BTEMST.cs" />
+    <Compile Include="Tales\Vesperia\T8BTGR\GradeShopEntry.cs" />
+    <Compile Include="Tales\Vesperia\T8BTGR\T8BTGR.cs" />
+    <Compile Include="Tales\Vesperia\T8BTMA\Arte.cs" />
+    <Compile Include="Tales\Vesperia\T8BTMA\Program.cs" />
+    <Compile Include="Tales\Vesperia\T8BTMA\T8BTMA.cs" />
+    <Compile Include="Tales\Vesperia\T8BTSK\Skill.cs" />
+    <Compile Include="Tales\Vesperia\T8BTSK\T8BTSK.cs" />
+    <Compile Include="Tales\Vesperia\T8BTTA\StrategyOption.cs" />
+    <Compile Include="Tales\Vesperia\T8BTTA\StrategySet.cs" />
+    <Compile Include="Tales\Vesperia\T8BTTA\T8BTTA.cs" />
+    <Compile Include="Tales\Vesperia\T8BTVA\T8BTVA.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\FloorInfo.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\MapTile.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMA.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMM.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\T8BTXTMT.cs" />
+    <Compile Include="Tales\Vesperia\T8BTXTM\TreasureInfo.cs" />
+    <Compile Include="Tales\Vesperia\Texture\ARGBaPixelOrderIterator.cs" />
+    <Compile Include="Tales\Vesperia\Texture\Decode.cs" />
+    <Compile Include="Tales\Vesperia\Texture\TXM.cs" />
+    <Compile Include="Tales\Vesperia\Texture\TXV.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\SkitInfo.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\TO8CHLI.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\SkitConditionForwarder.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\SkitCondition.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\UnknownSkitData4.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHLI\UnknownSkitData5.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\TO8CHRD.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\CharacterModelDefinition.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\OtherModelAddition.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\Unknown0x20byteAreaB.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\CustomModelAddition.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHRD\Unknown0x80byteArea.cs" />
+    <Compile Include="Tales\Vesperia\TO8CHTX\ChatFile.cs" />
+    <Compile Include="Tales\Vesperia\TOVNPC\NpcDialogueDefinition.cs" />
+    <Compile Include="Tales\Vesperia\TOVNPC\NpcFileReference.cs" />
+    <Compile Include="Tales\Vesperia\TOVNPC\TOVNPCL.cs" />
+    <Compile Include="Tales\Vesperia\TOVNPC\TOVNPCT.cs" />
+    <Compile Include="Tales\Vesperia\TOVSEAF\TOVSEAF.cs" />
+    <Compile Include="Tales\Vesperia\TownMap\TownMapInfo.cs" />
+    <Compile Include="Tales\Vesperia\TownMap\TownMapTable.cs" />
+    <Compile Include="Tales\Vesperia\TownMap\TownMapTile.cs" />
+    <Compile Include="Tales\Vesperia\VesperiaUtil.cs" />
+    <Compile Include="Tales\Vesperia\Website\GenerateDatabase.cs" />
+    <Compile Include="Tales\Vesperia\Website\GenerateWebsite.cs" />
+    <Compile Include="Tales\Vesperia\Website\ScenarioData.cs" />
+    <Compile Include="Tales\Vesperia\Website\ConfigMenuSetting.cs" />
+    <Compile Include="Tales\Vesperia\Website\ScenarioType.cs" />
+    <Compile Include="Tales\Vesperia\Website\ScenarioWebsiteName.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteGenerator.Data.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteGenerator.HtmlGenerate.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteGenerator.Initialization.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteGenerator.ScenarioCss.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteGenerator.StyleCss.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteGenerator.Utility.cs" />
+    <Compile Include="Tales\Vesperia\Website\WebsiteSection.cs" />
+    <Compile Include="Tales\Vesperia\WRLDDAT\Location.cs" />
+    <Compile Include="Tales\Vesperia\WRLDDAT\WRLDDAT.cs" />
+    <Compile Include="Tales\Vesperia\xma\FixHeader.cs" />
+    <Compile Include="Tales\Xillia\TldatPack\Program.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\ColorFetcherARGB8888.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\ColorFetcherDXT.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\ColorFetcherGrey8Alpha8.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\ColorFetcherIndexed4Bits.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\ColorFetcherIndexed8Bits.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\ColorFetcherRGB565.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\ColorFetcherRGB5A3.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\IColorFetchingIterator.cs" />
+    <Compile Include="Textures\ColorPositionFetcher.cs" />
+    <Compile Include="Textures\DDS.cs" />
+    <Compile Include="Textures\PixelOrderIterators\IPixelOrderIterator.cs" />
+    <Compile Include="Textures\PixelOrderIterators\TiledPixelOrderIterator.cs" />
+    <Compile Include="Textures\PixelOrderIterators\LinearPixelOrderIterator.cs" />
+    <Compile Include="Textures\TextureUtil.cs" />
+    <Compile Include="Trophy\TrophyConfNode.cs" />
+    <Compile Include="Trophy\TrophyNode.cs" />
+    <Compile Include="GraceNote\Vesperia\StringDicExport\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\VVoicesGenerate\Program.cs" />
+    <Compile Include="Other\AutoExtract\Program.cs" />
+    <Compile Include="Other\GoldenSunDarkDawnMsgExtract\Program.cs" />
+    <Compile Include="Other\LuxPain\LuxPainEvt.cs" />
+    <Compile Include="GraceNote\LuxPainEvtImport\Program.cs" />
+    <Compile Include="Other\LuxPain\LuxPainUtil.cs" />
+    <Compile Include="Other\NisPakEx\Program.cs" />
+    <Compile Include="Other\NitroidDataBinEx\DataBinFileInfo.cs" />
+    <Compile Include="Other\NitroidDataBinEx\Program.cs" />
+    <Compile Include="ProgramNames.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tales\tlzc\7zip\Common\CommandLineParser.cs" />
+    <Compile Include="Tales\tlzc\7zip\Common\CRC.cs" />
+    <Compile Include="Tales\tlzc\7zip\Common\InBuffer.cs" />
+    <Compile Include="Tales\tlzc\7zip\Common\OutBuffer.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="Tales\tlzc\7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="Tales\tlzc\7zip\ICoder.cs" />
+    <Compile Include="Tales\tlzc\TLZC.cs" />
+    <Compile Include="Tales\tlzc\tlzcmain.cs" />
+    <Compile Include="GraceNote\XilliaScriptFileDump\Program.cs" />
+    <Compile Include="Tales\Vesperia\MapList\MapList.cs" />
+    <Compile Include="Tales\Vesperia\MapList\MapName.cs" />
+    <Compile Include="Tales\Vesperia\MapList\Program.cs" />
+    <Compile Include="GraceNote\Vesperia\ScfombinImport\Program.cs" />
+    <Compile Include="Tales\Vesperia\SpkdUnpack\Program.cs" />
+    <Compile Include="Tales\Vesperia\TSS\TSSEntry.cs" />
+    <Compile Include="Tales\Vesperia\TSS\TSSFile.cs" />
+    <Compile Include="Tales\Vesperia\TSS\TSSHeader.cs" />
+    <Compile Include="Tales\Xillia\TldatExtract\Program.cs" />
+    <Compile Include="Tales\Xillia\TldatExtract\TOFHDBheader.cs" />
+    <Compile Include="Tales\Xillia\SDB\SDB.cs" />
+    <Compile Include="Trophy\TrophyTrp.cs" />
+    <Compile Include="Trophy\Viewer\GameFolder.cs" />
+    <Compile Include="Trophy\Viewer\TropUsr.cs" />
+    <Compile Include="Trophy\Viewer\TropUsrSingleTrophy.cs" />
+    <Compile Include="Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="HyoutaUtils\HyoutaPluginBase\HyoutaPluginBase.csproj">
+      <Project>{6e153ce7-05b9-4eba-8de8-ad842214f60b}</Project>
+      <Name>HyoutaPluginBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="HyoutaUtils\HyoutaUtils\HyoutaUtils.csproj">
+      <Project>{771553c8-0c50-411f-ab7f-e47553c81587}</Project>
+      <Name>HyoutaUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="utf_tab-sharp\utf_tab-sharp\utf_tab-sharp\utf_tab-sharp.csproj">
+      <Project>{213d12fe-9e77-44b3-9a63-3cd2a566c6dc}</Project>
+      <Name>utf_tab-sharp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets'))" />
+  </Target>
+</Project>

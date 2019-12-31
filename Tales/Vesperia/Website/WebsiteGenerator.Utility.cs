@@ -111,8 +111,8 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 			sb.AppendLine( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" );
 			sb.AppendLine( "<title>" + name + " - Tales of Vesperia (" + Version.ToString() + ")</title>" );
 			sb.AppendLine( "<style>" );
-			sb.AppendLine( HyoutaTools.Properties.Resources.vesperia_website_general_css );
-			sb.AppendLine( HyoutaTools.Properties.Resources.vesperia_website_scenario_css );
+			sb.AppendLine( StyleCss );
+			sb.AppendLine( ScenarioCss );
 			sb.AppendLine( "</style>" );
 			sb.AppendLine( "</head>" );
 		}
