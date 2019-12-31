@@ -24,6 +24,8 @@ namespace HyoutaTools.Tales.CPK {
 		public long content_offset { get; private set; }
 		private long toc_entries;
 
+		private Dictionary<string, int> filename_lookup = new Dictionary<string, int>();
+
 		public DuplicatableStream DuplicateStream() {
 			return infile.Duplicate();
 		}
@@ -73,6 +75,20 @@ namespace HyoutaTools.Tales.CPK {
 
 			// check that counts match
 			utf_tab_sharp.ErrorStuff.CHECK_ERROR(toc_entries != CpkHeader_count, "CpkHeader file count and TOC entry count do not match");
+
+			for (int i = 0; i < toc_entries; ++i) {
+				string file_name = utf_tab_sharp.UtfTab.query_utf_string(infile, toc_offset + 0x10, i, "FileName", toc_string_table);
+				string dir_name = utf_tab_sharp.UtfTab.query_utf_string(infile, toc_offset + 0x10, i, "DirName", toc_string_table);
+
+				string full_name;
+				if (string.IsNullOrEmpty(dir_name)) {
+					full_name = file_name;
+				} else {
+					full_name = dir_name + "/" + file_name;
+				}
+
+				filename_lookup.Add(full_name, i);
+			}
 		}
 
 		public INode GetChildByIndex(long index) {
@@ -128,22 +144,10 @@ namespace HyoutaTools.Tales.CPK {
 		}
 
 		public int? GetChildIndexFromName(string name) {
-			for (int i = 0; i < toc_entries; ++i) {
-				string file_name = utf_tab_sharp.UtfTab.query_utf_string(infile, toc_offset + 0x10, i, "FileName", toc_string_table);
-				string dir_name = utf_tab_sharp.UtfTab.query_utf_string(infile, toc_offset + 0x10, i, "DirName", toc_string_table);
-
-				string full_name;
-				if (string.IsNullOrEmpty(dir_name)) {
-					full_name = file_name;
-				} else {
-					full_name = dir_name + "/" + file_name;
-				}
-
-				if (full_name == name) {
-					return i;
-				}
+			int v;
+			if (filename_lookup.TryGetValue(name, out v)) {
+				return v;
 			}
-
 			return null;
 		}
 
