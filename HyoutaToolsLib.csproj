@@ -287,6 +287,7 @@
     <Compile Include="Tales\Vesperia\xma\FixHeader.cs" />
     <Compile Include="Tales\Xillia\TldatPack\Program.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherARGB8888.cs" />
+    <Compile Include="Textures\ColorFetchingIterators\ColorFetcherARGB8888Gamecube.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherDXT.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherGrey8Alpha8.cs" />
     <Compile Include="Textures\ColorFetchingIterators\ColorFetcherIndexed4Bits.cs" />
