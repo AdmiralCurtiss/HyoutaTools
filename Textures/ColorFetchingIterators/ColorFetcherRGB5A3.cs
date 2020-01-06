@@ -45,5 +45,21 @@ namespace HyoutaTools.Textures.ColorFetchingIterators {
 				return Color.FromArgb( a, r, g, b );
 			}
 		}
+
+		public static ushort ColorToRGB5A3(Color color) {
+			bool is555 = color.A == 255;
+			if (is555) {
+				int b = (color.B >> 3) & 0x001F;
+				int g = (color.G >> 3) & 0x001F;
+				int r = (color.R >> 3) & 0x001F;
+				return (ushort)(b | (g << 5) | (r << 10) | 0x8000);
+			} else {
+				int b = (color.B >> 4) & 0x000F;
+				int g = (color.G >> 4) & 0x000F;
+				int r = (color.R >> 4) & 0x000F;
+				int a = (color.A >> 5) & 0x0007;
+				return (ushort)(b | (g << 4) | (r << 8) | (a << 12));
+			}
+		}
 	}
 }
