@@ -18,11 +18,10 @@ namespace HyoutaTools.Tales.CPK {
 		public IContainer AsContainer => this;
 
 		private DuplicatableStream infile;
-		public const long CpkHeader_offset = 0x0;
 		private byte[] toc_string_table = null;
 		public long toc_offset { get; private set; }
 		public long content_offset { get; private set; }
-		private long toc_entries;
+		public long toc_entries { get; private set; }
 
 		private Dictionary<string, int> filename_lookup = new Dictionary<string, int>();
 
@@ -30,7 +29,7 @@ namespace HyoutaTools.Tales.CPK {
 			return infile.Duplicate();
 		}
 
-		public CpkContainer(DuplicatableStream stream) {
+		public CpkContainer(DuplicatableStream stream, long CpkHeader_offset = 0x0) {
 			infile = stream.Duplicate();
 
 			// check header
@@ -49,10 +48,10 @@ namespace HyoutaTools.Tales.CPK {
 			}
 
 			// get TOC offset
-			toc_offset = (long)utf_tab_sharp.UtfTab.query_utf_8byte(infile, CpkHeader_offset + 0x10, 0, "TocOffset");
+			toc_offset = CpkHeader_offset + (long)utf_tab_sharp.UtfTab.query_utf_8byte(infile, CpkHeader_offset + 0x10, 0, "TocOffset");
 
 			// get content offset
-			content_offset = (long)utf_tab_sharp.UtfTab.query_utf_8byte(infile, CpkHeader_offset + 0x10, 0, "ContentOffset");
+			content_offset = CpkHeader_offset + (long)utf_tab_sharp.UtfTab.query_utf_8byte(infile, CpkHeader_offset + 0x10, 0, "ContentOffset");
 
 			// get file count from CpkHeader
 			long CpkHeader_count = utf_tab_sharp.UtfTab.query_utf_4byte(infile, CpkHeader_offset + 0x10, 0, "Files");
@@ -91,7 +90,18 @@ namespace HyoutaTools.Tales.CPK {
 			}
 		}
 
-		public INode GetChildByIndex(long index) {
+		public class Entry {
+			public string file_name;
+			public string dir_name;
+			public long file_size;
+			public long extract_size;
+			public long file_offset;
+
+			public string name => string.IsNullOrEmpty(dir_name) ? file_name : dir_name + "/" + file_name;
+			public bool compressed => extract_size > file_size;
+		}
+
+		public Entry GetEntryByIndex(long index) {
 			if (index < 0 && index >= toc_entries) {
 				return null;
 			}
@@ -126,20 +136,29 @@ namespace HyoutaTools.Tales.CPK {
 			utf_tab_sharp.ErrorStuff.CHECK_ERROR(file_offset_raw > (ulong)long.MaxValue, "File offset too large, will be unable to seek");
 			long file_offset = (long)file_offset_raw;
 
-			if (extract_size > file_size) {
+			return new Entry() { file_name = file_name, dir_name = dir_name, file_size = file_size, extract_size = extract_size, file_offset = file_offset };
+		}
+
+		public INode GetChildByIndex(long index) {
+			Entry e = GetEntryByIndex(index);
+			if (e == null) {
+				return null;
+			}
+
+			if (e.extract_size > e.file_size) {
 				System.IO.MemoryStream outfile = new System.IO.MemoryStream();
 
 				long uncompressed_size =
-					utf_tab_sharp.CpkUncompress.uncompress(infile, file_offset, file_size, outfile);
+					utf_tab_sharp.CpkUncompress.uncompress(infile, e.file_offset, e.file_size, outfile);
 
-				utf_tab_sharp.ErrorStuff.CHECK_ERROR(uncompressed_size != extract_size,
+				utf_tab_sharp.ErrorStuff.CHECK_ERROR(uncompressed_size != e.extract_size,
 						"uncompressed size != ExtractSize");
 
 				outfile.Position = 0;
 				byte[] data = outfile.ReadBytes(outfile.Length);
 				return new FileContainer.FileFromStream(new HyoutaUtils.Streams.DuplicatableByteArrayStream(data));
 			} else {
-				return new FileContainer.FileFromStream(new HyoutaUtils.Streams.PartialStream(infile, file_offset, file_size));
+				return new FileContainer.FileFromStream(new HyoutaUtils.Streams.PartialStream(infile, e.file_offset, e.file_size));
 			}
 		}
 
@@ -159,16 +178,20 @@ namespace HyoutaTools.Tales.CPK {
 			return null;
 		}
 
+		public string GetChildNameFromIndex(long i) {
+			string file_name = utf_tab_sharp.UtfTab.query_utf_string(infile, toc_offset + 0x10, (int)i, "FileName", toc_string_table);
+			string dir_name = utf_tab_sharp.UtfTab.query_utf_string(infile, toc_offset + 0x10, (int)i, "DirName", toc_string_table);
+
+			if (string.IsNullOrEmpty(dir_name)) {
+				return file_name;
+			} else {
+				return dir_name + "/" + file_name;
+			}
+		}
+
 		public IEnumerable<string> GetChildNames() {
 			for (int i = 0; i < toc_entries; ++i) {
-				string file_name = utf_tab_sharp.UtfTab.query_utf_string(infile, toc_offset + 0x10, i, "FileName", toc_string_table);
-				string dir_name = utf_tab_sharp.UtfTab.query_utf_string(infile, toc_offset + 0x10, i, "DirName", toc_string_table);
-
-				if (string.IsNullOrEmpty(dir_name)) {
-					yield return file_name;
-				} else {
-					yield return dir_name + "/" + file_name;
-				}
+				yield return GetChildNameFromIndex(i);
 			}
 		}
 
