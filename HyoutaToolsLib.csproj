@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zlib.CF">
-      <HintPath>.\Ionic.Zlib.CF.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -95,12 +92,6 @@
     <Compile Include="GraceNote\DumpDatabase\ScenarioFile.cs" />
     <Compile Include="GraceNote\FindEarliestGracesJapaneseEntry\Program.cs" />
     <Compile Include="GraceNote\GraceNoteUtil.cs" />
-    <Compile Include="GraceNote\LastRanker\bscrExport.cs" />
-    <Compile Include="GraceNote\LastRanker\bscrImport.cs" />
-    <Compile Include="GraceNote\LastRanker\SscrExport.cs" />
-    <Compile Include="GraceNote\LastRanker\SscrImport.cs" />
-    <Compile Include="GraceNote\LastRanker\StringExport.cs" />
-    <Compile Include="GraceNote\LastRanker\StringImport.cs" />
     <Compile Include="GraceNote\LuxPainEvtExport\Program.cs" />
     <Compile Include="GraceNote\Narisokonai\scrExport.cs" />
     <Compile Include="GraceNote\Narisokonai\scrImport.cs" />
@@ -119,14 +110,6 @@
     <Compile Include="Gust\g1t\g1t.cs" />
     <Compile Include="HalfMinuteHeroSecond\S2AR.cs" />
     <Compile Include="Initialization.cs" />
-    <Compile Include="LastRanker\bscr.cs" />
-    <Compile Include="LastRanker\CZAA.cs" />
-    <Compile Include="LastRanker\NPK.cs" />
-    <Compile Include="LastRanker\PTMD.cs" />
-    <Compile Include="LastRanker\RTDP.cs" />
-    <Compile Include="LastRanker\SCMP.cs" />
-    <Compile Include="LastRanker\SSCR.cs" />
-    <Compile Include="LastRanker\StringFile.cs" />
     <Compile Include="MyWorldMyWay\Tbl.cs" />
     <Compile Include="Narisokonai\scr.cs" />
     <Compile Include="Other\AceAttorneyInvestigationsScriptDump\Dumper.cs" />

@@ -52,9 +52,7 @@ namespace HyoutaTools.Tales.tlzc {
 
 				bool assume_zlib = true;
 				if ( assume_zlib ) {
-					using ( Stream compressionStream = new Ionic.Zlib.ZlibStream( result, Ionic.Zlib.CompressionMode.Compress, Ionic.Zlib.CompressionLevel.BestCompression ) ) {
-						compressionStream.Write( buffer );
-					}
+					throw new Exception("zlib based tlzc compression currently unavailable, use revision https://github.com/AdmiralCurtiss/HyoutaTools/tree/525209cc0ada7d54f1a67f6f82c28c3e6cd0f722 for now");
 				} else {
 					using ( DeflateStream compressionStream = new DeflateStream( result, CompressionLevel.Optimal ) ) {
 						compressionStream.Write( buffer );
@@ -77,9 +75,7 @@ namespace HyoutaTools.Tales.tlzc {
 
 				bool assume_zlib = true;
 				if ( assume_zlib ) {
-					using ( Stream decompressionStream = new Ionic.Zlib.ZlibStream( new MemoryStream( buffer, offset, inSize - offset ), Ionic.Zlib.CompressionMode.Decompress ) ) {
-						StreamUtils.CopyStream( decompressionStream, result, outSize );
-					}
+					throw new Exception("zlib based tlzc compression currently unavailable, use revision https://github.com/AdmiralCurtiss/HyoutaTools/tree/525209cc0ada7d54f1a67f6f82c28c3e6cd0f722 for now");
 				} else {
 					using ( DeflateStream decompressionStream = new DeflateStream( new MemoryStream( buffer, offset, inSize - offset ), CompressionMode.Decompress ) ) {
 						StreamUtils.CopyStream( decompressionStream, result, outSize );
