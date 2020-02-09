@@ -19,3 +19,15 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+------------------------------------------------------------------------------
+
+Additionally, this tool uses the following submodules:
+
+== HyoutaUtils ==
+Licensed under the MIT License, Copyright (c) 2013-2019 Admiral H. Curtiss
+See HyoutaUtils/LICENSE for details.
+
+== utf_tab-sharp ==
+Licensed under the MIT License, Copyright (c) 2014 Adam Gashlin
+See utf_tab-sharp/LICENSE for details.
