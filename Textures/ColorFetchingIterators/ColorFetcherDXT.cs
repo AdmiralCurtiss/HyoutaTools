@@ -15,6 +15,7 @@ namespace HyoutaTools.Textures.ColorFetchingIterators {
 		COMPRESSED_RGBA_S3TC_DXT1_EXT,
 		COMPRESSED_RGBA_S3TC_DXT3_EXT,
 		COMPRESSED_RGBA_S3TC_DXT5_EXT,
+		GamecubeCMPR, // see YAGCD, 17.14.1; very similar to DXT1 so I've implemented it in here
 	}
 
 	public class ColorFetcherDXT : IColorFetchingIterator {
@@ -25,6 +26,12 @@ namespace HyoutaTools.Textures.ColorFetchingIterators {
 		public ColorFetcherDXT( Stream stream, long width, long height, DxtFormat format ) {
 			SourceStream = stream;
 			BlockCount = ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 );
+			Format = format;
+		}
+
+		public ColorFetcherDXT( Stream stream, long blockCount, DxtFormat format ) {
+			SourceStream = stream;
+			BlockCount = blockCount;
 			Format = format;
 		}
 
@@ -55,14 +62,34 @@ namespace HyoutaTools.Textures.ColorFetchingIterators {
 					byte abits_5 = SourceStream.ReadUInt8();
 					alphabits_dxt5 = abits_0 + 256u * ( abits_1 + 256u * ( abits_2 + 256u * ( abits_3 + 256u * ( abits_4 + 256u * (ulong)abits_5 ) ) ) );
 				}
-				byte c0_lo = SourceStream.ReadUInt8();
-				byte c0_hi = SourceStream.ReadUInt8();
-				byte c1_lo = SourceStream.ReadUInt8();
-				byte c1_hi = SourceStream.ReadUInt8();
-				byte bits_0 = SourceStream.ReadUInt8();
-				byte bits_1 = SourceStream.ReadUInt8();
-				byte bits_2 = SourceStream.ReadUInt8();
-				byte bits_3 = SourceStream.ReadUInt8();
+				byte c0_lo;
+				byte c0_hi;
+				byte c1_lo;
+				byte c1_hi;
+				byte bits_0;
+				byte bits_1;
+				byte bits_2;
+				byte bits_3;
+				if (Format == DxtFormat.GamecubeCMPR) {
+					c0_hi = SourceStream.ReadUInt8();
+					c0_lo = SourceStream.ReadUInt8();
+					c1_hi = SourceStream.ReadUInt8();
+					c1_lo = SourceStream.ReadUInt8();
+					// TODO: is this right?
+					bits_1 = SourceStream.ReadUInt8();
+					bits_0 = SourceStream.ReadUInt8();
+					bits_3 = SourceStream.ReadUInt8();
+					bits_2 = SourceStream.ReadUInt8();
+				} else {
+					c0_lo = SourceStream.ReadUInt8();
+					c0_hi = SourceStream.ReadUInt8();
+					c1_lo = SourceStream.ReadUInt8();
+					c1_hi = SourceStream.ReadUInt8();
+					bits_0 = SourceStream.ReadUInt8();
+					bits_1 = SourceStream.ReadUInt8();
+					bits_2 = SourceStream.ReadUInt8();
+					bits_3 = SourceStream.ReadUInt8();
+				}
 				ushort color0 = (ushort)( c0_lo + c0_hi * 256u );
 				ushort color1 = (ushort)( c1_lo + c1_hi * 256u );
 				uint bits = bits_0 + 256u * ( bits_1 + 256u * ( bits_2 + 256u * bits_3 ) );
@@ -147,7 +174,12 @@ namespace HyoutaTools.Textures.ColorFetchingIterators {
 							case 0: yield return Color.FromArgb( a, r0, g0, b0 ); break;
 							case 1: yield return Color.FromArgb( a, r1, g1, b1 ); break;
 							case 2: yield return InterpolateHalf( r0, g0, b0, r1, g1, b1, a ); break;
-							case 3: yield return Color.FromArgb( Format == DxtFormat.COMPRESSED_RGB_S3TC_DXT1_EXT ? 0xFF : 0, 0, 0, 0 ); break;
+							case 3:
+								if (Format == DxtFormat.GamecubeCMPR) {
+									yield return InterpolateThirds(r1, g1, b1, r0, g0, b0, 0); break;
+								} else {
+									yield return Color.FromArgb(Format == DxtFormat.COMPRESSED_RGB_S3TC_DXT1_EXT ? 0xFF : 0, 0, 0, 0); break;
+								}
 							default: throw new Exception( "Invalid code." );
 						}
 					}

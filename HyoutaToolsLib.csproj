@@ -280,6 +280,7 @@
     <Compile Include="Textures\ColorPositionFetcher.cs" />
     <Compile Include="Textures\DDS.cs" />
     <Compile Include="Textures\PixelOrderIterators\IPixelOrderIterator.cs" />
+    <Compile Include="Textures\PixelOrderIterators\GamecubeCmpPixelOrderIterator.cs" />
     <Compile Include="Textures\PixelOrderIterators\TiledPixelOrderIterator.cs" />
     <Compile Include="Textures\PixelOrderIterators\LinearPixelOrderIterator.cs" />
     <Compile Include="Textures\TextureUtil.cs" />

@@ -77,6 +77,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 		Indexed8Bits_Grey8Alpha8 = 0x00010009,
 		Indexed8Bits_RGB565 = 0x10010009,
 		Indexed8Bits_RGB5A3 = 0x20010009,
+		GamecubeCMP = 0x0000000E,
 		Unknown0x8101AAE4 = 0x8101AAE4u,
 		DXT1a = 0x8602AAE4u,
 		DXT1b = 0xA602AAE4u,
@@ -103,6 +104,8 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			switch ( Format ) {
 				case TextureFormat.GamecubeRGBA8:
 					return 32;
+				case TextureFormat.GamecubeCMP:
+					return 4;
 				case TextureFormat.Indexed4Bits_Grey8Alpha8:
 				case TextureFormat.Indexed4Bits_RGB565:
 				case TextureFormat.Indexed4Bits_RGB5A3:
@@ -188,6 +191,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				case TextureFormat.Indexed8Bits_Grey8Alpha8:
 				case TextureFormat.Indexed8Bits_RGB565:
 				case TextureFormat.Indexed8Bits_RGB5A3:
+				case TextureFormat.GamecubeCMP:
 					return 8;
 				case TextureFormat.GamecubeRGBA8:
 					return 4;
@@ -201,6 +205,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				case TextureFormat.Indexed4Bits_Grey8Alpha8:
 				case TextureFormat.Indexed4Bits_RGB565:
 				case TextureFormat.Indexed4Bits_RGB5A3:
+				case TextureFormat.GamecubeCMP:
 					return 8;
 				case TextureFormat.Indexed8Bits_Grey8Alpha8:
 				case TextureFormat.Indexed8Bits_RGB565:
