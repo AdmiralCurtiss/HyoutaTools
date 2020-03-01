@@ -107,6 +107,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 
 		private (uint width, uint height, IPixelOrderIterator pxit, IColorFetchingIterator colit) GenerateIterators(Stream plane, uint mip) {
 			switch (TXM.Format) {
+				case TextureFormat.RGB565:
 				case TextureFormat.GamecubeRGBA8:
 				case TextureFormat.GamecubeCMP:
 				case TextureFormat.GamecubeCMP2:
@@ -135,7 +136,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				pxit = new TiledPixelOrderIterator((int)dims.width, (int)dims.height, 8, 8);
 			} else if (TXM.Format == TextureFormat.Indexed8Bits_Grey8Alpha8 || TXM.Format == TextureFormat.Indexed8Bits_RGB565 || TXM.Format == TextureFormat.Indexed8Bits_RGB5A3) {
 				pxit = new TiledPixelOrderIterator((int)dims.width, (int)dims.height, 8, 4);
-			} else if (TXM.Format == TextureFormat.GamecubeRGBA8) {
+			} else if (TXM.Format == TextureFormat.RGB565 || TXM.Format == TextureFormat.GamecubeRGBA8) {
 				pxit = new TiledPixelOrderIterator((int)dims.width, (int)dims.height, 4, 4);
 			} else if (TXM.Format == TextureFormat.GamecubeCMP || TXM.Format == TextureFormat.GamecubeCMP2 || TXM.Format == TextureFormat.GamecubeCMP4 || TXM.Format == TextureFormat.GamecubeCMPA || TXM.Format == TextureFormat.GamecubeCMPC) {
 				pxit = new GamecubeCmpPixelOrderIterator((int)dims.width, (int)dims.height);
@@ -172,6 +173,8 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				} else {
 					throw new Exception("Internal error.");
 				}
+			} else if (TXM.Format == TextureFormat.RGB565) {
+				colit = new ColorFetcherRGB565(plane, dims.width, dims.height, EndianUtils.Endianness.BigEndian);
 			} else if (TXM.Format == TextureFormat.GamecubeRGBA8) {
 				colit = new ColorFetcherARGB8888Gamecube(plane, dims.width, dims.height);
 			} else if (TXM.Format == TextureFormat.GamecubeCMP || TXM.Format == TextureFormat.GamecubeCMP2 || TXM.Format == TextureFormat.GamecubeCMP4 || TXM.Format == TextureFormat.GamecubeCMPA || TXM.Format == TextureFormat.GamecubeCMPC) {
