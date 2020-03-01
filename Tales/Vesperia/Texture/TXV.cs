@@ -109,6 +109,10 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			switch (TXM.Format) {
 				case TextureFormat.GamecubeRGBA8:
 				case TextureFormat.GamecubeCMP:
+				case TextureFormat.GamecubeCMP2:
+				case TextureFormat.GamecubeCMP4:
+				case TextureFormat.GamecubeCMPA:
+				case TextureFormat.GamecubeCMPC:
 				case TextureFormat.ARGBa:
 				case TextureFormat.ARGBb:
 				case TextureFormat.Indexed4Bits_Grey8Alpha8:
@@ -133,7 +137,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				pxit = new TiledPixelOrderIterator((int)dims.width, (int)dims.height, 8, 4);
 			} else if (TXM.Format == TextureFormat.GamecubeRGBA8) {
 				pxit = new TiledPixelOrderIterator((int)dims.width, (int)dims.height, 4, 4);
-			} else if (TXM.Format == TextureFormat.GamecubeCMP) {
+			} else if (TXM.Format == TextureFormat.GamecubeCMP || TXM.Format == TextureFormat.GamecubeCMP2 || TXM.Format == TextureFormat.GamecubeCMP4 || TXM.Format == TextureFormat.GamecubeCMPA || TXM.Format == TextureFormat.GamecubeCMPC) {
 				pxit = new GamecubeCmpPixelOrderIterator((int)dims.width, (int)dims.height);
 			} else {
 				pxit = new LinearPixelOrderIterator((int)dims.width, (int)dims.height);
@@ -170,7 +174,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 				}
 			} else if (TXM.Format == TextureFormat.GamecubeRGBA8) {
 				colit = new ColorFetcherARGB8888Gamecube(plane, dims.width, dims.height);
-			} else if (TXM.Format == TextureFormat.GamecubeCMP) {
+			} else if (TXM.Format == TextureFormat.GamecubeCMP || TXM.Format == TextureFormat.GamecubeCMP2 || TXM.Format == TextureFormat.GamecubeCMP4 || TXM.Format == TextureFormat.GamecubeCMPA || TXM.Format == TextureFormat.GamecubeCMPC) {
 				colit = new ColorFetcherDXT(plane, dims.width, dims.height, DxtFormat.GamecubeCMPR);
 			} else {
 				colit = new ColorFetcherARGB8888(plane, dims.width, dims.height);
