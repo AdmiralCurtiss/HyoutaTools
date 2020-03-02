@@ -19,6 +19,7 @@ namespace HyoutaTools.Tales.CPK {
 
 		private DuplicatableStream infile;
 		private byte[] toc_string_table = null;
+		public long CpkHeader_offset { get; private set; }
 		public long toc_offset { get; private set; }
 		public long content_offset { get; private set; }
 		public long toc_entries { get; private set; }
@@ -30,6 +31,7 @@ namespace HyoutaTools.Tales.CPK {
 		}
 
 		public CpkContainer(DuplicatableStream stream, long CpkHeader_offset = 0x0) {
+			this.CpkHeader_offset = CpkHeader_offset;
 			infile = stream.Duplicate();
 
 			// check header
@@ -193,6 +195,10 @@ namespace HyoutaTools.Tales.CPK {
 			for (int i = 0; i < toc_entries; ++i) {
 				yield return GetChildNameFromIndex(i);
 			}
+		}
+
+		public utf_tab_sharp.utf_query_result QueryInfo(string key) {
+			return utf_tab_sharp.UtfTab.query_utf_key(infile, CpkHeader_offset + 0x10, 0, key);
 		}
 
 		public utf_tab_sharp.utf_query_result QueryChildInfoByIndex(int index, string key) {
