@@ -155,6 +155,7 @@
     <Compile Include="Tales\DestinyRemake\TblBin\Execute.cs" />
     <Compile Include="Tales\DestinyRemake\TblBin\TBL.cs" />
     <Compile Include="Tales\DestinyRemake\ToDrUtil.cs" />
+    <Compile Include="Tales\Graces\CharNameBin.cs" />
     <Compile Include="Tales\Graces\SCS\SCS.cs" />
     <Compile Include="Tales\tlzc\TlzcDecompressor.cs" />
     <Compile Include="Tales\Vesperia\BTLBDAT\BattleBookEntry.cs" />
