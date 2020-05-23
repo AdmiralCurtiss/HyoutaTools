@@ -42,7 +42,7 @@ namespace HyoutaTools.GameCube {
 			return Stream.Duplicate();
 		}
 
-		public bool TryMapRamToRom( uint ramAddress, out uint value ) {
+		public bool TryMapRamToRom( ulong ramAddress, out ulong value ) {
 			for ( int i = 0; i < 18; ++i ) {
 				uint begin = LoadingAddress[i];
 				uint end = begin + SectionSizes[i];
@@ -55,7 +55,7 @@ namespace HyoutaTools.GameCube {
 			return false;
 		}
 
-		public bool TryMapRomToRam( uint romAddress, out uint value ) {
+		public bool TryMapRomToRam( ulong romAddress, out ulong value ) {
 			for ( int i = 0; i < 18; ++i ) {
 				uint begin = FileOffsets[i];
 				uint end = begin + SectionSizes[i];
