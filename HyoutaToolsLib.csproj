@@ -78,8 +78,6 @@
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
     <Compile Include="Generic\ByteSwap\ByteSwap.cs" />
     <Compile Include="Generic\DbTextReplace\Replacement.cs" />
-    <Compile Include="Generic\IRomMapper.cs" />
-    <Compile Include="Generic\RomMapperUtils.cs" />
     <Compile Include="GraceNote\DanganRonpa\AutoFormatting\AutoFormat.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinExport\Exporter.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinImport\Importer.cs" />
