@@ -77,6 +77,7 @@
     <Compile Include="Generic\BlockCopy\BlockCopy.cs" />
     <Compile Include="Generic\ByteHotfix\ByteHotfix.cs" />
     <Compile Include="Generic\ByteSwap\ByteSwap.cs" />
+    <Compile Include="Generic\CompareFileLists\CompareFileLists.cs" />
     <Compile Include="Generic\DbTextReplace\Replacement.cs" />
     <Compile Include="GraceNote\DanganRonpa\AutoFormatting\AutoFormat.cs" />
     <Compile Include="GraceNote\DanganRonpa\LinExport\Exporter.cs" />
