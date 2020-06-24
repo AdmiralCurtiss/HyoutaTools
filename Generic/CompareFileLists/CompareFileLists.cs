@@ -31,6 +31,12 @@ namespace HyoutaTools.Generic.CompareFileLists {
 				File.WriteAllText(p, s);
 			}
 
+			{
+				string s = DetectUnchangedFiles(entriesByVersion);
+				string p = Path.Combine(Path.GetDirectoryName(args[0]), "all_identical.txt");
+				File.WriteAllText(p, s);
+			}
+
 			return 0;
 		}
 
@@ -122,6 +128,45 @@ namespace HyoutaTools.Generic.CompareFileLists {
 			}
 
 			return sb.ToString();
+		}
+
+		public static string DetectUnchangedFiles(List<List<HashEntry>> list) {
+			Dictionary<string, List<HashEntry>> byPath = new Dictionary<string, List<HashEntry>>();
+			List<string> paths = new List<string>();
+			foreach (var a in list) {
+				foreach (HashEntry e in a) {
+					if (!byPath.ContainsKey(e.Path)) {
+						byPath.Add(e.Path, new List<HashEntry>());
+						paths.Add(e.Path);
+					}
+					byPath[e.Path].Add(e);
+				}
+			}
+
+			StringBuilder sbIdentical = new StringBuilder();
+
+			foreach (string p in paths) {
+				if (AllSameFile(byPath[p])) {
+					sbIdentical.AppendLine(p);
+				}
+			}
+
+			return sbIdentical.ToString();
+		}
+
+		private static bool AllSameFile(List<HashEntry> entries) {
+			if (entries.Count == 0) {
+				return true;
+			}
+
+			HashEntry e = entries[0];
+			foreach (HashEntry ee in entries) {
+				if (e.Hash != ee.Hash) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 	}
 	public class HashEntry {
