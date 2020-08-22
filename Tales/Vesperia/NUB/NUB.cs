@@ -54,6 +54,23 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 							}
 						}
 						break;
+						case 0x676176: {
+							stream.Position = entryLoc;
+							byte[] vagheader = stream.ReadUInt8Array(0xc0);
+
+							stream.Position = entryLoc + 0x14;
+							uint length = stream.ReadUInt32(e);
+							uint offset = stream.ReadUInt32(e);
+							stream.Position = header.StartOfFiles + offset;
+
+							using (var fs = new FileStream(Path.Combine(targetFolder, i.ToString("D8") + ".vag"), FileMode.Create)) {
+								fs.Write(vagheader);
+								fs.WriteUInt64(0);
+								fs.WriteUInt64(0);
+								StreamUtils.CopyStream(stream, fs, length);
+							}
+						}
+						break;
 						default:
 							Console.WriteLine("Unimplemented nub subtype: 0x" + type.ToString("x8"));
 							break;
