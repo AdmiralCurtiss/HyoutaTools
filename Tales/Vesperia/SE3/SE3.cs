@@ -62,11 +62,15 @@ namespace HyoutaTools.Tales.Vesperia.SE3 {
 
 		// TODO: We could parse/extract the nub directly to keep filenames, but eh, effort...
 
-		public void ExtractToNub( string targetName ) {
-			Data.Position = DataBegin;
-			using ( Stream fs = new FileStream( targetName, FileMode.Create ) ) {
-				StreamUtils.CopyStream( Data, fs, Data.Length - DataBegin );
+		public void ExtractToNub(string targetName) {
+			using (var fs = new FileStream(targetName, FileMode.Create)) {
+				ExtractToNub(fs);
 			}
+		}
+
+		public void ExtractToNub(Stream targetStream) {
+			Data.Position = DataBegin;
+			StreamUtils.CopyStream(Data, targetStream, Data.Length - DataBegin);
 		}
 	}
 }
