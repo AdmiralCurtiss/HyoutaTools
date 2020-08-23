@@ -83,8 +83,14 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 		}
 
 		public static void RebuildNub(DuplicatableStream duplicatableStream, string infolder, string outpath, EndianUtils.Endianness e) {
-			using (var stream = duplicatableStream.Duplicate())
 			using (var outstream = new FileStream(outpath, FileMode.Create)) {
+				RebuildNub(duplicatableStream, infolder, outstream, e);
+			}
+		}
+
+		public static void RebuildNub(DuplicatableStream duplicatableStream, string infolder, Stream outstream, EndianUtils.Endianness e) {
+			outstream.Position = 0;
+			using (var stream = duplicatableStream.Duplicate()) {
 				stream.Position = 0;
 				var header = new NubHeader(stream, e);
 
