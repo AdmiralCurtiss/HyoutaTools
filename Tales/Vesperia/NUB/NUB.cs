@@ -39,6 +39,20 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 							}
 						}
 						break;
+						case 0x707364: {
+							stream.Position = entryLoc + 0x14;
+							uint length = stream.ReadUInt32(e);
+							uint offset = stream.ReadUInt32(e);
+							stream.Position = entryLoc + 0xbc;
+							byte[] dspheader = stream.ReadUInt8Array(0x60);
+
+							stream.Position = header.StartOfFiles + offset;
+							using (var fs = new FileStream(Path.Combine(targetFolder, i.ToString("D8") + ".dsp"), FileMode.Create)) {
+								fs.Write(dspheader);
+								StreamUtils.CopyStream(stream, fs, length);
+							}
+						}
+						break;
 						case 0x337461: {
 							stream.Position = entryLoc;
 							byte[] at3header = stream.ReadUInt8Array(0x100);
@@ -120,6 +134,28 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 								// update headers
 								outstream.Position = entryLoc + 0xbc;
 								outstream.Write(bnsfheader);
+								outstream.Position = entryLoc + 0x14;
+								outstream.WriteUInt32((uint)filelen, e);
+								outstream.WriteUInt32((uint)(filestart - header.StartOfFiles), e);
+
+								outstream.Position = fileend;
+							}
+						}
+						break;
+						case 0x707364: {
+							using (var fs = new DuplicatableFileStream(Path.Combine(infolder, i.ToString("D8") + ".dsp"))) {
+								byte[] dspheader = fs.ReadUInt8Array(0x60);
+
+								// write file to outstream
+								long filestart = outstream.Position;
+								StreamUtils.CopyStream(fs, outstream, fs.Length - 0x60);
+								outstream.WriteAlign(0x10);
+								long fileend = outstream.Position;
+								long filelen = fileend - filestart;
+
+								// update headers
+								outstream.Position = entryLoc + 0xbc;
+								outstream.Write(dspheader);
 								outstream.Position = entryLoc + 0x14;
 								outstream.WriteUInt32((uint)filelen, e);
 								outstream.WriteUInt32((uint)(filestart - header.StartOfFiles), e);
