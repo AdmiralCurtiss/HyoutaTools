@@ -72,5 +72,10 @@ namespace HyoutaTools.Tales.Vesperia.SE3 {
 			Data.Position = DataBegin;
 			StreamUtils.CopyStream(Data, targetStream, Data.Length - DataBegin);
 		}
+
+		public void ExtractSE3Header(Stream targetStream) {
+			Data.Position = 0;
+			StreamUtils.CopyStream(Data, targetStream, DataBegin);
+		}
 	}
 }
