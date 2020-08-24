@@ -4,51 +4,29 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using EndianUtils = HyoutaUtils.EndianUtils;
+using HyoutaUtils.Streams;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.SpkdUnpack {
 	class Program {
-		public static int Execute( List<string> args ) {
-			if ( args.Count != 1 ) {
-				Console.WriteLine( "Usage: SPKDunpack file" );
+		public static int Execute(List<string> args) {
+			if (args.Count != 1) {
+				Console.WriteLine("Usage: SPKDunpack file");
 				return -1;
 			}
 
-			byte[] spkd = File.ReadAllBytes( args[0] );
+			var spkd = new SPKD(new DuplicatableFileStream(args[0]));
 
-			uint FileAmount = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, 4 ) );
-			uint BlockSize = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, 12 ) );
-			FileData[] FileInfos = new FileData[FileAmount + 1];
-
-			for ( int i = 0; i < FileAmount; i++ ) {
-				FileInfos[i] = new FileData();
-				FileInfos[i].Name = ASCIIEncoding.GetEncoding( 0 ).GetString( spkd, ( i + 1 ) * (int)BlockSize, 16 );
-				FileInfos[i].Name = FileInfos[i].Name.Substring( 0, FileInfos[i].Name.IndexOf( '\0' ) );
-				FileInfos[i].Unknown = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 16 ) );
-				FileInfos[i].FileStart1 = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 20 ) );
-				FileInfos[i].FileStart2 = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 24 ) );
-				FileInfos[i].Something = EndianUtils.SwapEndian( BitConverter.ToUInt32( spkd, ( i + 1 ) * (int)BlockSize + 28 ) );
-			}
-			FileInfos[FileAmount] = new FileData();
-			FileInfos[FileAmount].FileStart1 = (UInt32)spkd.Length;
-
-			DirectoryInfo d = System.IO.Directory.CreateDirectory( args[0] + ".ext" );
-			for ( int i = 0; i < FileAmount; i++ ) {
-				int Filesize = (int)FileInfos[i + 1].FileStart1 - (int)FileInfos[i].FileStart1;
-				byte[] b = new byte[Filesize];
-				Buffer.BlockCopy( spkd, (int)FileInfos[i].FileStart1, b, 0, Filesize );
-				File.WriteAllBytes( d.FullName + "\\" + FileInfos[i].Name, b );
+			DirectoryInfo d = System.IO.Directory.CreateDirectory(args[0] + ".ext");
+			for (int i = 0; i < spkd.FileCount; ++i) {
+				string path = Path.Combine(d.FullName, spkd.GetFileName(i));
+				using (var ds = spkd.GetChildByIndex(i).AsFile.DataStream.Duplicate())
+				using (var fs = new FileStream(path, FileMode.Create)) {
+					StreamUtils.CopyStream(ds, fs);
+				}
 			}
 
 			return 0;
-		}
-
-
-		class FileData {
-			public String Name;
-			public UInt32 Unknown;
-			public UInt32 FileStart1;
-			public UInt32 FileStart2; // Why is this twice?
-			public UInt32 Something; // Honestly I have no clue.
 		}
 	}
 }

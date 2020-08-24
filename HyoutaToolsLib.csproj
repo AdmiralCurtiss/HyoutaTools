@@ -206,6 +206,7 @@
     <Compile Include="Tales\Vesperia\ShopData\ShopDefinition.cs" />
     <Compile Include="Tales\Vesperia\ShopData\ShopData.cs" />
     <Compile Include="Tales\Vesperia\ShopData\ShopItem.cs" />
+    <Compile Include="Tales\Vesperia\SpkdUnpack\SPKD.cs" />
     <Compile Include="Tales\Vesperia\SYNPDAT\SynopsisEntry.cs" />
     <Compile Include="Tales\Vesperia\SYNPDAT\SYNPDAT.cs" />
     <Compile Include="Tales\Vesperia\T8BTEMEG\EncounterGroup.cs" />
