@@ -1,4 +1,6 @@
 ﻿using HyoutaPluginBase;
+using HyoutaPluginBase.FileContainer;
+using HyoutaTools.FileContainer;
 using HyoutaUtils;
 using HyoutaUtils.Streams;
 using System;
@@ -9,91 +11,115 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HyoutaTools.Tales.Vesperia.NUB {
-	public class NUB {
+	public class NUB : FileContainer.ContainerBase {
+		private DuplicatableStream Stream;
+		private NubHeader Header;
+		private EndianUtils.Endianness Endian;
+		private uint[] Entries;
+
+		public uint EntryCount => Header.EntryCount;
+
+		public NUB(DuplicatableStream duplicatableStream, EndianUtils.Endianness e) {
+			Endian = e;
+			Stream = duplicatableStream.Duplicate();
+			Stream.Position = 0;
+			Header = new NubHeader(Stream, e);
+			Stream.Position = Header.StartOfEntries;
+			Entries = Stream.ReadUInt32Array(Header.EntryCount, e);
+		}
+
 		public static void ExtractNub(DuplicatableStream duplicatableStream, string targetFolder, EndianUtils.Endianness e) {
 			Directory.CreateDirectory(targetFolder);
-			using (var stream = duplicatableStream.Duplicate()) {
-				stream.Position = 0;
-				var header = new NubHeader(stream, e);
-
-				stream.Position = header.StartOfEntries;
-				uint[] entries = stream.ReadUInt32Array(header.EntryCount, e);
-
-				for (long i = 0; i < entries.LongLength; ++i) {
-					uint entryLoc = entries[i];
-					stream.Position = entryLoc;
-					uint type = stream.ReadUInt32(EndianUtils.Endianness.LittleEndian);
-
-					switch (type) {
-						case 0x34317369: {
-							stream.Position = entryLoc + 0x14;
-							uint length = stream.ReadUInt32(e);
-							uint offset = stream.ReadUInt32(e);
-							stream.Position = entryLoc + 0xbc;
-							byte[] bnsfheader = stream.ReadUInt8Array(0x30);
-
-							stream.Position = header.StartOfFiles + offset;
-							using (var fs = new FileStream(Path.Combine(targetFolder, i.ToString("D8") + ".bnsf"), FileMode.Create)) {
-								fs.Write(bnsfheader);
-								StreamUtils.CopyStream(stream, fs, length);
-							}
-						}
-						break;
-						case 0x707364: {
-							stream.Position = entryLoc + 0x14;
-							uint length = stream.ReadUInt32(e);
-							uint offset = stream.ReadUInt32(e);
-							stream.Position = entryLoc + 0xbc;
-							byte[] dspheader = stream.ReadUInt8Array(0x60);
-
-							stream.Position = header.StartOfFiles + offset;
-							using (var fs = new FileStream(Path.Combine(targetFolder, i.ToString("D8") + ".dsp"), FileMode.Create)) {
-								fs.Write(dspheader);
-								StreamUtils.CopyStream(stream, fs, length);
-							}
-						}
-						break;
-						case 0x337461: {
-							stream.Position = entryLoc;
-							byte[] at3header = stream.ReadUInt8Array(0x100);
-
-							stream.Position = entryLoc + 0x14;
-							uint length = stream.ReadUInt32(e);
-							uint offset = stream.ReadUInt32(e);
-							stream.Position = header.StartOfFiles + offset;
-
-							using (var fs = new FileStream(Path.Combine(targetFolder, i.ToString("D8") + ".at3"), FileMode.Create)) {
-								fs.Write(at3header);
-								StreamUtils.CopyStream(stream, fs, length);
-							}
-						}
-						break;
-						case 0x676176: {
-							stream.Position = entryLoc;
-							byte[] vagheader = stream.ReadUInt8Array(0xc0);
-
-							stream.Position = entryLoc + 0x14;
-							uint length = stream.ReadUInt32(e);
-							uint offset = stream.ReadUInt32(e);
-							stream.Position = header.StartOfFiles + offset;
-
-							using (var fs = new FileStream(Path.Combine(targetFolder, i.ToString("D8") + ".vag"), FileMode.Create)) {
-								fs.Write(vagheader);
-								fs.WriteUInt64(0);
-								fs.WriteUInt64(0);
-								StreamUtils.CopyStream(stream, fs, length);
-							}
-						}
-						break;
-						default:
-							Console.WriteLine("Unimplemented nub subtype: 0x" + type.ToString("x8"));
-							break;
-					}
-
-				}
-
-				return;
+			using (var nub = new NUB(duplicatableStream, e)) {
+				nub.Extract(targetFolder);
 			}
+		}
+
+		public void Extract(string targetFolder) {
+			for (long i = 0; i < EntryCount; ++i) {
+				var file = GetChildByIndex(i) as NubFile;
+				if (file != null) {
+					using (var ds = file.DataStream.Duplicate())
+					using (var fs = new FileStream(Path.Combine(targetFolder, i.ToString("D8") + "." + file.Type), FileMode.Create)) {
+						StreamUtils.CopyStream(ds, fs);
+					}
+				}
+			}
+		}
+
+		public override INode GetChildByIndex(long index) {
+			if (index >= 0 && index < Entries.LongLength) {
+				uint entryLoc = Entries[index];
+				Stream.Position = entryLoc;
+				uint type = Stream.ReadUInt32(EndianUtils.Endianness.LittleEndian);
+
+				switch (type) {
+					case 0x34317369: {
+						Stream.Position = entryLoc + 0x14;
+						uint length = Stream.ReadUInt32(Endian);
+						uint offset = Stream.ReadUInt32(Endian);
+						Stream.Position = entryLoc + 0xbc;
+						byte[] bnsfheader = Stream.ReadUInt8Array(0x30);
+
+						Stream.Position = Header.StartOfFiles + offset;
+						using (var ms = new MemoryStream()) {
+							ms.Write(bnsfheader);
+							StreamUtils.CopyStream(Stream, ms, length);
+							return new NubFile(ms.CopyToByteArrayStreamAndDispose(), "bnsf");
+						}
+					}
+					case 0x707364: {
+						Stream.Position = entryLoc + 0x14;
+						uint length = Stream.ReadUInt32(Endian);
+						uint offset = Stream.ReadUInt32(Endian);
+						Stream.Position = entryLoc + 0xbc;
+						byte[] dspheader = Stream.ReadUInt8Array(0x60);
+
+						Stream.Position = Header.StartOfFiles + offset;
+						using (var ms = new MemoryStream()) {
+							ms.Write(dspheader);
+							StreamUtils.CopyStream(Stream, ms, length);
+							return new NubFile(ms.CopyToByteArrayStreamAndDispose(), "dsp");
+						}
+					}
+					case 0x337461: {
+						Stream.Position = entryLoc;
+						byte[] at3header = Stream.ReadUInt8Array(0x100);
+
+						Stream.Position = entryLoc + 0x14;
+						uint length = Stream.ReadUInt32(Endian);
+						uint offset = Stream.ReadUInt32(Endian);
+						Stream.Position = Header.StartOfFiles + offset;
+
+						using (var ms = new MemoryStream()) {
+							ms.Write(at3header);
+							StreamUtils.CopyStream(Stream, ms, length);
+							return new NubFile(ms.CopyToByteArrayStreamAndDispose(), "at3");
+						}
+					}
+					case 0x676176: {
+						Stream.Position = entryLoc;
+						byte[] vagheader = Stream.ReadUInt8Array(0xc0);
+
+						Stream.Position = entryLoc + 0x14;
+						uint length = Stream.ReadUInt32(Endian);
+						uint offset = Stream.ReadUInt32(Endian);
+						Stream.Position = Header.StartOfFiles + offset;
+
+						using (var ms = new MemoryStream()) {
+							ms.Write(vagheader);
+							ms.WriteUInt64(0);
+							ms.WriteUInt64(0);
+							StreamUtils.CopyStream(Stream, ms, length);
+							return new NubFile(ms.CopyToByteArrayStreamAndDispose(), "vag");
+						}
+					}
+					default:
+						Console.WriteLine("Unimplemented nub subtype: 0x" + type.ToString("x8"));
+						return null;
+				}
+			}
+			return null;
 		}
 
 		public static void RebuildNub(DuplicatableStream duplicatableStream, string infolder, string outpath, EndianUtils.Endianness e) {
@@ -175,6 +201,22 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 				outstream.WriteUInt32((uint)filesSize, e);
 			}
 		}
+
+		public override void Dispose() {
+			if (Stream != null) {
+				Stream.Close();
+				Stream.Dispose();
+				Stream = null;
+			}
+		}
+
+		public override INode GetChildByName(string name) {
+			return null;
+		}
+
+		public override IEnumerable<string> GetChildNames() {
+			return new List<string>();
+		}
 	}
 
 	public class NubHeader {
@@ -198,6 +240,14 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 			FilesSize = stream.ReadUInt32(e);
 			StartOfEntries = stream.ReadUInt32(e);
 			StartOfHeaders = stream.ReadUInt32(e);
+		}
+	}
+
+	public class NubFile : FileFromStream {
+		public string Type { get; private set; }
+
+		public NubFile(DuplicatableStream stream, string type) : base(stream) {
+			Type = type;
 		}
 	}
 }
