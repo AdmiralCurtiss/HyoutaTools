@@ -26,9 +26,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public bool ContainsFilenames { get { return ( Value & 0x0008 ) == 0x0008; } }
 		public bool ContainsFiletypes { get { return ( Value & 0x0020 ) == 0x0020; } }
 		public bool ContainsFileMetadata { get { return ( Value & 0x0040 ) == 0x0040; } }
-		public bool Contains0x0080 { get { return ( Value & 0x0080 ) == 0x0080; } }
+		public bool Contains0x0080 { get { return (Value & 0x0080) == 0x0080; } }
+		public bool Contains0x0100 { get { return (Value & 0x0100) == 0x0100; } }
 
-		public bool HasUnknownDataTypes { get { return ( Value & 0xFF10 ) != 0; } }
+		public bool HasUnknownDataTypes { get { return ( Value & 0xFE10 ) != 0; } }
 	}
 
 	public class FileInfo {
@@ -40,6 +41,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public string FileType = null;
 		public List<(string Key, string Value)> Metadata = null;
 		public uint? Unknown0x0080 = null;
+		public uint? Unknown0x0100 = null;
 
 		public bool ShouldSkip => ( Location != null && Location == 0xFFFFFFFF ) || ( Unknown0x0080 != null && Unknown0x0080 > 0 );
 
@@ -77,6 +79,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 			if ( bitmask.Contains0x0080 ) {
 				Unknown0x0080 = stream.ReadUInt32().FromEndian( endian );
+			}
+			if (bitmask.Contains0x0100) {
+				Unknown0x0100 = stream.ReadUInt32(endian);
 			}
 		}
 
@@ -203,9 +208,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			Alignment = FirstFileStart;
 
-			Console.WriteLine( "Content Bitmask: 0x" + ContentBitmask.Value.ToString( "X4" ) );
-			if ( ContentBitmask.HasUnknownDataTypes ) {
-				Console.WriteLine( "WARNING: Bitmask identifies unknown data types, data interpretation will probably be incorrect." );
+			if (ContentBitmask.HasUnknownDataTypes) {
+				Console.WriteLine("WARNING: Content Bitmask (" + "0x" + ContentBitmask.Value.ToString("X4") + ") identifies unknown data types, data interpretation will probably be incorrect.");
 			}
 
 			Files = new List<FileInfo>( (int)FileCount );
@@ -416,6 +420,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( ContentBitmask.ContainsFilenames ) { EntrySize += 0x20; }
 			if ( ContentBitmask.ContainsFiletypes ) { EntrySize += 4; }
 			if ( ContentBitmask.ContainsFileMetadata ) { EntrySize += 4; }
+			if (ContentBitmask.Contains0x0080) { EntrySize += 4; }
+			if (ContentBitmask.Contains0x0100) { EntrySize += 4; }
 
 			bool headerToSeparateFile = false;
 			if ( headerName != null ) { headerToSeparateFile = true; }
@@ -461,6 +467,22 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						} else {
 							// place a null for now and go back to fix later
 							f.WriteUInt32( 0 );
+						}
+					}
+					if (ContentBitmask.Contains0x0080) {
+						if (infile != null) {
+							infile.Position = f.Position;
+							f.WriteUInt32(infile.ReadUInt32());
+						} else {
+							f.WriteUInt32(0);
+						}
+					}
+					if (ContentBitmask.Contains0x0100) {
+						if (infile != null) {
+							infile.Position = f.Position;
+							f.WriteUInt32(infile.ReadUInt32());
+						} else {
+							f.WriteUInt32(0);
 						}
 					}
 				}
