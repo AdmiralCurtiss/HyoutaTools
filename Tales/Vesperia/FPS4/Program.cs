@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using HyoutaUtils;
+using HyoutaUtils.Streams;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public class Program {
@@ -240,21 +242,47 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				files = files.OrderBy( x => x.Split( '.' ).Last() ).ToArray();
 			}
 
-			FPS4.Pack(
-				files,
-				outName,
-				fps4.ContentBitmask,
-				fps4.Endian,
-				fps4.Unknown2,
-				originalFps4 != null ? new System.IO.FileStream( originalFps4, System.IO.FileMode.Open ) : null,
-				fps4.ArchiveName,
-				fps4.FirstFileStart,
-				fps4.Alignment,
-				headerName: outHeaderName,
-				metadata: metadata,
-				alignmentFirstFile: alignmentFirstFile,
-				fileLocationMultiplier: multiplier
-			);
+			Stream outStream = new FileStream(outName, FileMode.Create);
+			Stream outHeaderStream = outHeaderName == null ? null : new FileStream(outHeaderName, FileMode.Create);
+
+			List<PackFileInfo> packFileInfos = new List<PackFileInfo>(files.Length);
+			foreach (var file in files) {
+				var fi = new System.IO.FileInfo(file);
+				var p = new PackFileInfo();
+				p.Name = fi.Name;
+				p.Length = fi.Length;
+				if (metadata.Contains('p')) {
+					try {
+						p.RelativePath = FPS4.GetRelativePath(outHeaderName == null ? outName : outHeaderName, fi.FullName);
+					} catch (Exception) { }
+				}
+				p.DataStream = new DuplicatableFileStream(file);
+				packFileInfos.Add(p);
+			}
+
+
+			try {
+				FPS4.Pack(
+					packFileInfos,
+					outStream,
+					fps4.ContentBitmask,
+					fps4.Endian,
+					fps4.Unknown2,
+					originalFps4 != null ? new System.IO.FileStream(originalFps4, System.IO.FileMode.Open) : null,
+					fps4.ArchiveName,
+					fps4.FirstFileStart,
+					fps4.Alignment,
+					outputHeaderStream: outHeaderStream,
+					metadata: metadata,
+					alignmentFirstFile: alignmentFirstFile,
+					fileLocationMultiplier: multiplier
+				);
+			} finally {
+				outStream.Close();
+				if (outHeaderStream != null) {
+					outHeaderStream.Close();
+				}
+			}
 
 			return 0;
 		}
