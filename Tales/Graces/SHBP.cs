@@ -2,6 +2,7 @@
 using HyoutaUtils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,7 @@ namespace HyoutaTools.Tales.Graces {
 		public List<uint> Hashes;
 		public byte[] Rest;
 
-		public SHBP(DuplicatableStream duplicatableStream) {
-			EndianUtils.Endianness e = EndianUtils.Endianness.BigEndian;
+		public SHBP(DuplicatableStream duplicatableStream, EndianUtils.Endianness e = EndianUtils.Endianness.BigEndian) {
 			using (DuplicatableStream s = duplicatableStream.Duplicate()) {
 				uint magic = s.ReadUInt32(EndianUtils.Endianness.LittleEndian);
 				if (magic != 0x50424853) {
@@ -27,8 +27,22 @@ namespace HyoutaTools.Tales.Graces {
 
 				s.ReadAlign(0x10);
 
-				// unclear what this is... it's compto compressed and only shows up for voice files, maybe lipsync or timing data?
+				// seems to be lipsync data
 				Rest = s.ReadUInt8Array(s.Length - s.Position);
+			}
+		}
+
+		public DuplicatableStream WriteToStream(EndianUtils.Endianness e = EndianUtils.Endianness.BigEndian) {
+			using (MemoryStream ms = new MemoryStream()) {
+				ms.WriteUInt32(0x50424853, EndianUtils.Endianness.LittleEndian);
+				ms.WriteUInt32((uint)Hashes.Count, e);
+				for (int i = 0; i < Hashes.Count; ++i) {
+					ms.WriteUInt32(Hashes[i], e);
+				}
+				ms.WriteAlign(0x10);
+				ms.Write(Rest);
+				ms.WriteAlign(0x10);
+				return ms.CopyToByteArrayStreamAndDispose();
 			}
 		}
 	}
