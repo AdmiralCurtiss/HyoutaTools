@@ -5,6 +5,7 @@ using HyoutaUtils;
 using HyoutaUtils.Streams;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,8 +18,7 @@ namespace HyoutaTools.Tales.Vesperia.SpkdUnpack {
 
 		public int MaxFileCount => Files.Count * 3;
 
-		public SPKD(DuplicatableStream duplicatableStream) {
-			EndianUtils.Endianness e = EndianUtils.Endianness.BigEndian;
+		public SPKD(DuplicatableStream duplicatableStream, EndianUtils.Endianness e = EndianUtils.Endianness.BigEndian) {
 			Stream = duplicatableStream.Duplicate();
 			Stream.Position = 4;
 			uint fileCount = Stream.ReadUInt32(e);
@@ -94,11 +94,64 @@ namespace HyoutaTools.Tales.Vesperia.SpkdUnpack {
 		}
 
 		public override IEnumerable<string> GetChildNames() {
-			List<string> names = new List<string>(Files.Count);
+			List<string> names = new List<string>(Files.Count * 3);
 			for (int i = 0; i < Files.Count * 3; ++i) {
 				names.Add(GetFileName(i));
 			}
 			return names;
+		}
+
+		public List<SpkdPackFileData> GetPackData() {
+			var packs = new List<SpkdPackFileData>(Files.Count);
+			for (int i = 0; i < Files.Count; ++i) {
+				SpkdPackFileData p = new SpkdPackFileData();
+				p.Name = Files[i].Name;
+				p.Unknown = Files[i].Unknown;
+				p.File0 = GetChildByIndex(i * 3 + 0)?.AsFile?.DataStream?.Duplicate();
+				p.File1 = GetChildByIndex(i * 3 + 1)?.AsFile?.DataStream?.Duplicate();
+				p.File2 = GetChildByIndex(i * 3 + 2)?.AsFile?.DataStream?.Duplicate();
+				packs.Add(p);
+			}
+			return packs;
+		}
+
+		public static DuplicatableStream Pack(List<SpkdPackFileData> packs, EndianUtils.Endianness e = EndianUtils.Endianness.BigEndian) {
+			using (MemoryStream ms = new MemoryStream()) {
+				ms.WriteUInt32(0x444B5053, EndianUtils.Endianness.LittleEndian);
+				ms.WriteUInt32((uint)packs.Count, e);
+				ms.WriteUInt32(0, e);
+				ms.WriteUInt32(0x20, e);
+				ms.WriteAlign(0x20);
+				long headerstart = ms.Position;
+				for (int i = 0; i < packs.Count; ++i) {
+					var p = packs[i];
+					ms.WriteAscii(p.Name, 0x10);
+					ms.WriteUInt32(p.Unknown, e);
+					// file offsets, we'll fill these in later...
+					ms.WriteUInt32(0xffffffffu, e);
+					ms.WriteUInt32(0xffffffffu, e);
+					ms.WriteUInt32(0xffffffffu, e);
+				}
+				for (int i = 0; i < packs.Count; ++i) {
+					var p = packs[i];
+					for (int j = 0; j < 3; ++j) {
+						DuplicatableStream inject = j == 0 ? p.File0 : j == 1 ? p.File1 : p.File2;
+						if (inject != null) {
+							long pos = ms.Position;
+							ms.Position = headerstart + (i * 0x20) + 0x14 + (j * 4);
+							ms.WriteUInt32((uint)pos, e);
+							ms.Position = pos;
+							using (var ds = inject.Duplicate()) {
+								ds.Position = 0;
+								StreamUtils.CopyStream(ds, ms);
+							}
+							ms.WriteAlign(0x10);
+						}
+					}
+				}
+
+				return ms.CopyToByteArrayStreamAndDispose();
+			}
 		}
 
 		public class SpkdFileData {
@@ -111,6 +164,14 @@ namespace HyoutaTools.Tales.Vesperia.SpkdUnpack {
 			public uint GetFileStart(int i) {
 				return i == 0 ? FileStart0 : i == 1 ? FileStart1 : i == 2 ? FileStart2 : 0xffffffffu;
 			}
+		}
+
+		public class SpkdPackFileData {
+			public string Name;
+			public uint Unknown;
+			public DuplicatableStream File0;
+			public DuplicatableStream File1;
+			public DuplicatableStream File2;
 		}
 	}
 }
