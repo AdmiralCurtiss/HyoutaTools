@@ -11,6 +11,10 @@ namespace HyoutaTools.Tales.Graces {
 	public class iPck {
 		public List<byte[]> Data;
 
+		public iPck(List<byte[]> data) {
+			Data = data;
+		}
+
 		public iPck(DuplicatableStream duplicatableStream, EndianUtils.Endianness e = EndianUtils.Endianness.BigEndian) {
 			using (DuplicatableStream s = duplicatableStream.Duplicate()) {
 				uint magic = s.ReadUInt32(EndianUtils.Endianness.LittleEndian);
