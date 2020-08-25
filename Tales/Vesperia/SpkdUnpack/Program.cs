@@ -18,11 +18,14 @@ namespace HyoutaTools.Tales.Vesperia.SpkdUnpack {
 			var spkd = new SPKD(new DuplicatableFileStream(args[0]));
 
 			DirectoryInfo d = System.IO.Directory.CreateDirectory(args[0] + ".ext");
-			for (int i = 0; i < spkd.FileCount; ++i) {
-				string path = Path.Combine(d.FullName, spkd.GetFileName(i));
-				using (var ds = spkd.GetChildByIndex(i).AsFile.DataStream.Duplicate())
-				using (var fs = new FileStream(path, FileMode.Create)) {
-					StreamUtils.CopyStream(ds, fs);
+			for (int i = 0; i < spkd.MaxFileCount; ++i) {
+				var f = spkd.GetChildByIndex(i);
+				if (f != null) {
+					string path = Path.Combine(d.FullName, spkd.GetFileName(i));
+					using (var ds = f.AsFile.DataStream.Duplicate())
+					using (var fs = new FileStream(path, FileMode.Create)) {
+						StreamUtils.CopyStream(ds, fs);
+					}
 				}
 			}
 

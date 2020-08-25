@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 namespace HyoutaTools.Tales.Graces {
 	public class SHBP {
 		public List<uint> Hashes;
-		public byte[] Rest;
 
 		public SHBP(DuplicatableStream duplicatableStream, EndianUtils.Endianness e = EndianUtils.Endianness.BigEndian) {
 			using (DuplicatableStream s = duplicatableStream.Duplicate()) {
@@ -24,11 +23,6 @@ namespace HyoutaTools.Tales.Graces {
 				for (uint i = 0; i < count; ++i) {
 					Hashes.Add(s.ReadUInt32(e));
 				}
-
-				s.ReadAlign(0x10);
-
-				// seems to be lipsync data
-				Rest = s.ReadUInt8Array(s.Length - s.Position);
 			}
 		}
 
@@ -39,9 +33,6 @@ namespace HyoutaTools.Tales.Graces {
 				for (int i = 0; i < Hashes.Count; ++i) {
 					ms.WriteUInt32(Hashes[i], e);
 				}
-				ms.WriteAlign(0x10);
-				ms.Write(Rest);
-				ms.WriteAlign(0x10);
 				return ms.CopyToByteArrayStreamAndDispose();
 			}
 		}
