@@ -142,6 +142,20 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public long Length;
 		public string RelativePath; // written when using the 'p' metadata parameter; should be the path to the file within the FPS4 container
 		public DuplicatableStream DataStream;
+
+		// index of file in List<PackFileInfo> that should be used instead of this one
+		// this points both files at the same data, saving space in the container
+		public ulong? DuplicateOf = null;
+
+		public PackFileInfo() { }
+
+		public PackFileInfo(PackFileInfo other) {
+			Name = other.Name;
+			Length = other.Length;
+			RelativePath = other.RelativePath;
+			DataStream = other.DataStream != null ? other.DataStream.Duplicate() : null;
+			DuplicateOf = other.DuplicateOf;
+		}
 	}
 
 	public class FPS4 : ContainerBase {
@@ -566,13 +580,32 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 					// file entries
 					ulong ptr = FirstFileStart;
-					for ( int i = 0; i < files.Count; ++i ) {
-						f.Position = 0x1C + ( i * EntrySize );
+					ulong[] fileStarts = new ulong[files.Count];
+					for (int i = 0; i < files.Count; ++i) {
 						var fi = files[i];
-						if ( ContentBitmask.ContainsStartPointers ) { f.WriteUInt32( ( (uint)( ptr / fileLocationMultiplier ) ).ToEndian( Endian ) ); }
-						if ( ContentBitmask.ContainsSectorSizes ) { f.WriteUInt32( ( (uint)( fi.Length.Align( (int)Alignment ) ) ).ToEndian( Endian ) ); }
-						ptr += (ulong)fi.Length.Align( (int)Alignment );
+						if (fi.DuplicateOf == null) {
+							fileStarts[i] = ptr;
+							ptr += (ulong)fi.Length.Align((int)Alignment);
+						}
 					}
+					for (int i = 0; i < files.Count; ++i) {
+						var fi = files[i];
+						if (fi.DuplicateOf != null) {
+							fileStarts[i] = fileStarts[fi.DuplicateOf.Value];
+						}
+					}
+
+					for (int i = 0; i < files.Count; ++i) {
+						f.Position = 0x1C + (i * EntrySize);
+						var fi = files[i];
+						if (ContentBitmask.ContainsStartPointers) {
+							f.WriteUInt32(((uint)(fileStarts[i] / fileLocationMultiplier)).ToEndian(Endian));
+						}
+						if (ContentBitmask.ContainsSectorSizes) {
+							f.WriteUInt32(((uint)(fi.Length.Align((int)Alignment))).ToEndian(Endian));
+						}
+					}
+
 					f.Position = 0x1C + ( files.Count * EntrySize );
 					f.WriteUInt32( ( (uint)( ptr / fileLocationMultiplier ) ).ToEndian( Endian ) );
 
@@ -606,12 +639,37 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		private static void WriteFilesToFileStream( List<PackFileInfo> files, Stream f, uint Alignment ) {
 			for ( int i = 0; i < files.Count; ++i ) {
+				if (files[i].DuplicateOf != null) {
+					continue;
+				}
+
 				using ( var fs = files[i].DataStream.Duplicate() ) {
 					Console.WriteLine( "Packing #" + i.ToString( "D4" ) + ": " + files[i].Name );
 					StreamUtils.CopyStream( fs, f, (int)fs.Length );
 					while ( f.Length % Alignment != 0 ) { f.WriteByte( 0 ); }
 				}
 			}
+		}
+
+		public static List<PackFileInfo> DetectDuplicates(List<PackFileInfo> files) {
+			List<PackFileInfo> newlist = new List<PackFileInfo>(files.Count);
+			for (int i = 0; i < files.Count; ++i) {
+				var npfi = new PackFileInfo(files[i]);
+				npfi.DuplicateOf = null;
+				for (int j = 0; j < i; ++j) {
+					if (files[i].DataStream != null && files[j].DataStream != null) {
+						using (var istr = files[i].DataStream.Duplicate())
+						using (var jstr = files[j].DataStream.Duplicate()) {
+							if (StreamUtils.IsIdentical(istr, jstr)) {
+								npfi.DuplicateOf = (ulong)j;
+								break;
+							}
+						}
+					}
+				}
+				newlist.Add(npfi);
+			}
+			return newlist;
 		}
 
 		public void Close() {
