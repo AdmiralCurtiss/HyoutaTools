@@ -38,7 +38,7 @@ namespace HyoutaTools.Patches.Bps {
 			uint checksumPatch = Patch.ReadUInt32().FromEndian(EndianUtils.Endianness.LittleEndian);
 
 			Patch.Position = 0;
-			uint actualChecksumPatch = Checksums.CRC32.CalculateCRC32FromCurrentPosition(Patch, patchSize - 4);
+			uint actualChecksumPatch = ChecksumUtils.CalculateCRC32FromCurrentPosition(Patch, patchSize - 4).Value;
 			if (checksumPatch != actualChecksumPatch) {
 				throw new Exception("Patch checksum incorrect.");
 			}
@@ -61,7 +61,7 @@ namespace HyoutaTools.Patches.Bps {
 			}
 
 			Source.Position = 0;
-			uint actualChecksumSource = Checksums.CRC32.CalculateCRC32FromCurrentPosition(Source, Source.Length);
+			uint actualChecksumSource = ChecksumUtils.CalculateCRC32FromCurrentPosition(Source, Source.Length).Value;
 			if (checksumSource != actualChecksumSource) {
 				throw new Exception("Source checksum incorrect.");
 			}
@@ -87,7 +87,7 @@ namespace HyoutaTools.Patches.Bps {
 			}
 
 			Target.Position = 0;
-			uint actualChecksumTarget = Checksums.CRC32.CalculateCRC32FromCurrentPosition(Target, Target.Length);
+			uint actualChecksumTarget = ChecksumUtils.CalculateCRC32FromCurrentPosition(Target, Target.Length).Value;
 			if (checksumTarget != actualChecksumTarget) {
 				throw new Exception("Target checksum incorrect.");
 			}

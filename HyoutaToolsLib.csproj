@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Checksum\ccitt.cs" />
-    <Compile Include="Checksum\CRC32.cs" />
     <Compile Include="DanganRonpa\DanganUtil.cs" />
     <Compile Include="DanganRonpa\Font\DRFontInfo.cs" />
     <Compile Include="DanganRonpa\Lin\LIN.cs" />
