@@ -43,6 +43,47 @@ namespace HyoutaTools.Patches.Bps {
 			}
 			throw new Exception("should never reach here");
 		}
+
+		public static ulong EncodeSignedNumber(long v) {
+			bool negative = v < 0;
+			if (negative) {
+				return (((ulong)-v) << 1) | 1ul;
+			} else {
+				return (((ulong)v) << 1);
+			}
+		}
+
+		public static ulong EncodeAction(Action action, ulong length) {
+			switch (action) {
+				case Action.SourceRead: return 0ul | ((length - 1) << 2);
+				case Action.TargetRead: return 1ul | ((length - 1) << 2);
+				case Action.SourceCopy: return 2ul | ((length - 1) << 2);
+				case Action.TargetCopy: return 3ul | ((length - 1) << 2);
+			}
+			throw new Exception("should never reach here");
+		}
+
+		public static void WriteUnsignedNumber(this Stream s, ulong d) {
+			ulong data = d;
+			while (true) {
+				byte x = (byte)(data & 0x7f);
+				data >>= 7;
+				if (data == 0) {
+					s.WriteByte((byte)(0x80 | x));
+					break;
+				}
+				s.WriteByte(x);
+				--data;
+			}
+		}
+
+		public static void WriteSignedNumber(this Stream s, long d) {
+			s.WriteUnsignedNumber(EncodeSignedNumber(d));
+		}
+
+		public static void WriteAction(this Stream s, Action action, ulong length) {
+			s.WriteUnsignedNumber(EncodeAction(action, length));
+		}
 	}
 
 	public enum Action {
