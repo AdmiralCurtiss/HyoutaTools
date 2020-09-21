@@ -97,6 +97,8 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.CompareFileLists",                "-"           ),  Generic.CompareFileLists.CompareFileLists.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.NUB.Extract",              "-"           ),  Tales.Vesperia.NUB.Program.ExecuteExtract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.NUB.Rebuild",              "-"           ),  Tales.Vesperia.NUB.Program.ExecuteRebuild) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "HyoutaArchive.Extract",                   "-"           ),  HyoutaArchive.Program.Extract) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "HyoutaArchive.Pack",                      "-"           ),  HyoutaArchive.Program.Pack) },
 		};
 	}
 }

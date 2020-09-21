@@ -108,6 +108,7 @@
     <Compile Include="Gust\g1t\DDSConverter.cs" />
     <Compile Include="Gust\g1t\g1t.cs" />
     <Compile Include="HalfMinuteHeroSecond\S2AR.cs" />
+    <Compile Include="HyoutaArchive\Program.cs" />
     <Compile Include="Initialization.cs" />
     <Compile Include="MyWorldMyWay\Tbl.cs" />
     <Compile Include="Narisokonai\scr.cs" />
