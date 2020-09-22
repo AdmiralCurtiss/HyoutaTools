@@ -23,7 +23,7 @@ namespace HyoutaTools.HyoutaArchive {
 				files.Add(f);
 			}
 			using (var fs = new FileStream(args[1], FileMode.Create)) {
-				HyoutaUtils.HyoutaArchive.HyoutaArchiveChunk.Pack(fs, files, 0, HyoutaUtils.EndianUtils.Endianness.LittleEndian, null);
+				HyoutaUtils.HyoutaArchive.HyoutaArchiveChunk.Pack(fs, files, 0, HyoutaUtils.EndianUtils.Endianness.LittleEndian, null, null);
 			}
 
 			return 0;
