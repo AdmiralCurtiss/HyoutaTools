@@ -16,7 +16,7 @@ namespace HyoutaTools.Patches.Bps {
 			using (var source = new FileStream(sourceName, FileMode.Open, FileAccess.Read))
 			using (var patch = new FileStream(patchName, FileMode.Open, FileAccess.Read))
 			using (var target = new FileStream(targetName, FileMode.Create, FileAccess.ReadWrite)) {
-				BpsPatcher.ApplyPatchToStream(source, patch, target);
+				HyoutaUtils.Bps.BpsPatcher.ApplyPatchToStream(source, patch, target);
 			}
 			return 0;
 		}
