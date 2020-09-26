@@ -38,7 +38,7 @@ namespace HyoutaTools.HyoutaArchive {
 			string infile = args[0];
 			string outdir = args.Count == 1 ? infile + ".ext" : args[1];
 
-			using (var archive = new HyoutaUtils.HyoutaArchive.HyoutaArchiveFile(new DuplicatableFileStream(infile))) {
+			using (var archive = new HyoutaUtils.HyoutaArchive.HyoutaArchiveContainer(new DuplicatableFileStream(infile))) {
 				Directory.CreateDirectory(outdir);
 				for (long i = 0; i < archive.Filecount; ++i) {
 					var f = archive.GetFile(i);
