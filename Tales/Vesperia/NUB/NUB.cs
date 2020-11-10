@@ -19,16 +19,16 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 
 		public uint EntryCount => Header.EntryCount;
 
-		public NUB(DuplicatableStream duplicatableStream, EndianUtils.Endianness e) {
-			Endian = e;
+		public NUB(DuplicatableStream duplicatableStream, EndianUtils.Endianness? e) {
 			Stream = duplicatableStream.Duplicate();
 			Stream.Position = 0;
 			Header = new NubHeader(Stream, e);
+			Endian = Header.Endian;
 			Stream.Position = Header.StartOfEntries;
-			Entries = Stream.ReadUInt32Array(Header.EntryCount, e);
+			Entries = Stream.ReadUInt32Array(Header.EntryCount, Endian);
 		}
 
-		public static void ExtractNub(DuplicatableStream duplicatableStream, string targetFolder, EndianUtils.Endianness e) {
+		public static void ExtractNub(DuplicatableStream duplicatableStream, string targetFolder, EndianUtils.Endianness? e) {
 			Directory.CreateDirectory(targetFolder);
 			using (var nub = new NUB(duplicatableStream, e)) {
 				nub.Extract(targetFolder);
@@ -51,10 +51,10 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 			if (index >= 0 && index < Entries.LongLength) {
 				uint entryLoc = Entries[index];
 				Stream.Position = entryLoc;
-				uint type = Stream.ReadUInt32(EndianUtils.Endianness.LittleEndian);
+				uint type = Stream.ReadUInt32(Endian);
 
 				switch (type) {
-					case 0x34317369: {
+					case 0x69733134: {
 						Stream.Position = entryLoc + 0x14;
 						uint length = Stream.ReadUInt32(Endian);
 						uint offset = Stream.ReadUInt32(Endian);
@@ -68,7 +68,7 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 							return new NubFile(ms.CopyToByteArrayStreamAndDispose(), "bnsf");
 						}
 					}
-					case 0x707364: {
+					case 0x64737000: {
 						Stream.Position = entryLoc + 0x14;
 						uint length = Stream.ReadUInt32(Endian);
 						uint offset = Stream.ReadUInt32(Endian);
@@ -82,7 +82,7 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 							return new NubFile(ms.CopyToByteArrayStreamAndDispose(), "dsp");
 						}
 					}
-					case 0x337461: {
+					case 0x61743300: {
 						Stream.Position = entryLoc;
 						byte[] at3header = Stream.ReadUInt8Array(0x100);
 
@@ -97,7 +97,7 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 							return new NubFile(ms.CopyToByteArrayStreamAndDispose(), "at3");
 						}
 					}
-					case 0x676176: {
+					case 0x76616700: {
 						Stream.Position = entryLoc;
 						byte[] vagheader = Stream.ReadUInt8Array(0xc0);
 
@@ -228,18 +228,29 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 		public uint StartOfEntries;
 		public uint StartOfHeaders;
 
-		public NubHeader(DuplicatableStream stream, EndianUtils.Endianness e) {
+		public EndianUtils.Endianness Endian; // not actually a field in the header, at least not here -- might be the first byte?
+
+		public NubHeader(DuplicatableStream stream, EndianUtils.Endianness? endian) {
 			Magic = stream.ReadUInt64(EndianUtils.Endianness.LittleEndian);
-			if (Magic != 0x10200) {
+
+			EndianUtils.Endianness suspectedEndian;
+			if (Magic == 0x10200) {
+				suspectedEndian = EndianUtils.Endianness.BigEndian;
+			} else if (Magic == 0x10201) {
+				suspectedEndian = EndianUtils.Endianness.LittleEndian;
+			} else {
 				throw new Exception("unexpected magic in NUB");
 			}
 
+			EndianUtils.Endianness e = endian ?? suspectedEndian;
 			Fileid = stream.ReadUInt32(e); // or something like that? seems unique per archive in each game
 			EntryCount = stream.ReadUInt32(e);
 			StartOfFiles = stream.ReadUInt32(e);
 			FilesSize = stream.ReadUInt32(e);
 			StartOfEntries = stream.ReadUInt32(e);
 			StartOfHeaders = stream.ReadUInt32(e);
+
+			Endian = e;
 		}
 	}
 

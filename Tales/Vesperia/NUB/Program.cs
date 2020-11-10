@@ -15,7 +15,7 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 			string inpath = args[0];
 			string outpath = args.Count > 1 ? args[1] : args[0] + ".ext";
 
-			NUB.ExtractNub(new DuplicatableFileStream(inpath), outpath, HyoutaUtils.EndianUtils.Endianness.BigEndian);
+			NUB.ExtractNub(new DuplicatableFileStream(inpath), outpath, null);
 
 			return 0;
 		}
