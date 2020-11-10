@@ -107,7 +107,17 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 						Stream.Position = Header.StartOfFiles + offset;
 
 						using (var ms = new MemoryStream()) {
-							ms.Write(vagheader);
+							if (Endian == EndianUtils.Endianness.LittleEndian) {
+								// unclear if this needs to be all swapped or just a subset...
+								for (int i = 0; i < 0xc0; i += 4) {
+									ms.WriteByte(vagheader[i + 3]);
+									ms.WriteByte(vagheader[i + 2]);
+									ms.WriteByte(vagheader[i + 1]);
+									ms.WriteByte(vagheader[i + 0]);
+								}
+							} else {
+								ms.Write(vagheader);
+							}
 							ms.WriteUInt64(0);
 							ms.WriteUInt64(0);
 							StreamUtils.CopyStream(Stream, ms, length);
