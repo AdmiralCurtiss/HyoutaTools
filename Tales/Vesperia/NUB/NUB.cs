@@ -54,7 +54,9 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 				uint type = Stream.ReadUInt32(Endian);
 
 				switch (type) {
-					case 0x69733134: {
+					// PC vesperia can't agree with itself whether this is endian-agnostic or not, the JP files have it swapped compared to the EN files...
+					case 0x69733134:
+					case 0x34317369: {
 						Stream.Position = entryLoc + 0x14;
 						uint length = Stream.ReadUInt32(Endian);
 						uint offset = Stream.ReadUInt32(Endian);
