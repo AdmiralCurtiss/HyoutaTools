@@ -92,6 +92,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.SaveDataParser",           "-"           ),  Tales.Vesperia.SaveData.SaveDataParser.Parse) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "AceAttorneyInvestigations.ScriptDumper",  "-"           ),  Other.AceAttorneyInvestigationsScriptDump.Dumper.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.SE3toNUB",                 "SE3toNUB"    ),  Tales.Vesperia.SE3.Program.ExtractToNub) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.SE3.Extract",              "-"           ),  Tales.Vesperia.SE3.Program.ExtractSE3) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.CPK.Extract",                       "-"           ),  Tales.CPK.Program.Extract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Patches.Bps.Patch",                       "-"           ),  Patches.Bps.Program.ExecutePatch) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Generic.CompareFileLists",                "-"           ),  Generic.CompareFileLists.CompareFileLists.Execute) },
