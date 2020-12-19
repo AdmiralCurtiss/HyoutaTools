@@ -101,6 +101,7 @@
     <Compile Include="GraceNote\Vesperia\StringDicImport\Importer.cs" />
     <Compile Include="GraceNote\Vesperia\TO8CHTXExport\Program.cs" />
     <Compile Include="GraceNote\Vesperia\TO8CHTXImport\Program.cs" />
+    <Compile Include="Gust\AtelierIris\VoiceSplitter.cs" />
     <Compile Include="Gust\ebm\ebm.cs" />
     <Compile Include="Gust\ebm\TextDumper.cs" />
     <Compile Include="Gust\ebm\EbmToSqlite.cs" />

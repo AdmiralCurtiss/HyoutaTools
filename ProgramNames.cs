@@ -100,6 +100,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Vesperia.NUB.Rebuild",              "-"           ),  Tales.Vesperia.NUB.Program.ExecuteRebuild) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "HyoutaArchive.Extract",                   "-"           ),  HyoutaArchive.Program.Extract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "HyoutaArchive.Pack",                      "-"           ),  HyoutaArchive.Program.Pack) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Gust.AtelierIris.VoiceSplitter",          "-"           ),  Gust.AtelierIris.VoiceSplitter.Execute) },
 		};
 	}
 }
