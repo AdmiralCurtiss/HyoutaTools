@@ -133,6 +133,8 @@
     <Compile Include="Other\TrailsInTheSkyScenarioDump\ScenarioBin.cs" />
     <Compile Include="Other\TrailsInTheSkyScenarioDump\DumpText.cs" />
     <Compile Include="Patches\Bps\Program.cs" />
+    <Compile Include="Patches\Bps\BpsToTextConverter.cs" />
+    <Compile Include="Patches\Bps\TextToBpsConverter.cs" />
     <Compile Include="Pokemon\Gen3\Checksum.cs" />
     <Compile Include="Pokemon\Gen3\HallOfFame.cs" />
     <Compile Include="Pokemon\Gen3\Save.cs" />
