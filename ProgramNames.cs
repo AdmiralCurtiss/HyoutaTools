@@ -103,6 +103,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Gust.AtelierIris.VoiceSplitter",          "-"           ),  Gust.AtelierIris.VoiceSplitter.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Patches.Bps.BpsToTextConverter",          "-"           ),  Patches.Bps.BpsToTextConverter.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Patches.Bps.TextToBpsConverter",          "-"           ),  Patches.Bps.TextToBpsConverter.Execute) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Patches.Bps.Create",                      "-"           ),  Patches.Bps.Program.ExecuteCreate) },
 		};
 	}
 }

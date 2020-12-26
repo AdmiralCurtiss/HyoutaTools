@@ -20,5 +20,24 @@ namespace HyoutaTools.Patches.Bps {
 			}
 			return 0;
 		}
+
+		public static int ExecuteCreate(List<string> args) {
+			if (args.Count < 3) {
+				Console.WriteLine("Usage: source.bin target.bin patch.bps");
+				return -1;
+			}
+
+			string sourcepath = args[0];
+			string targetpath = args[1];
+			string patchpath = args[2];
+
+			using (var sourcestream = new HyoutaUtils.Streams.DuplicatableFileStream(sourcepath))
+			using (var targetstream = new HyoutaUtils.Streams.DuplicatableFileStream(targetpath))
+			using (var outstream = new FileStream(patchpath, FileMode.Create)) {
+				CreateSimplest.CreatePatch(sourcestream, targetstream, outstream);
+			}
+
+			return 0;
+		}
 	}
 }
