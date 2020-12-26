@@ -35,23 +35,36 @@ namespace HyoutaTools.Patches.Bps {
 
 			// actions
 			while (Target.Position < Target.Length) {
-				if (IsNextByteSameInSourceAndTarget()) {
-					Source.ReadByte();
-					Target.ReadByte();
+				int s;
+				int t;
+				bool advancedS;
+				bool advancedT;
+				if (IsNextByteSameInSourceAndTarget(out s, out t, out advancedS, out advancedT)) {
 					ulong count = 1;
-					while (IsNextByteSameInSourceAndTarget()) {
+					while (IsNextByteSameInSourceAndTarget(out s, out t, out advancedS, out advancedT)) {
 						++count;
-						Source.ReadByte();
-						Target.ReadByte();
+					}
+					if (advancedS) {
+						Source.Position -= 1;
+					}
+					if (advancedT) {
+						Target.Position -= 1;
 					}
 					PatchOut.WriteAction(HyoutaUtils.Bps.Action.SourceRead, count);
 				} else {
+					if (advancedS) {
+						Source.Position -= 1;
+					}
+					if (advancedT) {
+						Target.Position -= 1;
+					}
 					long p = Target.Position;
 					ulong count = 0;
-					while (ShouldWriteNextByteFromTarget()) {
+					while (ShouldWriteNextByteFromTarget(out s, out t, out advancedS, out advancedT)) {
 						++count;
-						Source.ReadByte();
-						Target.ReadByte();
+					}
+					if (advancedS) {
+						Source.Position -= 1;
 					}
 					PatchOut.WriteAction(HyoutaUtils.Bps.Action.TargetRead, count);
 					Target.Position = p;
@@ -68,38 +81,46 @@ namespace HyoutaTools.Patches.Bps {
 			PatchOut.WriteUInt32(patchChecksum.Value, EndianUtils.Endianness.LittleEndian);
 		}
 
-		private bool IsNextByteSameInSourceAndTarget() {
-			int t = Target.ReadByte();
+		private bool IsNextByteSameInSourceAndTarget(out int s, out int t, out bool advancedS, out bool advancedT) {
+			s = -1;
+			advancedS = false;
+			advancedT = false;
+
+			t = Target.ReadByte();
 			if (t == -1) {
 				// target is eof
 				return false;
 			}
-			Target.Position -= 1;
+			advancedT = true;
 
-			int s = Source.ReadByte();
+			s = Source.ReadByte();
 			if (s == -1) {
 				// source is eof
 				return false;
 			}
-			Source.Position -= 1;
+			advancedS = true;
 
 			return s == t;
 		}
 
-		private bool ShouldWriteNextByteFromTarget() {
-			int t = Target.ReadByte();
+		private bool ShouldWriteNextByteFromTarget(out int s, out int t, out bool advancedS, out bool advancedT) {
+			s = -1;
+			advancedS = false;
+			advancedT = false;
+
+			t = Target.ReadByte();
 			if (t == -1) {
 				// target is eof
 				return false;
 			}
-			Target.Position -= 1;
+			advancedT = true;
 
-			int s = Source.ReadByte();
+			s = Source.ReadByte();
 			if (s == -1) {
 				// source is eof
 				return true;
 			}
-			Source.Position -= 1;
+			advancedS = true;
 
 			return s != t;
 		}
