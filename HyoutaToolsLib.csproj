@@ -357,6 +357,10 @@
       <Project>{213d12fe-9e77-44b3-9a63-3cd2a566c6dc}</Project>
       <Name>utf_tab-sharp</Name>
     </ProjectReference>
+    <ProjectReference Include="zlib-sharp\zlib-sharp\zlib-sharp.csproj">
+      <Project>{af67b09f-7232-4629-a4a9-f75f7e1aff65}</Project>
+      <Name>zlib-sharp</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core">

@@ -67,22 +67,32 @@ namespace HyoutaTools.Tales.tlzc {
 				return retval;
 			}
 
-			public byte[] Decompress( byte[] buffer ) {
-				MemoryStream result = new MemoryStream();
-				int inSize = BitConverter.ToInt32( buffer, 8 );
-				int outSize = BitConverter.ToInt32( buffer, 12 );
-				int offset = 0x18;
-
+			public byte[] Decompress(byte[] buffer) {
 				bool assume_zlib = true;
-				if ( assume_zlib ) {
-					throw new Exception("zlib based tlzc compression currently unavailable, use revision https://github.com/AdmiralCurtiss/HyoutaTools/tree/525209cc0ada7d54f1a67f6f82c28c3e6cd0f722 for now");
-				} else {
-					using ( DeflateStream decompressionStream = new DeflateStream( new MemoryStream( buffer, offset, inSize - offset ), CompressionMode.Decompress ) ) {
-						StreamUtils.CopyStream( decompressionStream, result, outSize );
+				if (assume_zlib) {
+					Console.WriteLine("assuming zlib compression, trying to decompress...");
+					ulong insize = BitConverter.ToUInt32(buffer, 8) - 0x18;
+					ulong outsize = BitConverter.ToUInt32(buffer, 12);
+					byte[] input = new byte[(long)insize];
+					for (ulong i = 0; i < insize; ++i) {
+						input[i] = buffer[0x18 + i];
 					}
+					byte[] output = new byte[(long)outsize];
+					int result = zlib_sharp.uncompr.uncompress(output, ref outsize, input, insize);
+					if (result != 0) {
+						throw new Exception(string.Format("zlib decompression error ({0})", result));
+					}
+					return output;
+				} else {
+					MemoryStream result = new MemoryStream();
+					int inSize = BitConverter.ToInt32(buffer, 8);
+					int outSize = BitConverter.ToInt32(buffer, 12);
+					int offset = 0x18;
+					using (DeflateStream decompressionStream = new DeflateStream(new MemoryStream(buffer, offset, inSize - offset), CompressionMode.Decompress)) {
+						StreamUtils.CopyStream(decompressionStream, result, outSize);
+					}
+					return result.ToArray();
 				}
-
-				return result.ToArray();
 			}
 		}
 

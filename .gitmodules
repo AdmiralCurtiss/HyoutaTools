@@ -4,3 +4,6 @@
 [submodule "utf_tab-sharp"]
 	path = utf_tab-sharp
 	url = https://github.com/AdmiralCurtiss/utf_tab-sharp.git
+[submodule "zlib-sharp"]
+	path = zlib-sharp
+	url = https://github.com/AdmiralCurtiss/zlib-sharp.git

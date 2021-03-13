@@ -31,3 +31,9 @@ See HyoutaUtils/LICENSE for details.
 == utf_tab-sharp ==
 Licensed under the MIT License, Copyright (c) 2014 Adam Gashlin
 See utf_tab-sharp/LICENSE for details.
+
+== zlib-sharp ==
+Licensed under the zlib License.
+zlib (C) 1995-2017 Jean-loup Gailly and Mark Adler
+zlib-sharp (C) 2021 Admiral H. Curtiss
+See zlib-sharp/LICENSE for details.
