@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.IO.Compression;
 using HyoutaUtils;
+using zlib_sharp;
 
 namespace HyoutaTools.Tales.tlzc {
 	class TLZC {
@@ -73,13 +74,9 @@ namespace HyoutaTools.Tales.tlzc {
 					Console.WriteLine("assuming zlib compression, trying to decompress...");
 					ulong insize = BitConverter.ToUInt32(buffer, 8) - 0x18;
 					ulong outsize = BitConverter.ToUInt32(buffer, 12);
-					byte[] input = new byte[(long)insize];
-					for (ulong i = 0; i < insize; ++i) {
-						input[i] = buffer[0x18 + i];
-					}
 					byte[] output = new byte[(long)outsize];
-					int result = zlib_sharp.uncompr.uncompress(output, ref outsize, input, insize);
-					if (result != 0) {
+					int result = zlib.uncompress(output, 0, ref outsize, buffer, 0x18, insize);
+					if (result != zlib.Z_OK) {
 						throw new Exception(string.Format("zlib decompression error ({0})", result));
 					}
 					return output;
