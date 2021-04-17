@@ -37,35 +37,63 @@ namespace HyoutaTools.Tales.tlzc {
 		}
 
 		class Compression2 {
-			public byte[] Compress( byte[] buffer ) {
-				MemoryStream result = new MemoryStream();
-				BinaryWriter bw = new BinaryWriter( result );
-
-				bw.Write( new byte[] { 0x54, 0x4C, 0x5A, 0x43 } );
-				bw.Write( (byte)0x01 );
-				bw.Write( (byte)0x02 );
-				bw.Write( (byte)0x00 );
-				bw.Write( (byte)0x00 );
-				bw.Write( (int)0 );   // compressed size - we'll fill this in once we know it
-				bw.Write( (int)buffer.Length );   // decompressed size
-				bw.Write( (int)0 );   // unknown, 0
-				bw.Write( (int)0 );   // unknown, 0
-
+			public byte[] Compress(byte[] buffer) {
 				bool assume_zlib = true;
-				if ( assume_zlib ) {
-					throw new Exception("zlib based tlzc compression currently unavailable, use revision https://github.com/AdmiralCurtiss/HyoutaTools/tree/525209cc0ada7d54f1a67f6f82c28c3e6cd0f722 for now");
+				if (assume_zlib) {
+					Console.WriteLine("compressing with zlib...");
+
+					ulong insize = (ulong)buffer.LongLength;
+					ulong maxsize = zlib.compressBound(insize);
+					byte[] tempout = new byte[maxsize];
+					ulong size = maxsize;
+					int result = zlib.compress2(tempout, 0, ref size, buffer, 0, insize, zlib.Z_BEST_COMPRESSION);
+					if (result != zlib.Z_OK) {
+						throw new Exception(string.Format("zlib compression error ({0})", result));
+					}
+
+					ulong outsize = size + 0x18;
+					byte[] output = new byte[outsize];
+					output[0x00] = 0x54; output[0x01] = 0x4C; output[0x02] = 0x5A; output[0x03] = 0x43;
+					output[0x04] = 0x01; output[0x05] = 0x02; output[0x06] = 0x00; output[0x07] = 0x00;
+					output[0x08] = (byte)(outsize & 0xFF);
+					output[0x09] = (byte)((outsize >> 8) & 0xFF);
+					output[0x0A] = (byte)((outsize >> 16) & 0xFF);
+					output[0x0B] = (byte)((outsize >> 24) & 0xFF);
+					output[0x0C] = (byte)(insize & 0xFF);
+					output[0x0D] = (byte)((insize >> 8) & 0xFF);
+					output[0x0E] = (byte)((insize >> 16) & 0xFF);
+					output[0x0F] = (byte)((insize >> 24) & 0xFF);
+					output[0x10] = 0x00; output[0x11] = 0x00; output[0x12] = 0x00; output[0x13] = 0x00;
+					output[0x14] = 0x00; output[0x15] = 0x00; output[0x16] = 0x00; output[0x17] = 0x00;
+					for (ulong i = 0; i < size; ++i) {
+						output[0x18 + i] = tempout[i];
+					}
+					return output;
 				} else {
+					MemoryStream result = new MemoryStream();
+					BinaryWriter bw = new BinaryWriter(result);
+
+					bw.Write(new byte[] { 0x54, 0x4C, 0x5A, 0x43 });
+					bw.Write((byte)0x01);
+					bw.Write((byte)0x02);
+					bw.Write((byte)0x00);
+					bw.Write((byte)0x00);
+					bw.Write((int)0);   // compressed size - we'll fill this in once we know it
+					bw.Write((int)buffer.Length);   // decompressed size
+					bw.Write((int)0);   // unknown, 0
+					bw.Write((int)0);   // unknown, 0
+
 					using ( DeflateStream compressionStream = new DeflateStream( result, CompressionLevel.Optimal ) ) {
 						compressionStream.Write( buffer );
 					}
+
+					byte[] retval = result.ToArray();
+
+					// fill in compressed size
+					ArrayUtils.CopyByteArrayPart(BitConverter.GetBytes((int)retval.Length), 0, retval, 8, 4);
+
+					return retval;
 				}
-
-				byte[] retval = result.ToArray();
-
-				// fill in compressed size
-				ArrayUtils.CopyByteArrayPart( BitConverter.GetBytes( (int)retval.Length ), 0, retval, 8, 4 );
-
-				return retval;
 			}
 
 			public byte[] Decompress(byte[] buffer) {
