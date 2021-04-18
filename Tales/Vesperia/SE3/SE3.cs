@@ -71,6 +71,10 @@ namespace HyoutaTools.Tales.Vesperia.SE3 {
 			return true;
 		}
 
+		public DuplicatableStream ExtractSe3HeaderStream() {
+			return new PartialStream(Data, 0, DataBegin);
+		}
+
 		public DuplicatableStream ExtractNubStream() {
 			return new PartialStream(Data, DataBegin, Data.Length - DataBegin);
 		}
