@@ -153,8 +153,10 @@
     <Compile Include="Tales\Abyss\PKF\Split.cs" />
     <Compile Include="Tales\Abyss\SB7\DumpText.cs" />
     <Compile Include="Tales\Abyss\SB7\SB7.cs" />
+    <Compile Include="Tales\CPK\CpkBuilder.cs" />
     <Compile Include="Tales\CPK\CpkContainer.cs" />
     <Compile Include="Tales\CPK\Program.cs" />
+    <Compile Include="Tales\CPK\UtfBuilder.cs" />
     <Compile Include="Tales\DestinyRemake\MglkExtract\Execute.cs" />
     <Compile Include="Tales\DestinyRemake\MglkExtract\MGLK.cs" />
     <Compile Include="Tales\DestinyRemake\TblBin\Execute.cs" />
