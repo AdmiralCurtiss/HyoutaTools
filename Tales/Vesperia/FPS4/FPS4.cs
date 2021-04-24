@@ -163,15 +163,15 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			ContentBitmask = new ContentInfo( 0x000F );
 			Alignment = 0x800;
 		}
-		public FPS4( string headerFilename, string contentFilename = null ) {
-			DuplicatableFileStream headerStream = new DuplicatableFileStream( headerFilename );
-			if ( !LoadFile( headerStream, contentFilename != null ? new DuplicatableFileStream( contentFilename ) : headerStream ) ) {
-				throw new Exception( "Failed loading FPS4." );
+		public FPS4(string headerFilename, string contentFilename = null, bool printProgressToConsole = false) {
+			DuplicatableFileStream headerStream = new DuplicatableFileStream(headerFilename);
+			if (!LoadFile(headerStream, contentFilename != null ? new DuplicatableFileStream(contentFilename) : headerStream, printProgressToConsole)) {
+				throw new Exception("Failed loading FPS4.");
 			}
 		}
-		public FPS4( DuplicatableStream headerStream, DuplicatableStream contentStream = null ) {
-			if ( !LoadFile( headerStream, contentStream != null ? contentStream : headerStream ) ) {
-				throw new Exception( "Failed loading FPS4." );
+		public FPS4(DuplicatableStream headerStream, DuplicatableStream contentStream = null, bool printProgressToConsole = false) {
+			if (!LoadFile(headerStream, contentStream != null ? contentStream : headerStream, printProgressToConsole)) {
+				throw new Exception("Failed loading FPS4.");
 			}
 		}
 		~FPS4() {
@@ -195,7 +195,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		public List<FileInfo> Files;
 
-		private bool LoadFile( DuplicatableStream headerStream, DuplicatableStream contentStream ) {
+		private bool LoadFile(DuplicatableStream headerStream, DuplicatableStream contentStream, bool printProgressToConsole) {
 			bool separateContentFile = headerStream != contentStream;
 			DuplicatableStream infile = headerStream.Duplicate();
 			contentFile = contentStream.Duplicate();
@@ -203,7 +203,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			infile.Seek( 0x00, SeekOrigin.Begin );
 			string magic = infile.ReadAscii( 4 );
 			if ( magic != "FPS4" ) {
-				Console.WriteLine( "Not an FPS4 file!" );
+				if (printProgressToConsole) {
+					Console.WriteLine("Not an FPS4 file!");
+				}
 				return false;
 			}
 
@@ -230,7 +232,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			Alignment = FirstFileStart;
 
-			if (ContentBitmask.HasUnknownDataTypes) {
+			if (ContentBitmask.HasUnknownDataTypes && printProgressToConsole) {
 				Console.WriteLine("WARNING: Content Bitmask (" + "0x" + ContentBitmask.Value.ToString("X4") + ") identifies unknown data types, data interpretation will probably be incorrect.");
 			}
 
@@ -243,7 +245,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			FileLocationMultiplier = separateContentFile ? 1 : CalculateFileLocationMultiplier();
 			ShouldGuessFilesizeFromNextFile = !ContentBitmask.ContainsFileSizes && !ContentBitmask.ContainsSectorSizes && CalculateIsLinear();
 
-			if ( FileLocationMultiplier != 1 ) {
+			if (FileLocationMultiplier != 1 && printProgressToConsole) {
 				Console.WriteLine( "Guessed FPS4 file location multiplier of " + FileLocationMultiplier + "; extraction may be incorrect if this is a wrong guess." );
 			}
 
@@ -291,14 +293,16 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		// TODO: Clean up code duplication between Extract(), GetChildByIndex(), GetChildByName(), GetChildNames()!
 
-		public void Extract( string dirname, bool noMetadataParsing = false ) {
+		public void Extract(string dirname, bool noMetadataParsing = false, bool printProgressToConsole = false) {
 			System.IO.Directory.CreateDirectory( dirname );
 
 			for ( int i = 0; i < Files.Count - 1; ++i ) {
 				FileInfo fi = Files[i];
 
 				if ( fi.ShouldSkip ) {
-					Console.WriteLine( "Skipped #" + i.ToString( "D4" ) );
+					if (printProgressToConsole) {
+						Console.WriteLine("Skipped #" + i.ToString("D4"));
+					}
 					continue;
 				}
 
@@ -322,7 +326,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 				FileStream outfile = new FileStream( Path.Combine( dirname, path ), FileMode.Create );
 
-				Console.WriteLine( "Extracting #" + i.ToString( "D4" ) + ": " + path );
+				if (printProgressToConsole) {
+					Console.WriteLine("Extracting #" + i.ToString("D4") + ": " + path);
+				}
 
 				contentFile.Seek( fileloc, SeekOrigin.Begin );
 				StreamUtils.CopyStream( contentFile, outfile, (int)filesize );
@@ -421,7 +427,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Stream outputHeaderStream = null,
 			string metadata = null,
 			uint? alignmentFirstFile = null,
-			uint fileLocationMultiplier = 1
+			uint fileLocationMultiplier = 1,
+			bool printProgressToConsole = false
 		) {
 			uint alignmentFirstFileInternal = alignmentFirstFile ?? Alignment;
 			if ( ( Alignment % fileLocationMultiplier ) != 0 ) {
@@ -630,21 +637,23 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				if ( headerToSeparateFile ) {
 					Stream dataStream = outputContentStream;
 					dataStream.Position = 0;
-					WriteFilesToFileStream( files, dataStream, Alignment );
+					WriteFilesToFileStream(files, dataStream, Alignment, printProgressToConsole);
 				} else {
-					WriteFilesToFileStream( files, f, Alignment );
+					WriteFilesToFileStream(files, f, Alignment, printProgressToConsole);
 				}
 			}
 		}
 
-		private static void WriteFilesToFileStream( List<PackFileInfo> files, Stream f, uint Alignment ) {
+		private static void WriteFilesToFileStream(List<PackFileInfo> files, Stream f, uint Alignment, bool printProgressToConsole) {
 			for ( int i = 0; i < files.Count; ++i ) {
 				if (files[i].DuplicateOf != null) {
 					continue;
 				}
 
 				using ( var fs = files[i].DataStream.Duplicate() ) {
-					Console.WriteLine( "Packing #" + i.ToString( "D4" ) + ": " + files[i].Name );
+					if (printProgressToConsole) {
+						Console.WriteLine("Packing #" + i.ToString("D4") + ": " + files[i].Name);
+					}
 					StreamUtils.CopyStream( fs, f, (int)fs.Length );
 					while ( f.Length % Alignment != 0 ) { f.WriteByte( 0 ); }
 				}

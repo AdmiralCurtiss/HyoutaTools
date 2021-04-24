@@ -50,11 +50,11 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			FPS4 fps4;
 			if ( headerFile != null ) {
-				fps4 = new FPS4( headerFile, inFile );
+				fps4 = new FPS4(headerFile, inFile, printProgressToConsole: true);
 			} else {
-				fps4 = new FPS4( inFile );
+				fps4 = new FPS4(inFile, printProgressToConsole: true);
 			}
-			fps4.Extract( outFile, noMetadataParsing: nometa );
+			fps4.Extract(outFile, noMetadataParsing: nometa, printProgressToConsole: true);
 
 			return 0;
 		}
@@ -221,7 +221,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			FPS4 fps4;
 			if ( originalFps4 != null ) {
-				fps4 = new FPS4( originalFps4 );
+				fps4 = new FPS4(originalFps4, printProgressToConsole: true);
 			} else {
 				fps4 = new FPS4();
 			}
@@ -275,7 +275,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					outputHeaderStream: outHeaderStream,
 					metadata: metadata,
 					alignmentFirstFile: alignmentFirstFile,
-					fileLocationMultiplier: multiplier
+					fileLocationMultiplier: multiplier,
+					printProgressToConsole: true
 				);
 			} finally {
 				outStream.Close();
