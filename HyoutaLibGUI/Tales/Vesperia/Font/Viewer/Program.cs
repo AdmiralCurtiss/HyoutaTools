@@ -13,16 +13,18 @@ namespace HyoutaLibGUI.Tales.Vesperia.Font.Viewer {
 
 	static class Program {
 		static void PrintUsage() {
-			Console.WriteLine( "FontDisplay" );
-			Console.WriteLine( " -fontinfofile ffinfo.bin/tov.elf" );
-			Console.WriteLine( " -fontinfofiletype fontinfo/elf" );
-			Console.WriteLine( " -textfile text.txt" );
-			Console.WriteLine( " -mode gui/png" );
-			Console.WriteLine( " -font FONTTEX10.TXV" );
-			Console.WriteLine( " -fontblock 0" );
-			Console.WriteLine( " -outfile text.png" );
-			Console.WriteLine( " -boxbybox" );
-			Console.WriteLine( " -dialoguebubble" );
+			MessageBox.Show(
+				  "Available arguments:"
+				+ "\n -fontinfofile ffinfo.bin/tov.elf"
+				+ "\n -fontinfofiletype fontinfo/elf"
+				+ "\n -textfile text.txt"
+				+ "\n -mode gui/png"
+				+ "\n -font FONTTEX10.TXV"
+				+ "\n -fontblock 0"
+				+ "\n -outfile text.png"
+				+ "\n -boxbybox"
+				+ "\n -dialoguebubble"
+			);
 		}
 
 		public static int Execute( List<string> args ) {

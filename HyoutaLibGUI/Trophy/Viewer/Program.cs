@@ -8,7 +8,7 @@ namespace HyoutaLibGUI.Trophy.Viewer {
 	class Program {
 		public static int Execute( List<string> args ) {
 			if ( args.Count < 1 ) {
-				Console.WriteLine( "Usage: TrophyViewer [folder]" );
+				System.Windows.Forms.MessageBox.Show("Requires 1 argument, which is the path to the trophy folder.");
 				return -1;
 			}
 

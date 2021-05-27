@@ -11,8 +11,8 @@ using HyoutaUtils;
 namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 	class RunItemViewer {
 		public static int Execute( List<string> args ) {
-			if ( args.Count < 7 ) {
-				Console.WriteLine( "Usage: [360/PS3] ITEM.DAT STRING_DIC.SO T8BTSK T8BTEMST COOKDAT WRLDDAT ITEMSORT.DAT" );
+			if ( args.Count < 8 ) {
+				System.Windows.Forms.MessageBox.Show("Requires 8 arguments: [360/PS3] ITEM.DAT STRING_DIC.SO T8BTSK T8BTEMST COOKDAT WRLDDAT ITEMSORT.DAT");
 				return -1;
 			}
 

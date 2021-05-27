@@ -9,7 +9,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.TownMap.Viewer {
 	static class Program {
 		public static int Execute( List<string> args ) {
 			if ( args.Count != 2 ) {
-				Console.WriteLine( "Usage: TownMapViewer scenario_0.bin folder_with_U_MAP_images" );
+				System.Windows.Forms.MessageBox.Show("Requires 2 arguments: scenario_0.bin folder_with_U_MAP_images");
 				return -1;
 			}
 

@@ -11,7 +11,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.Credits {
 	public class RunCreditsViewer {
 		public static int Execute( List<string> args ) {
 			if ( args.Count < 2 ) {
-				Console.WriteLine( "Usage: credits.dat STRING_DIC.SO" );
+				System.Windows.Forms.MessageBox.Show("Requires 2 arguments: credits.dat STRING_DIC.SO");
 				return -1;
 			}
 

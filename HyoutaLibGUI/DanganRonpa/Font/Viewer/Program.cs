@@ -14,7 +14,7 @@ namespace HyoutaLibGUI.DanganRonpa.Font.Viewer {
 
 	static class Program {
 		static void PrintUsage() {
-			Console.WriteLine( "Usage: FontViewer fontimage fontinfo" );
+			System.Windows.Forms.MessageBox.Show("Requires 2 arguments: fontimage fontinfo");
 		}
 
 		public static int Execute( List<string> args ) {
