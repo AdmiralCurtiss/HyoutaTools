@@ -35,7 +35,6 @@
 			this.labelUnknown = new System.Windows.Forms.Label();
 			this.textBoxGeneratedText = new System.Windows.Forms.TextBox();
 			this.buttonGenerateText = new System.Windows.Forms.Button();
-			this.buttonGenerateHtml = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// flowLayoutPanel1
@@ -99,7 +98,7 @@
 			// 
 			// buttonGenerateText
 			// 
-			this.buttonGenerateText.Location = new System.Drawing.Point(161, 177);
+			this.buttonGenerateText.Location = new System.Drawing.Point(161, 206);
 			this.buttonGenerateText.Name = "buttonGenerateText";
 			this.buttonGenerateText.Size = new System.Drawing.Size(246, 23);
 			this.buttonGenerateText.TabIndex = 6;
@@ -107,22 +106,11 @@
 			this.buttonGenerateText.UseVisualStyleBackColor = true;
 			this.buttonGenerateText.Click += new System.EventHandler(this.buttonGenerateText_Click);
 			// 
-			// buttonGenerateHtml
-			// 
-			this.buttonGenerateHtml.Location = new System.Drawing.Point(161, 206);
-			this.buttonGenerateHtml.Name = "buttonGenerateHtml";
-			this.buttonGenerateHtml.Size = new System.Drawing.Size(246, 23);
-			this.buttonGenerateHtml.TabIndex = 7;
-			this.buttonGenerateHtml.Text = "Generate HTML for all items to Clipboard";
-			this.buttonGenerateHtml.UseVisualStyleBackColor = true;
-			this.buttonGenerateHtml.Click += new System.EventHandler(this.buttonGenerateHtml_Click);
-			// 
 			// ItemForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1162, 637);
-			this.Controls.Add(this.buttonGenerateHtml);
 			this.Controls.Add(this.buttonGenerateText);
 			this.Controls.Add(this.textBoxGeneratedText);
 			this.Controls.Add(this.labelUnknown);
@@ -146,7 +134,6 @@
         private System.Windows.Forms.Label labelUnknown;
 		private System.Windows.Forms.TextBox textBoxGeneratedText;
 		private System.Windows.Forms.Button buttonGenerateText;
-		private System.Windows.Forms.Button buttonGenerateHtml;
 
     }
 }

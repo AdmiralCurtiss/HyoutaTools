@@ -13,6 +13,7 @@ using HyoutaTools.Tales.Vesperia.Website;
 namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 	public partial class ItemForm : Form {
 		GameVersion Version;
+		int Locale;
 
 		HyoutaTools.Tales.Vesperia.ItemDat.ItemDat itemDat;
 		TSSFile TSS;
@@ -25,10 +26,11 @@ namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 		List<Label> labels;
 		List<TextBox> textboxes;
 
-		public ItemForm( GameVersion version, HyoutaTools.Tales.Vesperia.ItemDat.ItemDat itemDat, TSSFile TSS, HyoutaTools.Tales.Vesperia.T8BTSK.T8BTSK skills, HyoutaTools.Tales.Vesperia.T8BTEMST.T8BTEMST enemies, HyoutaTools.Tales.Vesperia.COOKDAT.COOKDAT cookdat, HyoutaTools.Tales.Vesperia.WRLDDAT.WRLDDAT locations ) {
+		public ItemForm( GameVersion version, int locale, HyoutaTools.Tales.Vesperia.ItemDat.ItemDat itemDat, TSSFile TSS, HyoutaTools.Tales.Vesperia.T8BTSK.T8BTSK skills, HyoutaTools.Tales.Vesperia.T8BTEMST.T8BTEMST enemies, HyoutaTools.Tales.Vesperia.COOKDAT.COOKDAT cookdat, HyoutaTools.Tales.Vesperia.WRLDDAT.WRLDDAT locations ) {
 			InitializeComponent();
 
 			this.Version = version;
+			this.Locale = locale;
 			this.itemDat = itemDat;
 			this.TSS = TSS;
 			this.Skills = skills;
@@ -78,7 +80,7 @@ namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 
 			foreach ( HyoutaTools.Tales.Vesperia.ItemDat.ItemDatSingle i in itemDat.items ) {
 				var entry = GetEntry( i.Data[(int)HyoutaTools.Tales.Vesperia.ItemDat.ItemData.NamePointer] );
-				listBox1.Items.Add( entry.StringEngOrJpn );
+				listBox1.Items.Add( entry.GetString(locale) );
 			}
 
 		}
@@ -96,18 +98,18 @@ namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 			}
 
 			TSSEntry entry = GetEntry( item.Data[(int)HyoutaTools.Tales.Vesperia.ItemDat.ItemData.NamePointer] );
-			labelName.Text = entry.StringEngOrJpn;
+			labelName.Text = entry.GetString(Locale);
 			entry = GetEntry( item.Data[(int)HyoutaTools.Tales.Vesperia.ItemDat.ItemData.DescriptionPointer] );
-			labelDescription.Text = entry.StringEngOrJpn;
+			labelDescription.Text = entry.GetString(Locale);
 			entry = GetEntry( item.Data[(int)HyoutaTools.Tales.Vesperia.ItemDat.ItemData.UnknownTextPointer] );
-			labelUnknown.Text = entry.StringEngOrJpn;
-			textBoxGeneratedText.Text = HyoutaTools.Tales.Vesperia.ItemDat.ItemDat.GetItemDataAsText( Version, itemDat, item, Skills, Enemies, Recipes, Locations, TSS, InGameIdDict );
+			labelUnknown.Text = entry.GetString(Locale);
+			textBoxGeneratedText.Text = HyoutaTools.Tales.Vesperia.ItemDat.ItemDat.GetItemDataAsText(Version, Locale, itemDat, item, Skills, Enemies, Recipes, Locations, TSS, InGameIdDict);
 		}
 
 		private void buttonGenerateText_Click( object sender, EventArgs e ) {
 			var sb = new StringBuilder();
 			foreach ( var item in itemDat.items ) {
-				sb.AppendLine( HyoutaTools.Tales.Vesperia.ItemDat.ItemDat.GetItemDataAsText( Version, itemDat, item, Skills, Enemies, Recipes, Locations, TSS, InGameIdDict ) );
+				sb.AppendLine(HyoutaTools.Tales.Vesperia.ItemDat.ItemDat.GetItemDataAsText(Version, Locale, itemDat, item, Skills, Enemies, Recipes, Locations, TSS, InGameIdDict));
 				sb.AppendLine();
 				sb.AppendLine();
 			}
@@ -123,6 +125,8 @@ namespace HyoutaLibGUI.Tales.Vesperia.ItemDat {
 			site.Enemies = Enemies;
 			site.Recipes = Recipes;
 			site.InGameIdDict = InGameIdDict;
+			site.Version = Version;
+			site.Language = Locale == 0 ? WebsiteLanguage.Jp : WebsiteLanguage.En;
 
 			Clipboard.SetText( site.GenerateHtmlItems() );
 		}

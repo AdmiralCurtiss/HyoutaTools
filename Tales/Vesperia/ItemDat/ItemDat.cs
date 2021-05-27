@@ -46,16 +46,16 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 
 
-		public static string GetItemDataAsText( GameVersion version, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, WRLDDAT.WRLDDAT Locations, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null ) {
+		public static string GetItemDataAsText(GameVersion version, int locale, ItemDat items, ItemDatSingle item, T8BTSK.T8BTSK skills, T8BTEMST.T8BTEMST enemies, COOKDAT.COOKDAT Recipes, WRLDDAT.WRLDDAT Locations, TSS.TSSFile tss, Dictionary<uint, TSS.TSSEntry> dict = null) {
 			if ( dict == null ) { dict = tss.GenerateInGameIdDictionary(); }
 			var sb = new StringBuilder();
 
 			sb.AppendLine( "[" + item.ItemString.TrimNull() + "]" );
 			sb.Append( "[Icon" + item.Data[(int)ItemData.Icon] + "] " );
 			var nameEntry = dict[item.NamePointer];
-			sb.AppendLine( nameEntry.StringEngOrJpn );
+			sb.AppendLine(nameEntry.GetString(locale));
 			var descEntry = dict[item.DescriptionPointer];
-			sb.AppendLine( descEntry.StringEngOrJpn );
+			sb.AppendLine(descEntry.GetString(locale));
 
 			switch ( item.Data[(int)ItemData.Category] ) {
 				case 2: sb.AppendLine( "<Tools>" ); break;
@@ -75,9 +75,9 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 
 			if ( item.Data[(int)ItemData.BuyableIn1] > 0 || item.Data[(int)ItemData.BuyableIn2] > 0 || item.Data[(int)ItemData.BuyableIn3] > 0 ) {
 				sb.Append( "Available at shops in: " );
-				if ( item.Data[(int)ItemData.BuyableIn1] > 0 ) { sb.Append( Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1]].GetLastValidName( dict ).StringEngOrJpn ); }
-				if ( item.Data[(int)ItemData.BuyableIn2] > 0 ) { sb.Append( "; " + Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn2]].GetLastValidName( dict ).StringEngOrJpn ); }
-				if ( item.Data[(int)ItemData.BuyableIn3] > 0 ) { sb.Append( "; " + Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn3]].GetLastValidName( dict ).StringEngOrJpn ); }
+				if ( item.Data[(int)ItemData.BuyableIn1] > 0 ) { sb.Append( Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn1]].GetLastValidName( dict ).GetString(locale)); }
+				if ( item.Data[(int)ItemData.BuyableIn2] > 0 ) { sb.Append( "; " + Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn2]].GetLastValidName( dict ).GetString(locale)); }
+				if ( item.Data[(int)ItemData.BuyableIn3] > 0 ) { sb.Append( "; " + Locations.LocationIdDict[item.Data[(int)ItemData.BuyableIn3]].GetLastValidName( dict ).GetString(locale)); }
 				sb.AppendLine();
 			}
 
@@ -111,7 +111,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 				for ( int i = 0; i < synthItemCount; ++i ) {
 					var otherItem = items.itemIdDict[item.Data[(int)ItemData.Synth1Item1Type + i * 2 + j * 16]];
 					var otherItemNameEntry = dict[otherItem.NamePointer];
-					string otherItemName = otherItemNameEntry.StringEngOrJpn;
+					string otherItemName = otherItemNameEntry.GetString(locale);
 					sb.AppendLine( "  Item " + ( i + 1 ) + ": " + otherItemName + " x" + item.Data[(int)ItemData.Synth1Item1Count + i * 2 + j * 16] );
 				}
 			}
@@ -194,7 +194,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 						if ( skillId != 0 ) {
 							var skill = skills.SkillIdDict[skillId];
 							var skillNameEntry = dict[skill.NameStringDicID];
-							string skillName = skillNameEntry.StringEngOrJpn;
+							string skillName = skillNameEntry.GetString(locale);
 							sb.AppendLine( "Skill #" + ( i + 1 ) + " Name: " + skillName );
 							sb.AppendLine( "Skill #" + ( i + 1 ) + " Metadata: " + item.Data[(int)ItemData.Skill1Metadata + i * 2] );
 						}
@@ -210,7 +210,7 @@ namespace HyoutaTools.Tales.Vesperia.ItemDat {
 					if ( enemyId != 0 ) {
 						var enemy = enemies.EnemyIdDict[enemyId];
 						var enemyNameEntry = dict[enemy.NameStringDicID];
-						string enemyName = enemyNameEntry.StringEngOrJpn;
+						string enemyName = enemyNameEntry.GetString(locale);
 						sb.AppendLine( "Enemy " + ( j == 0 ? "Drop" : "Steal" ) + " #" + ( i + 1 ) + ": " + enemyName + ", " + item.Data[(int)ItemData.Drop1Chance + i + j * 32] + "%" );
 					}
 				}
