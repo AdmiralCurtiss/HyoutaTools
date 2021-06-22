@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaUtils", "HyoutaUtils\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "utf_tab-sharp", "utf_tab-sharp\utf_tab-sharp\utf_tab-sharp\utf_tab-sharp.csproj", "{213D12FE-9E77-44B3-9A63-3CD2A566C6DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaToolsLib", "HyoutaToolsLib.csproj", "{4E99D787-3847-49AF-978A-A76FD0162D8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaToolsLib", "HyoutaToolsLib\HyoutaToolsLib.csproj", "{4E99D787-3847-49AF-978A-A76FD0162D8A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyoutaToolsCLI", "HyoutaToolsCLI\HyoutaToolsCLI.csproj", "{C548724A-8C82-4035-9500-7C319281D934}"
 EndProject
