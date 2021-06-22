@@ -1,0 +1,37 @@
+name: .NET
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies for program
+      run: dotnet restore HyoutaToolsCLI/HyoutaToolsCLI.csproj
+    - name: Build program
+      run: dotnet build --configuration Release --no-restore HyoutaToolsCLI/HyoutaToolsCLI.csproj
+    - name: Restore dependencies for tests
+      run: dotnet restore HyoutaToolsTests/HyoutaToolsTests.csproj
+    - name: Build tests
+      run: dotnet build --configuration Release --no-restore HyoutaToolsTests/HyoutaToolsTests.csproj
+    - name: Test
+      run: dotnet test --configuration Release --no-build --verbosity normal HyoutaToolsTests/HyoutaToolsTests.csproj
+    - name: Publish
+      run: dotnet publish --configuration Release --no-build HyoutaToolsCLI/HyoutaToolsCLI.csproj
+    - uses: actions/upload-artifact@v2
+      with:
+        name: HyoutaToolsCLI
+        path: HyoutaToolsCLI/bin/Release/*/publish
