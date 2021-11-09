@@ -127,7 +127,7 @@ namespace HyoutaTools.Patches.Bps {
 					} else {
 						throw new Exception("SourceCopy argument must be 'absolute' or 'relative'.");
 					}
-					AddChecked(ref SourceRelativeOffset, offset, (long)targetSize);
+					AddChecked(ref SourceRelativeOffset, offset, (long)sourceSize);
 					SourceRelativeOffset += length;
 					PatchOut.WriteAction(HyoutaUtils.Bps.Action.SourceCopy, length);
 					PatchOut.WriteSignedNumber(offset);
