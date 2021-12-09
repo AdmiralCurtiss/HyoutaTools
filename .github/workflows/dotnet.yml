@@ -19,19 +19,29 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Restore dependencies for program
-      run: dotnet restore HyoutaToolsCLI/HyoutaToolsCLI.csproj
-    - name: Build program
-      run: dotnet build --configuration Release --no-restore HyoutaToolsCLI/HyoutaToolsCLI.csproj
+    - name: Restore dependencies for program (linux-x64)
+      run: dotnet restore --runtime linux-x64 HyoutaToolsCLI/HyoutaToolsCLI.csproj
+    - name: Build program (linux-x64)
+      run: dotnet build --configuration Release --runtime linux-x64 --no-restore HyoutaToolsCLI/HyoutaToolsCLI.csproj
     - name: Restore dependencies for tests
       run: dotnet restore HyoutaToolsTests/HyoutaToolsTests.csproj
     - name: Build tests
       run: dotnet build --configuration Release --no-restore HyoutaToolsTests/HyoutaToolsTests.csproj
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal HyoutaToolsTests/HyoutaToolsTests.csproj
-    - name: Publish
-      run: dotnet publish --configuration Release --no-build HyoutaToolsCLI/HyoutaToolsCLI.csproj
+    - name: Publish (linux-x64)
+      run: dotnet publish --configuration Release --runtime linux-x64 --self-contained false --no-build HyoutaToolsCLI/HyoutaToolsCLI.csproj
+    - name: Restore dependencies for program (win-x64)
+      run: dotnet restore --runtime win-x64 HyoutaToolsCLI/HyoutaToolsCLI.csproj
+    - name: Build program (win-x64)
+      run: dotnet build --configuration Release --runtime win-x64 --no-restore HyoutaToolsCLI/HyoutaToolsCLI.csproj
+    - name: Publish (win-x64)
+      run: dotnet publish --configuration Release --runtime win-x64 --self-contained false --no-build HyoutaToolsCLI/HyoutaToolsCLI.csproj
     - uses: actions/upload-artifact@v2
       with:
-        name: HyoutaToolsCLI
-        path: HyoutaToolsCLI/bin/Release/*/publish
+        name: HyoutaToolsCLI-Linux-x64
+        path: HyoutaToolsCLI/bin/Release/*/linux-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: HyoutaToolsCLI-Windows-x64
+        path: HyoutaToolsCLI/bin/Release/*/win-x64/publish

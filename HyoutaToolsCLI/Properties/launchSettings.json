@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HyoutaToolsCLI": {
+      "commandName": "Project",
+      "commandLineArgs": "Patches.Bps.TextToBpsConverter c:\\Users\\Georg\\Downloads\\ffmpeg-2021-11-03-git-08a501946f-essentials_build\\bin\\insa05_split\\a.txt"
+    }
+  }
+}
