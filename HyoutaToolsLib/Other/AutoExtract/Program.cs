@@ -268,6 +268,10 @@ namespace HyoutaTools.Other.AutoExtract {
 							System.IO.File.Delete( f );
 							HasBeenProcessed = true;
 						}
+
+						if (!HasBeenProcessed) {
+							Console.WriteLine("Nothing found to process " + f + ", leaving alone.");
+						}
 					}
 				} catch ( FileNotFoundException ) { } catch ( Exception ex ) {
 					Console.WriteLine( ex.ToString() );
