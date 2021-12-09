@@ -37,11 +37,19 @@ jobs:
       run: dotnet build --configuration Release --runtime win-x64 --no-restore HyoutaToolsCLI/HyoutaToolsCLI.csproj
     - name: Publish (win-x64)
       run: dotnet publish --configuration Release --runtime win-x64 --self-contained false --no-build HyoutaToolsCLI/HyoutaToolsCLI.csproj
+    - run: mv LICENSE LICENSE_HyoutaTools
+    - run: mv utf_tab-sharp/LICENSE LICENSE_utf_tab-sharp
+    - run: mv zlib-sharp/LICENSE LICENSE_zlib-sharp
+    - run: mv HyoutaUtils/LICENSE LICENSE_HyoutaUtils
     - uses: actions/upload-artifact@v2
       with:
         name: HyoutaToolsCLI-Linux-x64
-        path: HyoutaToolsCLI/bin/Release/*/linux-x64/publish
+        path: |
+          HyoutaToolsCLI/bin/Release/*/linux-x64/publish
+          LICENSE*
     - uses: actions/upload-artifact@v2
       with:
         name: HyoutaToolsCLI-Windows-x64
-        path: HyoutaToolsCLI/bin/Release/*/win-x64/publish
+        path: |
+          HyoutaToolsCLI/bin/Release/*/win-x64/publish
+          LICENSE*
