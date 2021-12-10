@@ -414,6 +414,18 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			return l;
 		}
 
+		private static void DoPadding(byte[] padhelper, long padcount, Stream s) {
+			while (padcount > 0) {
+				if (padcount >= padhelper.Length) {
+					s.Write(padhelper);
+					padcount -= padhelper.Length;
+				} else {
+					s.Write(padhelper, 0, (int)padcount);
+					return;
+				}
+			}
+		}
+
 		public static void Pack(
 			List<PackFileInfo> files,
 			Stream outputContentStream,
@@ -432,6 +444,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			uint? lastEntryPtrOverride = null,
 			bool setSectorSizeSameAsFileSize = false
 		) {
+			byte[] padhelper = new byte[0x4000];
 			uint alignmentFirstFileInternal = alignmentFirstFile ?? Alignment;
 			if ( ( Alignment % fileLocationMultiplier ) != 0 ) {
 				throw new Exception( "Invalid multiplier." );
@@ -481,17 +494,13 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						string filename = fi.Name.Truncate( 0x1F );
 						byte[] fnbytes = TextUtils.ShiftJISEncoding.GetBytes( filename );
 						f.Write( fnbytes, 0, fnbytes.Length );
-						for ( int j = fnbytes.Length; j < 0x20; ++j ) {
-							f.WriteByte( 0 );
-						}
+						DoPadding(padhelper, 0x20 - fnbytes.Length, f);
 					}
 					if ( ContentBitmask.ContainsFiletypes ) {
 						string extension = fi.Extension.TrimStart( '.' ).Truncate( 4 );
 						byte[] extbytes = TextUtils.ShiftJISEncoding.GetBytes( extension );
 						f.Write( extbytes, 0, extbytes.Length );
-						for ( int j = extbytes.Length; j < 4; ++j ) {
-							f.WriteByte( 0 );
-						}
+						DoPadding(padhelper, 4 - extbytes.Length, f);
 					}
 					if ( ContentBitmask.ContainsFileMetadata ) {
 						if ( infile != null ) {
@@ -522,9 +531,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				// at the end of the file list, reserve space for a final entry pointing to the end of the container
-				for ( int j = 0; j < EntrySize; ++j ) {
-					f.WriteByte( 0 );
-				}
+				DoPadding(padhelper, EntrySize, f);
 
 				// the idea is to write a pointer here
 				// and at the target of the pointer you have a nullterminated string
@@ -633,9 +640,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							f.WriteByte( (byte)infile.ReadByte() );
 						}
 					} else {
-						for ( long i = f.Length; i < FirstFileStart; ++i ) {
-							f.WriteByte( 0 );
-						}
+						DoPadding(padhelper, FirstFileStart - f.Length, f);
 					}
 				}
 
@@ -643,14 +648,14 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				if ( headerToSeparateFile ) {
 					Stream dataStream = outputContentStream;
 					dataStream.Position = 0;
-					WriteFilesToFileStream(files, dataStream, Alignment, printProgressToConsole);
+					WriteFilesToFileStream(padhelper, files, dataStream, Alignment, printProgressToConsole);
 				} else {
-					WriteFilesToFileStream(files, f, Alignment, printProgressToConsole);
+					WriteFilesToFileStream(padhelper, files, f, Alignment, printProgressToConsole);
 				}
 			}
 		}
 
-		private static void WriteFilesToFileStream(List<PackFileInfo> files, Stream f, uint Alignment, bool printProgressToConsole) {
+		private static void WriteFilesToFileStream(byte[] padhelper, List<PackFileInfo> files, Stream f, uint Alignment, bool printProgressToConsole) {
 			for ( int i = 0; i < files.Count; ++i ) {
 				if (files[i].DuplicateOf != null) {
 					continue;
@@ -661,7 +666,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						Console.WriteLine("Packing #" + i.ToString("D4") + ": " + files[i].Name);
 					}
 					StreamUtils.CopyStream( fs, f, (int)fs.Length );
-					while ( f.Length % Alignment != 0 ) { f.WriteByte( 0 ); }
+					if (Alignment > 1) {
+						DoPadding(padhelper, f.Length.Align(Alignment) - f.Length, f);
+					}
 				}
 			}
 		}
