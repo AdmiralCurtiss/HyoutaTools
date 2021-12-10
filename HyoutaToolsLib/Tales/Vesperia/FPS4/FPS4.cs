@@ -428,7 +428,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			string metadata = null,
 			uint? alignmentFirstFile = null,
 			uint fileLocationMultiplier = 1,
-			bool printProgressToConsole = false
+			bool printProgressToConsole = false,
+			uint? lastEntryPtrOverride = null,
+			bool setSectorSizeSameAsFileSize = false
 		) {
 			uint alignmentFirstFileInternal = alignmentFirstFile ?? Alignment;
 			if ( ( Alignment % fileLocationMultiplier ) != 0 ) {
@@ -606,15 +608,19 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						f.Position = 0x1C + (i * EntrySize);
 						var fi = files[i];
 						if (ContentBitmask.ContainsStartPointers) {
-							f.WriteUInt32(((uint)(fileStarts[i] / fileLocationMultiplier)).ToEndian(Endian));
+							f.WriteUInt32((uint)(fileStarts[i] / fileLocationMultiplier), Endian);
 						}
 						if (ContentBitmask.ContainsSectorSizes) {
-							f.WriteUInt32(((uint)(fi.Length.Align((int)Alignment))).ToEndian(Endian));
+							f.WriteUInt32((uint)(setSectorSizeSameAsFileSize ? fi.Length : fi.Length.Align((int)Alignment)), Endian);
 						}
 					}
 
 					f.Position = 0x1C + ( files.Count * EntrySize );
-					f.WriteUInt32( ( (uint)( ptr / fileLocationMultiplier ) ).ToEndian( Endian ) );
+					if (lastEntryPtrOverride == null) {
+						f.WriteUInt32((uint)(ptr / fileLocationMultiplier), Endian);
+					} else {
+						f.WriteUInt32(lastEntryPtrOverride.Value, Endian);
+					}
 
 					f.Position = pos;
 				}
