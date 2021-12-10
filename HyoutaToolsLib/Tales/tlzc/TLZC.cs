@@ -8,7 +8,7 @@ using HyoutaUtils;
 using zlib_sharp;
 
 namespace HyoutaTools.Tales.tlzc {
-	class TLZC {
+	public class TLZC {
 		public static byte[] Decompress( byte[] tlzcBuffer ) {
 			if ( tlzcBuffer[0] != 'T' || tlzcBuffer[1] != 'L' || tlzcBuffer[2] != 'Z' || tlzcBuffer[3] != 'C' )
 				throw new InvalidDataException( "buffer does not have TLZC header" );
