@@ -35,10 +35,9 @@ jobs:
     - run: mv utf_tab-sharp/LICENSE LICENSE_utf_tab-sharp
     - run: mv zlib-sharp/LICENSE LICENSE_zlib-sharp
     - run: mv HyoutaUtils/LICENSE LICENSE_HyoutaUtils
+    - run: mv LICENSE* _publish
+    - run: mv README.md _publish
     - uses: actions/upload-artifact@v2
       with:
         name: HyoutaToolsCLI
-        path: |
-          _publish/*
-          README.md
-          LICENSE*
+        path: _publish
