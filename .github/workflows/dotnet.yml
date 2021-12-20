@@ -30,7 +30,7 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal HyoutaToolsTests/HyoutaToolsTests.csproj
     - name: Publish
-      run: dotnet publish --configuration Release --no-build HyoutaToolsCLI/HyoutaToolsCLI.csproj
+      run: dotnet publish --configuration Release --no-build HyoutaToolsCLI/HyoutaToolsCLI.csproj --output _publish
     - run: mv LICENSE LICENSE_HyoutaTools
     - run: mv utf_tab-sharp/LICENSE LICENSE_utf_tab-sharp
     - run: mv zlib-sharp/LICENSE LICENSE_zlib-sharp
@@ -39,5 +39,6 @@ jobs:
       with:
         name: HyoutaToolsCLI
         path: |
-          HyoutaToolsCLI/bin/Release/*/publish
+          _publish/*
+          README.md
           LICENSE*
