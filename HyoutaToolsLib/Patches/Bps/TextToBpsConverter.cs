@@ -106,17 +106,17 @@ namespace HyoutaTools.Patches.Bps {
 			// actions
 			while (l != null) {
 				if (l.StartsWith("SourceRead")) {
-					var split = l.Split(whitespace, StringSplitOptions.RemoveEmptyEntries);
+					var split = RemoveComments(l).Split(whitespace, StringSplitOptions.RemoveEmptyEntries);
 					ulong length = HexUtils.ParseDecOrHexUInt64(split[3]);
 					PatchOut.WriteAction(HyoutaUtils.Bps.Action.SourceRead, length);
 				} else if (l.StartsWith("TargetRead")) {
-					List<byte> bytes = ParseByteArray(l.Split(whitespace, 2, StringSplitOptions.RemoveEmptyEntries)[1]);
+					List<byte> bytes = ParseByteArray(RemoveComments(l).Split(whitespace, 2, StringSplitOptions.RemoveEmptyEntries)[1]);
 					PatchOut.WriteAction(HyoutaUtils.Bps.Action.TargetRead, (ulong)bytes.Count);
 					foreach (byte b in bytes) {
 						PatchOut.WriteByte(b);
 					}
 				} else if (l.StartsWith("SourceCopy")) {
-					var split = l.Split(whitespace, StringSplitOptions.RemoveEmptyEntries);
+					var split = RemoveComments(l).Split(whitespace, StringSplitOptions.RemoveEmptyEntries);
 					ulong length = HexUtils.ParseDecOrHexUInt64(split[3]);
 					long offset;
 					if (split[1].ToLowerInvariant() == "absolute") {
@@ -132,7 +132,7 @@ namespace HyoutaTools.Patches.Bps {
 					PatchOut.WriteAction(HyoutaUtils.Bps.Action.SourceCopy, length);
 					PatchOut.WriteSignedNumber(offset);
 				} else if (l.StartsWith("TargetCopy")) {
-					var split = l.Split(whitespace, StringSplitOptions.RemoveEmptyEntries);
+					var split = RemoveComments(l).Split(whitespace, StringSplitOptions.RemoveEmptyEntries);
 					ulong length = HexUtils.ParseDecOrHexUInt64(split[3]);
 					long offset;
 					if (split[1].ToLowerInvariant() == "absolute") {
@@ -159,6 +159,15 @@ namespace HyoutaTools.Patches.Bps {
 			PatchOut.Position = 0;
 			var patchChecksum = ChecksumUtils.CalculateCRC32FromCurrentPosition(PatchOut, checksumsize);
 			PatchOut.WriteUInt32(patchChecksum.Value, EndianUtils.Endianness.LittleEndian);
+		}
+
+		private string RemoveComments(string l) {
+			string s = l;
+			int pos = s.IndexOf('#');
+			if (pos != -1) {
+				s = s.Substring(0, pos);
+			}
+			return s;
 		}
 
 		private void AddChecked(ref ulong pos, long d, long length) {

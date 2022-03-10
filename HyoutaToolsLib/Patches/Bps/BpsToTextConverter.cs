@@ -113,12 +113,16 @@ namespace HyoutaTools.Patches.Bps {
 			if (Target != null) Target.Position = 0;
 			TargetPosition = 0;
 			while (Patch.Position < patchFooterPosition) {
+				long preActionPos = Patch.Position;
 				(HyoutaUtils.Bps.Action action, ulong length) = Patch.ReadAction();
+				long postActionPos = Patch.Position;
+				Patch.Position = preActionPos;
+				string consumedBytes = ReadPatchBytesToString((ulong)(postActionPos - preActionPos));
 				switch (action) {
-					case HyoutaUtils.Bps.Action.SourceRead: DoSourceRead(length); break;
-					case HyoutaUtils.Bps.Action.TargetRead: DoTargetRead(length); break;
-					case HyoutaUtils.Bps.Action.SourceCopy: DoSourceCopy(length); break;
-					case HyoutaUtils.Bps.Action.TargetCopy: DoTargetCopy(length); break;
+					case HyoutaUtils.Bps.Action.SourceRead: DoSourceRead(consumedBytes, length); break;
+					case HyoutaUtils.Bps.Action.TargetRead: DoTargetRead(consumedBytes, length); break;
+					case HyoutaUtils.Bps.Action.SourceCopy: DoSourceCopy(consumedBytes, length); break;
+					case HyoutaUtils.Bps.Action.TargetCopy: DoTargetCopy(consumedBytes, length); break;
 				}
 			}
 
@@ -153,7 +157,7 @@ namespace HyoutaTools.Patches.Bps {
 			return sb.ToString();
 		}
 
-		private void DoSourceRead(ulong length) {
+		private void DoSourceRead(string consumedByteString, ulong length) {
 			if (SourceLength < TargetPosition) {
 				throw new Exception("Invalid length in SourceRead.");
 			}
@@ -164,16 +168,16 @@ namespace HyoutaTools.Patches.Bps {
 			if (Source != null && Target != null) {
 				Source.Position = Target.Position;
 				string str = CopyStreamAndMakeText(Source, Target, length);
-				WriteText(string.Format("SourceRead absolute 0x{0:x} 0x{1:x}   # {2}", SourcePosition, length, str));
+				WriteText(string.Format("SourceRead absolute 0x{0:x} 0x{1:x}   # [{2}] {3}", SourcePosition, length, consumedByteString, str));
 			} else {
-				WriteText(string.Format("SourceRead absolute 0x{0:x} 0x{1:x}", SourcePosition, length));
+				WriteText(string.Format("SourceRead absolute 0x{0:x} 0x{1:x}   # [{2}]", SourcePosition, length, consumedByteString));
 			}
 			SourcePosition += (long)length;
 			TargetPosition += (long)length;
 			SyncTargetLength();
 		}
 
-		private void DoTargetRead(ulong length) {
+		private void DoTargetRead(string consumedByteString, ulong length) {
 			if (((ulong)Patch.Position) + length > (ulong)Patch.Length) {
 				throw new Exception("Invalid length in TargetRead.");
 			}
@@ -184,6 +188,7 @@ namespace HyoutaTools.Patches.Bps {
 			}
 			StringBuilder sb = new StringBuilder("TargetRead");
 			ReadPatchBytesToStringBuilder(sb, length);
+			sb.AppendFormat("   # [{0}]", consumedByteString);
 			WriteText(sb.ToString());
 			TargetPosition += (long)length;
 			SyncTargetLength();
@@ -194,6 +199,15 @@ namespace HyoutaTools.Patches.Bps {
 				byte b = Patch.ReadUInt8();
 				sb.AppendFormat(" {0:x2}", b);
 			}
+		}
+		private string ReadPatchBytesToString(ulong length) {
+			StringBuilder sb = new StringBuilder();
+			for (ulong i = 0; i < length; ++i) {
+				byte b = Patch.ReadUInt8();
+				sb.AppendFormat("{0:x2} ", b);
+			}
+			sb.Remove(sb.Length - 1, 1);
+			return sb.ToString();
 		}
 
 		private void AddChecked(ref ulong pos, long d, long length) {
@@ -215,8 +229,13 @@ namespace HyoutaTools.Patches.Bps {
 			}
 		}
 
-		private void DoSourceCopy(ulong length) {
+		private void DoSourceCopy(string consumedByteString, ulong length) {
+			long prenum = Patch.Position;
 			long d = Patch.ReadSignedNumber();
+			long postnum = Patch.Position;
+			Patch.Position = prenum;
+			string consumedNumString = ReadPatchBytesToString((ulong)(postnum - prenum));
+
 			AddChecked(ref SourceRelativeOffset, d, SourceLength);
 			if (SourceRelativeOffset + length > (ulong)SourceLength) {
 				throw new Exception("Invalid length in SourceCopy.");
@@ -225,9 +244,9 @@ namespace HyoutaTools.Patches.Bps {
 			if (Source != null && Target != null) {
 				Source.Position = (long)SourceRelativeOffset;
 				string str = CopyStreamAndMakeText(Source, Target, length);
-				WriteText(string.Format("SourceCopy absolute 0x{0:x} 0x{1:x}   # {2}", SourcePosition, length, str));
+				WriteText(string.Format("SourceCopy absolute 0x{0:x} 0x{1:x}   # [{2}] [{3}] {4}", SourcePosition, length, consumedByteString, consumedNumString, str));
 			} else {
-				WriteText(string.Format("SourceCopy absolute 0x{0:x} 0x{1:x}", SourcePosition, length));
+				WriteText(string.Format("SourceCopy absolute 0x{0:x} 0x{1:x}   # [{2}] [{3}]", SourcePosition, length, consumedByteString, consumedNumString));
 			}
 			SourcePosition += (long)length;
 			TargetPosition += (long)length;
@@ -235,8 +254,13 @@ namespace HyoutaTools.Patches.Bps {
 			SourceRelativeOffset += length;
 		}
 
-		private void DoTargetCopy(ulong length) {
+		private void DoTargetCopy(string consumedByteString, ulong length) {
+			long prenum = Patch.Position;
 			long d = Patch.ReadSignedNumber();
+			long postnum = Patch.Position;
+			Patch.Position = prenum;
+			string consumedNumString = ReadPatchBytesToString((ulong)(postnum - prenum));
+
 			AddChecked(ref TargetRelativeOffset, d, TargetLength);
 			if (Source != null && Target != null) {
 				ulong offs = TargetRelativeOffset;
@@ -250,9 +274,9 @@ namespace HyoutaTools.Patches.Bps {
 					Target.Position = p;
 					Target.WriteByte(b);
 				}
-				WriteText(string.Format("TargetCopy absolute 0x{0:x} 0x{1:x}   # {2}", offs, length, sb.ToString()));
+				WriteText(string.Format("TargetCopy absolute 0x{0:x} 0x{1:x}   # [{2}] [{3}] {4}", offs, length, consumedByteString, consumedNumString, sb.ToString()));
 			} else {
-				WriteText(string.Format("TargetCopy absolute 0x{0:x} 0x{1:x}", TargetRelativeOffset, length));
+				WriteText(string.Format("TargetCopy absolute 0x{0:x} 0x{1:x}   # [{2}] [{3}]", TargetRelativeOffset, length, consumedByteString, consumedNumString));
 				TargetRelativeOffset += length;
 			}
 			TargetPosition += (long)length;
