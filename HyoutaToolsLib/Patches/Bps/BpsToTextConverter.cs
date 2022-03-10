@@ -239,6 +239,7 @@ namespace HyoutaTools.Patches.Bps {
 			long d = Patch.ReadSignedNumber();
 			AddChecked(ref TargetRelativeOffset, d, TargetLength);
 			if (Source != null && Target != null) {
+				ulong offs = TargetRelativeOffset;
 				StringBuilder sb = new StringBuilder();
 				for (ulong i = 0; i < length; ++i) {
 					long p = Target.Position;
@@ -249,7 +250,7 @@ namespace HyoutaTools.Patches.Bps {
 					Target.Position = p;
 					Target.WriteByte(b);
 				}
-				WriteText(string.Format("TargetCopy absolute 0x{0:x} 0x{1:x}   # {2}", TargetRelativeOffset, length, sb.ToString()));
+				WriteText(string.Format("TargetCopy absolute 0x{0:x} 0x{1:x}   # {2}", offs, length, sb.ToString()));
 			} else {
 				WriteText(string.Format("TargetCopy absolute 0x{0:x} 0x{1:x}", TargetRelativeOffset, length));
 				TargetRelativeOffset += length;
