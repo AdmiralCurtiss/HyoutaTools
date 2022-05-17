@@ -341,7 +341,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		public static Texture.TXV GetTxmTxv( this IContainer ui, GameVersion version, string name ) {
 			string n = name;
 			var txm = new Texture.TXM( ui.FindChildByName( n + ".TXM" ).AsFile.DataStream );
-			var txv = new Texture.TXV( txm, ui.FindChildByName( n + ".TXV" ).AsFile.DataStream, version == GameVersion.PC );
+			var txv = new Texture.TXV(txm, ui.FindChildByName(n + ".TXV").AsFile.DataStream, version == GameVersion.PC ? -1 : null);
 			return txv;
 		}
 		public static Bitmap FirstTexture( this Texture.TXV txv ) {

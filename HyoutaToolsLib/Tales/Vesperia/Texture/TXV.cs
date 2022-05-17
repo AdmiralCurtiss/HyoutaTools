@@ -12,30 +12,40 @@ using HyoutaUtils;
 
 namespace HyoutaTools.Tales.Vesperia.Texture {
 	public class TXV {
-		public TXV( TXM txm, String filename, bool vesperiaPcTextureFormat ) {
+		public TXV(TXM txm, string filename, int? vesperiaPcTextureFormat, EndianUtils.Endianness vesperiaPcEndian = EndianUtils.Endianness.BigEndian) {
 			using ( Stream stream = new System.IO.FileStream( filename, FileMode.Open ) ) {
-				if ( !LoadFile( txm, stream, vesperiaPcTextureFormat ) ) {
+				if (!LoadFile(txm, stream, vesperiaPcTextureFormat, vesperiaPcEndian)) {
 					throw new Exception( "Loading TXV failed!" );
 				}
 			}
 		}
 
-		public TXV( TXM txm, Stream stream, bool vesperiaPcTextureFormat ) {
-			if ( !LoadFile( txm, stream, vesperiaPcTextureFormat ) ) {
+		public TXV(TXM txm, Stream stream, int? vesperiaPcTextureFormat, EndianUtils.Endianness vesperiaPcEndian = EndianUtils.Endianness.BigEndian) {
+			if (!LoadFile(txm, stream, vesperiaPcTextureFormat, vesperiaPcEndian)) {
 				throw new Exception( "Loading TXV failed!" );
 			}
 		}
 
 		public List<TXVSingle> textures;
 
-		private bool LoadFile( TXM txm, Stream stream, bool vesperiaPcTextureFormat ) {
+		private bool LoadFile(TXM txm, Stream stream, int? vesperiaPcTextureFormat, EndianUtils.Endianness vesperiaPcEndian) {
 			textures = new List<TXVSingle>();
 
-			foreach ( TXMSingle ts in txm.TXMSingles ) {
-				try {
-					textures.Add( new TXVSingle( stream, ts, vesperiaPcTextureFormat ) );
-				} catch ( Exception ex ) {
-					Console.WriteLine( "Error loading " + ts.ToString() + ": " + ex.ToString() );
+			if (txm == null && vesperiaPcTextureFormat.HasValue && vesperiaPcTextureFormat.Value >= 0) {
+				for (int i = 0; i < vesperiaPcTextureFormat.Value; ++i) {
+					try {
+						textures.Add(new TXVSingle(stream, null, true, vesperiaPcEndian));
+					} catch (Exception ex) {
+						Console.WriteLine("Error loading file " + i + ": " + ex.ToString());
+					}
+				}
+			} else {
+				foreach (TXMSingle ts in txm.TXMSingles) {
+					try {
+						textures.Add(new TXVSingle(stream, ts, vesperiaPcTextureFormat.HasValue, vesperiaPcEndian));
+					} catch (Exception ex) {
+						Console.WriteLine("Error loading " + ts.ToString() + ": " + ex.ToString());
+					}
 				}
 			}
 
@@ -48,8 +58,8 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 		public Stream Data;
 		public bool VesperiaPC;
 
-		public TXVSingle( Stream stream, TXMSingle txm, bool vesperiaPcTextureFormat ) {
-			uint bytecount = vesperiaPcTextureFormat ? stream.ReadUInt32().FromEndian( EndianUtils.Endianness.BigEndian ) : txm.GetByteCount();
+		public TXVSingle( Stream stream, TXMSingle txm, bool vesperiaPcTextureFormat, EndianUtils.Endianness vesperiaPcEndian ) {
+			uint bytecount = vesperiaPcTextureFormat ? stream.ReadUInt32().FromEndian(vesperiaPcEndian) : txm.GetByteCount();
 			TXM = txm;
 			Data = new MemoryStream( (int)bytecount );
 			VesperiaPC = vesperiaPcTextureFormat;
@@ -192,7 +202,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			if ( VesperiaPC ) {
 				Stream output = new MemoryStream( (int)Data.Length );
 				StreamUtils.CopyStream( Data, output, Data.Length );
-				list.Add( (TXM.Name + ".dds", output) );
+				list.Add( ( (TXM == null ? "no_name" : TXM.Name) + ".dds", output) );
 				return list;
 			}
 
