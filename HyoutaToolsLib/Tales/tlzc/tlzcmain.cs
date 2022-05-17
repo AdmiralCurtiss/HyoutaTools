@@ -4,20 +4,34 @@ using System.Collections.Generic;
 
 namespace HyoutaTools.Tales.tlzc {
 	class tlzcmain {
+		public static void PrintUsage() {
+			Console.WriteLine("Usage: tlzc [-c/-d] [--type number] [--subtype string] infile [outfile]");
+			Console.WriteLine();
+			Console.WriteLine(" -c/-d");
+			Console.WriteLine("Force compression or decompression. Autodetected if neither is given.");
+			Console.WriteLine();
+			Console.WriteLine(" --type 2/4");
+			Console.WriteLine("Selects the compression type used for compression or decompression. This is the byte at position 0x5 in the header.");
+			Console.WriteLine("Autodetected for decompression if not given. Compression uses type '4' (as used in PS3 Vesperia) if not given.");
+			Console.WriteLine();
+			Console.WriteLine(" --subtype deflate/zlib");
+			Console.WriteLine("Selects the compression subtype used for compression or decompression. This is not given in the header, as far as I can tell.");
+			Console.WriteLine("This was born because type '2' can exist in both deflate and zlib variants, with no obvious way to detect it.");
+			Console.WriteLine("zlib is used if not given. On decompression, if zlib fails, deflate is tried afterwards.");
+		}
+
 		public static int Execute( List<string> args ) {
-
-			String Usage = "usage: tlzc [-c/-d] [--type number] infile outfile";
-
 			bool ForceDecompress = false;
 			bool ForceCompress = false;
 			String Filename = null;
 			String FilenameOut = null;
 
-			int compressionNumFastBytes = 64;
-			int compressionType = 4;
+			int? compressionNumFastBytes = null;
+			int? compressionType = null;
+			string compressionSubtype = null;
 
 			if ( args.Count < 1 ) {
-				Console.WriteLine( Usage );
+				PrintUsage();
 				return -1;
 			}
 
@@ -29,6 +43,7 @@ namespace HyoutaTools.Tales.tlzc {
 						case "-c": ForceCompress = true; break;
 						case "-d": ForceDecompress = true; break;
 						case "--type": compressionType = Int32.Parse( args[++i] ); break;
+						case "--subtype": compressionSubtype = args[++i]; break;
 						case "--fastbytes": compressionNumFastBytes = Int32.Parse( args[++i] ); break;
 					}
 				} else {
@@ -41,7 +56,7 @@ namespace HyoutaTools.Tales.tlzc {
 			}
 
 			if ( Filename == null ) {
-				Console.WriteLine( Usage );
+				PrintUsage();
 				return -1;
 			}
 
@@ -55,7 +70,7 @@ namespace HyoutaTools.Tales.tlzc {
 			) {
 				try {
 					Console.WriteLine( "decompressing {0}", Filename );
-					output = TLZC.Decompress( input );
+					output = TLZC.Decompress(input, compressionType, compressionSubtype);
 					if ( FilenameOut == null ) FilenameOut = Filename + ".dec";
 					File.WriteAllBytes( FilenameOut, output );
 				} catch ( Exception ex ) {
@@ -65,7 +80,7 @@ namespace HyoutaTools.Tales.tlzc {
 			} else {
 				try {
 					Console.WriteLine( "compressing {0}", Filename );
-					output = TLZC.Compress( input, (byte)compressionType, compressionNumFastBytes );
+					output = TLZC.Compress(input, compressionType.GetValueOrDefault(4), compressionSubtype, compressionNumFastBytes.GetValueOrDefault(64));
 					if ( FilenameOut == null ) FilenameOut = Filename + ".tlzc";
 					File.WriteAllBytes( FilenameOut, output );
 				} catch ( Exception ex ) {

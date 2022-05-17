@@ -9,36 +9,37 @@ using zlib_sharp;
 
 namespace HyoutaTools.Tales.tlzc {
 	public class TLZC {
-		public static byte[] Decompress( byte[] tlzcBuffer ) {
+		public static byte[] Decompress(byte[] tlzcBuffer, int? compressionType = null, string compressionSubtype = null) {
 			if ( tlzcBuffer[0] != 'T' || tlzcBuffer[1] != 'L' || tlzcBuffer[2] != 'Z' || tlzcBuffer[3] != 'C' )
 				throw new InvalidDataException( "buffer does not have TLZC header" );
 			if ( BitConverter.ToInt32( tlzcBuffer, 8 ) != tlzcBuffer.Length )
 				throw new InvalidDataException( "buffer length does not match declared buffer length" );
 
-			switch ( tlzcBuffer[5] ) {
+			int ctype = compressionType.HasValue ? compressionType.Value : tlzcBuffer[5];
+			switch (ctype) {
 				case 2:
-					return new Compression2().Decompress( tlzcBuffer );
+					return new Compression2().Decompress(tlzcBuffer, compressionSubtype);
 				case 4:
-					return new Compression4().Decompress( tlzcBuffer );
+					return new Compression4().Decompress(tlzcBuffer);
 			}
 
 			throw new InvalidDataException( "unknown TLZC compression type" );
 		}
 
-		public static byte[] Compress( byte[] data, byte compressionType, int numFastBytes = 64 ) {
-			switch ( compressionType ) {
+		public static byte[] Compress(byte[] data, int compressionType, string compressionSubtype, int numFastBytes = 64) {
+			switch (compressionType) {
 				case 2:
-					return new Compression2().Compress( data );
+					return new Compression2().Compress(data, compressionSubtype);
 				case 4:
-					return new Compression4().Compress( data, numFastBytes );
+					return new Compression4().Compress(data, numFastBytes);
 			}
 
-			throw new InvalidDataException( "unknown TLZC compression type" );
+			throw new InvalidDataException("unknown TLZC compression type");
 		}
 
 		class Compression2 {
-			public byte[] Compress(byte[] buffer) {
-				bool assume_zlib = true;
+			public byte[] Compress(byte[] buffer, string compressionSubtype = null) {
+				bool assume_zlib = compressionSubtype != "deflate";
 				if (assume_zlib) {
 					Console.WriteLine("compressing with zlib...");
 
@@ -70,6 +71,8 @@ namespace HyoutaTools.Tales.tlzc {
 					}
 					return output;
 				} else {
+					Console.WriteLine("compressing with deflate...");
+
 					MemoryStream result = new MemoryStream();
 					BinaryWriter bw = new BinaryWriter(result);
 
@@ -96,28 +99,45 @@ namespace HyoutaTools.Tales.tlzc {
 				}
 			}
 
-			public byte[] Decompress(byte[] buffer) {
-				bool assume_zlib = true;
-				if (assume_zlib) {
-					Console.WriteLine("assuming zlib compression, trying to decompress...");
-					ulong insize = BitConverter.ToUInt32(buffer, 8) - 0x18;
-					ulong outsize = BitConverter.ToUInt32(buffer, 12);
-					byte[] output = new byte[(long)outsize];
-					int result = zlib.uncompress(output, 0, ref outsize, buffer, 0x18, insize);
-					if (result != zlib.Z_OK) {
-						throw new Exception(string.Format("zlib decompression error ({0})", result));
-					}
-					return output;
-				} else {
-					MemoryStream result = new MemoryStream();
-					int inSize = BitConverter.ToInt32(buffer, 8);
-					int outSize = BitConverter.ToInt32(buffer, 12);
-					int offset = 0x18;
-					using (DeflateStream decompressionStream = new DeflateStream(new MemoryStream(buffer, offset, inSize - offset), CompressionMode.Decompress)) {
-						StreamUtils.CopyStream(decompressionStream, result, outSize);
-					}
-					return result.ToArray();
+			public byte[] Decompress(byte[] buffer, string compressionSubtype = null) {
+				if (compressionSubtype == "zlib") {
+					Console.WriteLine("decompressing with zlib...");
+					return DecompressZlib(buffer);
 				}
+				if (compressionSubtype == "deflate") {
+					Console.WriteLine("decompressing with deflate...");
+					return DecompressDeflate(buffer);
+				}
+
+				try {
+					Console.WriteLine("assuming zlib compression, trying to decompress...");
+					return DecompressZlib(buffer);
+				} catch (Exception ex) {
+					Console.WriteLine("zlib decompression failed with error '{0}', trying deflate...", ex.Message);
+					return DecompressDeflate(buffer);
+				}
+			}
+
+			public byte[] DecompressZlib(byte[] buffer) {
+				ulong insize = BitConverter.ToUInt32(buffer, 8) - 0x18;
+				ulong outsize = BitConverter.ToUInt32(buffer, 12);
+				byte[] output = new byte[(long)outsize];
+				int result = zlib.uncompress(output, 0, ref outsize, buffer, 0x18, insize);
+				if (result != zlib.Z_OK) {
+					throw new Exception(string.Format("zlib decompression error ({0})", result));
+				}
+				return output;
+			}
+
+			public byte[] DecompressDeflate(byte[] buffer) {
+				MemoryStream result = new MemoryStream();
+				int inSize = BitConverter.ToInt32(buffer, 8);
+				int outSize = BitConverter.ToInt32(buffer, 12);
+				int offset = 0x18;
+				using (DeflateStream decompressionStream = new DeflateStream(new MemoryStream(buffer, offset, inSize - offset), CompressionMode.Decompress)) {
+					StreamUtils.CopyStream(decompressionStream, result, outSize);
+				}
+				return result.ToArray();
 			}
 		}
 
