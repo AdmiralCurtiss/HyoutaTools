@@ -202,7 +202,7 @@ namespace HyoutaTools.Tales.CPK {
 		}
 
 		public utf_tab_sharp.utf_query_result QueryChildInfoByIndex(int index, string key) {
-			var query = new utf_tab_sharp.utf_query() { index = index, name = key };
+			var query = new utf_tab_sharp.utf_query(key, index);
 			return utf_tab_sharp.UtfTab.query_utf(infile, toc_offset + 0x10, query);
 		}
 
