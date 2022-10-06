@@ -7,30 +7,64 @@ using HyoutaUtils.Streams;
 namespace HyoutaTools.Tales.Vesperia.NUB {
 	public class Program {
 		public static int ExecuteExtract(List<string> args) {
-			if (args.Count < 1) {
-				Console.WriteLine("Usage: infile.nub [outdir]");
-				return -1;
+			HyoutaUtils.EndianUtils.Endianness? endian = null;
+			string inpath = null;
+			string outpath = null;
+
+			for (int i = 0; i < args.Count; ++i) {
+				if (args[i] == "--big-endian") {
+					endian = HyoutaUtils.EndianUtils.Endianness.BigEndian;
+				} else if (args[i] == "--little-endian") {
+					endian = HyoutaUtils.EndianUtils.Endianness.LittleEndian;
+				} else if (inpath == null) {
+					inpath = args[i];
+				} else if (outpath == null) {
+					outpath = args[i];
+				}
 			}
 
-			string inpath = args[0];
-			string outpath = args.Count > 1 ? args[1] : args[0] + ".ext";
+			if (inpath == null) {
+				Console.WriteLine("Usage: [--big-endian/--little-endian] infile.nub [outdir]");
+				return -1;
+			}
+			if (outpath == null) {
+				outpath = inpath + ".ext";
+			}
 
-			NUB.ExtractNub(new DuplicatableFileStream(inpath), outpath, null);
+			NUB.ExtractNub(new DuplicatableFileStream(inpath), outpath, endian);
 
 			return 0;
 		}
 
 		public static int ExecuteRebuild(List<string> args) {
-			if (args.Count < 2) {
-				Console.WriteLine("Usage: original.nub modifieddir [modified.nub]");
-				return -1;
+			HyoutaUtils.EndianUtils.Endianness? endian = null;
+			string inpath = null;
+			string infolder = null;
+			string outpath = null;
+
+			for (int i = 0; i < args.Count; ++i) {
+				if (args[i] == "--big-endian") {
+					endian = HyoutaUtils.EndianUtils.Endianness.BigEndian;
+				} else if (args[i] == "--little-endian") {
+					endian = HyoutaUtils.EndianUtils.Endianness.LittleEndian;
+				} else if (inpath == null) {
+					inpath = args[i];
+				} else if (infolder == null) {
+					infolder = args[i];
+				} else if (outpath == null) {
+					outpath = args[i];
+				}
 			}
 
-			string innub = args[0];
-			string infolder = args[1];
-			string outpath = args.Count > 2 ? args[2] : args[0] + ".rebuild.nub";
+			if (inpath == null || infolder == null) {
+				Console.WriteLine("Usage: [--big-endian/--little-endian] original.nub modifieddir [modified.nub]");
+				return -1;
+			}
+			if (outpath == null) {
+				outpath = inpath + ".rebuild.nub";
+			}
 
-			NUB.RebuildNub(new DuplicatableFileStream(innub), infolder, outpath, HyoutaUtils.EndianUtils.Endianness.BigEndian);
+			NUB.RebuildNub(new DuplicatableFileStream(inpath), infolder, outpath, endian.HasValue ? endian.Value : HyoutaUtils.EndianUtils.Endianness.BigEndian);
 
 			return 0;
 		}

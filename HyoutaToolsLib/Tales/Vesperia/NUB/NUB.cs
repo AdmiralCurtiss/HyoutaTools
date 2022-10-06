@@ -134,17 +134,18 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 			return null;
 		}
 
-		public static void RebuildNub(DuplicatableStream duplicatableStream, string infolder, string outpath, EndianUtils.Endianness e) {
+		public static void RebuildNub(DuplicatableStream duplicatableStream, string infolder, string outpath, EndianUtils.Endianness? e) {
 			using (var outstream = new FileStream(outpath, FileMode.Create)) {
 				RebuildNub(duplicatableStream, infolder, outstream, e);
 			}
 		}
 
-		public static void RebuildNub(DuplicatableStream duplicatableStream, string infolder, Stream outstream, EndianUtils.Endianness e) {
+		public static void RebuildNub(DuplicatableStream duplicatableStream, string infolder, Stream outstream, EndianUtils.Endianness? inEndian) {
 			outstream.Position = 0;
 			using (var stream = duplicatableStream.Duplicate()) {
 				stream.Position = 0;
-				var header = new NubHeader(stream, e);
+				var header = new NubHeader(stream, inEndian);
+				var e = header.Endian;
 
 				// copy all header stuff to outstream, we'll modify it later
 				stream.Position = 0;
@@ -243,18 +244,29 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 		public EndianUtils.Endianness Endian; // not actually a field in the header, at least not here -- might be the first byte?
 
 		public NubHeader(DuplicatableStream stream, EndianUtils.Endianness? endian) {
-			Magic = stream.ReadUInt64(EndianUtils.Endianness.LittleEndian);
-
-			EndianUtils.Endianness suspectedEndian;
-			if (Magic == 0x10200) {
-				suspectedEndian = EndianUtils.Endianness.BigEndian;
-			} else if (Magic == 0x10201) {
-				suspectedEndian = EndianUtils.Endianness.LittleEndian;
+			if (endian.HasValue) {
+				Init(stream, endian.Value);
 			} else {
+				Init(stream, EndianUtils.Endianness.BigEndian);
+				if (StartOfEntries > 0xffff) {
+					// probably little endian actually
+					Fileid = Fileid.SwapEndian();
+					EntryCount = EntryCount.SwapEndian();
+					StartOfFiles = StartOfFiles.SwapEndian();
+					FilesSize = FilesSize.SwapEndian();
+					StartOfEntries = StartOfEntries.SwapEndian();
+					StartOfHeaders = StartOfHeaders.SwapEndian();
+					Endian = EndianUtils.Endianness.LittleEndian;
+				}
+			}
+		}
+
+		private void Init(DuplicatableStream stream, EndianUtils.Endianness e) {
+			Magic = stream.ReadUInt64(EndianUtils.Endianness.LittleEndian);
+			if (!(Magic == 0x10200 || Magic == 0x10201)) {
 				throw new Exception("unexpected magic in NUB");
 			}
 
-			EndianUtils.Endianness e = endian ?? suspectedEndian;
 			Fileid = stream.ReadUInt32(e); // or something like that? seems unique per archive in each game
 			EntryCount = stream.ReadUInt32(e);
 			StartOfFiles = stream.ReadUInt32(e);
