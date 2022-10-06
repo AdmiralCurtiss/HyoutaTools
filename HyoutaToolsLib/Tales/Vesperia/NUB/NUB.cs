@@ -62,11 +62,17 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 						uint offset = Stream.ReadUInt32(Endian);
 						Stream.Position = entryLoc + 0xbc;
 						byte[] bnsfheader = Stream.ReadUInt8Array(0x30);
+						var bnsfheaderstream = new DuplicatableByteArrayStream(bnsfheader);
+						bnsfheaderstream.Position = 4;
+						uint bnsflength = bnsfheaderstream.ReadUInt32(EndianUtils.Endianness.BigEndian);
+						if (bnsfheaderstream.ReadUInt32(EndianUtils.Endianness.BigEndian) != 0x49533232) {
+							bnsflength += 8;
+						}
 
 						Stream.Position = Header.StartOfFiles + offset;
 						using (var ms = new MemoryStream()) {
 							ms.Write(bnsfheader);
-							StreamUtils.CopyStream(Stream, ms, length);
+							StreamUtils.CopyStream(Stream, ms, Math.Min(length, bnsflength - bnsfheader.Length));
 							return new NubFile(ms.CopyToByteArrayStreamAndDispose(), "bnsf");
 						}
 					}
