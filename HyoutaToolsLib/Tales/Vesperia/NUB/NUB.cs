@@ -60,8 +60,9 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 						Stream.Position = entryLoc + 0x14;
 						uint length = Stream.ReadUInt32(Endian);
 						uint offset = Stream.ReadUInt32(Endian);
+						uint headerlength = Stream.ReadUInt32(Endian);
 						Stream.Position = entryLoc + 0xbc;
-						byte[] bnsfheader = Stream.ReadUInt8Array(0x30);
+						byte[] bnsfheader = Stream.ReadUInt8Array(headerlength);
 						var bnsfheaderstream = new DuplicatableByteArrayStream(bnsfheader);
 						bnsfheaderstream.Position = 4;
 						uint bnsflength = bnsfheaderstream.ReadUInt32(EndianUtils.Endianness.BigEndian);
