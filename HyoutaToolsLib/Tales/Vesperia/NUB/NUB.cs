@@ -166,13 +166,18 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 					uint type = stream.ReadUInt32(EndianUtils.Endianness.LittleEndian);
 
 					switch (type) {
+						case 0x69733134:
 						case 0x34317369: {
 							using (var fs = new DuplicatableFileStream(Path.Combine(infolder, i.ToString("D8") + ".bnsf"))) {
-								byte[] bnsfheader = fs.ReadUInt8Array(0x30);
+								stream.Position = entryLoc + 0x14 + 8;
+								uint originalHeaderLength = stream.ReadUInt32(e);
+
+								// assume the header length hasn't changed...
+								byte[] bnsfheader = fs.ReadUInt8Array(originalHeaderLength);
 
 								// write file to outstream
 								long filestart = outstream.Position;
-								StreamUtils.CopyStream(fs, outstream, fs.Length - 0x30);
+								StreamUtils.CopyStream(fs, outstream, fs.Length - originalHeaderLength);
 								outstream.WriteAlign(0x10);
 								long fileend = outstream.Position;
 								long filelen = fileend - filestart;

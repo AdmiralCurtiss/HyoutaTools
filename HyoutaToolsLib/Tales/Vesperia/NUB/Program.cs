@@ -64,7 +64,7 @@ namespace HyoutaTools.Tales.Vesperia.NUB {
 				outpath = inpath + ".rebuild.nub";
 			}
 
-			NUB.RebuildNub(new DuplicatableFileStream(inpath), infolder, outpath, endian.HasValue ? endian.Value : HyoutaUtils.EndianUtils.Endianness.BigEndian);
+			NUB.RebuildNub(new DuplicatableFileStream(inpath), infolder, outpath, endian);
 
 			return 0;
 		}
