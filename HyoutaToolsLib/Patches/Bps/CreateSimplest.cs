@@ -122,7 +122,25 @@ namespace HyoutaTools.Patches.Bps {
 			}
 			advancedS = true;
 
-			return s != t;
+			if (s != t) {
+				return true;
+			}
+
+			//ulong limit = 5;
+			//long sp = Source.Position;
+			//long tp = Target.Position;
+			//int s2; int t2; bool as2; bool at2;
+			//ulong count = 0;
+			//while (IsNextByteSameInSourceAndTarget(out s2, out t2, out as2, out at2)) {
+			//	++count;
+			//}
+			//Source.Position = sp;
+			//Target.Position = tp;
+			//if (count < limit) {
+			//	return true;
+			//}
+
+			return false;
 		}
 
 		public static void CreatePatch(Stream source, Stream target, Stream binout) {
