@@ -107,6 +107,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Patches.Bps.TextToBpsConverter",          "-"           ),  Patches.Bps.TextToBpsConverter.Execute) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Patches.Bps.Create",                      "-"           ),  Patches.Bps.Program.ExecuteCreate) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Compression.Decompress",            "-"           ),  Tales.Compression.Program.Decompress) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Sting.PcPckFile.Extract",                 "-"           ),  Sting.PcPckFile.ExecuteExtract) },
 		};
 	}
 }
