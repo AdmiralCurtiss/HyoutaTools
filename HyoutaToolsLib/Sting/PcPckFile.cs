@@ -21,7 +21,9 @@ namespace HyoutaTools.Sting {
 				string filename = file.ReadSizedString(0x40, TextUtils.GameTextEncoding.ShiftJIS).TrimNull();
 				uint length = file.ReadUInt32();
 				uint offset = file.ReadUInt32();
-				using (FileStream newFile = new FileStream(System.IO.Path.Combine(destination, filename), FileMode.Create)) {
+				string destPath = System.IO.Path.Combine(destination, filename);
+				System.IO.Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+				using (FileStream newFile = new FileStream(destPath, FileMode.Create)) {
 					long p = file.Position;
 					file.Position = offset;
 					StreamUtils.CopyStream(file, newFile, length);
