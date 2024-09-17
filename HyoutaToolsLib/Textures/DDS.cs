@@ -190,8 +190,8 @@ namespace HyoutaTools.Textures {
 	}
 
 	public class DDS {
-		private DDSHeader Header;
-		private Stream Data;
+		public DDSHeader Header;
+		public Stream Data;
 
 		public DDS( DDSHeader header, Stream imageData ) {
 			Header = header;
@@ -220,6 +220,22 @@ namespace HyoutaTools.Textures {
 			}
 
 			return cf.ConvertToBitmap( po, Header.Width, Header.Height );
+		}
+
+		public byte[] ToBytes() {
+			long pos = Data.Position;
+			try {
+				Data.Position = 0;
+				byte[] header = Header.ToBytes();
+				byte[] result = new byte[header.Length + Data.Length];
+				ArrayUtils.CopyByteArrayPart(header, 0, result, 0, header.Length);
+				if (Data.Read(result, header.Length, (int)Data.Length) != Data.Length) {
+					throw new Exception("internal read error");
+				}
+				return result;
+			} finally {
+				Data.Position = pos;
+			}
 		}
 	}
 }

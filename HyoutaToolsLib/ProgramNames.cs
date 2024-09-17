@@ -109,6 +109,7 @@ namespace HyoutaTools {
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Tales.Compression.Decompress",            "-"           ),  Tales.Compression.Program.Decompress) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Sting.PcPckFile.Extract",                 "-"           ),  Sting.PcPckFile.ExecuteExtract) },
 			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Sting.PspRivieraTpl.ConvertToPng",        "-"           ),  Sting.PspRivieraTpl.ExecuteConvertToPng) },
+			{ new KeyValuePair<ProgramName, ExecuteProgramDelegate>( new ProgramName( "Other.DDSSplicer",                        "-"           ),  Other.DDSSplicer.Execute) },
 		};
 	}
 }
