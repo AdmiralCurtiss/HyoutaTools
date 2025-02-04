@@ -77,16 +77,19 @@ namespace HyoutaTools.Tales.Graces.ZARC {
 					return new FileFromStream(new DuplicatableByteArrayStream(TLZC.Decompress(new PartialStream(Stream, position, length).CopyToByteArrayAndDispose())));
 				} else {
 					// in-archive compressed, probably?
-					var decoder = new SevenZip.Compression.LZMA.Decoder();
 					Stream.Position = position;
-					decoder.SetDecoderProperties(Stream.ReadBytes(5));
-					long length = Stream.ReadInt64(EndianUtils.Endianness.LittleEndian);
 					var ms = new MemoryStream();
-					decoder.Code(Stream, ms, Stream.Length - Stream.Position, length, null);
+					for (uint i = 0; i <= fi.BlockCount; ++i) {
+						var decoder = new SevenZip.Compression.LZMA.Decoder();
+						decoder.SetDecoderProperties(Stream.ReadBytes(5));
+						long length = Stream.ReadInt64(EndianUtils.Endianness.LittleEndian);
+						decoder.Code(Stream, ms, Stream.Length - Stream.Position, length, null);
+					}
 					return new FileFromStream(ms.CopyToByteArrayStreamAndDispose());
 				}
 			} catch (Exception ex) {
 				// maybe not compressed in the first place?
+				Console.WriteLine("Decompression failure, assuming uncompressed: " + index);
 				return new FileFromStream(new PartialStream(Stream, position, (long)fi.FileLength));
 			}
 		}
@@ -94,15 +97,17 @@ namespace HyoutaTools.Tales.Graces.ZARC {
 
 	public class ZARCFileInfo {
 		public ulong Unknown1; // starts at E0... and goes to FF..., sorted
-		public ulong FileLength; // this seems to be the file length but not always???
-		public ushort Unknown2; // i though this was some kind of flags but maybe not?
+		public uint BlockCount; // 3 bytes, number of compression blocks minus one, I think?
+		public uint FileLength; // this is the last 16 bits of the file length, no idea where the remaining bits are
+		public ushort Unknown2; // i thought this was some kind of flags but maybe not?
 		public ushort Unknown3; // no idea???
 		public uint Unknown4; // 3 bytes, some kind of index
 		public uint FileOffset; // must be multiplied with Alignment
 
 		public ZARCFileInfo(DuplicatableStream s, EndianUtils.Endianness e) {
 			Unknown1 = s.ReadUInt64(e);
-			FileLength = s.ReadUInt40(e);
+			BlockCount = s.ReadUInt24(e);
+			FileLength = s.ReadUInt16(e);
 			Unknown2 = s.ReadUInt16(e);
 			Unknown3 = s.ReadUInt16(e);
 			Unknown4 = s.ReadUInt24(e);
