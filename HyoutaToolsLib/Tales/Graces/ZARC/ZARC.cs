@@ -1,16 +1,11 @@
 ﻿using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
 using HyoutaTools.FileContainer;
-using HyoutaTools.Tales.tlzc;
 using HyoutaUtils;
-using HyoutaUtils.Streams;
-using SevenZip.Buffer;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace HyoutaTools.Tales.Graces.ZARC {
 	public class ZARC : ContainerBase {
@@ -26,7 +21,7 @@ namespace HyoutaTools.Tales.Graces.ZARC {
 		private uint Unknown5;
 
 		public List<ZARCFileInfo> Files;
-		public List<ushort> CompressionBlockSizes;
+		public List<ushort> CompressionBlockSizes; // stores the compressed size of each block
 
 		public ZARC(DuplicatableStream duplicatableStream, EndianUtils.Endianness e = EndianUtils.Endianness.BigEndian) {
 			Stream = duplicatableStream.Duplicate();
@@ -42,7 +37,7 @@ namespace HyoutaTools.Tales.Graces.ZARC {
 			NumberOfFiles = Stream.ReadUInt32(e);
 			Unknown2 = Stream.ReadUInt32(e);
 			Unknown3 = Stream.ReadUInt32(e);
-			Unknown4 = Stream.ReadUInt32(e);
+			Unknown4 = Stream.ReadUInt32(e); // could be block size?
 			Alignment = Stream.ReadUInt32(e);
 			Unknown5 = Stream.ReadUInt32(e);
 
@@ -75,14 +70,26 @@ namespace HyoutaTools.Tales.Graces.ZARC {
 			Stream.Position = position;
 			var ms = new MemoryStream();
 			for (uint i = 0; i <= fi.BlockCount; ++i) {
-				int blockSize = CompressionBlockSizes[(int)(firstCompressionBlockSizeIndex + i)];
-				if (blockSize == 0) {
-					StreamUtils.CopyStream(Stream, ms, 0x10000);
+				// TODO: What happens if a file is exactly a multiple of blocksize?
+				uint uncompressedBlockSize = (i == fi.BlockCount) ? fi.LastBlockLength : 0x10000;
+				if (uncompressedBlockSize == 0) {
+					continue;
+				}
+				uint compressedBlockSize = CompressionBlockSizes[(int)(firstCompressionBlockSizeIndex + i)];
+				if (compressedBlockSize == 0) {
+					StreamUtils.CopyStream(Stream, ms, uncompressedBlockSize);
 				} else {
+					long p = Stream.Position;
 					var decoder = new SevenZip.Compression.LZMA.Decoder();
 					decoder.SetDecoderProperties(Stream.ReadBytes(5));
 					long length = Stream.ReadInt64(EndianUtils.Endianness.LittleEndian);
-					decoder.Code(Stream, ms, blockSize, length, null);
+					long outputStreamPos = ms.Position;
+					decoder.Code(Stream, ms, compressedBlockSize, length, null);
+					ulong outputLength = (ulong)(ms.Position - outputStreamPos);
+					if (outputLength != uncompressedBlockSize) {
+						throw new Exception("Invalid compressed block.");
+					}
+					Stream.Position = p + compressedBlockSize;
 				}
 			}
 			return new FileFromStream(ms.CopyToByteArrayStreamAndDispose());
@@ -116,7 +123,7 @@ namespace HyoutaTools.Tales.Graces.ZARC {
 	public class ZARCFileInfo {
 		public ulong FilenameHash; // starts at E0... and goes to FF..., sorted
 		public uint BlockCount; // 3 bytes, number of compression blocks minus one, I think?
-		public uint FileLength; // this is the last 16 bits of the file length, no idea where the remaining bits are
+		public uint LastBlockLength; // uncompressed size of the last block. uncompressed size of all other blocks are implicit
 		public ushort Unknown2; // i thought this was some kind of flags but maybe not?
 		public ushort Unknown3; // no idea???
 		public uint CompressionBlockSizeIndex; // 3 bytes, index into the compression block size list
@@ -125,7 +132,7 @@ namespace HyoutaTools.Tales.Graces.ZARC {
 		public ZARCFileInfo(DuplicatableStream s, EndianUtils.Endianness e) {
 			FilenameHash = s.ReadUInt64(e);
 			BlockCount = s.ReadUInt24(e);
-			FileLength = s.ReadUInt16(e);
+			LastBlockLength = s.ReadUInt16(e);
 			Unknown2 = s.ReadUInt16(e);
 			Unknown3 = s.ReadUInt16(e);
 			CompressionBlockSizeIndex = s.ReadUInt24(e);
