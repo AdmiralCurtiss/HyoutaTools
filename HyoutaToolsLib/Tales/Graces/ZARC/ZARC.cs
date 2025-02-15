@@ -11,7 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static HyoutaTools.Tales.Vesperia.SpkdUnpack.SPKD;
 
 namespace HyoutaTools.Tales.Graces.ZARC {
 	public class ZARC : ContainerBase {
@@ -26,7 +25,7 @@ namespace HyoutaTools.Tales.Graces.ZARC {
 		private uint Alignment;
 		private uint Unknown5;
 
-		private List<ZARCFileInfo> Files;
+		public List<ZARCFileInfo> Files;
 
 		public ZARC(DuplicatableStream duplicatableStream, EndianUtils.Endianness e = EndianUtils.Endianness.BigEndian) {
 			Stream = duplicatableStream.Duplicate();
@@ -93,10 +92,34 @@ namespace HyoutaTools.Tales.Graces.ZARC {
 				return new FileFromStream(new PartialStream(Stream, position, (long)fi.FileLength));
 			}
 		}
+
+		public static ulong CalculateFilenameHash(string str) {
+			if (str.Length == 0) {
+				return 0;
+			}
+
+			byte[] bytes = Encoding.UTF8.GetBytes(str.ToLowerInvariant());
+			uint seed1 = 0x10215681;
+			uint seed2 = (seed1 >> 16) | (seed1 << 16);
+			uint hash1 = 0xffffffff;
+			uint hash2 = 0xffffffff;
+			for (int i = 0; i < bytes.Length; ++i) {
+				uint b = bytes[i];
+				hash1 = (hash1 ^ b);
+				hash2 = (hash2 ^ b);
+				for (int j = 0; j < 8; ++j) {
+					hash1 = (uint)((-(hash1 & 1) & seed1) ^ (hash1 >> 1));
+					hash2 = (uint)((-(hash2 & 1) & seed2) ^ (hash2 >> 1));
+				}
+			}
+			hash1 = ~hash1;
+			hash2 = ~hash2;
+			return ((ulong)hash1 << 32) | ((ulong)hash2);
+		}
 	}
 
 	public class ZARCFileInfo {
-		public ulong Unknown1; // starts at E0... and goes to FF..., sorted
+		public ulong FilenameHash; // starts at E0... and goes to FF..., sorted
 		public uint BlockCount; // 3 bytes, number of compression blocks minus one, I think?
 		public uint FileLength; // this is the last 16 bits of the file length, no idea where the remaining bits are
 		public ushort Unknown2; // i thought this was some kind of flags but maybe not?
@@ -105,7 +128,7 @@ namespace HyoutaTools.Tales.Graces.ZARC {
 		public uint FileOffset; // must be multiplied with Alignment
 
 		public ZARCFileInfo(DuplicatableStream s, EndianUtils.Endianness e) {
-			Unknown1 = s.ReadUInt64(e);
+			FilenameHash = s.ReadUInt64(e);
 			BlockCount = s.ReadUInt24(e);
 			FileLength = s.ReadUInt16(e);
 			Unknown2 = s.ReadUInt16(e);
