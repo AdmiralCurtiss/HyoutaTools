@@ -32,6 +32,11 @@ namespace HyoutaTools.Other {
 			if (dds_input.Header.PixelFormat.FourCC != dds_overlay.Header.PixelFormat.FourCC) {
 				throw new Exception("Inconsistent formats between input and overlay.");
 			}
+			if (dds_input.Header.PixelFormat.FourCC == 0x30315844) {
+				if (dds_input.Header.DXT10_DxgiFormat != dds_overlay.Header.DXT10_DxgiFormat) {
+					throw new Exception("Inconsistent formats between input and overlay.");
+				}
+			}
 
 			// DDS is stored in 4x4 blocks
 			uint input_width_pixels = dds_input.Header.Width;

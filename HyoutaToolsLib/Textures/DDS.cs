@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using HyoutaUtils;
 
 namespace HyoutaTools.Textures {
@@ -14,6 +11,8 @@ namespace HyoutaTools.Textures {
 		DXT1a, // with 1 bit alpha
 		DXT3,
 		DXT5,
+		BC5_UNORM,
+		BC7_UNORM,
 	}
 
 	public class DDSHeader {
@@ -42,6 +41,12 @@ namespace HyoutaTools.Textures {
 		public uint Caps3;
 		public uint Caps4;
 		public uint Reserved2;
+
+		public uint DXT10_DxgiFormat = 0;
+		public uint DXT10_ResourceDimension = 0;
+		public uint DXT10_MiscFlag = 0;
+		public uint DXT10_ArraySize = 0;
+		public uint DXT10_MiscFlags2 = 0;
 
 		public static DDSHeader FromStream( Stream stream ) {
 			DDSHeader header = new DDSHeader();
@@ -76,6 +81,15 @@ namespace HyoutaTools.Textures {
 			header.Caps3 = stream.ReadUInt32().FromEndian( EndianUtils.Endianness.LittleEndian );
 			header.Caps4 = stream.ReadUInt32().FromEndian( EndianUtils.Endianness.LittleEndian );
 			header.Reserved2 = stream.ReadUInt32().FromEndian( EndianUtils.Endianness.LittleEndian );
+
+			if (header.PixelFormat.FourCC == 0x30315844) {
+				header.DXT10_DxgiFormat = stream.ReadUInt32().FromEndian(EndianUtils.Endianness.LittleEndian);
+				header.DXT10_ResourceDimension = stream.ReadUInt32().FromEndian(EndianUtils.Endianness.LittleEndian);
+				header.DXT10_MiscFlag = stream.ReadUInt32().FromEndian(EndianUtils.Endianness.LittleEndian);
+				header.DXT10_ArraySize = stream.ReadUInt32().FromEndian(EndianUtils.Endianness.LittleEndian);
+				header.DXT10_MiscFlags2 = stream.ReadUInt32().FromEndian(EndianUtils.Endianness.LittleEndian);
+			}
+
 			return header;
 		}
 
@@ -93,35 +107,70 @@ namespace HyoutaTools.Textures {
 			header.PixelFormat.Flags = DDSFlags.DDPF_FOURCC;
 			header.PixelFormat.FourCC = ToDDSFourCC( format ).Value;
 
+			if (header.PixelFormat.FourCC == 0x30315844) {
+				switch (format) {
+					case TextureFormat.BC5_UNORM:
+						header.DXT10_DxgiFormat = 83;
+						break;
+					case TextureFormat.BC7_UNORM:
+						header.DXT10_DxgiFormat = 98;
+						break;
+					default:
+						throw new Exception("Unknown format");
+				}
+				header.DXT10_ResourceDimension = 3;
+				header.DXT10_MiscFlag = 0;
+				header.DXT10_ArraySize = 1;
+				header.DXT10_MiscFlags2 = 0;
+			}
+
 			return header;
 		}
 
 		public byte[] ToBytes() {
-			byte[] data = new byte[0x80];
+			MemoryStream ms = new MemoryStream((PixelFormat.FourCC == 0x30315844) ? 0x94 : 0x80);
+			ms.WriteUInt32(Magic);
+			ms.WriteUInt32(Size);
+			ms.WriteUInt32(Flags);
+			ms.WriteUInt32(Height);
+			ms.WriteUInt32(Width);
+			ms.WriteUInt32(PitchOrLinearSize);
+			ms.WriteUInt32(Depth);
+			ms.WriteUInt32(MipMapCount);
+			ms.WriteUInt32(Reserved1a);
+			ms.WriteUInt32(Reserved1b);
+			ms.WriteUInt32(Reserved1c);
+			ms.WriteUInt32(Reserved1d);
+			ms.WriteUInt32(Reserved1e);
+			ms.WriteUInt32(Reserved1f);
+			ms.WriteUInt32(Reserved1g);
+			ms.WriteUInt32(Reserved1h);
+			ms.WriteUInt32(Reserved1i);
+			ms.WriteUInt32(Reserved1j);
+			ms.WriteUInt32(Reserved1k);
+			ms.WriteUInt32(PixelFormat.Size);
+			ms.WriteUInt32(PixelFormat.Flags);
+			ms.WriteUInt32(PixelFormat.FourCC);
+			ms.WriteUInt32(PixelFormat.RGBBitCount);
+			ms.WriteUInt32(PixelFormat.RBitMask);
+			ms.WriteUInt32(PixelFormat.GBitMask);
+			ms.WriteUInt32(PixelFormat.BBitMask);
+			ms.WriteUInt32(PixelFormat.ABitMask);
+			ms.WriteUInt32(Caps);
+			ms.WriteUInt32(Caps2);
+			ms.WriteUInt32(Caps3);
+			ms.WriteUInt32(Caps4);
+			ms.WriteUInt32(Reserved2);
 
-			DDSHeader header = this;
-			BitConverter.GetBytes( header.Magic ).CopyTo( data, 0x00 );
-			BitConverter.GetBytes( header.Size ).CopyTo( data, 0x04 );
-			BitConverter.GetBytes( header.Flags ).CopyTo( data, 0x08 );
-			BitConverter.GetBytes( header.Height ).CopyTo( data, 0x0C );
-			BitConverter.GetBytes( header.Width ).CopyTo( data, 0x10 );
-			BitConverter.GetBytes( header.PitchOrLinearSize ).CopyTo( data, 0x14 );
-			BitConverter.GetBytes( header.Depth ).CopyTo( data, 0x18 );
-			BitConverter.GetBytes( header.MipMapCount ).CopyTo( data, 0x1C );
+			if (PixelFormat.FourCC == 0x30315844) {
+				ms.WriteUInt32(DXT10_DxgiFormat);
+				ms.WriteUInt32(DXT10_ResourceDimension);
+				ms.WriteUInt32(DXT10_MiscFlag);
+				ms.WriteUInt32(DXT10_ArraySize);
+				ms.WriteUInt32(DXT10_MiscFlags2);
+			}
 
-			BitConverter.GetBytes( header.PixelFormat.Size ).CopyTo( data, 0x4C );
-			BitConverter.GetBytes( header.PixelFormat.Flags ).CopyTo( data, 0x50 );
-			BitConverter.GetBytes( header.PixelFormat.FourCC ).CopyTo( data, 0x54 );
-			BitConverter.GetBytes( header.PixelFormat.RGBBitCount ).CopyTo( data, 0x58 );
-			BitConverter.GetBytes( header.PixelFormat.RBitMask ).CopyTo( data, 0x5C );
-			BitConverter.GetBytes( header.PixelFormat.GBitMask ).CopyTo( data, 0x60 );
-			BitConverter.GetBytes( header.PixelFormat.BBitMask ).CopyTo( data, 0x64 );
-			BitConverter.GetBytes( header.PixelFormat.ABitMask ).CopyTo( data, 0x68 );
-
-			BitConverter.GetBytes( header.Caps ).CopyTo( data, 0x6C );
-			BitConverter.GetBytes( header.Caps2 ).CopyTo( data, 0x70 );
-
-			return data;
+			return ms.ToArray();
 		}
 
 		public static bool IsDDSTextureFormat( TextureFormat format ) {
@@ -136,6 +185,9 @@ namespace HyoutaTools.Textures {
 					return 0x33545844;
 				case TextureFormat.DXT5:
 					return 0x35545844;
+				case TextureFormat.BC5_UNORM:
+				case TextureFormat.BC7_UNORM:
+					return 0x30315844;
 				default:
 					return null;
 			}
