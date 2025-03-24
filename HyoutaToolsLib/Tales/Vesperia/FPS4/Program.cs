@@ -251,7 +251,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				var p = new PackFileInfo();
 				p.Name = fi.Name;
 				p.Length = fi.Length;
-				if (metadata.Contains('p')) {
+				if (metadata != null && metadata.Contains('p')) {
 					try {
 						p.RelativePath = FPS4.GetRelativePath(outHeaderName == null ? outName : outHeaderName, fi.FullName);
 					} catch (Exception) { }
