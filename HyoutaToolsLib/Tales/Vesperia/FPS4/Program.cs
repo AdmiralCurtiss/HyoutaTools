@@ -299,11 +299,20 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					for (int j = 0; j < newFiles.Count; ++j) {
 						if (newFiles[j].DataStream == null) {
 							string fullpath = newFiles[j].GuessFullFilePath();
-							if (fullpath == pfi.FileName
-								|| fullpath == pfi.GuessFullFilePath()
-								|| pfi.SourcePath.Contains(fullpath)) {
+							if (fullpath == pfi.FileName || fullpath == pfi.GuessFullFilePath()) {
 								preferredTargetIndex = j;
 								break;
+							}
+						}
+					}
+					if (preferredTargetIndex < 0) {
+						for (int j = 0; j < newFiles.Count; ++j) {
+							if (newFiles[j].DataStream == null) {
+								string fullpath = newFiles[j].GuessFullFilePath();
+								if (pfi.SourcePath.EndsWith(fullpath)) {
+									preferredTargetIndex = j;
+									break;
+								}
 							}
 						}
 					}
