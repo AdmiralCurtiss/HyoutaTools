@@ -656,10 +656,18 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						f.Position = 0x1C + (i * EntrySize);
 						var fi = files[i];
 						if (ContentBitmask.ContainsStartPointers) {
-							f.WriteUInt32((uint)(fileStarts[i] / fileLocationMultiplier), Endian);
+							if (fi.DataStream == null) {
+								f.WriteUInt32((uint)(0xffffffff), Endian);
+							} else {
+								f.WriteUInt32((uint)(fileStarts[i] / fileLocationMultiplier), Endian);
+							}
 						}
 						if (ContentBitmask.ContainsSectorSizes) {
-							f.WriteUInt32((uint)(setSectorSizeSameAsFileSize ? fi.FileSize : fi.FileSize.Align((int)Alignment)), Endian);
+							if (fi.DataStream == null) {
+								f.WriteUInt32((uint)(0), Endian);
+							} else {
+								f.WriteUInt32((uint)(setSectorSizeSameAsFileSize ? fi.FileSize : fi.FileSize.Align((int)Alignment)), Endian);
+							}
 						}
 					}
 
@@ -699,6 +707,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		private static void WriteFilesToFileStream(byte[] padhelper, List<PackFileInfo> files, Stream f, uint Alignment, bool printProgressToConsole) {
 			for ( int i = 0; i < files.Count; ++i ) {
 				if (files[i].DuplicateOf != null) {
+					continue;
+				}
+
+				if (files[i].DataStream == null) {
 					continue;
 				}
 
