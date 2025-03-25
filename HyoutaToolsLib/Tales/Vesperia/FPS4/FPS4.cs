@@ -8,6 +8,7 @@ using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
 using HyoutaUtils;
 using HyoutaUtils.Streams;
+using HyoutaTools.FinalFantasyCrystalChronicles.FileSections;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public struct ContentInfo {
@@ -103,6 +104,20 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		}
 
 		public (string Path, string Name) GuessFilePathName() {
+			return GuessFilePathName(FileIndex, FileName, FileType, Metadata);
+		}
+		public string GuessFullFilePath() {
+			(string path, string filename) = GuessFilePathName();
+			if (path != null) {
+				return path + '/' + filename;
+			} else {
+				return filename;
+			}
+		}
+
+		public static (string Path, string Name) GuessFilePathName(
+			uint FileIndex, string FileName, string FileType, List<(string Key, string Value)> Metadata
+		) {
 			string path = Metadata?.FirstOrDefault( x => x.Key == null ).Value;
 			if ( string.IsNullOrWhiteSpace( path ) ) {
 				path = null;
@@ -137,10 +152,15 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	}
 
 	public class PackFileInfo {
-		public string Name; // just the filename, no path
-		public string Extension => Path.GetExtension(Name);
-		public long Length;
-		public string RelativePath; // written when using the 'p' metadata parameter; should be the path to the file within the FPS4 container
+		public uint FileIndex;
+		public long FileSize;
+		public string FileName; // just the filename, no path
+		public string FileType;
+		public List<(string Key, string Value)> Metadata;
+		public uint? Unknown0x0080 = null;
+		public uint? Unknown0x0100 = null;
+
+		public string SourcePath;
 		public DuplicatableStream DataStream;
 
 		// index of file in List<PackFileInfo> that should be used instead of this one
@@ -150,11 +170,29 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public PackFileInfo() { }
 
 		public PackFileInfo(PackFileInfo other) {
-			Name = other.Name;
-			Length = other.Length;
-			RelativePath = other.RelativePath;
+			FileIndex = other.FileIndex;
+			FileSize = other.FileSize;
+			FileName = other.FileName;
+			FileType = other.FileType;
+			Metadata = other.Metadata != null ? new List<(string Key, string Value)>(other.Metadata) : null;
+			Unknown0x0080 = other.Unknown0x0080;
+			Unknown0x0100 = other.Unknown0x0100;
+
+			SourcePath = other.SourcePath;
 			DataStream = other.DataStream != null ? other.DataStream.Duplicate() : null;
 			DuplicateOf = other.DuplicateOf;
+		}
+
+		public (string Path, string Name) GuessFilePathName() {
+			return FileInfo.GuessFilePathName(FileIndex, FileName, FileType, Metadata);
+		}
+		public string GuessFullFilePath() {
+			(string path, string filename) = GuessFilePathName();
+			if (path != null) {
+				return path + '/' + filename;
+			} else {
+				return filename;
+			}
 		}
 	}
 
@@ -489,15 +527,15 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					var fi = files[i];
 					if ( ContentBitmask.ContainsStartPointers ) { f.WriteUInt32( 0 ); } // properly written later
 					if ( ContentBitmask.ContainsSectorSizes ) { f.WriteUInt32( 0 ); } // properly written later
-					if ( ContentBitmask.ContainsFileSizes ) { f.WriteUInt32( ( (uint)( fi.Length ) ).ToEndian( Endian ) ); }
+					if ( ContentBitmask.ContainsFileSizes ) { f.WriteUInt32( ( (uint)( fi.FileSize ) ).ToEndian( Endian ) ); }
 					if ( ContentBitmask.ContainsFilenames ) {
-						string filename = fi.Name.Truncate( 0x1F );
+						string filename = fi.FileName.Truncate( 0x1F );
 						byte[] fnbytes = TextUtils.ShiftJISEncoding.GetBytes( filename );
 						f.Write( fnbytes, 0, fnbytes.Length );
 						DoPadding(padhelper, 0x20 - fnbytes.Length, f);
 					}
 					if ( ContentBitmask.ContainsFiletypes ) {
-						string extension = fi.Extension.TrimStart( '.' ).Truncate( 4 );
+						string extension = (fi.FileType != null ? fi.FileType : Path.GetExtension(fi.FileName)).TrimStart( '.' ).Truncate( 4 );
 						byte[] extbytes = TextUtils.ShiftJISEncoding.GetBytes( extension );
 						f.Write( extbytes, 0, extbytes.Length );
 						DoPadding(padhelper, 4 - extbytes.Length, f);
@@ -552,11 +590,14 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						// jump to remembered pos
 						f.Position = oldPos;
 						// write meta + nullterm
-						if ( metadata.Contains( 'p' ) ) {
-							f.Write(TextUtils.ShiftJISEncoding.GetBytes(fi.RelativePath));
-						}
-						if ( metadata.Contains( 'n' ) ) {
-							f.Write( TextUtils.ShiftJISEncoding.GetBytes( "name=" + Path.GetFileNameWithoutExtension( fi.Name ) ) );
+						if (fi.Metadata != null) {
+							foreach (var pair in fi.Metadata) {
+								if (pair.Key == null) {
+									f.Write(TextUtils.ShiftJISEncoding.GetBytes(pair.Value));
+								} else {
+									f.Write(TextUtils.ShiftJISEncoding.GetBytes(pair.Key + "=" + pair.Value));
+								}
+							}
 						}
 						f.WriteByte( 0 );
 					}
@@ -601,7 +642,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						var fi = files[i];
 						if (fi.DuplicateOf == null) {
 							fileStarts[i] = ptr;
-							ptr += (ulong)fi.Length.Align((int)Alignment);
+							ptr += (ulong)fi.FileSize.Align((int)Alignment);
 						}
 					}
 					for (int i = 0; i < files.Count; ++i) {
@@ -618,7 +659,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							f.WriteUInt32((uint)(fileStarts[i] / fileLocationMultiplier), Endian);
 						}
 						if (ContentBitmask.ContainsSectorSizes) {
-							f.WriteUInt32((uint)(setSectorSizeSameAsFileSize ? fi.Length : fi.Length.Align((int)Alignment)), Endian);
+							f.WriteUInt32((uint)(setSectorSizeSameAsFileSize ? fi.FileSize : fi.FileSize.Align((int)Alignment)), Endian);
 						}
 					}
 
@@ -663,7 +704,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 				using ( var fs = files[i].DataStream.Duplicate() ) {
 					if (printProgressToConsole) {
-						Console.WriteLine("Packing #" + i.ToString("D4") + ": " + files[i].Name);
+						Console.WriteLine("Packing #" + i.ToString("D4") + ": " + files[i].FileName);
 					}
 					StreamUtils.CopyStream( fs, f, (int)fs.Length );
 					if (Alignment > 1) {

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using HyoutaTools.FinalFantasyCrystalChronicles.FileSections;
 using HyoutaUtils;
 using HyoutaUtils.Streams;
 
@@ -238,6 +240,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				files = System.IO.Directory.GetFiles( dir );
 			}
 
+			// the filesystem may not give us a consistent order, make sure we have one for reproducability
+			files = files.OrderBy(x => x.ToLowerInvariant()).ToArray();
+
 			if ( orderByExtension ) {
 				files = files.OrderBy( x => x.Split( '.' ).Last() ).ToArray();
 			}
@@ -246,20 +251,81 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			Stream outHeaderStream = outHeaderName == null ? null : new FileStream(outHeaderName, FileMode.Create);
 
 			List<PackFileInfo> packFileInfos = new List<PackFileInfo>(files.Length);
-			foreach (var file in files) {
+			for (int i = 0; i < files.Length; ++i) {
+				string file = files[i];
 				var fi = new System.IO.FileInfo(file);
 				var p = new PackFileInfo();
-				p.Name = fi.Name;
-				p.Length = fi.Length;
-				if (metadata != null && metadata.Contains('p')) {
-					try {
-						p.RelativePath = FPS4.GetRelativePath(outHeaderName == null ? outName : outHeaderName, fi.FullName);
-					} catch (Exception) { }
+				p.FileIndex = (uint)i;
+				p.FileName = fi.Name;
+				p.FileSize = fi.Length;
+				if (metadata != null) {
+					p.Metadata = new List<(string Key, string Value)>();
+					if (metadata.Contains('p')) {
+						try {
+							p.Metadata.Add((null, FPS4.GetRelativePath(outHeaderName == null ? outName : outHeaderName, fi.FullName)));
+						} catch (Exception) {
+							Console.WriteLine("Failed to add relative path for file " + fi.FullName + ", skipping");
+						}
+					}
+					if (metadata.Contains('n')) {
+						p.Metadata.Add(("name", Path.GetFileNameWithoutExtension(p.FileName)));
+					}
 				}
 				p.DataStream = new DuplicatableFileStream(file);
+				p.SourcePath = file.Replace('\\', '/');
 				packFileInfos.Add(p);
 			}
 
+			if (originalFps4 != null) {
+				var oldArchive = new FPS4(originalFps4);
+				var newFiles = new List<PackFileInfo>();
+				var oldFiles = oldArchive.Files;
+				for (int i = 0; i < oldFiles.Count - 1; ++i) {
+					var p = new PackFileInfo();
+					p.FileIndex = oldFiles[i].FileIndex;
+					p.FileSize = oldFiles[i].FileSize ?? 0;
+					p.FileName = oldFiles[i].FileName;
+					p.FileType = oldFiles[i].FileType;
+					p.Metadata = oldFiles[i].Metadata;
+					p.Unknown0x0080 = oldFiles[i].Unknown0x0080;
+					p.Unknown0x0100 = oldFiles[i].Unknown0x0100;
+					newFiles.Add(p);
+				}
+
+				// now we try to match our collected files onto the new pack files
+				for (int i = 0; i < packFileInfos.Count; i++) {
+					int preferredTargetIndex = -1;
+					PackFileInfo pfi = packFileInfos[i];
+					for (int j = 0; j < newFiles.Count; ++j) {
+						if (newFiles[j].DataStream == null) {
+							string fullpath = newFiles[j].GuessFullFilePath();
+							if (fullpath == pfi.FileName
+								|| fullpath == pfi.GuessFullFilePath()
+								|| pfi.SourcePath.Contains(fullpath)) {
+								preferredTargetIndex = j;
+								break;
+							}
+						}
+					}
+					if (preferredTargetIndex < 0) {
+						int tmp;
+						if (int.TryParse(Path.GetFileNameWithoutExtension(pfi.FileName), System.Globalization.NumberStyles.Integer, CultureInfo.InvariantCulture, out tmp)) {
+							preferredTargetIndex = tmp;
+						}
+					}
+
+					if (preferredTargetIndex >= 0) {
+						Console.WriteLine("Matched given file " + pfi.SourcePath + " to original file index #" + preferredTargetIndex);
+						newFiles[preferredTargetIndex].FileSize = pfi.FileSize;
+						newFiles[preferredTargetIndex].DataStream = pfi.DataStream;
+						pfi.DataStream = null;
+					} else {
+						Console.WriteLine("Could not find a match in the original FPS4 for " + pfi.SourcePath);
+					}
+				}
+
+				packFileInfos = newFiles;
+			}
 
 			try {
 				FPS4.Pack(
