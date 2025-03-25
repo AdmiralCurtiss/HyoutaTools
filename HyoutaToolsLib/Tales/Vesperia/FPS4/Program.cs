@@ -325,6 +325,27 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				packFileInfos = newFiles;
+
+				if (alignment == null) {
+					uint align = 0xffffffff;
+					align &= ~fps4.FirstFileStart;
+					if (fps4.ContentBitmask.ContainsStartPointers) {
+						for (int i = 0; i < oldFiles.Count; ++i) {
+							if (oldFiles[i].Location.Value != 0xffffffff) {
+								align &= ~oldFiles[i].Location.Value;
+							}
+						}
+					}
+					int bits = 0;
+					for (int i = 0; i < 32; ++i) {
+						if ((align & (1u << i)) == 0) {
+							break;
+						}
+						++bits;
+					}
+					fps4.Alignment = (1u << bits);
+					Console.WriteLine("Alignment not specified, guessing from original FPS4: 0x" + fps4.Alignment.ToString("x"));
+				}
 			}
 
 			try {
