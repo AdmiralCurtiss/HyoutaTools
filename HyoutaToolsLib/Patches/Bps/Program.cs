@@ -21,20 +21,51 @@ namespace HyoutaTools.Patches.Bps {
 			return 0;
 		}
 
+		private static void PrintUsageCreate() {
+			Console.WriteLine("Usage: [options] source.bin target.bin patch.bps");
+			Console.WriteLine("Options:");
+			Console.WriteLine("  --limit integer   Amount of bytes that must be the same for a run of TargetRead.");
+		}
+
 		public static int ExecuteCreate(List<string> args) {
 			if (args.Count < 3) {
-				Console.WriteLine("Usage: source.bin target.bin patch.bps");
+				PrintUsageCreate();
 				return -1;
 			}
 
-			string sourcepath = args[0];
-			string targetpath = args[1];
-			string patchpath = args[2];
+			string sourcepath = null;
+			string targetpath = null;
+			string patchpath  = null;
+			ulong limit = 0;
+
+			try {
+				for (int i = 0; i < args.Count; ++i) {
+					if (args[i] == "--limit") {
+						++i;
+						limit = ulong.Parse(args[i]);
+					} else if (sourcepath == null) {
+						sourcepath = args[i];
+					} else if (targetpath == null) {
+						targetpath = args[i];
+					} else if (patchpath == null) {
+						patchpath = args[i];
+					}
+				}
+			} catch (Exception e) {
+				Console.WriteLine(e.ToString());
+				PrintUsageCreate();
+				return -1;
+			}
+
+			if (sourcepath == null || targetpath == null || patchpath == null) {
+				PrintUsageCreate();
+				return -1;
+			}
 
 			using (var sourcestream = new HyoutaUtils.Streams.DuplicatableFileStream(sourcepath))
 			using (var targetstream = new HyoutaUtils.Streams.DuplicatableFileStream(targetpath))
 			using (var outstream = new FileStream(patchpath, FileMode.Create)) {
-				CreateSimplest.CreatePatch(sourcestream, targetstream, outstream);
+				CreateSimplest.CreatePatch(sourcestream, targetstream, outstream, limit);
 			}
 
 			return 0;

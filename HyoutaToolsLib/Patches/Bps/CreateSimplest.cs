@@ -19,7 +19,7 @@ namespace HyoutaTools.Patches.Bps {
 			PatchOut = patch;
 		}
 
-		private void CreatePatchInternal() {
+		private void CreatePatchInternal(ulong nextByteLimit) {
 			Source.Position = 0;
 			Target.Position = 0;
 			ulong sourceSize = (ulong)Source.Length;
@@ -60,7 +60,7 @@ namespace HyoutaTools.Patches.Bps {
 					}
 					long p = Target.Position;
 					ulong count = 0;
-					while (ShouldWriteNextByteFromTarget(out s, out t, out advancedS, out advancedT)) {
+					while (ShouldWriteNextByteFromTarget(out s, out t, out advancedS, out advancedT, nextByteLimit)) {
 						++count;
 					}
 					if (advancedS) {
@@ -103,7 +103,7 @@ namespace HyoutaTools.Patches.Bps {
 			return s == t;
 		}
 
-		private bool ShouldWriteNextByteFromTarget(out int s, out int t, out bool advancedS, out bool advancedT) {
+		private bool ShouldWriteNextByteFromTarget(out int s, out int t, out bool advancedS, out bool advancedT, ulong limit) {
 			s = -1;
 			advancedS = false;
 			advancedT = false;
@@ -126,25 +126,26 @@ namespace HyoutaTools.Patches.Bps {
 				return true;
 			}
 
-			//ulong limit = 5;
-			//long sp = Source.Position;
-			//long tp = Target.Position;
-			//int s2; int t2; bool as2; bool at2;
-			//ulong count = 0;
-			//while (IsNextByteSameInSourceAndTarget(out s2, out t2, out as2, out at2)) {
-			//	++count;
-			//}
-			//Source.Position = sp;
-			//Target.Position = tp;
-			//if (count < limit) {
-			//	return true;
-			//}
+			if (limit > 0) {
+				long sp = Source.Position;
+				long tp = Target.Position;
+				int s2; int t2; bool as2; bool at2;
+				ulong count = 0;
+				while (IsNextByteSameInSourceAndTarget(out s2, out t2, out as2, out at2)) {
+					++count;
+				}
+				Source.Position = sp;
+				Target.Position = tp;
+				if (count < limit) {
+					return true;
+				}
+			}
 
 			return false;
 		}
 
-		public static void CreatePatch(Stream source, Stream target, Stream binout) {
-			new CreateSimplest(source, target, binout).CreatePatchInternal();
+		public static void CreatePatch(Stream source, Stream target, Stream binout, ulong nextByteLimit) {
+			new CreateSimplest(source, target, binout).CreatePatchInternal(nextByteLimit);
 		}
 	}
 }
