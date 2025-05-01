@@ -482,6 +482,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			uint? lastEntryPtrOverride = null,
 			bool setSectorSizeSameAsFileSize = false
 		) {
+			if (Alignment == 0) {
+				Alignment = 1;
+			}
+
 			byte[] padhelper = new byte[0x4000];
 			uint alignmentFirstFileInternal = alignmentFirstFile ?? Alignment;
 			if ( ( Alignment % fileLocationMultiplier ) != 0 ) {
