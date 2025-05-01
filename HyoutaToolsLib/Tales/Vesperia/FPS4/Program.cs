@@ -233,6 +233,11 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( littleEndian ) { fps4.Endian = EndianUtils.Endianness.LittleEndian; }
 			if ( comment != null ) { fps4.ArchiveName = comment; }
 
+			if (!fps4.ContentBitmask.ContainsFileMetadata && metadata != null) {
+				Console.WriteLine("ERROR: Content bitmask does not include metadata, but metadata was requested. Either add the metadata (0x40) bit to the bitmask, or remove the metadata.");
+				return -1;
+			}
+
 			string[] files;
 			if ( includeSubdirs ) {
 				files = System.IO.Directory.GetFiles( dir, "*", System.IO.SearchOption.AllDirectories );
