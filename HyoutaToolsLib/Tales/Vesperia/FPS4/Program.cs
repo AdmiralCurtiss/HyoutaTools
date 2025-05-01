@@ -221,6 +221,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				return -1;
 			}
 
+			while (dir.EndsWith('/') || dir.EndsWith('\\')) {
+				dir = dir.Substring(0, dir.Length - 1);
+			}
+
 			FPS4 fps4;
 			if ( originalFps4 != null ) {
 				fps4 = new FPS4(originalFps4, printProgressToConsole: true);
@@ -267,7 +271,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					p.Metadata = new List<(string Key, string Value)>();
 					if (metadata.Contains('p')) {
 						try {
-							p.Metadata.Add((null, FPS4.GetRelativePath(outHeaderName == null ? outName : outHeaderName, fi.FullName)));
+							p.Metadata.Add((null, FPS4.GetRelativePath(dir, fi.FullName)));
 						} catch (Exception) {
 							Console.WriteLine("Failed to add relative path for file " + fi.FullName + ", skipping");
 						}
