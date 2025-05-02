@@ -12,13 +12,25 @@ using HyoutaUtils.Streams;
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public class Program {
 		public static void PrintExtractUsage() {
-			Console.WriteLine( "Usage: file.svo [-h file.header] [OutputDirectory] [-nometa]" );
+			Console.WriteLine( "Usage: [args] file.svo [-h file.header] [OutputDirectory] [-nometa]" );
+			Console.WriteLine("Possible Arguments:");
+			Console.WriteLine(" -h file.header");
+			Console.WriteLine("   Read header from a separate file.");
+			Console.WriteLine("   Some FPS4 files have the header and content split out like this.");
+			Console.WriteLine(" --nometa");
+			Console.WriteLine("   Do not parse metadata for output filenames.");
+			Console.WriteLine(" -j file.json");
+			Console.WriteLine("   Generate a .json file that can be used to repack the archive.");
+			Console.WriteLine(" --absolute-path-in-json");
+			Console.WriteLine("   Generate the path on disk as absolute instead of relative in the .json.");
 		}
 		public static int Extract( List<string> args ) {
 			string inFile = null;
 			string headerFile = null;
 			string outFile = null;
 			bool nometa = false;
+			string jsonFile = null;
+			bool absoluteJson = false;
 
 			try {
 				for ( int i = 0; i < args.Count; ++i ) {
@@ -26,8 +38,15 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						case "-h":
 							headerFile = args[++i];
 							break;
-						case "-nometa":
+						case "-nometa": // legacy
+						case "--nometa":
 							nometa = true;
+							break;
+						case "-j":
+							jsonFile = args[++i];
+							break;
+						case "--absolute-path-in-json":
+							absoluteJson = true;
 							break;
 						default:
 							if ( inFile == null ) { inFile = args[i]; }
@@ -56,7 +75,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			} else {
 				fps4 = new FPS4(inFile, printProgressToConsole: true);
 			}
-			fps4.Extract(outFile, noMetadataParsing: nometa, printProgressToConsole: true);
+			fps4.Extract(outFile, noMetadataParsing: nometa, printProgressToConsole: true, jsonOutputPath: jsonFile, absoluteJson: absoluteJson);
 
 			return 0;
 		}

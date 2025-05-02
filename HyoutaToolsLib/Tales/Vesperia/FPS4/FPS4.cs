@@ -9,6 +9,8 @@ using HyoutaPluginBase.FileContainer;
 using HyoutaUtils;
 using HyoutaUtils.Streams;
 using HyoutaTools.FinalFantasyCrystalChronicles.FileSections;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace HyoutaTools.Tales.Vesperia.FPS4 {
 	public struct ContentInfo {
@@ -103,8 +105,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			return null;
 		}
 
-		public (string Path, string Name) GuessFilePathName() {
-			return GuessFilePathName(FileIndex, FileName, FileType, Metadata);
+		public (string Path, string Name) GuessFilePathName(bool noMetadataParsing = false) {
+			return GuessFilePathName(FileIndex, FileName, FileType, noMetadataParsing ? null : Metadata);
 		}
 		public string GuessFullFilePath() {
 			(string path, string filename) = GuessFilePathName();
@@ -331,11 +333,59 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		// TODO: Clean up code duplication between Extract(), GetChildByIndex(), GetChildByName(), GetChildNames()!
 
-		public void Extract(string dirname, bool noMetadataParsing = false, bool printProgressToConsole = false) {
+		public void Extract(string dirname, bool noMetadataParsing = false, bool printProgressToConsole = false, string jsonOutputPath = null, bool absoluteJson = false) {
+			if (printProgressToConsole) {
+				Console.WriteLine("Content Bitmask: 0x" + ContentBitmask.Value.ToString("X4"));
+			}
+
 			System.IO.Directory.CreateDirectory( dirname );
 
-			for ( int i = 0; i < Files.Count - 1; ++i ) {
+			var json = new JsonObject();
+			json.Add("ContentBitmask", JsonValue.Create(ContentBitmask.Value));
+			json.Add("Unknown2", JsonValue.Create(Unknown2));
+			if (ArchiveName != null) {
+				json.Add("Comment", JsonValue.Create(ArchiveName));
+			}
+			json.Add("FileLocationMultiplier", JsonValue.Create(FileLocationMultiplier));
+			json.Add("Endian", JsonValue.Create(Endian.ToString()));
+
+			if (Files.Count == 0) {
+				json.Add("NoFileTerminator", true);
+			} else if (Files[Files.Count - 1].Location != null && Files[Files.Count - 1].Location.Value != contentFile.Length) {
+				json.Add("FileTerminatorLocationValue", Files[Files.Count - 1].Location.Value);
+			}
+			List<JsonObject> jsonFiles = new List<JsonObject>();
+
+			for (int i = 0; i < Files.Count - 1; ++i) {
 				FileInfo fi = Files[i];
+
+				JsonObject jsonFile = new JsonObject();
+				jsonFiles.Add(jsonFile);
+
+				if (fi.FileName != null) {
+					jsonFile.Add("FileName", JsonValue.Create(fi.FileName));
+				}
+				if (fi.FileType != null) {
+					jsonFile.Add("FileType", JsonValue.Create(fi.FileType));
+				}
+				if (fi.Unknown0x0080 != null) {
+					jsonFile.Add("Unknown0x0080", JsonValue.Create(fi.Unknown0x0080));
+				}
+				if (fi.Unknown0x0100 != null) {
+					jsonFile.Add("Unknown0x0100", JsonValue.Create(fi.Unknown0x0100));
+				}
+				if (fi.Metadata != null) {
+					JsonArray jsonMetadata = new JsonArray();
+					for (int j = 0; j < fi.Metadata.Count; ++j) {
+						JsonObject jo = new JsonObject();
+						if (fi.Metadata[j].Key != null) {
+							jo.Add("Key", JsonValue.Create(fi.Metadata[j].Key));
+						}
+						jo.Add("Value", JsonValue.Create(fi.Metadata[j].Value));
+						jsonMetadata.Add(jo);
+					}
+					jsonFile.Add("Metadata", jsonMetadata);
+				}
 
 				if ( fi.ShouldSkip ) {
 					if (printProgressToConsole) {
@@ -354,7 +404,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 				long fileloc = (long)(fi.Location.Value) * FileLocationMultiplier;
 				uint filesize = maybeFilesize.Value;
-				(string path, string filename) = fi.GuessFilePathName();
+				(string path, string filename) = fi.GuessFilePathName(noMetadataParsing);
 
 				if ( path != null ) {
 					Directory.CreateDirectory( dirname + '/' + path );
@@ -362,7 +412,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				} else {
 					path = filename;
 				}
-				FileStream outfile = new FileStream( Path.Combine( dirname, path ), FileMode.Create );
+				string outpath = Path.Combine(dirname, path);
+				jsonFile.Add("PathOnDisk", JsonValue.Create(absoluteJson ? Path.GetFullPath(outpath) : outpath));
+				FileStream outfile = new FileStream(outpath, FileMode.Create );
 
 				if (printProgressToConsole) {
 					Console.WriteLine("Extracting #" + i.ToString("D4") + ": " + path);
@@ -371,6 +423,12 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				contentFile.Seek( fileloc, SeekOrigin.Begin );
 				StreamUtils.CopyStream( contentFile, outfile, (int)filesize );
 				outfile.Close();
+			}
+
+			json.Add("Files", new JsonArray(jsonFiles.ToArray()));
+
+			if (jsonOutputPath != null) {
+				File.WriteAllText(jsonOutputPath, JsonSerializer.Serialize(json, new JsonSerializerOptions { WriteIndented = true }));
 			}
 		}
 
