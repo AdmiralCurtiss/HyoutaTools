@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using HyoutaTools.FinalFantasyCrystalChronicles.FileSections;
 using HyoutaUtils;
@@ -82,6 +83,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 		public static void PrintPackUsage() {
 			Console.WriteLine( "Usage: [args] DirectoryToPack OutputFilename" );
+			Console.WriteLine( "DirectoryToPack can also be a .json file that describes what to pack (see -j option of extraction)." );
 			Console.WriteLine( "Possible Arguments:" );
 			Console.WriteLine( " -a alignment           Default: 0x0800" );
 			Console.WriteLine( "   Align files within the container to a specific boundary." );
@@ -244,12 +246,46 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				dir = dir.Substring(0, dir.Length - 1);
 			}
 
+			bool fromJson = File.Exists(dir);
+			JsonObject json = null;
+			if (fromJson) {
+				json = JsonNode.Parse(File.ReadAllText(dir)).AsObject();
+			}
+
 			FPS4 fps4;
 			if ( originalFps4 != null ) {
 				fps4 = new FPS4(originalFps4, printProgressToConsole: true);
 			} else {
 				fps4 = new FPS4();
 			}
+
+			if (fromJson && json["ContentBitmask"] != null) {
+				fps4.ContentBitmask = new ContentInfo(json["ContentBitmask"].GetValue<ushort>());
+			}
+			if (fromJson && json["Unknown2"] != null) {
+				fps4.Unknown2 = json["Unknown2"].GetValue<uint>();
+			}
+			if (fromJson && json["Comment"] != null) {
+				fps4.ArchiveName = json["Comment"].GetValue<string>();
+			}
+			if (fromJson && json["Alignment"] != null) {
+				fps4.Alignment = json["Alignment"].GetValue<uint>();
+			}
+			if (fromJson && json["FileLocationMultiplier"] != null) {
+				fps4.FileLocationMultiplier = json["FileLocationMultiplier"].GetValue<uint>();
+			}
+			if (fromJson && json["Endian"] != null) {
+				fps4.Endian = Enum.Parse<EndianUtils.Endianness>(json["Endian"].GetValue<string>());
+			}
+			bool noFileTerminator = false;
+			if (fromJson && json["NoFileTerminator"] != null) {
+				noFileTerminator = json["NoFileTerminator"].GetValue<bool>();
+			}
+			uint? fileTerminatorLocationValueOverride = null;
+			if (fromJson && json["FileTerminatorLocationValue"] != null) {
+				fileTerminatorLocationValueOverride = json["FileTerminatorLocationValue"].GetValue<uint>();
+			}
+
 
 			if ( bitmask != null ) { fps4.ContentBitmask = new ContentInfo( (ushort)bitmask ); }
 			if ( alignment != null ) { fps4.Alignment = (uint)alignment; }
@@ -261,127 +297,171 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				return -1;
 			}
 
-			string[] files;
-			if ( includeSubdirs ) {
-				files = System.IO.Directory.GetFiles( dir, "*", System.IO.SearchOption.AllDirectories );
-			} else {
-				files = System.IO.Directory.GetFiles( dir );
-			}
-
-			// the filesystem may not give us a consistent order, make sure we have one for reproducability
-			files = files.OrderBy(x => x.ToLowerInvariant()).ToArray();
-
-			if ( orderByExtension ) {
-				files = files.OrderBy( x => x.Split( '.' ).Last() ).ToArray();
-			}
-
 			Stream outStream = new FileStream(outName, FileMode.Create);
 			Stream outHeaderStream = outHeaderName == null ? null : new FileStream(outHeaderName, FileMode.Create);
+			List<PackFileInfo> packFileInfos = new List<PackFileInfo>();
 
-			List<PackFileInfo> packFileInfos = new List<PackFileInfo>(files.Length);
-			for (int i = 0; i < files.Length; ++i) {
-				string file = files[i];
-				var fi = new System.IO.FileInfo(file);
-				var p = new PackFileInfo();
-				p.FileIndex = (uint)i;
-				p.FileName = fi.Name;
-				p.FileSize = fi.Length;
-				if (metadata != null) {
-					p.Metadata = new List<(string Key, string Value)>();
-					if (metadata.Contains('p')) {
-						try {
-							p.Metadata.Add((null, FPS4.GetRelativePath(dir, fi.FullName)));
-						} catch (Exception) {
-							Console.WriteLine("Failed to add relative path for file " + fi.FullName + ", skipping");
+			if (fromJson) {
+				uint idx = 0;
+				string jsonRoot = Path.GetDirectoryName(Path.GetFullPath(dir));
+				foreach (JsonNode jn in json["Files"].AsArray()) {
+					var p = new PackFileInfo();
+					packFileInfos.Add(p);
+					p.FileIndex = idx;
+					++idx;
+
+					JsonObject jo = jn.AsObject();
+					if (jo["PathOnDisk"] != null) {
+						string path = Path.Combine(jsonRoot, jo["PathOnDisk"].GetValue<string>());
+						p.FileSize = new System.IO.FileInfo(path).Length;
+						p.SourcePath = path;
+						p.DataStream = new DuplicatableFileStream(path);
+					}
+
+					if (jo["FileName"] != null) {
+						p.FileName = jo["FileName"].GetValue<string>();
+					}
+					if (jo["FileType"] != null) {
+						p.FileName = jo["FileType"].GetValue<string>();
+					}
+					if (jo["Unknown0x0080"] != null) {
+						p.Unknown0x0080 = jo["Unknown0x0080"].GetValue<uint>();
+					}
+					if (jo["Unknown0x0100"] != null) {
+						p.Unknown0x0100 = jo["Unknown0x0100"].GetValue<uint>();
+					}
+					if (jo["Metadata"] != null) {
+						p.Metadata = new List<(string Key, string Value)>();
+						foreach (JsonNode mjn in jo["Metadata"].AsArray()) {
+							JsonObject mjo = mjn.AsObject();
+							string key = null;
+							if (mjo["Key"] != null) {
+								key = mjo["Key"].GetValue<string>();
+							}
+							string value = mjo["Value"].GetValue<string>();
+							p.Metadata.Add((key, value));
 						}
 					}
-					if (metadata.Contains('n')) {
-						p.Metadata.Add(("name", Path.GetFileNameWithoutExtension(p.FileName)));
-					}
 				}
-				p.DataStream = new DuplicatableFileStream(file);
-				p.SourcePath = file.Replace('\\', '/');
-				packFileInfos.Add(p);
-			}
+			} else {
+				string[] files;
+				if (includeSubdirs) {
+					files = System.IO.Directory.GetFiles(dir, "*", System.IO.SearchOption.AllDirectories);
+				} else {
+					files = System.IO.Directory.GetFiles(dir);
+				}
 
-			if (originalFps4 != null) {
-				var oldArchive = new FPS4(originalFps4);
-				var newFiles = new List<PackFileInfo>();
-				var oldFiles = oldArchive.Files;
-				for (int i = 0; i < oldFiles.Count - 1; ++i) {
+				// the filesystem may not give us a consistent order, make sure we have one for reproducability
+				files = files.OrderBy(x => x.ToLowerInvariant()).ToArray();
+
+				if (orderByExtension) {
+					files = files.OrderBy(x => x.Split('.').Last()).ToArray();
+				}
+
+				for (int i = 0; i < files.Length; ++i) {
+					string file = files[i];
+					var fi = new System.IO.FileInfo(file);
 					var p = new PackFileInfo();
-					p.FileIndex = oldFiles[i].FileIndex;
-					p.FileSize = oldFiles[i].FileSize ?? 0;
-					p.FileName = oldFiles[i].FileName;
-					p.FileType = oldFiles[i].FileType;
-					p.Metadata = oldFiles[i].Metadata;
-					p.Unknown0x0080 = oldFiles[i].Unknown0x0080;
-					p.Unknown0x0100 = oldFiles[i].Unknown0x0100;
-					newFiles.Add(p);
-				}
-
-				// now we try to match our collected files onto the new pack files
-				for (int i = 0; i < packFileInfos.Count; i++) {
-					int preferredTargetIndex = -1;
-					PackFileInfo pfi = packFileInfos[i];
-					for (int j = 0; j < newFiles.Count; ++j) {
-						if (newFiles[j].DataStream == null) {
-							string fullpath = newFiles[j].GuessFullFilePath();
-							if (fullpath == pfi.FileName || fullpath == pfi.GuessFullFilePath()) {
-								preferredTargetIndex = j;
-								break;
+					p.FileIndex = (uint)i;
+					p.FileName = fi.Name;
+					p.FileSize = fi.Length;
+					if (metadata != null) {
+						p.Metadata = new List<(string Key, string Value)>();
+						if (metadata.Contains('p')) {
+							try {
+								p.Metadata.Add((null, FPS4.GetRelativePath(dir, fi.FullName)));
+							} catch (Exception) {
+								Console.WriteLine("Failed to add relative path for file " + fi.FullName + ", skipping");
 							}
 						}
+						if (metadata.Contains('n')) {
+							p.Metadata.Add(("name", Path.GetFileNameWithoutExtension(p.FileName)));
+						}
 					}
-					if (preferredTargetIndex < 0) {
+					p.DataStream = new DuplicatableFileStream(file);
+					p.SourcePath = file.Replace('\\', '/');
+					packFileInfos.Add(p);
+				}
+
+				if (originalFps4 != null) {
+					var oldArchive = new FPS4(originalFps4);
+					var newFiles = new List<PackFileInfo>();
+					var oldFiles = oldArchive.Files;
+					for (int i = 0; i < oldFiles.Count - 1; ++i) {
+						var p = new PackFileInfo();
+						p.FileIndex = oldFiles[i].FileIndex;
+						p.FileSize = oldFiles[i].FileSize ?? 0;
+						p.FileName = oldFiles[i].FileName;
+						p.FileType = oldFiles[i].FileType;
+						p.Metadata = oldFiles[i].Metadata;
+						p.Unknown0x0080 = oldFiles[i].Unknown0x0080;
+						p.Unknown0x0100 = oldFiles[i].Unknown0x0100;
+						newFiles.Add(p);
+					}
+
+					// now we try to match our collected files onto the new pack files
+					for (int i = 0; i < packFileInfos.Count; i++) {
+						int preferredTargetIndex = -1;
+						PackFileInfo pfi = packFileInfos[i];
 						for (int j = 0; j < newFiles.Count; ++j) {
 							if (newFiles[j].DataStream == null) {
 								string fullpath = newFiles[j].GuessFullFilePath();
-								if (pfi.SourcePath.EndsWith(fullpath)) {
+								if (fullpath == pfi.FileName || fullpath == pfi.GuessFullFilePath()) {
 									preferredTargetIndex = j;
 									break;
 								}
 							}
 						}
-					}
-					if (preferredTargetIndex < 0) {
-						int tmp;
-						if (int.TryParse(Path.GetFileNameWithoutExtension(pfi.FileName), System.Globalization.NumberStyles.Integer, CultureInfo.InvariantCulture, out tmp)) {
-							preferredTargetIndex = tmp;
-						}
-					}
-
-					if (preferredTargetIndex >= 0) {
-						Console.WriteLine("Matched given file " + pfi.SourcePath + " to original file index #" + preferredTargetIndex);
-						newFiles[preferredTargetIndex].FileSize = pfi.FileSize;
-						newFiles[preferredTargetIndex].DataStream = pfi.DataStream;
-						pfi.DataStream = null;
-					} else {
-						Console.WriteLine("Could not find a match in the original FPS4 for " + pfi.SourcePath);
-					}
-				}
-
-				packFileInfos = newFiles;
-
-				if (alignment == null) {
-					uint align = 0xffffffff;
-					align &= ~fps4.FirstFileStart;
-					if (fps4.ContentBitmask.ContainsStartPointers) {
-						for (int i = 0; i < oldFiles.Count; ++i) {
-							if (oldFiles[i].Location.Value != 0xffffffff) {
-								align &= ~oldFiles[i].Location.Value;
+						if (preferredTargetIndex < 0) {
+							for (int j = 0; j < newFiles.Count; ++j) {
+								if (newFiles[j].DataStream == null) {
+									string fullpath = newFiles[j].GuessFullFilePath();
+									if (pfi.SourcePath.EndsWith(fullpath)) {
+										preferredTargetIndex = j;
+										break;
+									}
+								}
 							}
 						}
-					}
-					int bits = 0;
-					for (int i = 0; i < 32; ++i) {
-						if ((align & (1u << i)) == 0) {
-							break;
+						if (preferredTargetIndex < 0) {
+							int tmp;
+							if (int.TryParse(Path.GetFileNameWithoutExtension(pfi.FileName), System.Globalization.NumberStyles.Integer, CultureInfo.InvariantCulture, out tmp)) {
+								preferredTargetIndex = tmp;
+							}
 						}
-						++bits;
+
+						if (preferredTargetIndex >= 0) {
+							Console.WriteLine("Matched given file " + pfi.SourcePath + " to original file index #" + preferredTargetIndex);
+							newFiles[preferredTargetIndex].FileSize = pfi.FileSize;
+							newFiles[preferredTargetIndex].DataStream = pfi.DataStream;
+							pfi.DataStream = null;
+						} else {
+							Console.WriteLine("Could not find a match in the original FPS4 for " + pfi.SourcePath);
+						}
 					}
-					fps4.Alignment = (1u << bits);
-					Console.WriteLine("Alignment not specified, guessing from original FPS4: 0x" + fps4.Alignment.ToString("x"));
+
+					packFileInfos = newFiles;
+
+					if (alignment == null) {
+						uint align = 0xffffffff;
+						align &= ~fps4.FirstFileStart;
+						if (fps4.ContentBitmask.ContainsStartPointers) {
+							for (int i = 0; i < oldFiles.Count; ++i) {
+								if (oldFiles[i].Location.Value != 0xffffffff) {
+									align &= ~oldFiles[i].Location.Value;
+								}
+							}
+						}
+						int bits = 0;
+						for (int i = 0; i < 32; ++i) {
+							if ((align & (1u << i)) == 0) {
+								break;
+							}
+							++bits;
+						}
+						fps4.Alignment = (1u << bits);
+						Console.WriteLine("Alignment not specified, guessing from original FPS4: 0x" + fps4.Alignment.ToString("x"));
+					}
 				}
 			}
 
@@ -397,10 +477,10 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					fps4.FirstFileStart,
 					fps4.Alignment,
 					outputHeaderStream: outHeaderStream,
-					metadata: metadata,
 					alignmentFirstFile: alignmentFirstFile,
 					fileLocationMultiplier: multiplier,
-					printProgressToConsole: true
+					printProgressToConsole: true,
+					lastEntryPtrOverride: fileTerminatorLocationValueOverride
 				);
 			} finally {
 				outStream.Close();

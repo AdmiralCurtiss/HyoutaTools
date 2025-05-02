@@ -533,7 +533,6 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			uint FirstFileStart,
 			uint Alignment,
 			Stream outputHeaderStream = null,
-			string metadata = null,
 			uint? alignmentFirstFile = null,
 			uint fileLocationMultiplier = 1,
 			bool printProgressToConsole = false,
@@ -638,7 +637,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				// with all the metadata in a param=data format separated by spaces
 				// maybe including a filepath at the start without a param=
 				// strings should be after the filelist block but before the actual files
-				if ( ContentBitmask.ContainsFileMetadata && metadata != null ) {
+				if (ContentBitmask.ContainsFileMetadata) {
 					for ( int i = 0; i < files.Count; ++i ) {
 						var fi = files[i];
 						long ptrPos = 0x1C + ( ( i + 1 ) * EntrySize ) - 4;
@@ -778,7 +777,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 				using ( var fs = files[i].DataStream.Duplicate() ) {
 					if (printProgressToConsole) {
-						Console.WriteLine("Packing #" + i.ToString("D4") + ": " + files[i].FileName);
+						Console.WriteLine("Packing #" + i.ToString("D4") + ": " + (files[i].SourcePath != null ? files[i].SourcePath : files[i].FileName));
 					}
 					StreamUtils.CopyStream( fs, f, (int)fs.Length );
 					if (Alignment > 1) {
