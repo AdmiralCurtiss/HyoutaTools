@@ -11,8 +11,10 @@ using HyoutaTools.Textures;
 
 namespace HyoutaTools.Other {
 	internal class Splice {
-		public uint X;
-		public uint Y;
+		public uint InX;
+		public uint InY;
+		public uint OutX;
+		public uint OutY;
 		public uint Width;
 		public uint Height;
 	};
@@ -49,31 +51,48 @@ namespace HyoutaTools.Other {
 			uint overlay_height_blocks = NumberUtils.Align(overlay_height_pixels, 4) / 4;
 
 			foreach (Splice splice in splices) {
-				uint splice_x_pixels = splice.X;
-				uint splice_y_pixels = splice.Y;
+				uint splice_in_x_pixels = splice.InX;
+				uint splice_in_y_pixels = splice.InY;
+				uint splice_out_x_pixels = splice.OutX;
+				uint splice_out_y_pixels = splice.OutY;
 				uint splice_width_pixels = splice.Width;
 				uint splice_height_pixels = splice.Height;
 
+				uint x_misalign = (splice_in_x_pixels & 3);
+				uint y_misalign = (splice_in_y_pixels & 3);
+				if (x_misalign != (splice_out_x_pixels & 3)) {
+					throw new Exception("Inconsistent block misalignment for input and output x positions.");
+				}
+				if (y_misalign != (splice_out_y_pixels & 3)) {
+					throw new Exception("Inconsistent block misalignment for input and output y positions.");
+				}
+
 				// align the request to blocks
-				splice_width_pixels += (splice_x_pixels & 3);
-				splice_x_pixels -= (splice_x_pixels & 3);
-				splice_height_pixels += (splice_y_pixels & 3);
-				splice_y_pixels -= (splice_y_pixels & 3);
+				splice_width_pixels += x_misalign;
+				splice_in_x_pixels -= x_misalign;
+				splice_out_x_pixels -= x_misalign;
+				splice_height_pixels += y_misalign;
+				splice_in_y_pixels -= y_misalign;
+				splice_out_y_pixels -= y_misalign;
 				splice_width_pixels = NumberUtils.Align(splice_width_pixels, 4);
 				splice_height_pixels = NumberUtils.Align(splice_height_pixels, 4);
 
-				uint splice_x_blocks = splice_x_pixels / 4;
-				uint splice_y_blocks = splice_y_pixels / 4;
+				uint splice_in_x_blocks = splice_in_x_pixels / 4;
+				uint splice_in_y_blocks = splice_in_y_pixels / 4;
+				uint splice_out_x_blocks = splice_out_x_pixels / 4;
+				uint splice_out_y_blocks = splice_out_y_pixels / 4;
 				uint splice_width_blocks = splice_width_pixels / 4;
 				uint splice_height_blocks = splice_height_pixels / 4;
 
 				for (uint y = 0; y < splice_height_blocks; ++y) {
 					for (uint x = 0; x < splice_width_blocks; ++x) {
-						uint splice_x_block = splice_x_blocks + x;
-						uint splice_y_block = splice_y_blocks + y;
+						uint splice_in_x_block = splice_in_x_blocks + x;
+						uint splice_in_y_block = splice_in_y_blocks + y;
+						uint splice_out_x_block = splice_out_x_blocks + x;
+						uint splice_out_y_block = splice_out_y_blocks + y;
 
-						uint splice_offset = (splice_y_block * overlay_width_blocks + splice_x_block) * 16;
-						uint output_offset = (splice_y_block * input_width_blocks + splice_x_block) * 16;
+						uint splice_offset = (splice_in_y_block * overlay_width_blocks + splice_in_x_block) * 16;
+						uint output_offset = (splice_out_y_block * input_width_blocks + splice_out_x_block) * 16;
 
 						dds_overlay.Data.Position = splice_offset;
 						byte[] data = dds_overlay.Data.ReadBytes(16);
@@ -90,6 +109,8 @@ namespace HyoutaTools.Other {
 			if (args.Count == 0) {
 				Console.WriteLine("Other.DDSSplicer input.dds overlay.dds output.dds [splices...]");
 				Console.WriteLine("where each splice is in basic imagemagick geometry notation, ie. 100x200+12+8 for a rectangle starting at 100/200 and ending at 112/108");
+				Console.WriteLine("can also give two x/y positions in the form of 100x200/400x600+12+8, which will copy from 100x200+12+8 and paste at 400x600+12+8");
+				Console.WriteLine("also be aware: DDS is block-compressed in 4x4 pixel blocks. if the position/size doesn't match this alignment it will be expanded to match it");
 				return -1;
 			}
 
@@ -112,18 +133,31 @@ namespace HyoutaTools.Other {
 						numbersWithPrefix.Add((number, prefix));
 					}
 					// TODO: support more formats?
-					if (numbersWithPrefix.Count != 4) {
-						throw new Exception("invalid geometry format for argument: " + s);
-					}
-					var (x, x_prefix) = numbersWithPrefix[0];
-					var (y, y_prefix) = numbersWithPrefix[1];
-					var (w, w_prefix) = numbersWithPrefix[2];
-					var (h, h_prefix) = numbersWithPrefix[3];
-					if (x_prefix != '\0' || y_prefix != 'x' || w_prefix != '+' || h_prefix != '+') {
-						throw new Exception("invalid geometry format for argument: " + s);
-					}
+					if (numbersWithPrefix.Count == 4) {
+						var (x, x_prefix) = numbersWithPrefix[0];
+						var (y, y_prefix) = numbersWithPrefix[1];
+						var (w, w_prefix) = numbersWithPrefix[2];
+						var (h, h_prefix) = numbersWithPrefix[3];
+						if (x_prefix != '\0' || y_prefix != 'x' || w_prefix != '+' || h_prefix != '+') {
+							throw new Exception("invalid geometry format for argument: " + s);
+						}
 
-					splices.Add(new Splice() { X = x, Y = y, Width = w, Height = h });
+						splices.Add(new Splice() { InX = x, InY = y, OutX = x, OutY = y, Width = w, Height = h });
+					} else if (numbersWithPrefix.Count == 6) {
+						var (ix, ix_prefix) = numbersWithPrefix[0];
+						var (iy, iy_prefix) = numbersWithPrefix[1];
+						var (ox, ox_prefix) = numbersWithPrefix[2];
+						var (oy, oy_prefix) = numbersWithPrefix[3];
+						var (w, w_prefix) = numbersWithPrefix[4];
+						var (h, h_prefix) = numbersWithPrefix[5];
+						if (ix_prefix != '\0' || iy_prefix != 'x' || ox_prefix != '/' || oy_prefix != 'x' || w_prefix != '+' || h_prefix != '+') {
+							throw new Exception("invalid geometry format for argument: " + s);
+						}
+
+						splices.Add(new Splice() { InX = ix, InY = iy, OutX = ox, OutY = oy, Width = w, Height = h });
+					} else {
+						throw new Exception("invalid geometry format for argument: " + s);
+					}
 				}
 
 				DDS tex;
