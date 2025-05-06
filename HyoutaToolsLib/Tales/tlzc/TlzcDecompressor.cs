@@ -18,9 +18,7 @@ namespace HyoutaTools.Tales.tlzc {
 		}
 
 		public DuplicatableStream Decompress( DuplicatableStream input ) {
-			byte[] data = new byte[input.Length];
-			input.Read( data, 0, data.Length );
-			return new DuplicatableByteArrayStream( TLZC.Decompress( data ) );
+			return TLZC.Decompress(input.ReadDuplicatableSubstream(input.Length - input.Position)).CopyToByteArrayStreamAndDispose();
 		}
 
 		public string GetId() {

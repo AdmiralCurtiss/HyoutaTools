@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using HyoutaUtils.Streams;
+using HyoutaUtils;
 
 namespace HyoutaTools.Tales.tlzc {
 	class tlzcmain {
@@ -23,8 +25,8 @@ namespace HyoutaTools.Tales.tlzc {
 		public static int Execute( List<string> args ) {
 			bool ForceDecompress = false;
 			bool ForceCompress = false;
-			String Filename = null;
-			String FilenameOut = null;
+			string Filename = null;
+			string FilenameOut = null;
 
 			int? compressionNumFastBytes = null;
 			int? compressionType = null;
@@ -60,34 +62,41 @@ namespace HyoutaTools.Tales.tlzc {
 				return -1;
 			}
 
-			byte[] input = File.ReadAllBytes( Filename );
-			byte[] output;
+			DuplicatableFileStream input = new DuplicatableFileStream(Filename);
+			Stream output;
 
-			if
-			(
-				( ForceDecompress || ( input[0] == 'T' && input[1] == 'L' && input[2] == 'Z' && input[3] == 'C' ) )
-				&& !ForceCompress
-			) {
+			if ((ForceDecompress || input.PeekUInt32(EndianUtils.Endianness.BigEndian) == 0x544c5a43) && !ForceCompress) {
 				try {
-					Console.WriteLine( "decompressing {0}", Filename );
+					Console.WriteLine("decompressing {0}", Filename);
 					output = TLZC.Decompress(input, compressionType, compressionSubtype);
-					if ( FilenameOut == null ) FilenameOut = Filename + ".dec";
-					File.WriteAllBytes( FilenameOut, output );
-				} catch ( Exception ex ) {
-					Console.WriteLine( "Decompression failed: " + ex.ToString() );
+					if (FilenameOut == null) {
+						FilenameOut = Filename + ".dec";
+					}
+					using (var outstream = new FileStream(FilenameOut, FileMode.Create)) {
+						output.Position = 0;
+						StreamUtils.CopyStream(output, outstream);
+					}
+				} catch (Exception ex) {
+					Console.WriteLine("Decompression failed: " + ex.ToString());
 					return -1;
 				}
 			} else {
 				try {
-					Console.WriteLine( "compressing {0}", Filename );
+					Console.WriteLine("compressing {0}", Filename);
 					output = TLZC.Compress(input, compressionType.GetValueOrDefault(4), compressionSubtype, compressionNumFastBytes.GetValueOrDefault(64));
-					if ( FilenameOut == null ) FilenameOut = Filename + ".tlzc";
-					File.WriteAllBytes( FilenameOut, output );
-				} catch ( Exception ex ) {
-					Console.WriteLine( "Compression failed: " + ex.ToString() );
+					if (FilenameOut == null) {
+						FilenameOut = Filename + ".tlzc";
+					}
+					using (var outstream = new FileStream(FilenameOut, FileMode.Create)) {
+						output.Position = 0;
+						StreamUtils.CopyStream(output, outstream);
+					}
+				} catch (Exception ex) {
+					Console.WriteLine("Compression failed: " + ex.ToString());
 					return -1;
 				}
 			}
+
 			return 0;
 		}
 	}
