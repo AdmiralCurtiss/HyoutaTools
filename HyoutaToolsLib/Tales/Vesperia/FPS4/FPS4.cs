@@ -590,13 +590,17 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			uint HeaderSize = 0x1C;
 
 			ushort EntrySize = 0;
+			ushort FileMetadataOffsetInEntry = 0;
 
 			if ( ContentBitmask.ContainsStartPointers ) { EntrySize += 4; }
 			if ( ContentBitmask.ContainsSectorSizes ) { EntrySize += 4; }
 			if ( ContentBitmask.ContainsFileSizes ) { EntrySize += 4; }
 			if ( ContentBitmask.ContainsFilenames ) { EntrySize += 0x20; }
 			if ( ContentBitmask.ContainsFiletypes ) { EntrySize += 4; }
-			if ( ContentBitmask.ContainsFileMetadata ) { EntrySize += 4; }
+			if ( ContentBitmask.ContainsFileMetadata ) {
+				FileMetadataOffsetInEntry = EntrySize;
+				EntrySize += 4;
+			}
 			if (ContentBitmask.Contains0x0080) { EntrySize += 4; }
 			if (ContentBitmask.Contains0x0100) { EntrySize += 4; }
 
@@ -674,27 +678,29 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				if (ContentBitmask.ContainsFileMetadata) {
 					for ( int i = 0; i < files.Count; ++i ) {
 						var fi = files[i];
-						long ptrPos = 0x1C + ( ( i + 1 ) * EntrySize ) - 4;
+						if (fi.Metadata != null && fi.Metadata.Count > 0) {
+							long ptrPos = 0x1C + (((long)i) * EntrySize) + FileMetadataOffsetInEntry;
 
-						// remember pos
-						uint oldPos = (uint)f.Position;
-						// jump to metaptr
-						f.Position = ptrPos;
-						// write remembered pos
-						f.WriteUInt32( oldPos.ToEndian( Endian ) );
-						// jump to remembered pos
-						f.Position = oldPos;
-						// write meta + nullterm
-						if (fi.Metadata != null) {
+							// remember pos
+							uint oldPos = (uint)f.Position;
+							// jump to metaptr
+							f.Position = ptrPos;
+							// write remembered pos
+							f.WriteUInt32(oldPos.ToEndian(Endian));
+							// jump to remembered pos
+							f.Position = oldPos;
+							// write meta + nullterm
 							foreach (var pair in fi.Metadata) {
 								if (pair.Key == null) {
 									f.Write(TextUtils.ShiftJISEncoding.GetBytes(pair.Value));
 								} else {
 									f.Write(TextUtils.ShiftJISEncoding.GetBytes(pair.Key + "=" + pair.Value));
 								}
+								f.WriteByte(0x20);
 							}
+							f.Position = (f.Position - 1);
+							f.WriteByte(0);
 						}
-						f.WriteByte( 0 );
 					}
 				}
 
