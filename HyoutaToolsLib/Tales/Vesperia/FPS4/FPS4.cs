@@ -357,6 +357,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 			ulong firstFilePosition = 0xffffffffffffffff;
 			ulong alignmentGuess = 0xffffffffffffffff;
+			bool sectorSizeIsAlwaysSameAsFilesize = (ContentBitmask.ContainsFileSizes && ContentBitmask.ContainsSectorSizes);
+			bool hasAtLeastOneValidFile = false;
 
 			for (int i = 0; i < Files.Count - 1; ++i) {
 				FileInfo fi = Files[i];
@@ -404,6 +406,11 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					throw new Exception( "FPS4 extraction failure: Doesn't contain filesize information!" );
 				}
 
+				hasAtLeastOneValidFile = true;
+				if (sectorSizeIsAlwaysSameAsFilesize) {
+					sectorSizeIsAlwaysSameAsFilesize = (fi.FileSize != null && fi.SectorSize != null && fi.FileSize == fi.SectorSize);
+				}
+
 				long fileloc = (long)(fi.Location.Value) * FileLocationMultiplier;
 				firstFilePosition = Math.Min(firstFilePosition, (ulong)fileloc);
 				alignmentGuess &= ~((ulong)fileloc);
@@ -436,6 +443,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				if (firstFileAlignment > alignment) {
 					json.Add("AlignmentFirstFile", JsonValue.Create(firstFileAlignment));
 				}
+			}
+			if (hasAtLeastOneValidFile && sectorSizeIsAlwaysSameAsFilesize) {
+				json.Add("SetSectorSizeSameAsFileSize", JsonValue.Create(true));
 			}
 
 			json.Add("Files", new JsonArray(jsonFiles.ToArray()));

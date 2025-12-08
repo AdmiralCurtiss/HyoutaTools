@@ -190,6 +190,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			string metadata = null;
 			string comment = null;
 			uint? multiplier = null;
+			bool? setSectorSizeSameAsFileSize = null;
 
 			try {
 				for ( int i = 0; i < args.Count; ++i ) {
@@ -226,6 +227,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 							break;
 						case "--multiplier":
 							multiplier = HexUtils.ParseDecOrHex( args[++i] );
+							break;
+						case "--setSectorSizeSameAsFileSize":
+							setSectorSizeSameAsFileSize = true;
 							break;
 						default:
 							if ( dir == null ) { dir = args[i]; } else if ( outName == null ) { outName = args[i]; } else { PrintPackUsage(); return -1; }
@@ -276,6 +280,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 			if (fromJson && multiplier == null && json["FileLocationMultiplier"] != null) {
 				multiplier = json["FileLocationMultiplier"].GetValue<uint>();
+			}
+			if (fromJson && setSectorSizeSameAsFileSize == null && json["SetSectorSizeSameAsFileSize"] != null) {
+				setSectorSizeSameAsFileSize = json["SetSectorSizeSameAsFileSize"].GetValue<bool>();
 			}
 			if (fromJson && json["Endian"] != null) {
 				fps4.Endian = Enum.Parse<EndianUtils.Endianness>(json["Endian"].GetValue<string>());
@@ -483,7 +490,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					alignmentFirstFile: alignmentFirstFile,
 					fileLocationMultiplier: multiplier ?? 1,
 					printProgressToConsole: true,
-					lastEntryPtrOverride: fileTerminatorLocationValueOverride
+					lastEntryPtrOverride: fileTerminatorLocationValueOverride,
+					setSectorSizeSameAsFileSize: setSectorSizeSameAsFileSize ?? false
 				);
 			} finally {
 				outStream.Close();
