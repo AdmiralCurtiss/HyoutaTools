@@ -271,6 +271,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if (fromJson && json["Alignment"] != null) {
 				fps4.Alignment = json["Alignment"].GetValue<uint>();
 			}
+			if (fromJson && alignmentFirstFile == null && json["AlignmentFirstFile"] != null) {
+				alignmentFirstFile = json["AlignmentFirstFile"].GetValue<uint>();
+			}
 			if (fromJson && json["FileLocationMultiplier"] != null) {
 				fps4.FileLocationMultiplier = json["FileLocationMultiplier"].GetValue<uint>();
 			}

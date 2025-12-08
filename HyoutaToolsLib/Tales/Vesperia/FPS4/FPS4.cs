@@ -8,7 +8,6 @@ using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
 using HyoutaUtils;
 using HyoutaUtils.Streams;
-using HyoutaTools.FinalFantasyCrystalChronicles.FileSections;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -356,6 +355,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 			List<JsonObject> jsonFiles = new List<JsonObject>();
 
+			ulong firstFilePosition = 0xffffffffffffffff;
+			ulong alignmentGuess = 0xffffffffffffffff;
+
 			for (int i = 0; i < Files.Count - 1; ++i) {
 				FileInfo fi = Files[i];
 
@@ -403,6 +405,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				}
 
 				long fileloc = (long)(fi.Location.Value) * FileLocationMultiplier;
+				firstFilePosition = Math.Min(firstFilePosition, (ulong)fileloc);
+				alignmentGuess &= ~((ulong)fileloc);
 				uint filesize = maybeFilesize.Value;
 				(string path, string filename) = fi.GuessFilePathName(noMetadataParsing);
 
@@ -425,11 +429,31 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 				outfile.Close();
 			}
 
+			ulong alignment = GetAlignmentFromLowestUnsetBit(alignmentGuess);
+			json.Add("Alignment", JsonValue.Create(alignment));
+			if (firstFilePosition != 0xffffffffffffffff) {
+				ulong firstFileAlignment = GetAlignmentFromLowestUnsetBit(~firstFilePosition);
+				if (firstFileAlignment > alignment) {
+					json.Add("AlignmentFirstFile", JsonValue.Create(firstFileAlignment));
+				}
+			}
+
 			json.Add("Files", new JsonArray(jsonFiles.ToArray()));
 
 			if (jsonOutputPath != null) {
 				File.WriteAllText(jsonOutputPath, JsonSerializer.Serialize(json, new JsonSerializerOptions { WriteIndented = true }));
 			}
+		}
+
+		private static ulong GetAlignmentFromLowestUnsetBit(ulong align) {
+			int bits = 0;
+			for (int i = 0; i < 64; ++i) {
+				if ((align & (1ul << i)) == 0) {
+					break;
+				}
+				++bits;
+			}
+			return (1ul << bits);
 		}
 
 		public override INode GetChildByIndex( long index ) {
