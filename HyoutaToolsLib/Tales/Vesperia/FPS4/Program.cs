@@ -189,7 +189,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			string originalFps4 = null;
 			string metadata = null;
 			string comment = null;
-			uint multiplier = 1;
+			uint? multiplier = null;
 
 			try {
 				for ( int i = 0; i < args.Count; ++i ) {
@@ -274,8 +274,8 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if (fromJson && alignmentFirstFile == null && json["AlignmentFirstFile"] != null) {
 				alignmentFirstFile = json["AlignmentFirstFile"].GetValue<uint>();
 			}
-			if (fromJson && json["FileLocationMultiplier"] != null) {
-				fps4.FileLocationMultiplier = json["FileLocationMultiplier"].GetValue<uint>();
+			if (fromJson && multiplier == null && json["FileLocationMultiplier"] != null) {
+				multiplier = json["FileLocationMultiplier"].GetValue<uint>();
 			}
 			if (fromJson && json["Endian"] != null) {
 				fps4.Endian = Enum.Parse<EndianUtils.Endianness>(json["Endian"].GetValue<string>());
@@ -481,7 +481,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					fps4.Alignment,
 					outputHeaderStream: outHeaderStream,
 					alignmentFirstFile: alignmentFirstFile,
-					fileLocationMultiplier: multiplier,
+					fileLocationMultiplier: multiplier ?? 1,
 					printProgressToConsole: true,
 					lastEntryPtrOverride: fileTerminatorLocationValueOverride
 				);
