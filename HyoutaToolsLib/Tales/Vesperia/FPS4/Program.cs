@@ -332,7 +332,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						p.FileName = jo["FileName"].GetValue<string>();
 					}
 					if (jo["FileType"] != null) {
-						p.FileName = jo["FileType"].GetValue<string>();
+						p.FileType = jo["FileType"].GetValue<string>();
 					}
 					if (jo["Unknown0x0080"] != null) {
 						p.Unknown0x0080 = jo["Unknown0x0080"].GetValue<uint>();
