@@ -26,12 +26,16 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public bool ContainsSectorSizes { get { return ( Value & 0x0002 ) == 0x0002; } }
 		public bool ContainsFileSizes { get { return ( Value & 0x0004 ) == 0x0004; } }
 		public bool ContainsFilenames { get { return ( Value & 0x0008 ) == 0x0008; } }
+
+		// I have no idea what the practical difference between these two is...
+		public bool ContainsFileExtensions { get { return ( Value & 0x0010 ) == 0x0010; } }
 		public bool ContainsFiletypes { get { return ( Value & 0x0020 ) == 0x0020; } }
+
 		public bool ContainsFileMetadata { get { return ( Value & 0x0040 ) == 0x0040; } }
 		public bool Contains0x0080 { get { return (Value & 0x0080) == 0x0080; } }
 		public bool Contains0x0100 { get { return (Value & 0x0100) == 0x0100; } }
 
-		public bool HasUnknownDataTypes { get { return ( Value & 0xFE10 ) != 0; } }
+		public bool HasUnknownDataTypes { get { return ( Value & 0xFE00 ) != 0; } }
 	}
 
 	public class FileInfo {
@@ -40,6 +44,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public uint? SectorSize = null;
 		public uint? FileSize = null;
 		public string FileName = null;
+		public string FileExtension = null;
 		public string FileType = null;
 		public List<(string Key, string Value)> Metadata = null;
 		public uint? Unknown0x0080 = null;
@@ -60,6 +65,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			}
 			if ( bitmask.ContainsFilenames ) {
 				FileName = stream.ReadSizedString( 0x20, encoding ).TrimNull();
+			}
+			if ( bitmask.ContainsFileExtensions ) {
+				FileExtension = stream.ReadSizedString( 0x08, encoding ).TrimNull();
 			}
 			if ( bitmask.ContainsFiletypes ) {
 				FileType = stream.ReadSizedString( 0x04, encoding ).TrimNull();
@@ -105,7 +113,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		}
 
 		public (string Path, string Name) GuessFilePathName(bool noMetadataParsing = false) {
-			return GuessFilePathName(FileIndex, FileName, FileType, noMetadataParsing ? null : Metadata);
+			return GuessFilePathName(FileIndex, FileName, FileType ?? FileExtension, noMetadataParsing ? null : Metadata);
 		}
 		public string GuessFullFilePath() {
 			(string path, string filename) = GuessFilePathName();
@@ -156,6 +164,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		public uint FileIndex;
 		public long FileSize;
 		public string FileName; // just the filename, no path
+		public string FileExtension;
 		public string FileType;
 		public List<(string Key, string Value)> Metadata;
 		public uint? Unknown0x0080 = null;
@@ -174,6 +183,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			FileIndex = other.FileIndex;
 			FileSize = other.FileSize;
 			FileName = other.FileName;
+			FileExtension = other.FileExtension;
 			FileType = other.FileType;
 			Metadata = other.Metadata != null ? new List<(string Key, string Value)>(other.Metadata) : null;
 			Unknown0x0080 = other.Unknown0x0080;
@@ -185,7 +195,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 		}
 
 		public (string Path, string Name) GuessFilePathName() {
-			return FileInfo.GuessFilePathName(FileIndex, FileName, FileType, Metadata);
+			return FileInfo.GuessFilePathName(FileIndex, FileName, FileType ?? FileExtension, Metadata);
 		}
 		public string GuessFullFilePath() {
 			(string path, string filename) = GuessFilePathName();
@@ -368,6 +378,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 
 				if (fi.FileName != null) {
 					jsonFile.Add("FileName", JsonValue.Create(fi.FileName));
+				}
+				if (fi.FileExtension != null) {
+					jsonFile.Add("FileExtension", JsonValue.Create(fi.FileExtension));
 				}
 				if (fi.FileType != null) {
 					jsonFile.Add("FileType", JsonValue.Create(fi.FileType));
@@ -596,6 +609,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 			if ( ContentBitmask.ContainsSectorSizes ) { EntrySize += 4; }
 			if ( ContentBitmask.ContainsFileSizes ) { EntrySize += 4; }
 			if ( ContentBitmask.ContainsFilenames ) { EntrySize += 0x20; }
+			if ( ContentBitmask.ContainsFileExtensions ) { EntrySize += 8; }
 			if ( ContentBitmask.ContainsFiletypes ) { EntrySize += 4; }
 			if ( ContentBitmask.ContainsFileMetadata ) {
 				FileMetadataOffsetInEntry = EntrySize;
@@ -632,6 +646,12 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						byte[] fnbytes = TextUtils.ShiftJISEncoding.GetBytes( filename );
 						f.Write( fnbytes, 0, fnbytes.Length );
 						DoPadding(padhelper, 0x20 - fnbytes.Length, f);
+					}
+					if ( ContentBitmask.ContainsFileExtensions ) {
+						string extension = (fi.FileExtension != null ? fi.FileExtension : Path.GetExtension(fi.FileName)).TrimStart( '.' ).Truncate( 8 );
+						byte[] extbytes = TextUtils.ShiftJISEncoding.GetBytes( extension );
+						f.Write( extbytes, 0, extbytes.Length );
+						DoPadding(padhelper, 8 - extbytes.Length, f);
 					}
 					if ( ContentBitmask.ContainsFiletypes ) {
 						string extension = (fi.FileType != null ? fi.FileType : Path.GetExtension(fi.FileName)).TrimStart( '.' ).Truncate( 4 );

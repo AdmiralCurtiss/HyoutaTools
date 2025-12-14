@@ -331,6 +331,9 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 					if (jo["FileName"] != null) {
 						p.FileName = jo["FileName"].GetValue<string>();
 					}
+					if (jo["FileExtension"] != null) {
+						p.FileExtension = jo["FileExtension"].GetValue<string>();
+					}
 					if (jo["FileType"] != null) {
 						p.FileType = jo["FileType"].GetValue<string>();
 					}
@@ -402,6 +405,7 @@ namespace HyoutaTools.Tales.Vesperia.FPS4 {
 						p.FileIndex = oldFiles[i].FileIndex;
 						p.FileSize = oldFiles[i].FileSize ?? 0;
 						p.FileName = oldFiles[i].FileName;
+						p.FileExtension = oldFiles[i].FileExtension;
 						p.FileType = oldFiles[i].FileType;
 						p.Metadata = oldFiles[i].Metadata;
 						p.Unknown0x0080 = oldFiles[i].Unknown0x0080;
