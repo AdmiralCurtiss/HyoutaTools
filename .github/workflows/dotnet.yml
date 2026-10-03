@@ -32,7 +32,7 @@ jobs:
       run: dotnet publish --configuration Release --no-build HyoutaToolsCLI/HyoutaToolsCLI.csproj --output _publish
     - run: mv LICENSE LICENSE_HyoutaTools
     - run: mv utf_tab-sharp/LICENSE LICENSE_utf_tab-sharp
-    - run: mv zlib-sharp/LICENSE LICENSE_zlib-sharp
+    - run: mv HyoutaUtils/zlib-sharp/LICENSE LICENSE_zlib-sharp
     - run: mv HyoutaUtils/LICENSE LICENSE_HyoutaUtils
     - run: mv LICENSE* _publish
     - run: mv README.md _publish

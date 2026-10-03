@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using HyoutaUtils;
+using HyoutaUtils.Image2D;
 
 namespace HyoutaTools.Textures {
 	public enum TextureFormat {

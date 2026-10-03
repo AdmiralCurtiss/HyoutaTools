@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HyoutaUtils.Image2D;
 
 namespace HyoutaTools.Other.PSP.GIM {
 	class GIM {
@@ -91,7 +92,7 @@ namespace HyoutaTools.Other.PSP.GIM {
 			}
 		}
 
-		public List<System.Drawing.Bitmap> ConvertToBitmaps() {
+		public List<Bitmap> ConvertToBitmaps() {
 			ImageSection isec = null;
 			PaletteSection psec = null;
 			foreach ( var section in Sections ) {

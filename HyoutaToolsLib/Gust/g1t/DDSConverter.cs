@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using HyoutaUtils;
+using HyoutaUtils.Image2D;
 
 namespace HyoutaTools.Gust.g1t {
 	class DDSConverter {
@@ -35,24 +36,24 @@ namespace HyoutaTools.Gust.g1t {
 						int width = (int)tex.Width / ( 1 << mipmapLevel );
 						int height = (int)tex.Height / ( 1 << mipmapLevel );
 
-						var bitmap = new System.Drawing.Bitmap( width, height );
+						var bitmap = new Bitmap( width, height );
 						long offset = tex.GetDataStart( mipmapLevel );
 						for ( int j = 0; j < tex.GetDataLength( mipmapLevel ) / 4; ++j ) {
 							long idx = offset + j * 4;
-							System.Drawing.Color color;
+							Color color;
 							switch ( tex.Format ) {
 								case Textures.TextureFormat.RGBA:
-									color = System.Drawing.Color.FromArgb( tex.Data[idx + 3], tex.Data[idx + 2], tex.Data[idx + 1], tex.Data[idx] );
+									color = Color.FromArgb( tex.Data[idx + 3], tex.Data[idx + 2], tex.Data[idx + 1], tex.Data[idx] );
 									break;
 								case Textures.TextureFormat.ABGR:
-									color = System.Drawing.Color.FromArgb( tex.Data[idx], tex.Data[idx + 3], tex.Data[idx + 2], tex.Data[idx + 1] );
+									color = Color.FromArgb( tex.Data[idx], tex.Data[idx + 3], tex.Data[idx + 2], tex.Data[idx + 1] );
 									break;
 								default:
 									throw new Exception( "Unsupported texture format in png generation color loop." );
 							}
 							bitmap.SetPixel( (int)( j % width ), (int)( j / width ), color );
 						}
-						bitmap.Save( path, System.Drawing.Imaging.ImageFormat.Png );
+						bitmap.Save( path, ImageFormat.Png );
 					}
 				}
 			}

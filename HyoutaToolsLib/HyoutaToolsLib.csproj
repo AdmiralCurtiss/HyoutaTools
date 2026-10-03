@@ -8,13 +8,12 @@
   <ItemGroup>
     <ProjectReference Include="..\HyoutaUtils\HyoutaPluginBase\HyoutaPluginBase.csproj" />
     <ProjectReference Include="..\HyoutaUtils\HyoutaUtils\HyoutaUtils.csproj" />
+    <ProjectReference Include="..\HyoutaUtils\zlib-sharp\zlib-sharp\zlib-sharp.csproj" />
     <ProjectReference Include="..\utf_tab-sharp\utf_tab-sharp\utf_tab-sharp\utf_tab-sharp.csproj" />
-    <ProjectReference Include="..\zlib-sharp\zlib-sharp\zlib-sharp.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core">
       <Version>1.0.119</Version>
     </PackageReference>
-    <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
   </ItemGroup>
 </Project>

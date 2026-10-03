@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HyoutaUtils;
+using HyoutaUtils.Image2D;
 
 namespace HyoutaTools.Textures.ColorFetchingIterators {
 	public class ColorFetcherIndexed4Bits : IColorFetchingIterator {

@@ -5,6 +5,7 @@ using HyoutaTools.Tales.Vesperia.ItemDat;
 using HyoutaTools.Tales.Vesperia.TSS;
 using System.Text;
 using HyoutaUtils;
+using HyoutaUtils.Image2D;
 
 namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 	public class TOVSEAF {
@@ -62,7 +63,7 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			return true;
 		}
 
-		public System.Drawing.Bitmap GenerateMap( System.Drawing.Bitmap background = null ) {
+		public Bitmap GenerateMap( Bitmap background = null ) {
 			int minx = int.MaxValue;
 			int maxx = int.MinValue;
 			int miny = int.MaxValue;
@@ -85,54 +86,57 @@ namespace HyoutaTools.Tales.Vesperia.TOVSEAF {
 			int padx = 222;
 			int pady = 185;
 
-			System.Drawing.Bitmap bmp;
+			Bitmap bmp;
 			if ( background == null ) {
-				bmp = new System.Drawing.Bitmap( (int)( extentx * factor + 1 + padx * 2 ), (int)( extentz * factor + 1 + pady * 2 ) );
+				bmp = new Bitmap( (int)( extentx * factor + 1 + padx * 2 ), (int)( extentz * factor + 1 + pady * 2 ) );
 			} else {
-				bmp = new System.Drawing.Bitmap( background );
+				bmp = new Bitmap( background );
 			}
 
 			int idx = 1;
 			foreach ( var spd in SearchPointDefinitions ) {
 				if ( spd.Unknown11 != 1 ) { continue; } // not sure what these mean exactly but only the ones with an '1' here show up in game
-				System.Drawing.Color color = System.Drawing.Color.Black;
-				System.Drawing.Color border = System.Drawing.Color.White;
+				Color color = Color.FromArgb(0, 0, 0);
+				Color border = Color.FromArgb(255, 255, 255);
 				switch ( spd.SearchPointType ) {
-					case 0: color = System.Drawing.Color.SpringGreen; border = System.Drawing.Color.Black; break; // tree stump
+					case 0: color = Color.FromArgb(0, 255, 127); border = Color.FromArgb(0, 0, 0); break; // tree stump
 					case 1: // shells
 						if ( spd.CoordY < 0 ) {
-							color = System.Drawing.Color.Red; // in water
-							border = System.Drawing.Color.White;
+							color = Color.FromArgb(255, 0, 0); // in water
+							border = Color.FromArgb(255, 255, 255);
 						} else {
-							color = System.Drawing.Color.Aqua; // on beach
-							border = System.Drawing.Color.Black;
+							color = Color.FromArgb(0, 255, 255); // on beach
+							border = Color.FromArgb(0, 0, 0);
 						}
 						break;
-					case 2: color = System.Drawing.Color.FromArgb( 212, 212, 0 ); border = System.Drawing.Color.Black; break; // bones
-					case 3: color = System.Drawing.Color.DarkBlue; border = System.Drawing.Color.White; break; // seagulls
+					case 2: color = Color.FromArgb(212, 212, 0); border = Color.FromArgb(0, 0, 0); break; // bones
+					case 3: color = Color.FromArgb(0, 0, 139); border = Color.FromArgb(255, 255, 255); break; // seagulls
 				}
 				//SetPixelArea( bmp, (int)( ( spd.CoordX - minx ) * factor + padx ), (int)( ( extentz - ( spd.CoordZ - minz ) ) * factor + pady ), color, border );
 
-				System.Drawing.Graphics g = System.Drawing.Graphics.FromImage( bmp );
-				g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-				g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-				g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-				System.Drawing.StringFormat fmt = new System.Drawing.StringFormat( System.Drawing.StringFormatFlags.NoClip ) { Alignment = System.Drawing.StringAlignment.Center, LineAlignment = System.Drawing.StringAlignment.Center };
-				//System.Drawing.Font font = new System.Drawing.Font( "Gentium Book", 32.0f, System.Drawing.GraphicsUnit.Pixel );
+				// TODO: This is not implemented in my replacement Image2D stuff at the moment.
+				/*
+				Graphics g = Graphics.FromImage( bmp );
+				g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias;
+				g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic;
+				g.TextRenderingHint = Text.TextRenderingHint.ClearTypeGridFit;
+				StringFormat fmt = new StringFormat( StringFormatFlags.NoClip ) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+				//Font font = new Font( "Gentium Book", 32.0f, GraphicsUnit.Pixel );
 				int x = (int)( ( spd.CoordX - minx ) * factor + padx );
 				int y = (int)( ( extentz - ( spd.CoordZ - minz ) ) * factor + pady );
-				System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-				path.AddString( idx.ToString(), new System.Drawing.FontFamily( "Gentium Book" ), (int)System.Drawing.FontStyle.Regular, 80.0f, new System.Drawing.Point( x, y + 4 ), fmt );
-				g.DrawPath( new System.Drawing.Pen( border, 8 ), path );
-				g.FillPath( new System.Drawing.SolidBrush( color ), path );
+				Drawing2D.GraphicsPath path = new Drawing2D.GraphicsPath();
+				path.AddString( idx.ToString(), new FontFamily( "Gentium Book" ), (int)FontStyle.Regular, 80.0f, new Point( x, y + 4 ), fmt );
+				g.DrawPath( new Pen( border, 8 ), path );
+				g.FillPath( new SolidBrush( color ), path );
 				g.Flush();
+				*/
 				++idx;
 			}
 
 			return bmp;
 		}
 
-		public static void SetPixelArea( System.Drawing.Bitmap bmp, int x, int y, System.Drawing.Color color, System.Drawing.Color border ) {
+		public static void SetPixelArea( Bitmap bmp, int x, int y, Color color, Color border ) {
 			int xext = 15, yext = 15;
 			int bordersize = 3;
 			for ( int i = x - xext; i < x + xext; ++i ) {

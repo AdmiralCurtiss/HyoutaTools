@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using HyoutaTools.Trophy.Viewer;
 using HyoutaUtils;
+using HyoutaUtils.Image2D;
 
 namespace HyoutaTools.Trophy {
 	public class TrophyConfNode {
@@ -26,16 +27,16 @@ namespace HyoutaTools.Trophy {
 		public TropUsr TropUsrFile;
 
 
-		private System.Drawing.Image _GameImage = null;
-		private System.Drawing.Image _GameThumbnail = null;
+		private Bitmap _GameImage = null;
+		private Bitmap _GameThumbnail = null;
 
-		public System.Drawing.Image GameImage {
+		public Bitmap GameImage {
 			get {
 				if ( _GameImage == null ) LoadImage();
 				return _GameImage;
 			}
 		}
-		public System.Drawing.Image GameThumbnail {
+		public Bitmap GameThumbnail {
 			get {
 				if ( _GameThumbnail == null ) LoadThumbnail();
 				return _GameThumbnail;
@@ -44,12 +45,13 @@ namespace HyoutaTools.Trophy {
 
 		private void LoadImage() {
 			String pngname = "ICON0.PNG";
-			_GameImage = System.Drawing.Image.FromFile( Folder + pngname ); // 320x176
+			_GameImage = Bitmap.ReadFromFile(Folder + pngname); // 320x176
 		}
 
 		private void LoadThumbnail() {
 			String pngname = "ICON0.PNG";
-			_GameThumbnail = System.Drawing.Image.FromFile( Folder + pngname ).GetThumbnailImage( 160, 88, delegate { return false; }, System.IntPtr.Zero );
+			_GameThumbnail = Bitmap.ReadFromFile(Folder + pngname);
+			_GameThumbnail.Scale(160, 88);
 		}
 
 
