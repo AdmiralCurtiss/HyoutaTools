@@ -3,12 +3,12 @@ using HyoutaTools.Textures.ColorFetchingIterators;
 using HyoutaTools.Textures.PixelOrderIterators;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HyoutaUtils;
+using HyoutaUtils.Image2D;
 
 namespace HyoutaTools.Tales.Vesperia.Texture {
 	public class TXV {
@@ -72,7 +72,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 		}
 
 		private Stream DecodeGrayscale8ToPng( Stream data ) {
-			var bitmap = new System.Drawing.Bitmap( (int)TXM.Width, (int)TXM.Height );
+			var bitmap = new Bitmap( (int)TXM.Width, (int)TXM.Height );
 
 			for ( uint y = 0; y < TXM.Height; ++y ) {
 				for ( uint x = 0; x < TXM.Width; ++x ) {
@@ -82,7 +82,7 @@ namespace HyoutaTools.Tales.Vesperia.Texture {
 			}
 
 			MemoryStream s = new MemoryStream();
-			bitmap.Save( s, System.Drawing.Imaging.ImageFormat.Png );
+			bitmap.Save( s, ImageFormat.Png );
 			return s;
 		}
 

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Drawing;
 using HyoutaTools.FileContainer;
 using HyoutaPluginBase;
 using HyoutaPluginBase.FileContainer;
 using HyoutaUtils;
 using HyoutaUtils.Streams;
+using HyoutaUtils.Image2D;
 
 namespace HyoutaTools.Tales.Vesperia.Website {
 	public class GenerateWebsiteInputOutputData {
@@ -227,7 +227,7 @@ namespace HyoutaTools.Tales.Vesperia.Website {
 		}
 
 		public static int Generate( List<string> args ) {
-			var worldmap = IntegerScaled( new Bitmap( @"c:\Dropbox\ToV\U_WORLDNAVI00.png" ), 5, 4 );
+			var worldmap = IntegerScaled(Bitmap.ReadFromFile(@"c:\Dropbox\ToV\U_WORLDNAVI00.png"), 5, 4);
 
 			List<GenerateWebsiteInputOutputData> gens = new List<GenerateWebsiteInputOutputData>();
 			gens.Add( new GenerateWebsiteInputOutputData() {

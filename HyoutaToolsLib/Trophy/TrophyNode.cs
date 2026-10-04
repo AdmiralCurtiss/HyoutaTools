@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using HyoutaUtils.Image2D;
 
 namespace HyoutaTools.Trophy {
 	public class TrophyNode : IComparable {
@@ -16,16 +17,16 @@ namespace HyoutaTools.Trophy {
 
 		public String Folder;
 
-		private System.Drawing.Image _TrophyImage = null;
-		private System.Drawing.Image _TrophyThumbnail = null;
+		private Bitmap _TrophyImage = null;
+		private Bitmap _TrophyThumbnail = null;
 
-		public System.Drawing.Image TrophyImage {
+		public Bitmap TrophyImage {
 			get {
 				if ( _TrophyImage == null ) LoadImage();
 				return _TrophyImage;
 			}
 		}
-		public System.Drawing.Image TrophyThumbnail {
+		public Bitmap TrophyThumbnail {
 			get {
 				if ( _TrophyThumbnail == null ) LoadThumbnail();
 				return _TrophyThumbnail;
@@ -34,12 +35,13 @@ namespace HyoutaTools.Trophy {
 
 		private void LoadImage() {
 			String pngname = "TROP" + this.ID + ".PNG ";
-			_TrophyImage = System.Drawing.Image.FromFile( Folder + pngname );
+			_TrophyImage = Bitmap.ReadFromFile(Folder + pngname);
 		}
 
 		private void LoadThumbnail() {
 			String pngname = "TROP" + this.ID + ".PNG ";
-			_TrophyThumbnail = System.Drawing.Image.FromFile( Folder + pngname ).GetThumbnailImage( 60, 60, delegate { return false; }, System.IntPtr.Zero );
+			_TrophyThumbnail = Bitmap.ReadFromFile(Folder + pngname);
+			_TrophyThumbnail.Scale(60, 60);
 		}
 
 		public TrophyNode( XmlNode Node, String Folder ) {

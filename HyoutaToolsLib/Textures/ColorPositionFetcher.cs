@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HyoutaUtils.Image2D;
 
 namespace HyoutaTools.Textures {
-	public class ColorPositionFetcher : IEnumerable<(System.Drawing.Color Color, int X, int Y)> {
+	public class ColorPositionFetcher : IEnumerable<(Color Color, int X, int Y)> {
 		ColorFetchingIterators.IColorFetchingIterator ColorFetchingIterator;
 		PixelOrderIterators.IPixelOrderIterator PixelOrderIterator;
 
